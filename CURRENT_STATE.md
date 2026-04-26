@@ -23,12 +23,12 @@ EUR/USD M5 always-in-market flip system.
 | Trade logger | [x] complete | logs/signals.csv + logs/trades.csv |
 | Docker | [x] complete | Dockerfile + compose, running on port 8080 |
 | Tests | [x] complete | 48/48 passing (incl. Phase 2 MCP tests) |
-| Pine truth panel | [ ] needs chart setup | pine/CEREBUS_TruthPanel.pine written, add to TV |
+| Pine truth panel | [x] complete | On BTCUSD M5 via MCP, reading live SIDE/STATE ID |
 | Hermes supervisor | [ ] placeholder | Phase 4 |
 | Execution adapter | [ ] placeholder | Phase 3 |
 
 ## Last Completed
-- Phase 2 code complete: vision_confirm.py MCP path + _parse_truth_panel
+- Phase 2 LIVE: truth panel on BTC chart via MCP, chart_confirmed=true
 - Pine truth panel script written: pine/CEREBUS_TruthPanel.pine
 - 14 new Phase 2 tests (48/48 total)
 - Ghost signal e2e test with real MCP mocked — passing
@@ -50,7 +50,7 @@ EUR/USD M5 always-in-market flip system.
   Replace with real CEREBUS signal logic before Phase 3
 
 ## Last Commit
-- Phase 2: MCP vision + Pine truth panel + 14 new tests
+- Phase 2 live: truth panel injected via MCP, ghost signal tested end-to-end
 
 ## Test Status
 - [x] test_ghost_signal.py (5/5)

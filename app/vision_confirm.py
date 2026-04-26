@@ -63,6 +63,8 @@ def _confirm_from_mcp(signal: dict) -> dict:
             ["node", "src/cli/index.js", "data", "tables", "-f", "CEREBUS"],
             capture_output=True,
             text=True,
+            encoding="utf-8",
+            errors="ignore",
             timeout=MCP_TIMEOUT,
             cwd=str(MCP_DIR),
         )
@@ -141,6 +143,8 @@ def _save_mcp_screenshot(signal: dict) -> None:
             ["node", "src/cli/index.js", "screenshot", "-r", "chart"],
             capture_output=True,
             text=True,
+            encoding="utf-8",
+            errors="ignore",
             timeout=10,
             cwd=str(MCP_DIR),
         )
