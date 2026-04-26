@@ -1,0 +1,18 @@
+# Master account — executes all trades
+master:
+  broker: matchtrader       # matchtrader | tradelocker
+  account_id: ""
+  api_key: ""
+  enabled: false            # Phase 3
+
+# Copier — distributes to slave accounts
+copier:
+  cfds:
+    provider: heron
+    enabled: false          # Phase 3
+  futures:
+    provider: tradesyncer
+    enabled: false          # Phase 3
+
+# Slave accounts (managed by copier, not directly by this system)
+slaves: []

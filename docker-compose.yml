@@ -1,0 +1,28 @@
+version: "3.9"
+
+services:
+  trader:
+    build: .
+    container_name: cerebus-core
+    ports:
+      - "8080:8000"
+    volumes:
+      - ./data:/app/data
+      - ./logs:/app/logs
+      - ./configs:/app/configs
+    restart: unless-stopped
+    environment:
+      - ENVIRONMENT=prod
+      - PYTHONUNBUFFERED=1
+    env_file:
+      - .env
+
+  # Hermes supervisor — Phase 4 placeholder
+  # hermes:
+  #   image: nous/hermes-agent:latest
+  #   container_name: hermes-supervisor
+  #   depends_on: [trader]
+  #   volumes:
+  #     - ./logs:/logs
+  #     - ./data:/data
+  #   restart: unless-stopped

@@ -1,0 +1,18 @@
+allowed_symbols:
+  - EURUSD
+
+allowed_strategies:
+  - CEREBUS_IMPULSE
+  - CEREBUS_REBALANCE
+
+max_signal_age_seconds: 60
+
+allowed_sessions:
+  - LONDON
+  - NY
+  - OVERLAP
+
+duplicate_window_seconds: 5
+
+vision_confidence_threshold: 0.85
+fallback_webhook_only_mode: true

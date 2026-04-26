@@ -1,0 +1,11 @@
+.env
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+logs/screenshots/
+data/position_state.json
+data/seen_signal_ids.json
+*.db
+*.sqlite
+.DS_Store
