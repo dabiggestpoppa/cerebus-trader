@@ -23,7 +23,7 @@ EUR/USD M5 always-in-market flip system.
 | Trade logger | [x] complete | logs/signals.csv + logs/trades.csv |
 | Docker | [x] complete | Dockerfile + compose, running on port 8080 |
 | Tests | [x] complete | 48/48 passing (incl. Phase 2 MCP tests) |
-| Pine truth panel | [x] complete | On BTCUSD M5 via MCP, reading live SIDE/STATE ID |
+| Symmetry Trap v5  | [x] complete | On EURUSD M5. Truth panel live. SIDE/TIER/A-LEG MCP-readable |
 | Hermes supervisor | [ ] placeholder | Phase 4 |
 | Execution adapter | [ ] placeholder | Phase 3 |
 
@@ -50,7 +50,7 @@ EUR/USD M5 always-in-market flip system.
   Replace with real CEREBUS signal logic before Phase 3
 
 ## Last Commit
-- Phase 2 live: truth panel injected via MCP, ghost signal tested end-to-end
+- CEREBUS Symmetry Trap v5: full strategy logic, live on EURUSD M5
 
 ## Test Status
 - [x] test_ghost_signal.py (5/5)
