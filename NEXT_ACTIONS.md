@@ -1,18 +1,27 @@
 # Next Actions
 
-## Now
-1. Build state_engine.py + tests/test_state_engine.py
-2. Build validator.py (steps 1,3,4,5 — no vision)
-3. Build main.py skeleton
-4. Build trade_log.py
-5. Build vision_confirm.py stub
+## NOW — Phase 2 Live Test (in progress)
+1. Use TradingView MCP to inject CEREBUS_TruthPanel.pine onto BTC chart
+   - pine_new(type="indicator")
+   - pine_set_source(source=<pine/CEREBUS_TruthPanel.pine contents>)
+   - pine_smart_compile()
+   - pine_save()
+   - Verify panel visible on chart via capture_screenshot()
+2. Read truth panel via data_get_pine_tables(study_filter="CEREBUS")
+   - Verify rows: SIDE / MODEL / STATE ID / VALID UNTIL
+3. Set USE_MCP_VISION=true in .env, restart container
+4. Send live test webhook → verify chart_confirmed=true in response
+5. Send ghost signal (BTC chart says BUY, webhook says SELL) → verify REJECT + screenshot
+6. Update CURRENT_STATE.md → git push
 
-## After Phase 1 Ships
-- GitHub Issue #8: TradingView MCP inspection + integration
-- GitHub Issue #11: Pine truth panel on chart
-- GitHub Issue #12: Execution adapter — MatchTrader/TradeLocker
-- GitHub Issue #14: Hermes supervisor container
-- GitHub Issue #15: End-to-end test
+## Phase 3 Queue (after Phase 2 live test passes)
+- #12 Execution adapter — MatchTrader/TradeLocker
+- #13 Heron integration test
+- Live paper trade on master account
+
+## Phase 4 Queue
+- #14 Hermes supervisor container
+- #15 End-to-end: TV alert → ALLOW logged → master trade
 
 ## GitHub Issues (create on day 1)
 - #1  Project structure + CLAUDE.md + state files
