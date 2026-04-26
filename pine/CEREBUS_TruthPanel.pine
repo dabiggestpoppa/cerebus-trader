@@ -1,0 +1,93 @@
+// CEREBUS Truth Panel — Visual Confirmation Indicator
+// Add to EURUSD M5 chart. Must be VISIBLE (not hidden) for MCP to read it.
+// study_filter="CEREBUS" targets this indicator name.
+//
+// MCP reads: data_get_pine_tables(study_filter="CEREBUS")
+// Response rows (space-pipe-space delimited):
+//   "SIDE | BUY"
+//   "MODEL | CEREBUS_IMPULSE"
+//   "STATE ID | EURUSD_20260426_0930_BUY_001"
+//   "VALID UNTIL | 09:35"
+
+//@version=5
+indicator("CEREBUS Truth Panel", overlay=true, max_labels_count=0)
+
+// ─── INPUTS ───────────────────────────────────────────────────────────────────
+i_model   = input.string("CEREBUS_IMPULSE", "Model", options=["CEREBUS_IMPULSE", "CEREBUS_REBALANCE"])
+i_show    = input.bool(true, "Show Panel")
+
+// ─── BIAS LOGIC ───────────────────────────────────────────────────────────────
+// Replace this section with your actual CEREBUS signal logic.
+// For now: EMA crossover as placeholder bias.
+ema_fast  = ta.ema(close, 8)
+ema_slow  = ta.ema(close, 21)
+bias_long = ema_fast > ema_slow
+bias_side = bias_long ? "BUY" : "SELL"
+bias_color = bias_long ? color.new(color.lime, 0) : color.new(color.red, 0)
+
+// ─── STATE ID ─────────────────────────────────────────────────────────────────
+// Format: EURUSD_{YYYYMMDD}_{HHMM}_{SIDE}_{seq}
+// timenow gives milliseconds — convert to readable format
+_date = str.format("{0,date,yyyyMMdd}", time)
+_time = str.format("{0,date,HHmm}", time)
+_seq  = "001"
+state_id  = "EURUSD_" + _date + "_" + _time + "_" + bias_side + "_" + _seq
+
+// VALID UNTIL = close of current bar
+valid_bar = time_close
+valid_str = str.format("{0,date,HH:mm}", valid_bar)
+
+// ─── TRUTH PANEL TABLE ────────────────────────────────────────────────────────
+// 2 columns × 5 rows (header row + 4 data rows)
+// Column 0 = label, Column 1 = value
+// MCP reads this via data_get_pine_tables(study_filter="CEREBUS")
+var table truthPanel = table.new(
+     position.top_right, 2, 5,
+     bgcolor=color.new(color.black, 10),
+     border_width=1, border_color=color.new(color.gray, 50),
+     frame_width=1,  frame_color=color.new(color.gray, 30)
+     )
+
+if i_show and barstate.islast
+    // Row 0 — header
+    table.cell(truthPanel, 0, 0, "CEREBUS TRUTH",
+         text_color=color.new(color.white, 0), text_size=size.small,
+         bgcolor=color.new(color.navy, 20), text_halign=text.align_center)
+    table.cell(truthPanel, 1, 0, "v1.0",
+         text_color=color.new(color.silver, 0), text_size=size.small,
+         bgcolor=color.new(color.navy, 20), text_halign=text.align_center)
+
+    // Row 1 — SIDE (this is what the ghost signal check reads)
+    table.cell(truthPanel, 0, 1, "SIDE",
+         text_color=color.new(color.white, 0), text_size=size.normal,
+         text_halign=text.align_left)
+    table.cell(truthPanel, 1, 1, bias_side,
+         text_color=bias_color, text_size=size.normal,
+         text_halign=text.align_center)
+
+    // Row 2 — MODEL
+    table.cell(truthPanel, 0, 2, "MODEL",
+         text_color=color.new(color.white, 0), text_size=size.small,
+         text_halign=text.align_left)
+    table.cell(truthPanel, 1, 2, i_model,
+         text_color=color.new(color.white, 0), text_size=size.small,
+         text_halign=text.align_center)
+
+    // Row 3 — STATE ID (matches alert signal_id / state_id)
+    table.cell(truthPanel, 0, 3, "STATE ID",
+         text_color=color.new(color.white, 0), text_size=size.tiny,
+         text_halign=text.align_left)
+    table.cell(truthPanel, 1, 3, state_id,
+         text_color=color.new(color.yellow, 0), text_size=size.tiny,
+         text_halign=text.align_center)
+
+    // Row 4 — VALID UNTIL
+    table.cell(truthPanel, 0, 4, "VALID UNTIL",
+         text_color=color.new(color.white, 0), text_size=size.tiny,
+         text_halign=text.align_left)
+    table.cell(truthPanel, 1, 4, valid_str,
+         text_color=color.new(color.white, 0), text_size=size.tiny,
+         text_halign=text.align_center)
+
+// ─── BIAS BACKGROUND (optional visual) ───────────────────────────────────────
+bgcolor(bias_long ? color.new(color.lime, 97) : color.new(color.red, 97), title="Bias Background")

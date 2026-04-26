@@ -35,3 +35,5 @@ def get(key: str, default: Any = None) -> Any:
 WEBHOOK_SECRET: str = os.getenv("TRADINGVIEW_WEBHOOK_SECRET", "")
 ENVIRONMENT: str = os.getenv("ENVIRONMENT", "dev")
 USE_MCP_VISION: bool = os.getenv("USE_MCP_VISION", "false").lower() == "true"
+TRADINGVIEW_MCP_DIR: str = os.getenv("TRADINGVIEW_MCP_DIR", "C:/Users/jefe/tradingview-mcp")
+MCP_TIMEOUT_SECONDS: int = int(os.getenv("MCP_TIMEOUT_SECONDS", "8"))
