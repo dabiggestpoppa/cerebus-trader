@@ -1,0 +1,99 @@
+// CEREBUS Simple Test Indicator
+// Shows clear BUY/SELL signals and state panel for MCP testing
+
+//@version=5
+indicator("CEREBUS Test Indicator", overlay=true, max_labels_count=500)
+
+// ─── INPUTS ───────────────────────────────────────────────────────────────────
+i_model   = input.string("CEREBUS_IMPULSE", "Model", options=["CEREBUS_IMPULSE", "CEREBUS_REBALANCE"])
+i_show    = input.bool(true, "Show Panel")
+i_use_ema = input.bool(true, "Use EMA Crossover")
+i_use_rsi = input.bool(false, "Use RSI (override)")
+
+// ─── BIAS LOGIC ───────────────────────────────────────────────────────────────
+ema_fast  = ta.ema(close, 8)
+ema_slow  = ta.ema(close, 21)
+rsi_val   = ta.rsi(close, 14)
+
+bias_long = i_use_rsi ? (rsi_val < 30) : (ema_fast > ema_slow)
+bias_side = bias_long ? "BUY" : "SELL"
+bias_color = bias_long ? color.new(color.lime, 0) : color.new(color.red, 0)
+
+// ─── VISUAL SIGNALS ON CHART ──────────────────────────────────────────────────
+plotshape(bias_long and ta.crossover(ema_fast, ema_slow), 
+     title="BUY Signal", style=shape.triangleup, location=location.belowbar,
+     color=color.lime, size=size.small)
+plotshape(not bias_long and ta.crossunder(ema_fast, ema_slow),
+     title="SELL Signal", style=shape.triangledown, location=location.abovebar,
+     color=color.red, size=size.small)
+
+// ─── STATE ID ─────────────────────────────────────────────────────────────────
+_date = str.format("{0,date,yyyyMMdd}", time)
+_time = str.format("{0,date,HHmm}", time)
+_seq  = "001"
+state_id  = "EURUSD_" + _date + "_" + _time + "_" + bias_side + "_" + _seq
+
+// VALID UNTIL = close of current bar
+valid_bar = time_close
+valid_str = str.format("{0,date,HH:mm}", valid_bar)
+
+// ─── TRUTH PANEL TABLE ────────────────────────────────────────────────────────
+var table truthPanel = table.new(
+     position.top_right, 2, 6,
+     bgcolor=color.new(color.black, 80),
+     border_width=1, border_color=color.new(color.blue, 50),
+     frame_width=2,  frame_color=color.new(color.blue, 60)
+     )
+
+if i_show and barstate.islast
+     // Header
+     table.cell(truthPanel, 0, 0, "🛡 CEREBUS TEST",
+          text_color=color.cyan, text_size=size.small,
+          bgcolor=color.new(color.blue, 30), text_halign=text.align_center)
+     table.cell(truthPanel, 1, 0, "v1.0",
+          text_color=color.silver, text_size=size.small,
+          bgcolor=color.new(color.blue, 30), text_halign=text.align_center)
+
+     // Row 1 — SIDE
+     table.cell(truthPanel, 0, 1, "SIDE",
+          text_color=color.white, text_size=size.normal,
+          text_halign=text.align_left)
+     table.cell(truthPanel, 1, 1, bias_side,
+          text_color=bias_color, text_size=size.normal,
+          text_halign=text.align_center)
+
+     // Row 2 — MODEL
+     table.cell(truthPanel, 0, 2, "MODEL",
+          text_color=color.white, text_size=size.small,
+          text_halign=text.align_left)
+     table.cell(truthPanel, 1, 2, i_model,
+          text_color=color.white, text_size=size.small,
+          text_halign=text.align_center)
+
+     // Row 3 — STATE ID
+     table.cell(truthPanel, 0, 3, "STATE ID",
+          text_color=color.white, text_size=size.tiny,
+          text_halign=text.align_left)
+     table.cell(truthPanel, 1, 3, state_id,
+          text_color=color.yellow, text_size=size.tiny,
+          text_halign=text.align_center)
+
+     // Row 4 — VALID UNTIL
+     table.cell(truthPanel, 0, 4, "VALID UNTIL",
+          text_color=color.white, text_size=size.tiny,
+          text_halign=text.align_left)
+     table.cell(truthPanel, 1, 4, valid_str,
+          text_color=color.white, text_size=size.tiny,
+          text_halign=text.align_center)
+     
+     // Row 5 — EMA Values
+     table.cell(truthPanel, 0, 5, "EMA(8)/EMA(21)",
+          text_color=color.white, text_size=size.tiny,
+          text_halign=text.align_left)
+     ema_str = str.tostring(ema_fast, '#.#####') + "/" + str.tostring(ema_slow, '#.#####')
+     table.cell(truthPanel, 1, 5, ema_str,
+          text_color=color.gray, text_size=size.tiny,
+          text_halign=text.align_center)
+
+// ─── BIAS BACKGROUND ──────────────────────────────────────────────────────────
+bgcolor(bias_long ? color.new(color.lime, 96) : color.new(color.red, 96), title="Bias Background")
