@@ -1,370 +1,232 @@
 //@version=6
 // =============================================================================
-// CEREBUS Symmetry Trap v5.0 — Atomic Dynamic Engine
-// Confirmed signals only (barstate.isconfirmed) — no repainting
-// Density zone box draws on anchor fire — persists in history
+// CEREBUS Symmetry Trap v5 — Atomic Engine (EUR/USD)
+// Marks every atomic impulse (10p+), shows density zone + entry per impulse
+// Multiple setups per day — no Asian H/L breakout requirement
 // =============================================================================
 indicator("CEREBUS Symmetry Trap v5", overlay=true,
      max_lines_count=500, max_boxes_count=200, max_labels_count=500)
 
-var string GRP_SESS = "Session (EST Times)"
-var string GRP_FILT = "Filters"
-var string GRP_DISP = "Display"
+i_tz          = input.string("America/New_York", "Timezone", options=["America/New_York","UTC","Europe/London"])
+i_hard_exit_h = input.int(12, "Hard Exit Hour (EST)", minval=10, maxval=17)
+i_show_grid   = input.bool(true, "Show Atomic Grid")
+i_show_zones  = input.bool(true, "Show Density Zones")
+i_show_imp    = input.bool(true, "Show Impulse Markers")
+i_show_entry  = input.bool(true, "Show Entry Signals")
+i_show_panel  = input.bool(true, "Show Truth Panel")
 
-i_tz           = input.string("America/New_York", "Timezone", group=GRP_SESS, options=["America/New_York","UTC","Europe/London"])
-i_hard_exit_h  = input.int(12, "Hard Exit Hour (EST)", minval=10, maxval=17, group=GRP_SESS)
-i_fde_target   = input.float(50.0, "FDE Target ($)", minval=10, group=GRP_SESS)
-i_show_grid    = input.bool(true, "Show Atomic Grid",   group=GRP_DISP)
-i_show_zones   = input.bool(true, "Show Density Zones", group=GRP_DISP)
-i_show_signals = input.bool(true, "Show Entry Signals", group=GRP_DISP)
-i_show_panel   = input.bool(true, "Show Truth Panel",   group=GRP_DISP)
-i_show_anchors = input.bool(true, "Show Anchor Labels", group=GRP_DISP)
-i_thursday     = input.bool(true, "Thursday Rule",      group=GRP_FILT)
-i_overfill     = input.bool(true, "Overfilled Filter",  group=GRP_FILT)
+pip = 0.0001
 
-MIN_BODY_PIPS = 4.5
-_sym    = syminfo.ticker
-_is_jpy = str.contains(_sym, "JPY")
-_is_idx = str.contains(_sym, "US500") or str.contains(_sym, "SPX")
-pip      = _is_idx ? 1.0 : _is_jpy ? 0.01 : 0.0001
-min_body = MIN_BODY_PIPS * pip
-
-_eu = str.contains(_sym, "EURUSD")
-_gb = str.contains(_sym, "GBPUSD")
-_uc = str.contains(_sym, "USDCHF")
-_uj = str.contains(_sym, "USDJPY")
-_au = str.contains(_sym, "AUDUSD")
-_nu = str.contains(_sym, "NZDUSD")
-
-tier1_max_p = _eu?20 : _gb?24 : _uc?19 : _uj?28 : _au?22 : _nu?25 : 20
-tier2_max_p = _eu?30 : _gb?34 : _uc?29 : _uj?42 : _au?33 : _nu?36 : 30
-nogo_p      = _eu?45 : _gb?55 : _uc?50 : _uj?65 : _au?52 : _nu?55 : 45
-trig_t1_p   = _eu?12 : _gb?14 : _uc?11 : _uj?16 : _au?13 : _nu?15 : 12
-trig_t2_p   = _eu?15 : _gb?18 : _uc?15 : _uj?22 : _au?17 : _nu?20 : 15
-trig_t3_p   = _eu?19 : _gb?23 : _uc?20 : _uj?29 : _au?22 : _nu?26 : 19
-dz_min_t1_p = _eu? 8 : _gb?13 : _uc?10 : _uj?15 : _au?12 : _nu?14 :  8
-dz_max_t1_p = _eu?12 : _gb?15 : _uc?12 : _uj?17 : _au?14 : _nu?16 : 12
-dz_min_t2_p = _eu?10 : _gb?17 : _uc?14 : _uj?21 : _au?16 : _nu?19 : 10
-dz_max_t2_p = _eu?14 : _gb?19 : _uc?16 : _uj?23 : _au?18 : _nu?21 : 14
-dz_min_t3_p = _eu?13 : _gb?22 : _uc?19 : _uj?28 : _au?21 : _nu?25 : 13
-dz_max_t3_p = _eu?17 : _gb?24 : _uc?21 : _uj?30 : _au?23 : _nu?27 : 17
-aleg_t1_p   = _eu?10 : _gb?14 : _uc?11 : _uj?14 : _au?13 : _nu?15 : 10
-aleg_t2_p   = _eu?14 : _gb?18 : _uc?15 : _uj?22 : _au?17 : _nu?20 : 14
-aleg_t3_p   = _eu?18 : _gb?23 : _uc?20 : _uj?29 : _au?22 : _nu?26 : 18
-
-tier1_max = tier1_max_p * pip
-tier2_max = tier2_max_p * pip
-nogo_max  = nogo_p * pip
-
+// Asian range + tier (visual reference + parameter selection)
 asian_sess    = "1900-0300"
-bias_sess     = "0300-0900"
 in_asian      = timeframe.isintraday and not na(time(timeframe.period, asian_sess, i_tz))
-in_bias       = timeframe.isintraday and not na(time(timeframe.period, bias_sess, i_tz))
-in_hard_exit  = hour(time, i_tz) >= i_hard_exit_h
 asian_started = in_asian and not in_asian[1]
 asian_ended   = not in_asian and in_asian[1]
-bias_started  = in_bias and not in_bias[1]
 
-var float asian_hi    = na
-var float asian_lo    = na
-var float locked_hi   = na
-var float locked_lo   = na
-var float asian_range = na
-var int   sess_tier   = 0
-var float sess_trig   = na
-var float sess_dz_min = na
-var float sess_dz_max = na
-var float sess_aleg   = na
-var bool  sess_nogo   = false
-var bool  sess_ready  = false
+var float ar_hi   = na
+var float ar_lo   = na
+var float ar_pips = na
+var int   tier    = 1
 
 if asian_started
-    asian_hi   := high
-    asian_lo   := low
-    sess_ready := false
-    sess_nogo  := false
+    ar_hi := high
+    ar_lo := low
 
 if in_asian and not asian_started
-    asian_hi := math.max(asian_hi, high)
-    asian_lo := math.min(asian_lo, low)
+    ar_hi := math.max(ar_hi, high)
+    ar_lo := math.min(ar_lo, low)
 
-if asian_ended or (bias_started and not sess_ready)
-    locked_hi   := asian_hi
-    locked_lo   := asian_lo
-    asian_range := locked_hi - locked_lo
-    if asian_range > nogo_max
-        sess_tier := 0
-        sess_nogo := true
-    else if asian_range <= tier1_max
-        sess_tier   := 1
-        sess_trig   := trig_t1_p * pip
-        sess_dz_min := dz_min_t1_p * pip
-        sess_dz_max := dz_max_t1_p * pip
-        sess_aleg   := aleg_t1_p * pip
-    else if asian_range <= tier2_max
-        sess_tier   := 2
-        sess_trig   := trig_t2_p * pip
-        sess_dz_min := dz_min_t2_p * pip
-        sess_dz_max := dz_max_t2_p * pip
-        sess_aleg   := aleg_t2_p * pip
-    else
-        sess_tier   := 3
-        sess_trig   := trig_t3_p * pip
-        sess_dz_min := dz_min_t3_p * pip
-        sess_dz_max := dz_max_t3_p * pip
-        sess_aleg   := aleg_t3_p * pip
-    sess_ready := true
+if asian_ended
+    ar_pips := (ar_hi - ar_lo) / pip
+    tier    := ar_pips <= 20 ? 1 : ar_pips <= 30 ? 2 : ar_pips <= 45 ? 3 : 0
 
-fip_sess      = "0300-0400"
-in_fip        = timeframe.isintraday and not na(time(timeframe.period, fip_sess, i_tz))
-var bool fip_checked = false
-candle_body   = math.abs(close - open)
-early_range_p = na(locked_hi) or na(locked_lo) ? 0.0 : (locked_hi - locked_lo) / pip
+// EUR tier parameters
+// T1 (<20p): atom=10p  dz=8-12p  aleg=10p
+// T2 (20-30p): atom=12p  dz=10-14p  aleg=14p
+// T3 (30-45p): atom=15p  dz=13-17p  aleg=18p
+atomic_pips = tier == 1 ? 10.0 : tier == 2 ? 12.0 : tier == 3 ? 15.0 : 10.0
+dz_min_pips = tier == 1 ?  8.0 : tier == 2 ? 10.0 : tier == 3 ? 13.0 :  8.0
+dz_max_pips = tier == 1 ? 12.0 : tier == 2 ? 14.0 : tier == 3 ? 17.0 : 12.0
+aleg_pips   = tier == 1 ? 10.0 : tier == 2 ? 14.0 : tier == 3 ? 18.0 : 10.0
 
-if asian_started or bias_started
-    fip_checked := false
+atomic = atomic_pips * pip
+dz_min = dz_min_pips * pip
+dz_max = dz_max_pips * pip
+aleg   = aleg_pips   * pip
 
-if in_fip and sess_ready and not fip_checked and not sess_nogo
-    if early_range_p < 10 and candle_body >= 12 * pip
-        sess_tier   := 2
-        sess_trig   := trig_t2_p * pip
-        sess_dz_min := dz_min_t2_p * pip
-        sess_dz_max := dz_max_t2_p * pip
-        sess_aleg   := aleg_t2_p * pip
-        fip_checked := true
-    else if early_range_p < 15 and candle_body >= 18 * pip
-        sess_tier   := 3
-        sess_trig   := trig_t3_p * pip
-        sess_dz_min := dz_min_t3_p * pip
-        sess_dz_max := dz_max_t3_p * pip
-        sess_aleg   := aleg_t3_p * pip
-        fip_checked := true
-    else if early_range_p < 20 and candle_body >= 25 * pip
-        sess_nogo   := true
-        fip_checked := true
+cb       = math.abs(close - open)
+min_body = 4.5 * pip
 
-daily_hi_sf   = ta.highest(high, 108)
-daily_lo_sf   = ta.lowest(low, 108)
-daily_range_p = (daily_hi_sf - daily_lo_sf) / pip
-overfill_thr  = sess_tier == 3 ? 50.0 : 40.0
-in_ofill_sess = not na(time(timeframe.period, "0900-1200", i_tz))
-overfilled    = i_overfill and sess_ready and in_ofill_sess and daily_range_p > overfill_thr
+// Atomic impulse: any candle with body >= atomic unit
+impulse_bull = cb >= atomic and close > open and barstate.isconfirmed
+impulse_bear = cb >= atomic and close < open and barstate.isconfirmed
 
-var int   locked_dir   = 0
-var float anchor_px    = na
-var int   anchor_bar   = na
-var bool  bias_locked  = false
-var float peak_price   = na
-var bool  false_anchor = false
+// Impulse state (resets on every new impulse — fresh DZ each time)
+var int   imp_dir    = 0
+var float imp_peak   = na
+var int   imp_bar    = na
+var bool  imp_active = false
 
-if asian_started or bias_started
-    locked_dir   := 0
-    bias_locked  := false
-    anchor_px    := na
-    anchor_bar   := na
-    peak_price   := na
-    false_anchor := false
+if impulse_bull
+    imp_dir    := 1
+    imp_peak   := high
+    imp_bar    := bar_index
+    imp_active := true
 
-is_thursday = dayofweek == dayofweek.thursday
+if impulse_bear
+    imp_dir    := -1
+    imp_peak   := low
+    imp_bar    := bar_index
+    imp_active := true
 
-_bull_base  = sess_ready and not sess_nogo and not bias_locked and in_bias and not overfilled
-_bear_base  = sess_ready and not sess_nogo and not bias_locked and in_bias and not overfilled
-bull_anchor = _bull_base and close > locked_hi and (close - locked_hi) >= sess_trig and candle_body >= min_body and close > open and barstate.isconfirmed
-bear_anchor = _bear_base and close < locked_lo and (locked_lo - close) >= sess_trig and candle_body >= min_body and close < open and barstate.isconfirmed
+if imp_active and imp_dir == 1
+    imp_peak := math.max(imp_peak, high)
+if imp_active and imp_dir == -1
+    imp_peak := math.min(imp_peak, low)
 
-if bull_anchor
-    locked_dir  := 1
-    bias_locked := true
-    anchor_px   := close
-    anchor_bar  := bar_index
-    peak_price  := high
+// Density zone: pullback depth from impulse peak
+pb    = imp_active and not na(imp_peak) ? (imp_dir == 1 ? (imp_peak - low) / pip : imp_dir == -1 ? (high - imp_peak) / pip : 0.0) : 0.0
+in_dz = imp_active and pb >= dz_min_pips and pb <= dz_max_pips
 
-if bear_anchor
-    locked_dir  := -1
-    bias_locked := true
-    anchor_px   := close
-    anchor_bar  := bar_index
-    peak_price  := low
+// Entry: opposite candle (body >= 4.5p) closes in density zone
+// Long: bull impulse -> pullback -> bullish candle in DZ -> ENTER
+// Short: bear impulse -> pullback -> bearish candle in DZ -> ENTER
+var bool  in_trade  = false
+var int   trade_dir = 0
+var float entry_px  = na
+var float aleg_px   = na
+var int   entry_bar = na
 
-if bias_locked and locked_dir == 1
-    peak_price := math.max(peak_price, high)
-if bias_locked and locked_dir == -1
-    peak_price := math.min(peak_price, low)
-
-if bias_locked and is_thursday and i_thursday and not na(anchor_bar)
-    if locked_dir == 1 and close < locked_hi and (bar_index - anchor_bar) <= 6
-        false_anchor := true
-        bias_locked  := false
-        locked_dir   := 0
-    if locked_dir == -1 and close > locked_lo and (bar_index - anchor_bar) <= 6
-        false_anchor := true
-        bias_locked  := false
-        locked_dir   := 0
-
-pullback_depth  = bias_locked and not na(peak_price) ? (locked_dir == 1 ? (peak_price - low) / pip : locked_dir == -1 ? (high - peak_price) / pip : 0.0) : 0.0
-in_density_zone = bias_locked and pullback_depth >= (sess_dz_min / pip) and pullback_depth <= (sess_dz_max / pip)
-
-var int   entries_sess = 0
-var bool  in_trade     = false
-var int   trade_dir    = 0
-var float entry_px     = na
-var float aleg_px      = na
-var int   entry_bar    = na
-
-if asian_started
-    entries_sess := 0
-    in_trade     := false
-    trade_dir    := 0
-
-long_entry  = bias_locked and locked_dir == 1  and in_density_zone and close > open and candle_body >= min_body and not in_trade and entries_sess < 2 and in_bias and barstate.isconfirmed
-short_entry = bias_locked and locked_dir == -1 and in_density_zone and close < open and candle_body >= min_body and not in_trade and entries_sess < 2 and in_bias and barstate.isconfirmed
-
-if long_entry
-    in_trade     := true
-    trade_dir    := 1
-    entry_px     := close
-    aleg_px      := close + sess_aleg
-    entry_bar    := bar_index
-    entries_sess += 1
-
-if short_entry
-    in_trade     := true
-    trade_dir    := -1
-    entry_px     := close
-    aleg_px      := close - sess_aleg
-    entry_bar    := bar_index
-    entries_sess += 1
-
-a_hit_l          = in_trade and trade_dir == 1  and high >= aleg_px
-a_hit_s          = in_trade and trade_dir == -1 and low  <= aleg_px
-hard_exit_sig    = in_trade and in_hard_exit and barstate.isconfirmed
-bars_since_entry = na(entry_bar) ? 0 : bar_index - entry_bar
-ews_window       = bars_since_entry >= 6 and bars_since_entry <= 12
-ews_l = in_trade and trade_dir == 1  and ews_window and close < open and candle_body >= min_body
-ews_s = in_trade and trade_dir == -1 and ews_window and close > open and candle_body >= min_body
-
-if a_hit_l or a_hit_s or ews_l or ews_s or hard_exit_sig
+// New impulse cancels active trade (fresh setup)
+if impulse_bull or impulse_bear
     in_trade  := false
     trade_dir := 0
 
-current_side = locked_dir == 1 ? "BUY" : locked_dir == -1 ? "SELL" : "FLAT"
-side_col     = locked_dir == 1 ? color.new(color.lime,0) : locked_dir == -1 ? color.new(color.red,0) : color.new(color.gray,0)
-tier_str     = sess_tier == 0 ? "NO-GO" : "T" + str.tostring(sess_tier)
-tier_col     = sess_tier == 1 ? color.lime : sess_tier == 2 ? color.yellow : sess_tier == 3 ? color.orange : color.red
-range_str    = na(asian_range) ? "--" : str.tostring(math.round(asian_range / pip)) + "p"
-aleg_str     = na(sess_aleg)   ? "--" : str.tostring(math.round(sess_aleg   / pip)) + "p"
-_date        = str.format("{0,date,yyyyMMdd}", time)
-_hm          = str.format("{0,date,HHmm}", time)
-state_id     = _sym + "_" + _date + "_" + _hm + "_" + current_side + "_v5"
-valid_str    = str.format("{0,date,HH:mm}", time_close)
-
-// ── VISUALS ───────────────────────────────────────────────────────────────────
-
-// Anchor markers + labels
-plotshape(i_show_anchors and bull_anchor, "Bull Anchor", location=location.belowbar, style=shape.diamond, color=color.new(color.aqua, 0), size=size.small)
-plotshape(i_show_anchors and bear_anchor, "Bear Anchor", location=location.abovebar, style=shape.diamond, color=color.new(color.fuchsia, 0), size=size.small)
-
-if i_show_anchors and bull_anchor
-    imp_p = math.round((close - locked_hi) / pip)
-    dz_lo = sess_tier == 1 ? dz_min_t1_p : sess_tier == 2 ? dz_min_t2_p : dz_min_t3_p
-    dz_hi = sess_tier == 1 ? dz_max_t1_p : sess_tier == 2 ? dz_max_t2_p : dz_max_t3_p
-    label.new(bar_index, low, text="IMPULSE " + str.tostring(imp_p) + "p  T" + str.tostring(sess_tier) + "  DZ:" + str.tostring(dz_lo) + "-" + str.tostring(dz_hi) + "p", style=label.style_label_up, color=color.new(color.aqua, 20), textcolor=color.white, size=size.small)
-
-if i_show_anchors and bear_anchor
-    imp_p = math.round((locked_lo - close) / pip)
-    dz_lo = sess_tier == 1 ? dz_min_t1_p : sess_tier == 2 ? dz_min_t2_p : dz_min_t3_p
-    dz_hi = sess_tier == 1 ? dz_max_t1_p : sess_tier == 2 ? dz_max_t2_p : dz_max_t3_p
-    label.new(bar_index, high, text="IMPULSE " + str.tostring(imp_p) + "p  T" + str.tostring(sess_tier) + "  DZ:" + str.tostring(dz_lo) + "-" + str.tostring(dz_hi) + "p", style=label.style_label_down, color=color.new(color.fuchsia, 20), textcolor=color.white, size=size.small)
-
-// Rebalance zone background (when price is inside density zone)
-bgcolor(in_density_zone and locked_dir == 1  ? color.new(color.lime, 85) : na, title="Rebalance Zone BG Long")
-bgcolor(in_density_zone and locked_dir == -1 ? color.new(color.red,  85) : na, title="Rebalance Zone BG Short")
-
-// Entry signals
-plotshape(i_show_signals and long_entry,  "Long Entry",  location=location.belowbar, style=shape.triangleup,   color=color.new(color.lime,0), size=size.large)
-plotshape(i_show_signals and short_entry, "Short Entry", location=location.abovebar, style=shape.triangledown, color=color.new(color.red,0),  size=size.large)
-plotshape(i_show_signals and (ews_l or ews_s), "EWS Exit", location=location.belowbar, style=shape.xcross, color=color.new(color.orange,0), size=size.normal)
-plotshape(i_show_signals and (a_hit_l or a_hit_s), "A-Leg Hit", location=location.abovebar, style=shape.flag, color=color.new(color.yellow,0), size=size.small)
+long_entry  = imp_active and imp_dir == 1  and in_dz and close > open and cb >= min_body and not in_trade and barstate.isconfirmed
+short_entry = imp_active and imp_dir == -1 and in_dz and close < open and cb >= min_body and not in_trade and barstate.isconfirmed
 
 if long_entry
-    label.new(bar_index, low, text="LONG  " + str.tostring(math.round(sess_aleg / pip)) + "p", style=label.style_label_up, color=color.new(color.lime, 10), textcolor=color.black, size=size.normal)
+    in_trade  := true
+    trade_dir := 1
+    entry_px  := close
+    aleg_px   := close + aleg
+    entry_bar := bar_index
+
 if short_entry
-    label.new(bar_index, high, text="SHORT  " + str.tostring(math.round(sess_aleg / pip)) + "p", style=label.style_label_down, color=color.new(color.red, 10), textcolor=color.white, size=size.normal)
+    in_trade  := true
+    trade_dir := -1
+    entry_px  := close
+    aleg_px   := close - aleg
+    entry_bar := bar_index
 
-// Asian range lines
-plot(sess_ready ? locked_hi : na, "Asian High", color=color.new(color.blue,30), linewidth=2, style=plot.style_linebr)
-plot(sess_ready ? locked_lo : na, "Asian Low",  color=color.new(color.blue,30), linewidth=2, style=plot.style_linebr)
-plot(sess_ready ? (locked_hi + locked_lo) * 0.5 : na, "Asian Mid", color=color.new(color.blue,60), linewidth=1, style=plot.style_linebr)
+a_hit_l = in_trade and trade_dir == 1  and high >= aleg_px
+a_hit_s = in_trade and trade_dir == -1 and low  <= aleg_px
 
-// Atomic grid
-if i_show_grid and sess_ready and not sess_nogo and barstate.islast and not na(sess_aleg)
+bse     = na(entry_bar) ? 0 : bar_index - entry_bar
+ews_win = bse >= 6 and bse <= 12
+ews_l   = in_trade and trade_dir == 1  and ews_win and close < open and cb >= min_body
+ews_s   = in_trade and trade_dir == -1 and ews_win and close > open and cb >= min_body
+
+in_hard = hour(time, i_tz) >= i_hard_exit_h
+hard_x  = in_trade and in_hard and barstate.isconfirmed
+
+if a_hit_l or a_hit_s or ews_l or ews_s or hard_x
+    in_trade  := false
+    trade_dir := 0
+
+// Panel strings
+bias_str  = imp_dir == 1 ? "BUY" : imp_dir == -1 ? "SELL" : "FLAT"
+bias_col  = imp_dir == 1 ? color.lime : imp_dir == -1 ? color.red : color.gray
+tier_str  = tier == 0 ? "N/A" : "T" + str.tostring(tier)
+tier_col  = tier == 1 ? color.lime : tier == 2 ? color.yellow : tier == 3 ? color.orange : color.gray
+range_str = na(ar_pips) ? "--" : str.tostring(math.round(ar_pips)) + "p"
+atom_str  = str.tostring(atomic_pips, "#") + "p"
+aleg_str2 = str.tostring(aleg_pips, "#") + "p"
+_dt       = str.format("{0,date,yyyyMMdd}", time)
+_hm       = str.format("{0,date,HHmm}", time)
+state_id  = "EURUSD_" + _dt + "_" + _hm + "_" + bias_str + "_v5"
+valid_str = str.format("{0,date,HH:mm}", time_close)
+
+// VISUALS
+plotshape(i_show_imp and impulse_bull, "Bull Impulse", location=location.belowbar, style=shape.diamond, color=color.new(color.aqua,0), size=size.small)
+plotshape(i_show_imp and impulse_bear, "Bear Impulse", location=location.abovebar, style=shape.diamond, color=color.new(color.fuchsia,0), size=size.small)
+
+if i_show_imp and impulse_bull
+    label.new(bar_index, low, text=str.tostring(math.round(cb/pip)) + "p  DZ:" + str.tostring(dz_min_pips,"#") + "-" + str.tostring(dz_max_pips,"#") + "p", style=label.style_label_up, color=color.new(color.aqua,20), textcolor=color.white, size=size.small)
+if i_show_imp and impulse_bear
+    label.new(bar_index, high, text=str.tostring(math.round(cb/pip)) + "p  DZ:" + str.tostring(dz_min_pips,"#") + "-" + str.tostring(dz_max_pips,"#") + "p", style=label.style_label_down, color=color.new(color.fuchsia,20), textcolor=color.white, size=size.small)
+
+bgcolor(in_dz and imp_dir == 1  ? color.new(color.lime,85) : na, title="DZ Long")
+bgcolor(in_dz and imp_dir == -1 ? color.new(color.red,85)  : na, title="DZ Short")
+
+plotshape(i_show_entry and long_entry,  "Long Entry",  location=location.belowbar, style=shape.triangleup,   color=color.new(color.lime,0), size=size.large)
+plotshape(i_show_entry and short_entry, "Short Entry", location=location.abovebar, style=shape.triangledown, color=color.new(color.red,0),  size=size.large)
+plotshape(i_show_entry and (ews_l or ews_s), "EWS Exit", location=location.belowbar, style=shape.xcross, color=color.new(color.orange,0), size=size.normal)
+plotshape(i_show_entry and (a_hit_l or a_hit_s), "A-Leg Hit", location=location.abovebar, style=shape.flag, color=color.new(color.yellow,0), size=size.small)
+
+if long_entry
+    label.new(bar_index, low, text="LONG " + str.tostring(aleg_pips,"#") + "p", style=label.style_label_up, color=color.new(color.lime,10), textcolor=color.black, size=size.normal)
+if short_entry
+    label.new(bar_index, high, text="SHORT " + str.tostring(aleg_pips,"#") + "p", style=label.style_label_down, color=color.new(color.red,10), textcolor=color.white, size=size.normal)
+
+plot(not na(ar_hi) ? ar_hi : na, "Asian High", color=color.new(color.blue,30), linewidth=2, style=plot.style_linebr)
+plot(not na(ar_lo) ? ar_lo : na, "Asian Low",  color=color.new(color.blue,30), linewidth=2, style=plot.style_linebr)
+plot(not na(ar_hi) and not na(ar_lo) ? (ar_hi+ar_lo)*0.5 : na, "Asian Mid", color=color.new(color.blue,60), linewidth=1, style=plot.style_linebr)
+
+if i_show_grid and not na(ar_hi) and not na(atomic) and barstate.islast
     for i = 1 to 8
-        line.new(bar_index - 300, locked_hi + i * sess_aleg, bar_index + 60, locked_hi + i * sess_aleg, color=color.new(color.teal, 35), style=line.style_dashed, width=1)
-        line.new(bar_index - 300, locked_lo - i * sess_aleg, bar_index + 60, locked_lo - i * sess_aleg, color=color.new(color.teal, 35), style=line.style_dashed, width=1)
+        line.new(bar_index-300, ar_hi+i*atomic, bar_index+60, ar_hi+i*atomic, color=color.new(color.teal,35), style=line.style_dashed, width=1)
+        line.new(bar_index-300, ar_lo-i*atomic, bar_index+60, ar_lo-i*atomic, color=color.new(color.teal,35), style=line.style_dashed, width=1)
 
-// Density zone box — drawn on anchor fire, persists in history
-// While bias locked: tracks peak and extends right edge live
-var box bull_box = na
-var box bear_box = na
+var box dz_box = na
 
-if i_show_zones and bull_anchor
-    if not na(bull_box)
-        box.delete(bull_box)
-    bull_box := box.new(bar_index, high - sess_dz_min, bar_index + 80, high - sess_dz_max, bgcolor=color.new(color.lime, 70), border_color=color.new(color.lime, 0), border_width=2, border_style=line.style_solid)
+if i_show_zones and impulse_bull
+    if not na(dz_box)
+        box.delete(dz_box)
+    dz_box := box.new(bar_index, high-dz_min, bar_index+80, high-dz_max, bgcolor=color.new(color.lime,70), border_color=color.new(color.lime,0), border_width=2, border_style=line.style_solid)
 
-if i_show_zones and bear_anchor
-    if not na(bear_box)
-        box.delete(bear_box)
-    bear_box := box.new(bar_index, low + sess_dz_max, bar_index + 80, low + sess_dz_min, bgcolor=color.new(color.red, 70), border_color=color.new(color.red, 0), border_width=2, border_style=line.style_solid)
+if i_show_zones and impulse_bear
+    if not na(dz_box)
+        box.delete(dz_box)
+    dz_box := box.new(bar_index, low+dz_max, bar_index+80, low+dz_min, bgcolor=color.new(color.red,70), border_color=color.new(color.red,0), border_width=2, border_style=line.style_solid)
 
-if i_show_zones and bias_locked and locked_dir == 1 and not na(bull_box) and barstate.islast
-    box.set_top(bull_box, peak_price - sess_dz_min)
-    box.set_bottom(bull_box, peak_price - sess_dz_max)
-    box.set_right(bull_box, bar_index + 30)
+if i_show_zones and imp_active and not na(dz_box) and barstate.islast
+    if imp_dir == 1
+        box.set_top(dz_box, imp_peak-dz_min)
+        box.set_bottom(dz_box, imp_peak-dz_max)
+        box.set_right(dz_box, bar_index+30)
+    if imp_dir == -1
+        box.set_top(dz_box, imp_peak+dz_max)
+        box.set_bottom(dz_box, imp_peak+dz_min)
+        box.set_right(dz_box, bar_index+30)
 
-if i_show_zones and bias_locked and locked_dir == -1 and not na(bear_box) and barstate.islast
-    box.set_top(bear_box, peak_price + sess_dz_max)
-    box.set_bottom(bear_box, peak_price + sess_dz_min)
-    box.set_right(bear_box, bar_index + 30)
-
-// A-leg target line (only while in trade)
 var line aleg_line = na
 if in_trade and not na(entry_bar) and barstate.islast
     if not na(aleg_line)
         line.delete(aleg_line)
-    aleg_line := line.new(entry_bar, aleg_px, bar_index + 30, aleg_px, color=color.new(color.yellow, 0), style=line.style_dashed, width=2)
+    aleg_line := line.new(entry_bar, aleg_px, bar_index+30, aleg_px, color=color.new(color.yellow,0), style=line.style_dashed, width=2)
 
-// Truth panel
-var table tp = table.new(position.top_right, 2, 8, bgcolor=color.new(color.black, 8), border_width=1, border_color=color.new(color.gray, 50), frame_width=1, frame_color=color.new(color.gray, 30))
+var table tp = table.new(position.top_right, 2, 8, bgcolor=color.new(color.black,8), border_width=1, border_color=color.new(color.gray,50), frame_width=1, frame_color=color.new(color.gray,30))
 
 if i_show_panel and barstate.islast
-    table.cell(tp, 0, 0, "CEREBUS v5",      text_color=color.new(color.white,0),  text_size=size.small,  bgcolor=color.new(color.navy,15), text_halign=text.align_center)
-    table.cell(tp, 1, 0, "TRAP",            text_color=color.new(color.orange,0), text_size=size.small,  bgcolor=color.new(color.navy,15), text_halign=text.align_center)
-    table.cell(tp, 0, 1, "SIDE",            text_color=color.new(color.white,0),  text_size=size.normal, text_halign=text.align_left)
-    table.cell(tp, 1, 1, current_side,      text_color=side_col,                  text_size=size.normal, text_halign=text.align_center)
-    table.cell(tp, 0, 2, "TIER",            text_color=color.new(color.white,0),  text_size=size.small,  text_halign=text.align_left)
-    table.cell(tp, 1, 2, tier_str,          text_color=tier_col,                  text_size=size.small,  text_halign=text.align_center)
-    table.cell(tp, 0, 3, "RANGE",           text_color=color.new(color.white,0),  text_size=size.small,  text_halign=text.align_left)
-    table.cell(tp, 1, 3, range_str,         text_color=color.new(color.silver,0), text_size=size.small,  text_halign=text.align_center)
-    table.cell(tp, 0, 4, "A-LEG",           text_color=color.new(color.white,0),  text_size=size.small,  text_halign=text.align_left)
-    table.cell(tp, 1, 4, aleg_str,          text_color=color.new(color.aqua,0),   text_size=size.small,  text_halign=text.align_center)
-    table.cell(tp, 0, 5, "MODEL",           text_color=color.new(color.white,0),  text_size=size.small,  text_halign=text.align_left)
-    table.cell(tp, 1, 5, "CEREBUS_IMPULSE", text_color=color.new(color.white,0),  text_size=size.small,  text_halign=text.align_center)
-    table.cell(tp, 0, 6, "STATE ID",        text_color=color.new(color.white,0),  text_size=size.tiny,   text_halign=text.align_left)
-    table.cell(tp, 1, 6, state_id,          text_color=color.new(color.yellow,0), text_size=size.tiny,   text_halign=text.align_center)
-    table.cell(tp, 0, 7, "VALID UNTIL",     text_color=color.new(color.white,0),  text_size=size.tiny,   text_halign=text.align_left)
-    table.cell(tp, 1, 7, valid_str,         text_color=color.new(color.white,0),  text_size=size.tiny,   text_halign=text.align_center)
+    table.cell(tp,0,0,"CEREBUS v5",   text_color=color.white,  text_size=size.small,  bgcolor=color.new(color.navy,15), text_halign=text.align_center)
+    table.cell(tp,1,0,"TRAP",         text_color=color.orange, text_size=size.small,  bgcolor=color.new(color.navy,15), text_halign=text.align_center)
+    table.cell(tp,0,1,"SIDE",         text_color=color.white,  text_size=size.normal, text_halign=text.align_left)
+    table.cell(tp,1,1,bias_str,       text_color=bias_col,     text_size=size.normal, text_halign=text.align_center)
+    table.cell(tp,0,2,"TIER",         text_color=color.white,  text_size=size.small,  text_halign=text.align_left)
+    table.cell(tp,1,2,tier_str,       text_color=tier_col,     text_size=size.small,  text_halign=text.align_center)
+    table.cell(tp,0,3,"RANGE",        text_color=color.white,  text_size=size.small,  text_halign=text.align_left)
+    table.cell(tp,1,3,range_str,      text_color=color.silver, text_size=size.small,  text_halign=text.align_center)
+    table.cell(tp,0,4,"ATOM",         text_color=color.white,  text_size=size.small,  text_halign=text.align_left)
+    table.cell(tp,1,4,atom_str,       text_color=color.aqua,   text_size=size.small,  text_halign=text.align_center)
+    table.cell(tp,0,5,"A-LEG",        text_color=color.white,  text_size=size.small,  text_halign=text.align_left)
+    table.cell(tp,1,5,aleg_str2,      text_color=color.aqua,   text_size=size.small,  text_halign=text.align_center)
+    table.cell(tp,0,6,"STATE ID",     text_color=color.white,  text_size=size.tiny,   text_halign=text.align_left)
+    table.cell(tp,1,6,state_id,       text_color=color.yellow, text_size=size.tiny,   text_halign=text.align_center)
+    table.cell(tp,0,7,"VALID UNTIL",  text_color=color.white,  text_size=size.tiny,   text_halign=text.align_left)
+    table.cell(tp,1,7,valid_str,      text_color=color.white,  text_size=size.tiny,   text_halign=text.align_center)
 
-// Alerts — all barstate.isconfirmed, no repainting
-// Paste webhook JSON in TradingView alert message:
-// LONG:  {"signal_id":"{{ticker}}_{{timenow}}_BUY","symbol":"{{ticker}}","action":"BUY","signal_type":"IMPULSE","strategy_name":"CEREBUS_IMPULSE","timestamp":"{{timenow}}","timeframe":"{{interval}}","price":{{close}},"session":"NY","state_id":"{{ticker}}_{{timenow}}_BUY"}
-// SHORT: {"signal_id":"{{ticker}}_{{timenow}}_SELL","symbol":"{{ticker}}","action":"SELL","signal_type":"IMPULSE","strategy_name":"CEREBUS_IMPULSE","timestamp":"{{timenow}}","timeframe":"{{interval}}","price":{{close}},"session":"NY","state_id":"{{ticker}}_{{timenow}}_SELL"}
-// EWS:   {"signal_id":"{{ticker}}_{{timenow}}_CLOSE","symbol":"{{ticker}}","action":"CLOSE","signal_type":"REBALANCE","strategy_name":"CEREBUS_REBALANCE","timestamp":"{{timenow}}","timeframe":"{{interval}}","price":{{close}},"session":"NY","state_id":"{{ticker}}_{{timenow}}_CLOSE"}
-
-alertcondition(long_entry,         "CEREBUS Long Entry",     "CEREBUS LONG | {{ticker}} | {{timenow}} | {{close}}")
-alertcondition(short_entry,        "CEREBUS Short Entry",    "CEREBUS SELL | {{ticker}} | {{timenow}} | {{close}}")
-alertcondition(ews_l or ews_s,     "CEREBUS EWS Exit",       "CEREBUS EWS | {{ticker}} | {{timenow}} | {{close}}")
-alertcondition(hard_exit_sig,      "CEREBUS Hard Exit 12PM", "CEREBUS HARD EXIT | {{ticker}} | {{timenow}} | {{close}}")
-alertcondition(a_hit_l or a_hit_s, "CEREBUS A-Leg Hit",      "CEREBUS ALEG | {{ticker}} | {{timenow}} | {{close}}")
-alertcondition(bull_anchor,        "CEREBUS Bull Anchor",    "CEREBUS ANCHOR LONG | {{ticker}} | {{timenow}}")
-alertcondition(bear_anchor,        "CEREBUS Bear Anchor",    "CEREBUS ANCHOR SHORT | {{ticker}} | {{timenow}}")
+alertcondition(long_entry,         "CEREBUS Long Entry",  "CEREBUS LONG | {{ticker}} | {{timenow}} | {{close}}")
+alertcondition(short_entry,        "CEREBUS Short Entry", "CEREBUS SELL | {{ticker}} | {{timenow}} | {{close}}")
+alertcondition(ews_l or ews_s,     "CEREBUS EWS Exit",    "CEREBUS EWS | {{ticker}} | {{timenow}} | {{close}}")
+alertcondition(a_hit_l or a_hit_s, "CEREBUS A-Leg Hit",   "CEREBUS ALEG | {{ticker}} | {{timenow}} | {{close}}")
