@@ -1,10 +1,8 @@
 //@version=6
 // =============================================================================
 // CEREBUS Symmetry Trap v5 — Atomic Engine EUR/USD
-// Single stateful loop. No body filters. Signal = move >= threshold + opp close.
-// swing_origin updates to rolling_extreme on each signal (reference update).
-// Rolling resets to bar.high/bar.low (not null/0).
-// 3 micro-adjustments: rolling reset, 3AM DZ recalc, structural invalidation.
+// Bug fix: overshoot invalidation prevents swing_dir getting stuck
+// When price blows through DZ without entry -> reset state -> new signals fire
 // =============================================================================
 indicator("CEREBUS Symmetry Trap v5", overlay=true,
      max_lines_count=500, max_boxes_count=200, max_labels_count=500)
@@ -97,11 +95,8 @@ if asian_ended and not tier_ok and not na(ar_hi) and not na(ar_lo)
 up_move_p   = not na(rolling_hi) and not na(swing_origin) ? (rolling_hi - swing_origin) / pip : 0.0
 down_move_p = not na(rolling_lo) and not na(swing_origin) ? (swing_origin - rolling_lo)  / pip : 0.0
 
-bear_sig   = swing_dir == 0 and up_move_p   >= MIN_P and close < open and barstate.isconfirmed
-bull_sig   = swing_dir == 0 and down_move_p >= MIN_P and close > open and barstate.isconfirmed
-
-struct_inv = swing_dir != 0 and barstate.isconfirmed and
-             ((swing_dir == -1 and close > dz_origin) or (swing_dir == 1 and close < dz_origin))
+bear_sig = swing_dir == 0 and up_move_p   >= MIN_P and close < open and barstate.isconfirmed
+bull_sig = swing_dir == 0 and down_move_p >= MIN_P and close > open and barstate.isconfirmed
 
 cur_atom = f_atom(working_tier) * pip
 dz_top   = swing_dir == -1 ? dz_origin - cur_atom * DZ_LO : swing_dir == 1 ? dz_origin + cur_atom * DZ_HI : na
@@ -112,9 +107,21 @@ in_dz = not na(dz_top) and not na(dz_bot) and close <= dz_top and close >= dz_bo
 long_entry  = swing_dir == -1 and in_dz and close > open and barstate.isconfirmed
 short_entry = swing_dir == 1  and in_dz and close < open and barstate.isconfirmed
 
-if struct_inv
-    swing_dir := 0
-    dz_dir    := 0
+// Invalidation 1 — reversal: price crosses back through swing_origin
+rev_long  = swing_dir == -1 and close > dz_origin
+rev_short = swing_dir == 1  and close < dz_origin
+reversal_inv = swing_dir != 0 and barstate.isconfirmed and (rev_long or rev_short)
+
+// Invalidation 2 — overshoot: price blew PAST DZ without entry (was root cause of stuck state)
+osh_long  = swing_dir == -1 and not na(dz_origin) and close < dz_origin - cur_atom * DZ_HI
+osh_short = swing_dir == 1  and not na(dz_origin) and close > dz_origin + cur_atom * DZ_HI
+overshoot_inv = swing_dir != 0 and barstate.isconfirmed and (osh_long or osh_short)
+
+reset_state = reversal_inv or overshoot_inv
+
+if reset_state
+    swing_dir      := 0
+    dz_dir         := 0
     swing_origin   := close
     swing_sbar     := bar_index
     swing_spx      := close
@@ -124,8 +131,8 @@ if struct_inv
     rolling_lo_bar := bar_index
 
 if long_entry
-    swing_dir := 0
-    dz_dir    := 0
+    swing_dir      := 0
+    dz_dir         := 0
     swing_origin   := close
     swing_sbar     := bar_index
     swing_spx      := close
@@ -135,8 +142,8 @@ if long_entry
     rolling_lo_bar := bar_index
 
 if short_entry
-    swing_dir := 0
-    dz_dir    := 0
+    swing_dir      := 0
+    dz_dir         := 0
     swing_origin   := close
     swing_sbar     := bar_index
     swing_spx      := close
