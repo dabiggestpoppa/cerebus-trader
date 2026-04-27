@@ -2,6 +2,7 @@
 // =============================================================================
 // CEREBUS Symmetry Trap v5.0 — Atomic Dynamic Engine
 // Confirmed signals only (barstate.isconfirmed) — no repainting
+// Density zone box draws on anchor fire — persists in history
 // =============================================================================
 indicator("CEREBUS Symmetry Trap v5", overlay=true,
      max_lines_count=500, max_boxes_count=200, max_labels_count=500)
@@ -35,25 +36,18 @@ _uj = str.contains(_sym, "USDJPY")
 _au = str.contains(_sym, "AUDUSD")
 _nu = str.contains(_sym, "NZDUSD")
 
-// Tier thresholds (Asian range pips)
 tier1_max_p = _eu?20 : _gb?24 : _uc?19 : _uj?28 : _au?22 : _nu?25 : 20
 tier2_max_p = _eu?30 : _gb?34 : _uc?29 : _uj?42 : _au?33 : _nu?36 : 30
 nogo_p      = _eu?45 : _gb?55 : _uc?50 : _uj?65 : _au?52 : _nu?55 : 45
-
-// Base trigger (anchor impulse must exceed this)
 trig_t1_p   = _eu?12 : _gb?14 : _uc?11 : _uj?16 : _au?13 : _nu?15 : 12
 trig_t2_p   = _eu?15 : _gb?18 : _uc?15 : _uj?22 : _au?17 : _nu?20 : 15
 trig_t3_p   = _eu?19 : _gb?23 : _uc?20 : _uj?29 : _au?22 : _nu?26 : 19
-
-// Density zone (pip pullback from peak)
 dz_min_t1_p = _eu? 8 : _gb?13 : _uc?10 : _uj?15 : _au?12 : _nu?14 :  8
 dz_max_t1_p = _eu?12 : _gb?15 : _uc?12 : _uj?17 : _au?14 : _nu?16 : 12
 dz_min_t2_p = _eu?10 : _gb?17 : _uc?14 : _uj?21 : _au?16 : _nu?19 : 10
 dz_max_t2_p = _eu?14 : _gb?19 : _uc?16 : _uj?23 : _au?18 : _nu?21 : 14
 dz_min_t3_p = _eu?13 : _gb?22 : _uc?19 : _uj?28 : _au?21 : _nu?25 : 13
 dz_max_t3_p = _eu?17 : _gb?24 : _uc?21 : _uj?30 : _au?23 : _nu?27 : 17
-
-// A-Leg atomic targets (pips from entry)
 aleg_t1_p   = _eu?10 : _gb?14 : _uc?11 : _uj?14 : _au?13 : _nu?15 : 10
 aleg_t2_p   = _eu?14 : _gb?18 : _uc?15 : _uj?22 : _au?17 : _nu?20 : 14
 aleg_t3_p   = _eu?18 : _gb?23 : _uc?20 : _uj?29 : _au?22 : _nu?26 : 18
@@ -121,7 +115,6 @@ if asian_ended or (bias_started and not sess_ready)
         sess_aleg   := aleg_t3_p * pip
     sess_ready := true
 
-// First Impulse Predictor (3-4 AM EST)
 fip_sess      = "0300-0400"
 in_fip        = timeframe.isintraday and not na(time(timeframe.period, fip_sess, i_tz))
 var bool fip_checked = false
@@ -150,7 +143,6 @@ if in_fip and sess_ready and not fip_checked and not sess_nogo
         sess_nogo   := true
         fip_checked := true
 
-// Overfilled filter — single line (no multi-line continuation)
 daily_hi_sf   = ta.highest(high, 108)
 daily_lo_sf   = ta.lowest(low, 108)
 daily_range_p = (daily_hi_sf - daily_lo_sf) / pip
@@ -158,7 +150,6 @@ overfill_thr  = sess_tier == 3 ? 50.0 : 40.0
 in_ofill_sess = not na(time(timeframe.period, "0900-1200", i_tz))
 overfilled    = i_overfill and sess_ready and in_ofill_sess and daily_range_p > overfill_thr
 
-// ── ANCHOR: BIAS LOCK ──────────────────────────────────────────────────────────
 var int   locked_dir   = 0
 var float anchor_px    = na
 var int   anchor_bar   = na
@@ -210,11 +201,9 @@ if bias_locked and is_thursday and i_thursday and not na(anchor_bar)
         bias_locked  := false
         locked_dir   := 0
 
-// ── DENSITY ZONE ──────────────────────────────────────────────────────────────
 pullback_depth  = bias_locked and not na(peak_price) ? (locked_dir == 1 ? (peak_price - low) / pip : locked_dir == -1 ? (high - peak_price) / pip : 0.0) : 0.0
 in_density_zone = bias_locked and pullback_depth >= (sess_dz_min / pip) and pullback_depth <= (sess_dz_max / pip)
 
-// ── ENTRY SIGNALS ─────────────────────────────────────────────────────────────
 var int   entries_sess = 0
 var bool  in_trade     = false
 var int   trade_dir    = 0
@@ -258,7 +247,6 @@ if a_hit_l or a_hit_s or ews_l or ews_s or hard_exit_sig
     in_trade  := false
     trade_dir := 0
 
-// ── TRUTH PANEL STRINGS ───────────────────────────────────────────────────────
 current_side = locked_dir == 1 ? "BUY" : locked_dir == -1 ? "SELL" : "FLAT"
 side_col     = locked_dir == 1 ? color.new(color.lime,0) : locked_dir == -1 ? color.new(color.red,0) : color.new(color.gray,0)
 tier_str     = sess_tier == 0 ? "NO-GO" : "T" + str.tostring(sess_tier)
@@ -270,11 +258,9 @@ _hm          = str.format("{0,date,HHmm}", time)
 state_id     = _sym + "_" + _date + "_" + _hm + "_" + current_side + "_v5"
 valid_str    = str.format("{0,date,HH:mm}", time_close)
 
-// ══════════════════════════════════════════════════════════════════════════════
-// VISUALS
-// ══════════════════════════════════════════════════════════════════════════════
+// ── VISUALS ───────────────────────────────────────────────────────────────────
 
-// 1. ANCHOR IMPULSE MARKERS
+// Anchor markers + labels
 plotshape(i_show_anchors and bull_anchor, "Bull Anchor", location=location.belowbar, style=shape.diamond, color=color.new(color.aqua, 0), size=size.small)
 plotshape(i_show_anchors and bear_anchor, "Bear Anchor", location=location.abovebar, style=shape.diamond, color=color.new(color.fuchsia, 0), size=size.small)
 
@@ -290,11 +276,11 @@ if i_show_anchors and bear_anchor
     dz_hi = sess_tier == 1 ? dz_max_t1_p : sess_tier == 2 ? dz_max_t2_p : dz_max_t3_p
     label.new(bar_index, high, text="IMPULSE " + str.tostring(imp_p) + "p  T" + str.tostring(sess_tier) + "  DZ:" + str.tostring(dz_lo) + "-" + str.tostring(dz_hi) + "p", style=label.style_label_down, color=color.new(color.fuchsia, 20), textcolor=color.white, size=size.small)
 
-// 2. REBALANCE ZONE BACKGROUND
+// Rebalance zone background (when price is inside density zone)
 bgcolor(in_density_zone and locked_dir == 1  ? color.new(color.lime, 85) : na, title="Rebalance Zone BG Long")
 bgcolor(in_density_zone and locked_dir == -1 ? color.new(color.red,  85) : na, title="Rebalance Zone BG Short")
 
-// 3. ENTRY SIGNALS (large, confirmed)
+// Entry signals
 plotshape(i_show_signals and long_entry,  "Long Entry",  location=location.belowbar, style=shape.triangleup,   color=color.new(color.lime,0), size=size.large)
 plotshape(i_show_signals and short_entry, "Short Entry", location=location.abovebar, style=shape.triangledown, color=color.new(color.red,0),  size=size.large)
 plotshape(i_show_signals and (ews_l or ews_s), "EWS Exit", location=location.belowbar, style=shape.xcross, color=color.new(color.orange,0), size=size.normal)
@@ -305,39 +291,50 @@ if long_entry
 if short_entry
     label.new(bar_index, high, text="SHORT  " + str.tostring(math.round(sess_aleg / pip)) + "p", style=label.style_label_down, color=color.new(color.red, 10), textcolor=color.white, size=size.normal)
 
-// 4. ASIAN RANGE LINES
+// Asian range lines
 plot(sess_ready ? locked_hi : na, "Asian High", color=color.new(color.blue,30), linewidth=2, style=plot.style_linebr)
 plot(sess_ready ? locked_lo : na, "Asian Low",  color=color.new(color.blue,30), linewidth=2, style=plot.style_linebr)
 plot(sess_ready ? (locked_hi + locked_lo) * 0.5 : na, "Asian Mid", color=color.new(color.blue,60), linewidth=1, style=plot.style_linebr)
 
-// 5. ATOMIC GRID — dashed, 35% transparent (much more visible than before)
+// Atomic grid
 if i_show_grid and sess_ready and not sess_nogo and barstate.islast and not na(sess_aleg)
     for i = 1 to 8
         line.new(bar_index - 300, locked_hi + i * sess_aleg, bar_index + 60, locked_hi + i * sess_aleg, color=color.new(color.teal, 35), style=line.style_dashed, width=1)
         line.new(bar_index - 300, locked_lo - i * sess_aleg, bar_index + 60, locked_lo - i * sess_aleg, color=color.new(color.teal, 35), style=line.style_dashed, width=1)
 
-// 6. DENSITY ZONE BOXES — 70% fill, solid border (clearly visible)
+// Density zone box — drawn on anchor fire, persists in history
+// While bias locked: tracks peak and extends right edge live
 var box bull_box = na
 var box bear_box = na
 
-if i_show_zones and barstate.islast and bias_locked and not na(peak_price) and not na(anchor_bar)
-    if locked_dir == 1
-        if not na(bull_box)
-            box.delete(bull_box)
-        bull_box := box.new(anchor_bar, peak_price - sess_dz_min, bar_index + 30, peak_price - sess_dz_max, bgcolor=color.new(color.lime, 70), border_color=color.new(color.lime, 0), border_width=2, border_style=line.style_solid)
-    if locked_dir == -1
-        if not na(bear_box)
-            box.delete(bear_box)
-        bear_box := box.new(anchor_bar, peak_price + sess_dz_max, bar_index + 30, peak_price + sess_dz_min, bgcolor=color.new(color.red, 70), border_color=color.new(color.red, 0), border_width=2, border_style=line.style_solid)
+if i_show_zones and bull_anchor
+    if not na(bull_box)
+        box.delete(bull_box)
+    bull_box := box.new(bar_index, high - sess_dz_min, bar_index + 80, high - sess_dz_max, bgcolor=color.new(color.lime, 70), border_color=color.new(color.lime, 0), border_width=2, border_style=line.style_solid)
 
-// 7. A-LEG TARGET LINE
+if i_show_zones and bear_anchor
+    if not na(bear_box)
+        box.delete(bear_box)
+    bear_box := box.new(bar_index, low + sess_dz_max, bar_index + 80, low + sess_dz_min, bgcolor=color.new(color.red, 70), border_color=color.new(color.red, 0), border_width=2, border_style=line.style_solid)
+
+if i_show_zones and bias_locked and locked_dir == 1 and not na(bull_box) and barstate.islast
+    box.set_top(bull_box, peak_price - sess_dz_min)
+    box.set_bottom(bull_box, peak_price - sess_dz_max)
+    box.set_right(bull_box, bar_index + 30)
+
+if i_show_zones and bias_locked and locked_dir == -1 and not na(bear_box) and barstate.islast
+    box.set_top(bear_box, peak_price + sess_dz_max)
+    box.set_bottom(bear_box, peak_price + sess_dz_min)
+    box.set_right(bear_box, bar_index + 30)
+
+// A-leg target line (only while in trade)
 var line aleg_line = na
 if in_trade and not na(entry_bar) and barstate.islast
     if not na(aleg_line)
         line.delete(aleg_line)
     aleg_line := line.new(entry_bar, aleg_px, bar_index + 30, aleg_px, color=color.new(color.yellow, 0), style=line.style_dashed, width=2)
 
-// 8. TRUTH PANEL (MCP-readable via data_get_pine_tables)
+// Truth panel
 var table tp = table.new(position.top_right, 2, 8, bgcolor=color.new(color.black, 8), border_width=1, border_color=color.new(color.gray, 50), frame_width=1, frame_color=color.new(color.gray, 30))
 
 if i_show_panel and barstate.islast
@@ -358,8 +355,8 @@ if i_show_panel and barstate.islast
     table.cell(tp, 0, 7, "VALID UNTIL",     text_color=color.new(color.white,0),  text_size=size.tiny,   text_halign=text.align_left)
     table.cell(tp, 1, 7, valid_str,         text_color=color.new(color.white,0),  text_size=size.tiny,   text_halign=text.align_center)
 
-// 9. ALERTS — barstate.isconfirmed on all, no repainting
-// Alert message JSON for webhook (paste into TradingView alert dialog):
+// Alerts — all barstate.isconfirmed, no repainting
+// Paste webhook JSON in TradingView alert message:
 // LONG:  {"signal_id":"{{ticker}}_{{timenow}}_BUY","symbol":"{{ticker}}","action":"BUY","signal_type":"IMPULSE","strategy_name":"CEREBUS_IMPULSE","timestamp":"{{timenow}}","timeframe":"{{interval}}","price":{{close}},"session":"NY","state_id":"{{ticker}}_{{timenow}}_BUY"}
 // SHORT: {"signal_id":"{{ticker}}_{{timenow}}_SELL","symbol":"{{ticker}}","action":"SELL","signal_type":"IMPULSE","strategy_name":"CEREBUS_IMPULSE","timestamp":"{{timenow}}","timeframe":"{{interval}}","price":{{close}},"session":"NY","state_id":"{{ticker}}_{{timenow}}_SELL"}
 // EWS:   {"signal_id":"{{ticker}}_{{timenow}}_CLOSE","symbol":"{{ticker}}","action":"CLOSE","signal_type":"REBALANCE","strategy_name":"CEREBUS_REBALANCE","timestamp":"{{timenow}}","timeframe":"{{interval}}","price":{{close}},"session":"NY","state_id":"{{ticker}}_{{timenow}}_CLOSE"}
