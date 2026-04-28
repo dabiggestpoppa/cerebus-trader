@@ -1,9 +1,8 @@
 //@version=6
-// =============================================================================
-// CEREBUS Symmetry Trap v5 — Atomic Engine EUR/USD
-// Bug fix: overshoot invalidation prevents swing_dir getting stuck
-// When price blows through DZ without entry -> reset state -> new signals fire
-// =============================================================================
+// CEREBUS Symmetry Trap v5 — Impulse + Rebalance Tracker
+// ATOM = label only, NO reset. TIER = line + DZ box + state change.
+// Rolling extremes pause during DZ wait (swing_dir != 0).
+// rolling_hi := anchor on reset (not bar.high). Entry signals removed.
 indicator("CEREBUS Symmetry Trap v5", overlay=true,
      max_lines_count=500, max_boxes_count=200, max_labels_count=500)
 
@@ -11,10 +10,10 @@ i_tz         = input.string("America/New_York", "Timezone", options=["America/Ne
 i_show_tier  = input.bool(true, "Show Tier Impulses")
 i_show_atom  = input.bool(true, "Show Atomic Moves")
 i_show_dz    = input.bool(true, "Show Density Zone")
-i_show_entry = input.bool(true, "Show Entry Signals")
 i_show_panel = input.bool(true, "Show Truth Panel")
 
 pip = 0.0001
+MIN_P     = 10.0
 T1_trig_p = 12.0
 T2_trig_p = 15.0
 T3_trig_p = 19.0
@@ -24,7 +23,6 @@ T3_atom_p = 15.0
 T1_ar_p   = 20.0
 T2_ar_p   = 30.0
 T3_ar_p   = 45.0
-MIN_P     = 10.0
 DZ_LO     = 0.80
 DZ_HI     = 1.20
 
@@ -48,7 +46,7 @@ if in_asian and not asian_started
     ar_lo := math.min(ar_lo, low)
 
 var float swing_origin   = na
-var int   swing_dir      = 0
+var int   swing_dir      = 0      // 0=search  -1=bear DZ wait  1=bull DZ wait
 var int   swing_sbar     = na
 var float swing_spx      = na
 var float rolling_hi     = na
@@ -60,6 +58,8 @@ var bool  tier_ok        = false
 var float dz_origin      = na
 var int   dz_dir         = 0
 var box   dz_box         = na
+var bool  bear_atom_done = false
+var bool  bull_atom_done = false
 
 if na(swing_origin) and barstate.isconfirmed
     swing_origin   := close
@@ -70,13 +70,16 @@ if na(swing_origin) and barstate.isconfirmed
     swing_sbar     := bar_index
     swing_spx      := close
 
-if not na(rolling_hi) and high > rolling_hi
-    rolling_hi     := high
-    rolling_hi_bar := bar_index
-if not na(rolling_lo) and low < rolling_lo
-    rolling_lo     := low
-    rolling_lo_bar := bar_index
+// Rolling ONLY updates when searching (paused during DZ wait)
+if swing_dir == 0
+    if not na(rolling_hi) and high > rolling_hi
+        rolling_hi     := high
+        rolling_hi_bar := bar_index
+    if not na(rolling_lo) and low < rolling_lo
+        rolling_lo     := low
+        rolling_lo_bar := bar_index
 
+// 3AM tier classification + active DZ recalculation
 if asian_ended and not tier_ok and not na(ar_hi) and not na(ar_lo)
     ar_range = (ar_hi - ar_lo) / pip
     final_t  = f_tier_from_range(ar_range)
@@ -95,31 +98,31 @@ if asian_ended and not tier_ok and not na(ar_hi) and not na(ar_lo)
 up_move_p   = not na(rolling_hi) and not na(swing_origin) ? (rolling_hi - swing_origin) / pip : 0.0
 down_move_p = not na(rolling_lo) and not na(swing_origin) ? (swing_origin - rolling_lo)  / pip : 0.0
 
-bear_sig = swing_dir == 0 and up_move_p   >= MIN_P and close < open and barstate.isconfirmed
-bull_sig = swing_dir == 0 and down_move_p >= MIN_P and close > open and barstate.isconfirmed
+// ATOM: 10-11.99p + opposite close → label only, no state change
+bear_atom_cond = swing_dir == 0 and up_move_p >= MIN_P and up_move_p < T1_trig_p and close < open and not bear_atom_done and barstate.isconfirmed
+bull_atom_cond = swing_dir == 0 and down_move_p >= MIN_P and down_move_p < T1_trig_p and close > open and not bull_atom_done and barstate.isconfirmed
 
+// TIER: >=12p + opposite close → state change
+bear_tier_cond = swing_dir == 0 and up_move_p >= T1_trig_p and close < open and barstate.isconfirmed
+bull_tier_cond = swing_dir == 0 and down_move_p >= T1_trig_p and close > open and barstate.isconfirmed
+
+// DZ boundaries
 cur_atom = f_atom(working_tier) * pip
-dz_top   = swing_dir == -1 ? dz_origin - cur_atom * DZ_LO : swing_dir == 1 ? dz_origin + cur_atom * DZ_HI : na
-dz_bot   = swing_dir == -1 ? dz_origin - cur_atom * DZ_HI : swing_dir == 1 ? dz_origin + cur_atom * DZ_LO : na
+dz_top   = dz_dir == -1 ? dz_origin - cur_atom * DZ_LO : dz_dir == 1 ? dz_origin + cur_atom * DZ_HI : na
+dz_bot   = dz_dir == -1 ? dz_origin - cur_atom * DZ_HI : dz_dir == 1 ? dz_origin + cur_atom * DZ_LO : na
+in_dz    = not na(dz_top) and not na(dz_bot) and close <= dz_top and close >= dz_bot
 
-in_dz = not na(dz_top) and not na(dz_bot) and close <= dz_top and close >= dz_bot
-
-long_entry  = swing_dir == -1 and in_dz and close > open and barstate.isconfirmed
-short_entry = swing_dir == 1  and in_dz and close < open and barstate.isconfirmed
-
-// Invalidation 1 — reversal: price crosses back through swing_origin
+// Invalidation: reversal
 rev_long  = swing_dir == -1 and close > dz_origin
 rev_short = swing_dir == 1  and close < dz_origin
 reversal_inv = swing_dir != 0 and barstate.isconfirmed and (rev_long or rev_short)
 
-// Invalidation 2 — overshoot: price blew PAST DZ without entry (was root cause of stuck state)
+// Invalidation: overshoot
 osh_long  = swing_dir == -1 and not na(dz_origin) and close < dz_origin - cur_atom * DZ_HI
 osh_short = swing_dir == 1  and not na(dz_origin) and close > dz_origin + cur_atom * DZ_HI
 overshoot_inv = swing_dir != 0 and barstate.isconfirmed and (osh_long or osh_short)
 
-reset_state = reversal_inv or overshoot_inv
-
-if reset_state
+if reversal_inv or overshoot_inv
     swing_dir      := 0
     dz_dir         := 0
     swing_origin   := close
@@ -129,50 +132,50 @@ if reset_state
     rolling_lo     := low
     rolling_hi_bar := bar_index
     rolling_lo_bar := bar_index
+    bear_atom_done := false
+    bull_atom_done := false
 
-if long_entry
-    swing_dir      := 0
-    dz_dir         := 0
-    swing_origin   := close
-    swing_sbar     := bar_index
-    swing_spx      := close
-    rolling_hi     := high
-    rolling_lo     := low
-    rolling_hi_bar := bar_index
-    rolling_lo_bar := bar_index
+// ATOM bear — label only, no state change
+if bear_atom_cond
+    bear_atom_done := true
+    if i_show_atom
+        label.new(rolling_hi_bar, rolling_hi,
+             text  = "ATOM " + str.tostring(math.round(up_move_p)) + "p",
+             style = label.style_label_down,
+             color = color.new(color.aqua, 25),
+             textcolor = color.white, size = size.tiny)
 
-if short_entry
-    swing_dir      := 0
-    dz_dir         := 0
-    swing_origin   := close
-    swing_sbar     := bar_index
-    swing_spx      := close
-    rolling_hi     := high
-    rolling_lo     := low
-    rolling_hi_bar := bar_index
-    rolling_lo_bar := bar_index
+// ATOM bull — label only
+if bull_atom_cond
+    bull_atom_done := true
+    if i_show_atom
+        label.new(rolling_lo_bar, rolling_lo,
+             text  = "ATOM " + str.tostring(math.round(down_move_p)) + "p",
+             style = label.style_label_up,
+             color = color.new(color.fuchsia, 25),
+             textcolor = color.white, size = size.tiny)
 
-if bear_sig
+// TIER bear — line + DZ + state change
+if bear_tier_cond
     anchor     = rolling_hi
     anchor_bar = rolling_hi_bar
-    is_tier    = up_move_p >= T1_trig_p
     sig_pips   = math.round(up_move_p)
 
     if not tier_ok
         working_tier := f_tier_from_move(up_move_p)
 
-    line.new(swing_sbar, swing_spx, anchor_bar, anchor,
-         color = is_tier ? color.new(color.lime, 0) : color.new(color.aqua, 50),
-         width = is_tier ? 2 : 1)
+    if not na(swing_sbar) and not na(swing_spx) and i_show_tier
+        line.new(swing_sbar, swing_spx, anchor_bar, anchor,
+             color = color.new(color.lime, 0), width = 2)
 
-    if (is_tier and i_show_tier) or (not is_tier and i_show_atom)
+    if i_show_tier
         label.new(anchor_bar, anchor,
-             text  = (is_tier ? "TIER " : "ATOM ") + str.tostring(sig_pips) + "p",
+             text  = "TIER " + str.tostring(sig_pips) + "p",
              style = label.style_label_down,
-             color = is_tier ? color.new(color.lime, 20) : color.new(color.aqua, 50),
-             textcolor = color.white, size = size.tiny)
+             color = color.new(color.lime, 15),
+             textcolor = color.white, size = size.small)
 
-    if is_tier and i_show_dz
+    if i_show_dz
         this_atom = f_atom(working_tier) * pip
         if not na(dz_box)
             box.delete(dz_box)
@@ -180,37 +183,39 @@ if bear_sig
              bgcolor = color.new(color.lime, 75), border_color = color.new(color.lime, 0), border_width = 2)
         dz_origin := anchor
         dz_dir    := -1
-        swing_dir := -1
 
+    swing_dir      := -1
     swing_origin   := anchor
     swing_sbar     := anchor_bar
     swing_spx      := anchor
-    rolling_hi     := high
+    rolling_hi     := anchor    // KEY FIX: structural peak, not bar.high
     rolling_lo     := low
-    rolling_hi_bar := bar_index
+    rolling_hi_bar := anchor_bar
     rolling_lo_bar := bar_index
+    bear_atom_done := false
+    bull_atom_done := false
 
-if bull_sig
+// TIER bull — line + DZ + state change
+if bull_tier_cond
     anchor     = rolling_lo
     anchor_bar = rolling_lo_bar
-    is_tier    = down_move_p >= T1_trig_p
     sig_pips   = math.round(down_move_p)
 
     if not tier_ok
         working_tier := f_tier_from_move(down_move_p)
 
-    line.new(swing_sbar, swing_spx, anchor_bar, anchor,
-         color = is_tier ? color.new(color.red, 0) : color.new(color.fuchsia, 50),
-         width = is_tier ? 2 : 1)
+    if not na(swing_sbar) and not na(swing_spx) and i_show_tier
+        line.new(swing_sbar, swing_spx, anchor_bar, anchor,
+             color = color.new(color.red, 0), width = 2)
 
-    if (is_tier and i_show_tier) or (not is_tier and i_show_atom)
+    if i_show_tier
         label.new(anchor_bar, anchor,
-             text  = (is_tier ? "TIER " : "ATOM ") + str.tostring(sig_pips) + "p",
+             text  = "TIER " + str.tostring(sig_pips) + "p",
              style = label.style_label_up,
-             color = is_tier ? color.new(color.red, 20) : color.new(color.fuchsia, 50),
-             textcolor = color.white, size = size.tiny)
+             color = color.new(color.red, 15),
+             textcolor = color.white, size = size.small)
 
-    if is_tier and i_show_dz
+    if i_show_dz
         this_atom = f_atom(working_tier) * pip
         if not na(dz_box)
             box.delete(dz_box)
@@ -218,26 +223,20 @@ if bull_sig
              bgcolor = color.new(color.red, 75), border_color = color.new(color.red, 0), border_width = 2)
         dz_origin := anchor
         dz_dir    := 1
-        swing_dir := 1
 
+    swing_dir      := 1
     swing_origin   := anchor
     swing_sbar     := anchor_bar
     swing_spx      := anchor
+    rolling_lo     := anchor    // KEY FIX: structural trough, not bar.low
     rolling_hi     := high
-    rolling_lo     := low
+    rolling_lo_bar := anchor_bar
     rolling_hi_bar := bar_index
-    rolling_lo_bar := bar_index
+    bear_atom_done := false
+    bull_atom_done := false
 
 if not na(dz_box) and dz_dir != 0 and barstate.islast
     box.set_right(dz_box, bar_index + 30)
-
-plotshape(i_show_entry and long_entry,  "Long Entry",  location=location.belowbar, style=shape.triangleup,   color=color.new(color.lime, 0), size=size.large)
-plotshape(i_show_entry and short_entry, "Short Entry", location=location.abovebar, style=shape.triangledown, color=color.new(color.red,  0), size=size.large)
-
-if long_entry
-    label.new(bar_index, low,  text="LONG " + str.tostring(f_atom(working_tier), "#") + "p", style=label.style_label_up,   color=color.new(color.lime, 10), textcolor=color.black, size=size.normal)
-if short_entry
-    label.new(bar_index, high, text="SHORT " + str.tostring(f_atom(working_tier), "#") + "p", style=label.style_label_down, color=color.new(color.red, 10),  textcolor=color.white, size=size.normal)
 
 bgcolor(in_dz and dz_dir == -1 ? color.new(color.lime, 88) : na, title="Long DZ BG")
 bgcolor(in_dz and dz_dir == 1  ? color.new(color.red,  88) : na, title="Short DZ BG")
@@ -245,18 +244,17 @@ bgcolor(in_dz and dz_dir == 1  ? color.new(color.red,  88) : na, title="Short DZ
 plot(not na(ar_hi) ? ar_hi : na, "Asian High", color=color.new(color.blue, 30), linewidth=2, style=plot.style_linebr)
 plot(not na(ar_lo) ? ar_lo : na, "Asian Low",  color=color.new(color.blue, 30), linewidth=2, style=plot.style_linebr)
 
-bias_str  = swing_dir == -1 ? "BUY" : swing_dir == 1 ? "SELL" : "FLAT"
-bias_col  = swing_dir == -1 ? color.lime : swing_dir == 1 ? color.red : color.gray
+bias_str  = swing_dir == -1 ? "SELL" : swing_dir == 1 ? "BUY" : "FLAT"
+bias_col  = swing_dir == -1 ? color.red : swing_dir == 1 ? color.lime : color.gray
 tier_str  = "T" + str.tostring(working_tier) + (tier_ok ? "" : "?")
 tier_col  = working_tier == 1 ? color.lime : working_tier == 2 ? color.yellow : color.orange
 ar_str    = not na(ar_hi) and not na(ar_lo) ? str.tostring(math.round((ar_hi - ar_lo) / pip)) + "p" : "--"
-atom_str  = str.tostring(f_atom(working_tier), "#") + "p"
 _dt       = str.format("{0,date,yyyyMMdd}", time)
 _hm       = str.format("{0,date,HHmm}", time)
 state_id  = "EURUSD_" + _dt + "_" + _hm + "_" + bias_str + "_v5"
 valid_str = str.format("{0,date,HH:mm}", time_close)
 
-var table tp = table.new(position.top_right, 2, 7, bgcolor=color.new(color.black, 8),
+var table tp = table.new(position.top_right, 2, 6, bgcolor=color.new(color.black, 8),
      border_width=1, border_color=color.new(color.gray, 50),
      frame_width=1,  frame_color=color.new(color.gray, 30))
 
@@ -269,12 +267,7 @@ if i_show_panel and barstate.islast
     table.cell(tp, 1, 2, tier_str,      text_color=tier_col,     text_size=size.small,  text_halign=text.align_center)
     table.cell(tp, 0, 3, "AR RANGE",    text_color=color.white,  text_size=size.small,  text_halign=text.align_left)
     table.cell(tp, 1, 3, ar_str,        text_color=color.silver, text_size=size.small,  text_halign=text.align_center)
-    table.cell(tp, 0, 4, "ATOM",        text_color=color.white,  text_size=size.small,  text_halign=text.align_left)
-    table.cell(tp, 1, 4, atom_str,      text_color=color.aqua,   text_size=size.small,  text_halign=text.align_center)
-    table.cell(tp, 0, 5, "STATE ID",    text_color=color.white,  text_size=size.tiny,   text_halign=text.align_left)
-    table.cell(tp, 1, 5, state_id,      text_color=color.yellow, text_size=size.tiny,   text_halign=text.align_center)
-    table.cell(tp, 0, 6, "VALID UNTIL", text_color=color.white,  text_size=size.tiny,   text_halign=text.align_left)
-    table.cell(tp, 1, 6, valid_str,     text_color=color.white,  text_size=size.tiny,   text_halign=text.align_center)
-
-alertcondition(long_entry,  "CEREBUS Long Entry",  "CEREBUS LONG | {{ticker}} | {{timenow}} | {{close}}")
-alertcondition(short_entry, "CEREBUS Short Entry", "CEREBUS SELL | {{ticker}} | {{timenow}} | {{close}}")
+    table.cell(tp, 0, 4, "STATE ID",    text_color=color.white,  text_size=size.tiny,   text_halign=text.align_left)
+    table.cell(tp, 1, 4, state_id,      text_color=color.yellow, text_size=size.tiny,   text_halign=text.align_center)
+    table.cell(tp, 0, 5, "VALID UNTIL", text_color=color.white,  text_size=size.tiny,   text_halign=text.align_left)
+    table.cell(tp, 1, 5, valid_str,     text_color=color.white,  text_size=size.tiny,   text_halign=text.align_center)
