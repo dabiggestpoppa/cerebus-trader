@@ -1,0 +1,284 @@
+//@version=6
+// CEREBUS Symmetry Trap v5 [Multi-Pair]
+// Supports: EURUSD, USDCHF, BTCUSD, ETHUSD
+// No plots on unsupported pairs
+// ATOM = label only. TIER = line + DZ + state. Rolling pauses in DZ wait.
+// Chain resets 3AM EST. Signals gate 3AM-12PM only.
+//
+// Parameters (data-derived per pair):
+// EURUSD/USDCHF: AU=10/12/15p, trig=12/15/19p, AR<20/30/45p
+// BTCUSD:        AU=205/545/1160pt, trig=246/654/1392pt, AR<750/1700/3000pt
+// ETHUSD:        AU=35/42/52pt, trig=42/52/65pt, AR<70/105/160pt
+
+indicator("CEREBUS Symmetry Trap v5 [MP]", overlay=true,
+     max_lines_count=500, max_boxes_count=200, max_labels_count=500)
+
+i_tz         = input.string("America/New_York", "Timezone", options=["America/New_York","UTC","Europe/London"])
+i_show_tier  = input.bool(true, "Show Tier Impulses")
+i_show_atom  = input.bool(true, "Show Atomic Moves")
+i_show_dz    = input.bool(true, "Show Density Zone")
+i_show_panel = input.bool(true, "Show Truth Panel")
+
+DZ_LO = 0.80
+DZ_HI = 1.20
+
+_sym = syminfo.ticker
+_eu  = str.contains(_sym, "EURUSD")
+_uc  = str.contains(_sym, "USDCHF")
+_btc = str.contains(_sym, "BTC")
+_eth = str.contains(_sym, "ETH")
+
+pair_supported = _eu or _uc or _btc or _eth
+pip = _btc or _eth ? 1.0 : 0.0001
+
+T1_ar_p   = _btc ? 750.0  : _eth ? 70.0  : 20.0
+T2_ar_p   = _btc ? 1700.0 : _eth ? 105.0 : 30.0
+T3_ar_p   = _btc ? 3000.0 : _eth ? 160.0 : 45.0
+T1_trig_p = _btc ? 246.0  : _eth ? 42.0  : 12.0
+T2_trig_p = _btc ? 654.0  : _eth ? 52.0  : 15.0
+T3_trig_p = _btc ? 1392.0 : _eth ? 65.0  : 19.0
+T1_atom_p = _btc ? 205.0  : _eth ? 35.0  : 10.0
+T2_atom_p = _btc ? 545.0  : _eth ? 42.0  : 12.0
+T3_atom_p = _btc ? 1160.0 : _eth ? 52.0  : 15.0
+MIN_P     = T1_atom_p
+
+f_atom(_t)            => _t == 1 ? T1_atom_p : _t == 2 ? T2_atom_p : T3_atom_p
+f_tier_from_move(_p)  => _p >= T3_trig_p ? 3 : _p >= T2_trig_p ? 2 : 1
+f_tier_from_range(_p) => _p <= T1_ar_p   ? 1 : _p <= T2_ar_p   ? 2 : _p <= T3_ar_p ? 3 : 0
+
+asian_sess    = "1900-0300"
+bias_sess     = "0300-1200"
+in_asian      = timeframe.isintraday and not na(time(timeframe.period, asian_sess, i_tz))
+in_bias       = timeframe.isintraday and not na(time(timeframe.period, bias_sess,  i_tz))
+asian_started = in_asian and not in_asian[1]
+asian_ended   = not in_asian and in_asian[1]
+bias_started  = in_bias and not in_bias[1]
+
+var float ar_hi = na
+var float ar_lo = na
+
+if asian_started
+    ar_hi := high
+    ar_lo := low
+if in_asian and not asian_started
+    ar_hi := math.max(ar_hi, high)
+    ar_lo := math.min(ar_lo, low)
+
+var float swing_origin   = na
+var int   swing_dir      = 0
+var int   swing_sbar     = na
+var float swing_spx      = na
+var float rolling_hi     = na
+var float rolling_lo     = na
+var int   rolling_hi_bar = na
+var int   rolling_lo_bar = na
+var int   working_tier   = 1
+var bool  tier_ok        = false
+var float dz_origin      = na
+var int   dz_dir         = 0
+var box   dz_box         = na
+var bool  bear_atom_done = false
+var bool  bull_atom_done = false
+
+if bias_started
+    swing_dir      := 0
+    dz_dir         := 0
+    swing_origin   := close
+    swing_sbar     := bar_index
+    swing_spx      := close
+    rolling_hi     := high
+    rolling_lo     := low
+    rolling_hi_bar := bar_index
+    rolling_lo_bar := bar_index
+    tier_ok        := false
+    working_tier   := 1
+    bear_atom_done := false
+    bull_atom_done := false
+
+if asian_ended and not tier_ok and not na(ar_hi) and not na(ar_lo)
+    ar_range = (ar_hi - ar_lo) / pip
+    final_t  = f_tier_from_range(ar_range)
+    if final_t != 0
+        working_tier := final_t
+        tier_ok      := true
+        if dz_dir != 0 and not na(dz_origin) and not na(dz_box)
+            new_atom = f_atom(working_tier) * pip
+            if dz_dir == -1
+                box.set_top(dz_box, dz_origin - new_atom * DZ_LO)
+                box.set_bottom(dz_box, dz_origin - new_atom * DZ_HI)
+            else
+                box.set_top(dz_box, dz_origin + new_atom * DZ_HI)
+                box.set_bottom(dz_box, dz_origin + new_atom * DZ_LO)
+
+if na(swing_origin) and barstate.isconfirmed
+    swing_origin   := close
+    rolling_hi     := high
+    rolling_lo     := low
+    rolling_hi_bar := bar_index
+    rolling_lo_bar := bar_index
+    swing_sbar     := bar_index
+    swing_spx      := close
+
+if swing_dir == 0
+    if not na(rolling_hi) and high > rolling_hi
+        rolling_hi     := high
+        rolling_hi_bar := bar_index
+    if not na(rolling_lo) and low < rolling_lo
+        rolling_lo     := low
+        rolling_lo_bar := bar_index
+
+up_move_p   = not na(rolling_hi) and not na(swing_origin) ? (rolling_hi - swing_origin) / pip : 0.0
+down_move_p = not na(rolling_lo) and not na(swing_origin) ? (swing_origin - rolling_lo)  / pip : 0.0
+
+bear_atom_cond = pair_supported and swing_dir == 0 and in_bias and up_move_p >= MIN_P and up_move_p < T1_trig_p and close < open and not bear_atom_done and barstate.isconfirmed
+bull_atom_cond = pair_supported and swing_dir == 0 and in_bias and down_move_p >= MIN_P and down_move_p < T1_trig_p and close > open and not bull_atom_done and barstate.isconfirmed
+
+bear_tier_cond = pair_supported and swing_dir == 0 and in_bias and up_move_p   >= T1_trig_p and close < open and barstate.isconfirmed
+bull_tier_cond = pair_supported and swing_dir == 0 and in_bias and down_move_p >= T1_trig_p and close > open and barstate.isconfirmed
+
+cur_atom = f_atom(working_tier) * pip
+dz_top   = dz_dir == -1 ? dz_origin - cur_atom * DZ_LO : dz_dir == 1 ? dz_origin + cur_atom * DZ_HI : na
+dz_bot   = dz_dir == -1 ? dz_origin - cur_atom * DZ_HI : dz_dir == 1 ? dz_origin + cur_atom * DZ_LO : na
+in_dz    = not na(dz_top) and not na(dz_bot) and close <= dz_top and close >= dz_bot
+
+rev_long  = swing_dir == -1 and close > dz_origin
+rev_short = swing_dir == 1  and close < dz_origin
+reversal_inv = pair_supported and swing_dir != 0 and barstate.isconfirmed and (rev_long or rev_short)
+
+osh_long  = swing_dir == -1 and not na(dz_origin) and close < dz_origin - cur_atom * DZ_HI
+osh_short = swing_dir == 1  and not na(dz_origin) and close > dz_origin + cur_atom * DZ_HI
+overshoot_inv = pair_supported and swing_dir != 0 and barstate.isconfirmed and (osh_long or osh_short)
+
+if reversal_inv or overshoot_inv
+    swing_dir      := 0
+    dz_dir         := 0
+    swing_origin   := close
+    swing_sbar     := bar_index
+    swing_spx      := close
+    rolling_hi     := high
+    rolling_lo     := low
+    rolling_hi_bar := bar_index
+    rolling_lo_bar := bar_index
+    bear_atom_done := false
+    bull_atom_done := false
+
+unit_str = pip == 1.0 ? "pt" : "p"
+
+if bear_atom_cond
+    bear_atom_done := true
+    if i_show_atom
+        label.new(rolling_hi_bar, rolling_hi, text="ATOM " + str.tostring(math.round(up_move_p)) + unit_str, style=label.style_label_down, color=color.new(color.aqua, 25), textcolor=color.white, size=size.tiny)
+
+if bull_atom_cond
+    bull_atom_done := true
+    if i_show_atom
+        label.new(rolling_lo_bar, rolling_lo, text="ATOM " + str.tostring(math.round(down_move_p)) + unit_str, style=label.style_label_up, color=color.new(color.fuchsia, 25), textcolor=color.white, size=size.tiny)
+
+if bear_tier_cond
+    anchor     = rolling_hi
+    anchor_bar = rolling_hi_bar
+    sig_pips   = math.round(up_move_p)
+    if not tier_ok
+        working_tier := f_tier_from_move(up_move_p)
+    if not na(swing_sbar) and not na(swing_spx) and i_show_tier
+        line.new(swing_sbar, swing_spx, anchor_bar, anchor, color=color.new(color.lime, 0), width=2)
+    if i_show_tier
+        label.new(anchor_bar, anchor, text="TIER " + str.tostring(sig_pips) + unit_str, style=label.style_label_down, color=color.new(color.lime, 15), textcolor=color.white, size=size.small)
+    if i_show_dz
+        this_atom = f_atom(working_tier) * pip
+        if not na(dz_box)
+            box.delete(dz_box)
+        dz_box    := box.new(anchor_bar, anchor - this_atom * DZ_LO, anchor_bar + 30, anchor - this_atom * DZ_HI, bgcolor=color.new(color.lime, 75), border_color=color.new(color.lime, 0), border_width=2)
+        dz_origin := anchor
+        dz_dir    := -1
+    swing_dir      := -1
+    swing_origin   := anchor
+    swing_sbar     := anchor_bar
+    swing_spx      := anchor
+    rolling_hi     := anchor
+    rolling_lo     := low
+    rolling_hi_bar := anchor_bar
+    rolling_lo_bar := bar_index
+    bear_atom_done := false
+    bull_atom_done := false
+
+if bull_tier_cond
+    anchor     = rolling_lo
+    anchor_bar = rolling_lo_bar
+    sig_pips   = math.round(down_move_p)
+    if not tier_ok
+        working_tier := f_tier_from_move(down_move_p)
+    if not na(swing_sbar) and not na(swing_spx) and i_show_tier
+        line.new(swing_sbar, swing_spx, anchor_bar, anchor, color=color.new(color.red, 0), width=2)
+    if i_show_tier
+        label.new(anchor_bar, anchor, text="TIER " + str.tostring(sig_pips) + unit_str, style=label.style_label_up, color=color.new(color.red, 15), textcolor=color.white, size=size.small)
+    if i_show_dz
+        this_atom = f_atom(working_tier) * pip
+        if not na(dz_box)
+            box.delete(dz_box)
+        dz_box    := box.new(anchor_bar, anchor + this_atom * DZ_HI, anchor_bar + 30, anchor + this_atom * DZ_LO, bgcolor=color.new(color.red, 75), border_color=color.new(color.red, 0), border_width=2)
+        dz_origin := anchor
+        dz_dir    := 1
+    swing_dir      := 1
+    swing_origin   := anchor
+    swing_sbar     := anchor_bar
+    swing_spx      := anchor
+    rolling_lo     := anchor
+    rolling_hi     := high
+    rolling_lo_bar := anchor_bar
+    rolling_hi_bar := bar_index
+    bear_atom_done := false
+    bull_atom_done := false
+
+if not na(dz_box) and dz_dir != 0 and barstate.islast
+    box.set_right(dz_box, bar_index + 30)
+
+bgcolor(pair_supported and in_dz and dz_dir == -1 ? color.new(color.lime, 88) : na, title="Long DZ BG")
+bgcolor(pair_supported and in_dz and dz_dir == 1  ? color.new(color.red,  88) : na, title="Short DZ BG")
+bgcolor(pair_supported and in_bias  ? color.new(color.teal,   97) : na, title="Bias 3AM-12PM")
+bgcolor(pair_supported and in_asian ? color.new(color.yellow, 97) : na, title="Asian 7PM-3AM")
+
+plot(pair_supported and not na(ar_hi) ? ar_hi : na, "Asian High", color=color.new(color.blue, 30), linewidth=2, style=plot.style_linebr)
+plot(pair_supported and not na(ar_lo) ? ar_lo : na, "Asian Low",  color=color.new(color.blue, 30), linewidth=2, style=plot.style_linebr)
+
+bias_str  = swing_dir == -1 ? "BUY" : swing_dir == 1 ? "SELL" : "FLAT"
+bias_col  = swing_dir == -1 ? color.lime : swing_dir == 1 ? color.red : color.gray
+tier_str  = "T" + str.tostring(working_tier) + (tier_ok ? "" : "?")
+tier_col  = working_tier == 1 ? color.lime : working_tier == 2 ? color.yellow : color.orange
+ar_str    = not na(ar_hi) and not na(ar_lo) ? str.tostring(math.round((ar_hi - ar_lo) / pip)) + unit_str : "--"
+atom_str  = str.tostring(f_atom(working_tier), "#") + unit_str
+sess_str  = in_bias ? "ACTIVE" : in_asian ? "ASIAN" : "CLOSED"
+sess_col  = in_bias ? color.lime : in_asian ? color.yellow : color.gray
+pair_str  = not pair_supported ? "UNSUPPORTED" : _btc ? "BTCUSD" : _eth ? "ETHUSD" : _uc ? "USDCHF" : "EURUSD"
+pair_col  = not pair_supported ? color.red : color.aqua
+_dt       = str.format("{0,date,yyyyMMdd}", time)
+_hm       = str.format("{0,date,HHmm}", time)
+state_id  = _sym + "_" + _dt + "_" + _hm + "_" + bias_str + "_v5"
+valid_str = str.format("{0,date,HH:mm}", time_close)
+
+var table tp = table.new(position.top_right, 2, 9, bgcolor=color.new(color.black, 8), border_width=1, border_color=color.new(color.gray, 50), frame_width=1, frame_color=color.new(color.gray, 30))
+
+if i_show_panel and barstate.islast
+    table.cell(tp, 0, 0, "CEREBUS v5",  text_color=color.white,  text_size=size.small,  bgcolor=color.new(color.navy, 15), text_halign=text.align_center)
+    table.cell(tp, 1, 0, "MULTI-PAIR",  text_color=color.orange, text_size=size.small,  bgcolor=color.new(color.navy, 15), text_halign=text.align_center)
+    table.cell(tp, 0, 1, "PAIR",        text_color=color.white,  text_size=size.small,  text_halign=text.align_left)
+    table.cell(tp, 1, 1, pair_str,      text_color=pair_col,     text_size=size.small,  text_halign=text.align_center)
+    table.cell(tp, 0, 2, "SESSION",     text_color=color.white,  text_size=size.small,  text_halign=text.align_left)
+    table.cell(tp, 1, 2, sess_str,      text_color=sess_col,     text_size=size.small,  text_halign=text.align_center)
+    table.cell(tp, 0, 3, "SIDE",        text_color=color.white,  text_size=size.normal, text_halign=text.align_left)
+    table.cell(tp, 1, 3, bias_str,      text_color=bias_col,     text_size=size.normal, text_halign=text.align_center)
+    table.cell(tp, 0, 4, "TIER",        text_color=color.white,  text_size=size.small,  text_halign=text.align_left)
+    table.cell(tp, 1, 4, tier_str,      text_color=tier_col,     text_size=size.small,  text_halign=text.align_center)
+    table.cell(tp, 0, 5, "AR RANGE",    text_color=color.white,  text_size=size.small,  text_halign=text.align_left)
+    table.cell(tp, 1, 5, ar_str,        text_color=color.silver, text_size=size.small,  text_halign=text.align_center)
+    table.cell(tp, 0, 6, "ATOM",        text_color=color.white,  text_size=size.small,  text_halign=text.align_left)
+    table.cell(tp, 1, 6, atom_str,      text_color=color.aqua,   text_size=size.small,  text_halign=text.align_center)
+    table.cell(tp, 0, 7, "STATE ID",    text_color=color.white,  text_size=size.tiny,   text_halign=text.align_left)
+    table.cell(tp, 1, 7, state_id,      text_color=color.yellow, text_size=size.tiny,   text_halign=text.align_center)
+    table.cell(tp, 0, 8, "VALID UNTIL", text_color=color.white,  text_size=size.tiny,   text_halign=text.align_left)
+    table.cell(tp, 1, 8, valid_str,     text_color=color.white,  text_size=size.tiny,   text_halign=text.align_center)
+
+alertcondition(bear_tier_cond, "CEREBUS TIER Bear", "CEREBUS TIER BEAR | {{ticker}} | {{timenow}} | {{close}}")
+alertcondition(bull_tier_cond, "CEREBUS TIER Bull", "CEREBUS TIER BULL | {{ticker}} | {{timenow}} | {{close}}")
+alertcondition(bear_atom_cond, "CEREBUS ATOM Bear", "CEREBUS ATOM BEAR | {{ticker}} | {{timenow}} | {{close}}")
+alertcondition(bull_atom_cond, "CEREBUS ATOM Bull", "CEREBUS ATOM BULL | {{ticker}} | {{timenow}} | {{close}}")
