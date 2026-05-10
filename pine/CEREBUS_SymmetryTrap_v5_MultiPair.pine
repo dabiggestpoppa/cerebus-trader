@@ -303,7 +303,10 @@ if i_show_panel and barstate.islast
     table.cell(tp, 0, 8, "VALID UNTIL", text_color=color.white,  text_size=size.tiny,   text_halign=text.align_left)
     table.cell(tp, 1, 8, valid_str,     text_color=color.white,  text_size=size.tiny,   text_halign=text.align_center)
 
-alertcondition(bear_tier_cond, "CEREBUS TIER SHORT", "CEREBUS TIER SHORT | {{ticker}} | {{timenow}}")
-alertcondition(bull_tier_cond, "CEREBUS TIER LONG",  "CEREBUS TIER LONG | {{ticker}} | {{timenow}}")
-alertcondition(bear_atom_cond, "CEREBUS ATOM SHORT", "CEREBUS ATOM SHORT | {{ticker}} | {{timenow}}")
-alertcondition(bull_atom_cond, "CEREBUS ATOM LONG",  "CEREBUS ATOM LONG | {{ticker}} | {{timenow}}")
+// alertcondition messages use TradingView {{}} placeholders (substituted at alert fire time).
+// These fire when using individual condition alerts (TIER SHORT / ATOM LONG etc.)
+// "Any alert() function call" fires the dynamically computed SL/TP/BE/R versions above.
+alertcondition(bear_tier_cond, "CEREBUS TIER SHORT", "{\"action\":\"sell\",\"symbol\":\"{{ticker}}\",\"entry\":\"{{close}}\",\"stop_loss\":\"\",\"take_profit\":\"\",\"message\":\"TIER SHORT {{ticker}} | Entry:{{close}} | {{timenow}} | TF:{{interval}}\"}")
+alertcondition(bull_tier_cond, "CEREBUS TIER LONG",  "{\"action\":\"buy\",\"symbol\":\"{{ticker}}\",\"entry\":\"{{close}}\",\"stop_loss\":\"\",\"take_profit\":\"\",\"message\":\"TIER LONG {{ticker}} | Entry:{{close}} | {{timenow}} | TF:{{interval}}\"}")
+alertcondition(bear_atom_cond, "CEREBUS ATOM SHORT", "{\"action\":\"sell\",\"symbol\":\"{{ticker}}\",\"entry\":\"{{close}}\",\"stop_loss\":\"\",\"take_profit\":\"\",\"message\":\"ATOM SHORT {{ticker}} | Entry:{{close}} | {{timenow}} | TF:{{interval}}\"}")
+alertcondition(bull_atom_cond, "CEREBUS ATOM LONG",  "{\"action\":\"buy\",\"symbol\":\"{{ticker}}\",\"entry\":\"{{close}}\",\"stop_loss\":\"\",\"take_profit\":\"\",\"message\":\"ATOM LONG {{ticker}} | Entry:{{close}} | {{timenow}} | TF:{{interval}}\"}")
