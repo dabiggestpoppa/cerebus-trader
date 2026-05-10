@@ -1,12 +1,10 @@
 //@version=6
 // CEREBUS Symmetry Sniper [MP]
-// Copy of Symmetry Trap v5 [MP] with tier-specific atom filtering:
-// Atom signals only fire for the CONFIRMED tier's range — no cross-tier noise.
-// T1 day: atoms show in T1_atom to T1_trig range only.
-// T2 day: atoms show in T2_atom to T2_trig range only.
-// T3 day: atoms show in T3_atom to T3_trig range only.
-// Requires tier_ok = true (post-3AM) before atoms fire.
-// Use "Any alert() function call" for full Copygram JSON with SL/TP/BE/R.
+// Tier-specific atom filtering: atoms only show for the CONFIRMED tier's range.
+// All pairs: EU/CHF/BTC/ETH/XAU/NAS/DE30/FR40/HK50/CHFJPY
+// Atoms require tier_ok=true (post-3AM classification).
+// alert() fires full Copygram JSON with dynamic SL/TP/BE/R on every signal.
+// EU T1: 9-12p | EU T2: 10.8-15p | BTC T2: 490-654pt | BTC T3: 1044-1392pt etc.
 
 indicator("CEREBUS Symmetry Sniper [MP]", overlay=true,
      max_lines_count=500, max_boxes_count=200, max_labels_count=500)
@@ -134,10 +132,13 @@ if not na(rolling_lo) and low < rolling_lo
 up_move_p   = not na(rolling_hi) and not na(swing_origin) ? (rolling_hi - swing_origin) / pip : 0.0
 down_move_p = not na(rolling_lo) and not na(swing_origin) ? (swing_origin - rolling_lo)  / pip : 0.0
 
-// ── TIER-SPECIFIC ATOM CONDITIONS (Sniper version) ────────────────────────────
-// Only fires when move is within the confirmed tier's atom-to-trigger range.
-// Requires tier_ok = true (post-3AM classification) before atoms are visible.
-cur_atom_p = f_atom(working_tier)
+// ── TIER-SPECIFIC ATOM CONDITIONS — ALL PAIRS ─────────────────────────────────
+// Explicit ternary — each pair uses its own confirmed-tier values.
+// Works because T1/T2/T3_atom_p and T1/T2/T3_trig_p are defined per pair above.
+// EU T1: 9-12p | EU T2: 10.8-15p | EU T3: 13.5-19p
+// BTC T1: 184-246pt | BTC T2: 490-654pt | BTC T3: 1044-1392pt
+// (and so on for every supported pair)
+cur_atom_p = working_tier == 1 ? T1_atom_p : working_tier == 2 ? T2_atom_p : T3_atom_p
 cur_trig_p = working_tier == 1 ? T1_trig_p : working_tier == 2 ? T2_trig_p : T3_trig_p
 
 bear_atom_cond = pair_supported and in_bias and tier_ok and up_move_p >= (cur_atom_p * atom_buffer) and up_move_p < cur_trig_p and close < open and barstate.isconfirmed
@@ -300,6 +301,8 @@ if i_show_panel and barstate.islast
     table.cell(tp, 0, 8, "VALID UNTIL", text_color=color.white,  text_size=size.tiny,   text_halign=text.align_left)
     table.cell(tp, 1, 8, valid_str,     text_color=color.white,  text_size=size.tiny,   text_halign=text.align_center)
 
+// alertcondition: {{close}} = entry. SL/TP/BE/R require Pine math — only in alert() above.
+// Use "Any alert() function call" for full Copygram JSON with SL/TP/BE/R on any signal type.
 alertcondition(bear_tier_cond, "SNIPER TIER SHORT", "{\"action\":\"sell\",\"symbol\":\"{{ticker}}\",\"entry\":\"{{close}}\",\"stop_loss\":\"\",\"take_profit\":\"\",\"message\":\"TIER SHORT {{ticker}} | Entry:{{close}} | {{timenow}} | TF:{{interval}}\"}")
 alertcondition(bull_tier_cond, "SNIPER TIER LONG",  "{\"action\":\"buy\",\"symbol\":\"{{ticker}}\",\"entry\":\"{{close}}\",\"stop_loss\":\"\",\"take_profit\":\"\",\"message\":\"TIER LONG {{ticker}} | Entry:{{close}} | {{timenow}} | TF:{{interval}}\"}")
 alertcondition(bear_atom_cond, "SNIPER ATOM SHORT", "{\"action\":\"sell\",\"symbol\":\"{{ticker}}\",\"entry\":\"{{close}}\",\"stop_loss\":\"\",\"take_profit\":\"\",\"message\":\"ATOM SHORT {{ticker}} | Entry:{{close}} | {{timenow}} | TF:{{interval}}\"}")
