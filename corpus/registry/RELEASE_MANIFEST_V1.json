@@ -1,0 +1,281 @@
+{
+  "release": "ARTISTIC_CONCEPTION_FIRST_EDITION_V1",
+  "generated_at_utc": "2026-08-01T21:50:52.803870+00:00",
+  "counts": {
+    "manual_chapters": 8,
+    "retrieval_chunks": 89,
+    "knowledge_units": 3673,
+    "formalized_rules": 427,
+    "canonical_concepts": 79,
+    "graph_nodes": 94,
+    "graph_edges": 138
+  },
+  "file_count": 53,
+  "files": [
+    {
+      "path": "AI_READY/AI_USE_GUIDE_V1.md",
+      "bytes": 1415,
+      "sha256": "1ab6141aad57af2b07d9324bf2933f77bb0c53eb2d2438145f77c26fd925003c"
+    },
+    {
+      "path": "AI_READY/formalized_rules_v1.jsonl",
+      "bytes": 348193,
+      "sha256": "7465d05d532db1cf94544b83039e7935cd2c87f23e85f4b2c43cfb18fb8acbd4"
+    },
+    {
+      "path": "AI_READY/knowledge_units_v1.jsonl",
+      "bytes": 3857115,
+      "sha256": "b75ef118406cb63185270660981d7ea26720777e1f0cb1573236f33b8e672989"
+    },
+    {
+      "path": "AI_READY/retrieval_chunks_baskets_sessions_v1.jsonl",
+      "bytes": 13443,
+      "sha256": "5cfc281ce8876255f7a4f58578212b74b4d94dd882ea8687b8f8647039ca4393"
+    },
+    {
+      "path": "AI_READY/retrieval_chunks_foundations_telit_v1.jsonl",
+      "bytes": 9632,
+      "sha256": "6f8a24824cecc89aa868f68b6993439aef54d465c5563c97563c98a12ccb38a7"
+    },
+    {
+      "path": "AI_READY/retrieval_chunks_macro_v1.jsonl",
+      "bytes": 4192,
+      "sha256": "7bd8bcf7661853828446f9bb9471b27e7fbd219a40b0f5aabcc108cd22b4f9bd"
+    },
+    {
+      "path": "AI_READY/retrieval_chunks_oil_v1.jsonl",
+      "bytes": 11663,
+      "sha256": "86b66f31c7c3d25e61a0cc4c108e90ad62030ad24f884095d4d8b42a36b85599"
+    },
+    {
+      "path": "AI_READY/retrieval_chunks_stocks_v1.jsonl",
+      "bytes": 4937,
+      "sha256": "8a655f5cb197d52b68cfa3c5130174cf4b23b04f20ffe2b8e2e02c28321b238f"
+    },
+    {
+      "path": "AI_READY/retrieval_chunks_temporal_v1.jsonl",
+      "bytes": 5744,
+      "sha256": "419c4ce5a8ff35fa2c3de70dff6536c08cd9d9bc16fb240dd2a941aa8008ad09"
+    },
+    {
+      "path": "AI_READY/retrieval_chunks_unified_v1.json",
+      "bytes": 64919,
+      "sha256": "5d8170e46aefd2220e6c01f06e6cfe2042b5e3f74b61e806320b7c2151061761"
+    },
+    {
+      "path": "AI_READY/retrieval_chunks_unified_v1.jsonl",
+      "bytes": 55864,
+      "sha256": "6acbcb9d5ba7ce37f9ffc6b011d04c088841309821670824ec7a65022cefeb14"
+    },
+    {
+      "path": "EVIDENCE/claims_registry_v1.json",
+      "bytes": 355170,
+      "sha256": "7354c1303471e2dc2f2031c3cf90664a413697aed1f30689904402f0133d52e3"
+    },
+    {
+      "path": "EVIDENCE/contradictions_and_gaps_v1.md",
+      "bytes": 20683,
+      "sha256": "8f079ef506d229b8cec23af06847650279dca79eff4a8c426c4b28d0c8acf27e"
+    },
+    {
+      "path": "EVIDENCE/macro_claims_normalized_v1.json",
+      "bytes": 5790,
+      "sha256": "7df0da190063fc9fb2f27a9a340239575b651f4b765d76d9d9cc0c492d2b928a"
+    },
+    {
+      "path": "EVIDENCE/macro_contradictions_and_limits_v1.json",
+      "bytes": 2388,
+      "sha256": "9ec08cc4990bb1de88e7b3f6e9f08d61f26cfe69f7842e291cf9c2d4eacf9078"
+    },
+    {
+      "path": "EVIDENCE/macro_edge_provenance_v1.json",
+      "bytes": 835,
+      "sha256": "0cbf2295f40d65582afbb504256b9f3af7453f4034150f65979a16b8e6aab0ea"
+    },
+    {
+      "path": "EVIDENCE/oil_claims_normalized_v1.json",
+      "bytes": 13374,
+      "sha256": "a82e6da1c48fb5fb74c76b0e9136f44cc98b62b2817524a38dd04d041841ff45"
+    },
+    {
+      "path": "EVIDENCE/oil_contradictions_and_normalization_v1.json",
+      "bytes": 3385,
+      "sha256": "73bda25d4847987d41662788289da600810f1b1f1b886d35820ab1e36fdd36c6"
+    },
+    {
+      "path": "EVIDENCE/stock_claims_normalized_v1.json",
+      "bytes": 1278,
+      "sha256": "736d6c3a4c7fb86fbc9190182c86ff284e66b6c108e125820768c5e2d294a691"
+    },
+    {
+      "path": "EVIDENCE/stock_contradictions_and_limits_v1.json",
+      "bytes": 1912,
+      "sha256": "109a6c85b109eafdee7bea59aebff00be2f57ee40fbf62334aeefe729192f3d7"
+    },
+    {
+      "path": "EVIDENCE/stock_edge_provenance_v1.json",
+      "bytes": 854,
+      "sha256": "b1fb5bf6d4c25ebebcc8526d0caf1ed0b338cabb5a2a655f3f84a9cfe202b105"
+    },
+    {
+      "path": "EVIDENCE/telit_edge_provenance_v1.json",
+      "bytes": 3639,
+      "sha256": "b42f214d0b600d24815bbfea9008c3847376a40534530448313055a20f390bf9"
+    },
+    {
+      "path": "GRAPH/basket_session_architecture_v1.mmd",
+      "bytes": 561,
+      "sha256": "a9a3d0cdcc2f7ecc606332e4730138c9861e33c9f2c7dc99e72da9400c444fd4"
+    },
+    {
+      "path": "GRAPH/concept_relationships_v1.json",
+      "bytes": 108054,
+      "sha256": "ae8af05d56ca8953d911ea0d37f73f8c78f0fddfedf0f847897b4b7bf0b69550"
+    },
+    {
+      "path": "GRAPH/knowledge_graph_v1.json",
+      "bytes": 367792,
+      "sha256": "ac925fd88aaa8f160f0529149cda5b242f51aeaa633a6d56788552d93b0099a3"
+    },
+    {
+      "path": "GRAPH/macro_edge_decay_architecture_v1.mmd",
+      "bytes": 676,
+      "sha256": "8d9f2d02d8672f6e5ad8d863da754fd9de1f5e758ad4efee25ac35a34bd4d7f2"
+    },
+    {
+      "path": "GRAPH/oil_research_architecture_v1.mmd",
+      "bytes": 558,
+      "sha256": "e20745def28be62efe83449720575ada307d4e58b58d81f761dbded459145f50"
+    },
+    {
+      "path": "GRAPH/relationships_typed_v1.csv",
+      "bytes": 34413,
+      "sha256": "473401396e24e99670adc013edaac5b826813bcddda7f312c930dbab1b840526"
+    },
+    {
+      "path": "GRAPH/stock_framework_architecture_v1.mmd",
+      "bytes": 485,
+      "sha256": "a852ecf93c1ea2130383993672f46589773b59fa164edd3b95680dda45802757"
+    },
+    {
+      "path": "GRAPH/system_architecture_v1.mmd",
+      "bytes": 372,
+      "sha256": "a53b84e29244f2c9031241583d89d5648195b01ba900555947fd28e41fd66f01"
+    },
+    {
+      "path": "GRAPH/temporal_cycle_architecture_v1.mmd",
+      "bytes": 467,
+      "sha256": "e8f9faeb9259da7d8a9e20ae5d2c6d130b445e52e91a9031d52cd9f62092ce4b"
+    },
+    {
+      "path": "LOGIC/formalized_rules_v1.json",
+      "bytes": 397422,
+      "sha256": "7b8f9db388258efaaea56563c0fddba9706061b43b577a277fb67236d514cf9f"
+    },
+    {
+      "path": "LOGIC/macro_regimes_v1.json",
+      "bytes": 5042,
+      "sha256": "635db4505898876a161fbb6a90ccd7fd18a9cf483e2b8021d219355b6a2bd7dd"
+    },
+    {
+      "path": "LOGIC/oil_handoff_sequences_v1.json",
+      "bytes": 5215,
+      "sha256": "3592b031ebbe7ca84417c31a68a0f941896ed54532e457ba931b25e8d81c1bdb"
+    },
+    {
+      "path": "LOGIC/oil_models_v1.json",
+      "bytes": 5705,
+      "sha256": "3579dfa5e50b0481be387dc341d8be4cc44a3e30953e1dbe91c1e2e504e2c966"
+    },
+    {
+      "path": "LOGIC/playbooks_v1.json",
+      "bytes": 25895,
+      "sha256": "0d82a79dce6a2a56279a74df890c333d177ec4b4c56600057eb913332b267424"
+    },
+    {
+      "path": "LOGIC/rule_readiness_v1.json",
+      "bytes": 383940,
+      "sha256": "52b7441d43385935b6664acec5c2ab51555b146f2966300a18a5e4f1f143f05d"
+    },
+    {
+      "path": "LOGIC/state_transitions_v1.json",
+      "bytes": 6924,
+      "sha256": "7831a644c8513842b9e4be0652c2f49adc5ba843c31f0234dff2c3227330f608"
+    },
+    {
+      "path": "LOGIC/stock_framework_v1.json",
+      "bytes": 5960,
+      "sha256": "07653c8fa77bcefe8df0772bb7b53a01f483e055874431d05e1c6c321e1c2ff2"
+    },
+    {
+      "path": "LOGIC/systems_v1.json",
+      "bytes": 17307,
+      "sha256": "a6dc6675c76c61b7a9277842b3e34ad2b2b75540e7e52fcaf2c0bb8395029ba7"
+    },
+    {
+      "path": "LOGIC/temporal_cycle_registry_v1.json",
+      "bytes": 57072,
+      "sha256": "0cbcf0091d9b3126566a0e6151c687fc4f648a791b06353b702fb6cae7453aac"
+    },
+    {
+      "path": "LOGIC/unified_logic_bundle_v1.json",
+      "bytes": 1072441,
+      "sha256": "4835147f9448d9a95d6d0d5f136059c69d9956a8930fb46febe683e44223267b"
+    },
+    {
+      "path": "MANUAL/01_foundations_v1.md",
+      "bytes": 6864,
+      "sha256": "6654c90ae030a7de4ebbee30eb638756f30c5d21a36925b0e96ce9854500259f"
+    },
+    {
+      "path": "MANUAL/02_telit_execution_ontology_v1.md",
+      "bytes": 9704,
+      "sha256": "e5632bd9591f08f981ea19d23b84d72a48f8b460692ebb25b9f84252d24d49dd"
+    },
+    {
+      "path": "MANUAL/03_basket_intelligence_architecture_v1.md",
+      "bytes": 10336,
+      "sha256": "bcd2dfc65c7e8b8775f30c0772d9578f76e4da8e2f6a30f0a747c8d9883d3a63"
+    },
+    {
+      "path": "MANUAL/04_session_architecture_v1.md",
+      "bytes": 9103,
+      "sha256": "ca8911809be17d70afc47de6bc4205f969c02219e8bc1dc62b8decfde2d1eb48"
+    },
+    {
+      "path": "MANUAL/05_temporal_calendar_cycle_engine_v1.md",
+      "bytes": 7388,
+      "sha256": "7dbad547b43c5a46fe692d4a3eb24889fd67ab2b5bb73efd8a183f2e10afcced"
+    },
+    {
+      "path": "MANUAL/06_wti_oilusd_research_handoffs_v1.md",
+      "bytes": 7629,
+      "sha256": "c9550f7d8073a20c9253040526d7dcbb99f2c36c408cdd9f4889a74bc6a95547"
+    },
+    {
+      "path": "MANUAL/07_macro_projection_edge_decay_v1.md",
+      "bytes": 7246,
+      "sha256": "7eae4c771046405ccfdddcbc141fe00a1bcffb42fc7fc29b08c8641006d4d57d"
+    },
+    {
+      "path": "MANUAL/08_stock_watchlist_holding_framework_v1.md",
+      "bytes": 5900,
+      "sha256": "b3f69726bae1c1252b7fa287bcbebc58d6b10d27eaffaac3d65a68ae700c0cac"
+    },
+    {
+      "path": "MANUAL/ARTISTIC_CONCEPTION_FIRST_EDITION_V1.md",
+      "bytes": 67332,
+      "sha256": "a32f9c98e6bb5f55772db38e397fe206d5623a97b3df6f0703f0b777f12d3de5"
+    },
+    {
+      "path": "RELEASE_NOTES_M13.md",
+      "bytes": 872,
+      "sha256": "4cf6ae9c822ee793a83667d552f496add7fb3a8b289c54a004cb433f31c48b03"
+    },
+    {
+      "path": "SOURCE_INDEX/master_source_index_v1.json",
+      "bytes": 3135,
+      "sha256": "68edaa512e5f81c869d04982f2420700757f5468ae00d529babde020bfeffaf1"
+    }
+  ]
+}
