@@ -1,0 +1,83 @@
+{
+  "release": "ARTISTIC_CONCEPTION_FIRST_EDITION_V1",
+  "generated_at_utc": "2026-08-01T21:50:52.627290+00:00",
+  "chapters": [
+    {
+      "chapter_number": 1,
+      "title": "Volume I — Foundations",
+      "source_path": "07_MANUAL/chapters/01_foundations_v1.md",
+      "filename": "01_foundations_v1.md"
+    },
+    {
+      "chapter_number": 2,
+      "title": "Volume I — T.E.L.I.T. Execution Ontology",
+      "source_path": "07_MANUAL/chapters/02_telit_execution_ontology_v1.md",
+      "filename": "02_telit_execution_ontology_v1.md"
+    },
+    {
+      "chapter_number": 3,
+      "title": "Chapter 3 — Basket Intelligence Architecture",
+      "source_path": "07_MANUAL/chapters/03_basket_intelligence_architecture_v1.md",
+      "filename": "03_basket_intelligence_architecture_v1.md"
+    },
+    {
+      "chapter_number": 4,
+      "title": "Chapter 4 — Session Architecture: Truth, Confirmation, and Delivery",
+      "source_path": "07_MANUAL/chapters/04_session_architecture_v1.md",
+      "filename": "04_session_architecture_v1.md"
+    },
+    {
+      "chapter_number": 5,
+      "title": "Chapter 5 — Temporal and Calendar Cycle Engine",
+      "source_path": "07_MANUAL/chapters/05_temporal_calendar_cycle_engine_v1.md",
+      "filename": "05_temporal_calendar_cycle_engine_v1.md"
+    },
+    {
+      "chapter_number": 6,
+      "title": "Chapter 6 — WTI/OILUSD Research and Handoff Playbooks",
+      "source_path": "07_MANUAL/chapters/06_wti_oilusd_research_handoffs_v1.md",
+      "filename": "06_wti_oilusd_research_handoffs_v1.md"
+    },
+    {
+      "chapter_number": 7,
+      "title": "Chapter 7 — Macro Projection and Edge-Decay Layer",
+      "source_path": "07_MANUAL/chapters/07_macro_projection_edge_decay_v1.md",
+      "filename": "07_macro_projection_edge_decay_v1.md"
+    },
+    {
+      "chapter_number": 8,
+      "title": "Chapter 8 — Stock Watchlist and Holding-Horizon Framework",
+      "source_path": "07_MANUAL/chapters/08_stock_watchlist_holding_framework_v1.md",
+      "filename": "08_stock_watchlist_holding_framework_v1.md"
+    }
+  ],
+  "retrieval_sources": [
+    "08_AI_READY/retrieval_chunks_baskets_sessions_v1.jsonl",
+    "08_AI_READY/retrieval_chunks_foundations_telit_v1.jsonl",
+    "08_AI_READY/retrieval_chunks_macro_v1.jsonl",
+    "08_AI_READY/retrieval_chunks_oil_v1.jsonl",
+    "08_AI_READY/retrieval_chunks_stocks_v1.jsonl",
+    "08_AI_READY/retrieval_chunks_temporal_v1.jsonl"
+  ],
+  "logic_sources": [
+    "04_LOGIC/systems_v1.json",
+    "04_LOGIC/playbooks_v1.json",
+    "04_LOGIC/state_transitions_v1.json",
+    "04_LOGIC/formalized_rules_v1.json",
+    "04_LOGIC/rule_readiness_v1.json",
+    "04_LOGIC/temporal_cycle_registry_v1.json",
+    "04_LOGIC/oil_models_v1.json",
+    "04_LOGIC/oil_handoff_sequences_v1.json",
+    "04_LOGIC/macro_regimes_v1.json",
+    "04_LOGIC/stock_framework_v1.json"
+  ],
+  "graph_directory": "GRAPH/",
+  "evidence_directory": "EVIDENCE/",
+  "known_missing_linked_files": [
+    "Untitled.md",
+    "trading/TRADING MANUL.md",
+    "INTELLIGENCE AND CONSCIOUSNESS/Trading spaces.md",
+    "trading/ART OF TRADE.md"
+  ],
+  "duplicate_chunk_ids_resolved": []
+}
