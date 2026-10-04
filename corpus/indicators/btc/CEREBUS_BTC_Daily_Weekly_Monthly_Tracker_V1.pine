@@ -1,0 +1,861 @@
+//@version=5
+// CEREBUS BTC Daily Distribution + News + Rekey Tracker V1
+// Research architecture: Daily range state + direction asymmetry + 100/125/132/168/185 state ladder
+// + Forex Factory scheduled news + event-family tolerance bands + event decay.
+//
+// Forex Factory feed framework credit: toodegrees
+// Uses public TradingView libraries and Pine Seeds feed demonstrated in the user-supplied reference script.
+// CEREBUS research/model logic: GLX / CEREBUS research project.
+
+import toodegrees/forex_factory_utility/14 as ffUtil
+import toodegrees/forex_factory_decoding/27 as ffDec
+
+indicator("CEREBUS BTC Daily + Weekly + Monthly Tracker V1", shorttitle="CEREBUS BTC V1", overlay=true,
+     max_lines_count=500, max_labels_count=500, max_boxes_count=100)
+
+// =================================================================================================
+// 0. TIMEFRAME / CORE INPUTS
+// =================================================================================================
+if timeframe.in_seconds(timeframe.period) > 3600
+    runtime.error("CEREBUS BTC V1 is calibrated on M5. Use 60-minute timeframe or lower; M5 recommended.")
+
+string TZ_NY = "America/New_York"
+float pipSize = input.float(1.0, "BTC point size", step=0.1, group="CEREBUS Core", tooltip="Research calibration uses $1 BTC price units.")
+bool showStateLevels = input.bool(true, "Plot 100/125/132/168/185/220", group="CEREBUS Core")
+bool showDir50 = input.bool(true, "Plot directional 50% extension", group="CEREBUS Core")
+bool showNewsBands = input.bool(true, "Plot active news Q50/Q75/Q90", group="CEREBUS Core")
+bool showDashboard = input.bool(true, "Show Daily dashboard", group="CEREBUS Core")
+bool showWeeklyDashboard = input.bool(true, "Show Weekly dashboard", group="BTC Higher-Timeframe Trackers")
+bool showMonthlyDashboard = input.bool(true, "Show Monthly dashboard", group="BTC Higher-Timeframe Trackers")
+bool showWeeklyLevels = input.bool(false, "Plot Weekly projected range bands", group="BTC Higher-Timeframe Trackers")
+bool showMonthlyLevels = input.bool(false, "Plot Monthly projected range bands", group="BTC Higher-Timeframe Trackers")
+
+// =================================================================================================
+// 1. FOREX FACTORY FEED (USD MEDIUM + HIGH FOR BTC)
+// =================================================================================================
+bool ffHigh = input.bool(true, "High impact", group="News Feed", inline="imp")
+bool ffMed  = input.bool(true, "Medium impact", group="News Feed", inline="imp")
+bool ffEUR  = input.bool(false, "EUR (off for BTC)", group="News Feed", inline="cur")
+bool ffUSD  = input.bool(true, "USD", group="News Feed", inline="cur")
+bool showNewsMarkers = input.bool(true, "Show FF event markers", group="News Feed")
+bool showFFTable = input.bool(false, "Show FF week table", group="News Feed")
+string displayTz = input.string("America/New_York", "Display timezone", options=["America/New_York","UTC","Europe/London","Europe/Berlin"], group="News Feed")
+
+requestData() =>
+    [request.seed("seed_toodegrees_toogit","TOODEGREES_FOREX_FACTORY_SLOT_1",str.tostring(open)+","+str.tostring(high)+","+str.tostring(low)+","+str.tostring(close)+","+str.tostring(volume)),
+     request.seed("seed_toodegrees_toogit","TOODEGREES_FOREX_FACTORY_SLOT_2",str.tostring(open)+","+str.tostring(high)+","+str.tostring(low)+","+str.tostring(close)+","+str.tostring(volume)),
+     request.seed("seed_toodegrees_toogit","TOODEGREES_FOREX_FACTORY_SLOT_3",str.tostring(open)+","+str.tostring(high)+","+str.tostring(low)+","+str.tostring(close)+","+str.tostring(volume)),
+     request.seed("seed_toodegrees_toogit","TOODEGREES_FOREX_FACTORY_SLOT_4",str.tostring(open)+","+str.tostring(high)+","+str.tostring(low)+","+str.tostring(close)+","+str.tostring(volume)),
+     request.seed("seed_toodegrees_toogit","TOODEGREES_FOREX_FACTORY_SLOT_5",str.tostring(open)+","+str.tostring(high)+","+str.tostring(low)+","+str.tostring(close)+","+str.tostring(volume)),
+     request.seed("seed_toodegrees_toogit","TOODEGREES_FOREX_FACTORY_SLOT_6",str.tostring(open)+","+str.tostring(high)+","+str.tostring(low)+","+str.tostring(close)+","+str.tostring(volume)),
+     request.seed("seed_toodegrees_toogit","TOODEGREES_FOREX_FACTORY_SLOT_7",str.tostring(open)+","+str.tostring(high)+","+str.tostring(low)+","+str.tostring(close)+","+str.tostring(volume)),
+     request.seed("seed_toodegrees_toogit","TOODEGREES_FOREX_FACTORY_SLOT_8",str.tostring(open)+","+str.tostring(high)+","+str.tostring(low)+","+str.tostring(close)+","+str.tostring(volume)),
+     request.seed("seed_toodegrees_toogit","TOODEGREES_FOREX_FACTORY_SLOT_9",str.tostring(open)+","+str.tostring(high)+","+str.tostring(low)+","+str.tostring(close)+","+str.tostring(volume))]
+
+method processData(ffUtil.News[] N, string S1, string S2, string S3, string S4, string S5, string S6, string S7, string S8, string S9) =>
+    ffDec.readNews(N,S1), ffDec.readNews(N,S2), ffDec.readNews(N,S3)
+    ffDec.readNews(N,S4), ffDec.readNews(N,S5), ffDec.readNews(N,S6)
+    ffDec.readNews(N,S7), ffDec.readNews(N,S8), ffDec.readNews(N,S9)
+
+f_deduplicateNews(ffUtil.News[] newsArray) =>
+    uniqueNews = array.new<ffUtil.News>()
+    if array.size(newsArray) > 0
+        for i = 0 to array.size(newsArray) - 1
+            ev = array.get(newsArray, i)
+            bool duplicate = false
+            if array.size(uniqueNews) > 0
+                for j = 0 to array.size(uniqueNews) - 1
+                    ex = array.get(uniqueNews, j)
+                    if ev.tmst == ex.tmst and ev.ttl == ex.ttl
+                        duplicate := true
+                        break
+            if not duplicate
+                array.push(uniqueNews, ev)
+    uniqueNews
+
+f_isOfficialEUR(string ttl) =>
+    string s = str.lower(ttl)
+    bool countrySpecific = str.contains(s,"german") or str.contains(s,"french") or str.contains(s,"italian") or str.contains(s,"spanish") or str.contains(s,"dutch") or str.contains(s,"belgian") or str.contains(s,"austrian") or str.contains(s,"irish") or str.contains(s,"greek") or str.contains(s,"finnish") or str.contains(s,"portuguese")
+    not countrySpecific
+
+f_modelFilter(ffUtil.News[] newsArray) =>
+    out = array.new<ffUtil.News>()
+    if array.size(newsArray) > 0
+        for i = 0 to array.size(newsArray) - 1
+            ev = array.get(newsArray, i)
+            bool keep = ev.cur == "USD"
+            if keep
+                array.push(out, ev)
+    f_deduplicateNews(out)
+
+var currWeek = array.new<ffUtil.News>()
+var nextWeek = array.new<ffUtil.News>()
+var modelWeek = array.new<ffUtil.News>()
+[slot1,slot2,slot3,slot4,slot5,slot6,slot7,slot8,slot9] = requestData()
+
+if timeframe.change("W")
+    nextWeek := ffUtil.bubbleSort_News(nextWeek)
+    currWeek := nextWeek.copy()
+    currWeek := ffUtil.weekNews(currWeek,
+         ffUtil.curFilter(false,false,false,false,false,ffEUR,false,false,false,ffUSD),
+         ffUtil.impFilter(false,false,ffMed,ffHigh))
+    modelWeek := f_modelFilter(currWeek)
+    nextWeek.clear()
+
+nextWeek.processData(slot1,slot2,slot3,slot4,slot5,slot6,slot7,slot8,slot9)
+
+// Optional native FF visuals.
+if showNewsMarkers and timeframe.change("W") and array.size(modelWeek) > 0
+    ffUtil.FF_OnChartLine(modelWeek, ffUtil.lineTrnsp("Heavy"), ffUtil.lineStyle("Solid"))
+if showNewsMarkers and array.size(modelWeek) > 0
+    ffUtil.FF_OnChartLabel(modelWeek, "Auto", ffUtil.size("Small"), true)
+
+var ffTable = ffUtil.newTable(ffUtil.boxLoc("Right", "Bottom"))
+if showFFTable and barstate.islast and array.size(modelWeek) > 0
+    ffTable := ffUtil.FF_Table(modelWeek, ffUtil.boxLoc("Right", "Bottom"), "Tiny", #dee1e9, #283c70, #000000, #dee1e9)
+else if not showFFTable
+    ffTable.delete()
+
+// =================================================================================================
+// 2. EVENT FAMILY CLASSIFICATION + RESEARCH BANDS
+// =================================================================================================
+f_family(string cur, string ttl) =>
+    string s = str.lower(ttl)
+    string fam = "UNMODELED"
+    bool speaks = str.contains(s,"speaks") or str.contains(s,"speech")
+    if str.contains(s,"cpi") or str.contains(s,"consumer price")
+        fam := "CPI"
+    else if cur == "USD" and (str.contains(s,"non-farm") or str.contains(s,"nonfarm") or str.contains(s,"payroll") or str.contains(s,"unemployment rate"))
+        fam := "NFP_LABOR"
+    else if cur == "EUR" and (str.contains(s,"employment change") or str.contains(s,"unemployment rate"))
+        fam := "NFP_LABOR"
+    else if str.contains(s,"ppi") or str.contains(s,"producer price")
+        fam := "PPI"
+    else if str.contains(s,"pce") or str.contains(s,"personal consumption expenditures")
+        fam := "PCE"
+    else if str.contains(s,"ism") or str.contains(s,"pmi") or str.contains(s,"purchasing managers")
+        fam := "PMI_ISM"
+    else if str.contains(s,"retail sales")
+        fam := "RETAIL_SALES"
+    else if str.contains(s,"gdp") or str.contains(s,"gross domestic product")
+        fam := "GDP"
+    else if cur == "USD" and (str.contains(s,"jobless") or str.contains(s,"unemployment claims"))
+        fam := "JOBLESS_CLAIMS"
+    else if cur == "USD" and (str.contains(s,"federal funds rate") or str.contains(s,"interest rate decision"))
+        fam := "RATE_DECISION"
+    else if cur == "EUR" and (str.contains(s,"main refinancing rate") or str.contains(s,"deposit facility rate") or str.contains(s,"interest rate decision"))
+        fam := "RATE_DECISION"
+    else if cur == "USD" and str.contains(s,"fomc") and not speaks
+        fam := "FED_FOMC"
+    else if cur == "EUR" and str.contains(s,"ecb") and not speaks
+        fam := "ECB"
+    fam
+
+// Returns [Q25,Q50,Q75,Q90] in BTC dollars for the requested event horizon.
+f_band(string cur, string fam, int h) =>
+    float q25 = na
+    float q50 = na
+    float q75 = na
+    float q90 = na
+    if cur == "USD" and fam == "CPI"
+        if h == 15
+            q25:=357.4, q50:=598.8, q75:=977.1, q90:=1417.7
+        else if h == 30
+            q25:=453.4, q50:=651.0, q75:=1065.5, q90:=1511.7
+        else if h == 60
+            q25:=464.4, q50:=829.7, q75:=1373.1, q90:=1721.1
+        else
+            q25:=565.0, q50:=1318.5, q75:=2026.0, q90:=2501.2
+    else if cur == "USD" and fam == "NFP_LABOR"
+        if h == 15
+            q25:=135.1, q50:=276.5, q75:=540.1, q90:=1123.3
+        else if h == 30
+            q25:=216.1, q50:=397.0, q75:=655.0, q90:=1168.3
+        else if h == 60
+            q25:=265.5, q50:=508.1, q75:=789.1, q90:=1317.7
+        else
+            q25:=412.1, q50:=884.3, q75:=1404.0, q90:=2248.0
+    else if cur == "USD" and fam == "PPI"
+        if h == 15
+            q25:=179.7, q50:=342.3, q75:=620.5, q90:=1099.5
+        else if h == 30
+            q25:=181.6, q50:=370.3, q75:=714.2, q90:=1099.5
+        else if h == 60
+            q25:=263.7, q50:=540.7, q75:=772.4, q90:=1227.6
+        else
+            q25:=417.0, q50:=930.2, q75:=1302.0, q90:=1902.0
+    else if cur == "USD" and fam == "PCE"
+        if h == 15
+            q25:=185.3, q50:=264.3, q75:=500.0, q90:=808.2
+        else if h == 30
+            q25:=257.0, q50:=362.1, q75:=581.6, q90:=972.3
+        else if h == 60
+            q25:=261.4, q50:=459.6, q75:=636.7, q90:=1364.8
+        else
+            q25:=462.2, q50:=872.6, q75:=1318.2, q90:=1858.6
+    else if cur == "USD" and fam == "PMI_ISM"
+        if h == 15
+            q25:=134.3, q50:=342.7, q75:=603.4, q90:=874.2
+        else if h == 30
+            q25:=181.1, q50:=473.0, q75:=786.8, q90:=1243.9
+        else if h == 60
+            q25:=266.4, q50:=740.8, q75:=1008.6, q90:=1678.4
+        else
+            q25:=422.0, q50:=888.8, q75:=1402.1, q90:=1942.7
+    else if cur == "USD" and fam == "RETAIL_SALES"
+        if h == 15
+            q25:=120.5, q50:=229.9, q75:=520.3, q90:=689.3
+        else if h == 30
+            q25:=162.4, q50:=334.3, q75:=641.2, q90:=873.0
+        else if h == 60
+            q25:=266.0, q50:=440.1, q75:=715.5, q90:=986.9
+        else
+            q25:=332.8, q50:=856.3, q75:=1383.0, q90:=1849.2
+    else if cur == "USD" and fam == "GDP"
+        if h == 15
+            q25:=131.1, q50:=295.5, q75:=433.6, q90:=596.6
+        else if h == 30
+            q25:=147.3, q50:=376.9, q75:=509.2, q90:=601.2
+        else if h == 60
+            q25:=252.9, q50:=417.6, q75:=743.4, q90:=896.6
+        else
+            q25:=365.4, q50:=897.4, q75:=1217.5, q90:=1853.0
+    else if cur == "USD" and fam == "JOBLESS_CLAIMS"
+        if h == 15
+            q25:=123.7, q50:=242.1, q75:=431.6, q90:=690.8
+        else if h == 30
+            q25:=158.8, q50:=320.3, q75:=516.4, q90:=979.3
+        else if h == 60
+            q25:=252.0, q50:=420.4, q75:=709.2, q90:=1044.9
+        else
+            q25:=368.9, q50:=836.2, q75:=1304.8, q90:=1857.3
+    else if cur == "USD" and fam == "FED_FOMC"
+        if h == 15
+            q25:=192.4, q50:=345.7, q75:=600.5, q90:=947.5
+        else if h == 30
+            q25:=232.6, q50:=441.7, q75:=785.2, q90:=1265.8
+        else if h == 60
+            q25:=320.8, q50:=652.5, q75:=993.2, q90:=1620.1
+        else
+            q25:=443.5, q50:=914.4, q75:=1501.1, q90:=2273.4
+    else if cur == "USD" and fam == "RATE_DECISION"
+        if h == 15
+            q25:=344.2, q50:=632.4, q75:=884.9, q90:=1264.3
+        else if h == 30
+            q25:=353.3, q50:=666.7, q75:=921.5, q90:=1455.1
+        else if h == 60
+            q25:=595.0, q50:=873.2, q75:=1580.9, q90:=2101.8
+        else
+            q25:=718.8, q50:=1156.4, q75:=2260.8, q90:=2585.1
+    [q25,q50,q75,q90]
+
+f_residue(string cur, string fam) =>
+    float r = na
+    if cur == "USD" and fam == "CPI"
+        r := 125
+    else if cur == "USD" and fam == "NFP_LABOR"
+        r := 145
+    else if cur == "USD" and fam == "PPI"
+        r := 150
+    else if cur == "USD" and fam == "PCE"
+        r := 125
+    else if cur == "USD" and fam == "PMI_ISM"
+        r := 110
+    else if cur == "USD" and fam == "RETAIL_SALES"
+        r := 150
+    else if cur == "USD" and fam == "GDP"
+        r := 140
+    else if cur == "USD" and fam == "JOBLESS_CLAIMS"
+        r := 140
+    else if cur == "USD" and fam == "FED_FOMC"
+        r := 130
+    else if cur == "USD" and fam == "RATE_DECISION"
+        r := 133
+    r
+
+f_validation(string cur, string fam) =>
+    string s = "UNRATED"
+    if cur == "USD" and (fam == "CPI" or fam == "FED_FOMC" or fam == "RATE_DECISION")
+        s := "BTC STRONG"
+    else if cur == "USD" and (fam == "PPI" or fam == "RETAIL_SALES" or fam == "PCE")
+        s := "BTC POSITIVE"
+    else if cur == "USD" and (fam == "NFP_LABOR" or fam == "PMI_ISM" or fam == "GDP" or fam == "JOBLESS_CLAIMS")
+        s := "BTC MIXED"
+    string s = "UNRATED"
+    if cur == "USD" and (fam == "PCE" or fam == "PMI_ISM" or fam == "FED_FOMC" or fam == "JOBLESS_CLAIMS")
+        s := "ROBUST"
+    else if cur == "USD" and (fam == "NFP_LABOR" or fam == "PPI" or fam == "GDP" or fam == "RETAIL_SALES")
+        s := "PROMISING"
+    else if cur == "USD" and fam == "CPI"
+        s := "EXPLORATORY CAL"
+    else if cur == "EUR" and (fam == "CPI" or fam == "ECB")
+        s := "ROBUST"
+    else if cur == "EUR" and (fam == "NFP_LABOR" or fam == "GDP")
+        s := "PROMISING"
+    else if cur == "EUR" and fam == "RATE_DECISION"
+        s := "EXPLORATORY"
+    s
+
+// =================================================================================================
+// 3. ASIAN RANGE / RESEARCH DAY STATE (19:00-03:00 NEW YORK)
+// =================================================================================================
+int hNY = hour(time, TZ_NY)
+int mNY = minute(time, TZ_NY)
+bool inAsian = hNY >= 19 or hNY < 3
+bool prevAsian = bar_index > 0 ? inAsian[1] : false
+bool asianStart = inAsian and not prevAsian
+bool asianEnd = not inAsian and prevAsian
+
+var float asianH = na
+var float asianL = na
+var float asianO = na
+var float lockedAH = na
+var float lockedAL = na
+var float lockedAO = na
+var float sessionH = na
+var float sessionL = na
+
+if asianStart
+    asianH := high
+    asianL := low
+    asianO := open
+    sessionH := high
+    sessionL := low
+else if inAsian
+    asianH := na(asianH) ? high : math.max(asianH, high)
+    asianL := na(asianL) ? low  : math.min(asianL, low)
+    sessionH := na(sessionH) ? high : math.max(sessionH, high)
+    sessionL := na(sessionL) ? low  : math.min(sessionL, low)
+
+if asianEnd
+    lockedAH := asianH
+    lockedAL := asianL
+    lockedAO := asianO
+    sessionH := lockedAH
+    sessionL := lockedAL
+
+bool postAsian = not na(lockedAH) and not inAsian
+if postAsian
+    sessionH := na(sessionH) ? high : math.max(sessionH, high)
+    sessionL := na(sessionL) ? low  : math.min(sessionL, low)
+
+float ar = not na(lockedAH) and not na(lockedAL) ? lockedAH - lockedAL : na
+float arP = not na(ar) ? ar / pipSize : na
+string tier = na(arP) ? "NA" : arP < 750 ? "T1" : arP < 1700 ? "T2" : arP < 3000 ? "T3" : "NO_GO"
+string asianBias = na(ar) ? "NA" : (lockedAH - lockedAO) > (lockedAO - lockedAL) ? "BULLISH" : (lockedAH - lockedAO) < (lockedAO - lockedAL) ? "BEARISH" : "NEUTRAL"
+
+float up125 = not na(ar) ? lockedAH + 0.25*ar : na
+float dn125 = not na(ar) ? lockedAL - 0.25*ar : na
+float up132 = not na(ar) ? lockedAH + 0.32*ar : na
+float dn132 = not na(ar) ? lockedAL - 0.32*ar : na
+float up168 = not na(ar) ? lockedAH + 0.68*ar : na
+float dn168 = not na(ar) ? lockedAL - 0.68*ar : na
+float up185 = not na(ar) ? lockedAH + 0.85*ar : na
+float dn185 = not na(ar) ? lockedAL - 0.85*ar : na
+float up220 = not na(ar) ? lockedAH + 1.20*ar : na
+float dn220 = not na(ar) ? lockedAL - 1.20*ar : na
+float up150 = not na(ar) ? lockedAH + 0.50*ar : na
+float dn150 = not na(ar) ? lockedAL - 0.50*ar : na
+
+bool up125C = postAsian and sessionH >= up125
+bool dn125C = postAsian and sessionL <= dn125
+bool up132C = postAsian and sessionH >= up132
+bool dn132C = postAsian and sessionL <= dn132
+bool up168C = postAsian and sessionH >= up168
+bool dn168C = postAsian and sessionL <= dn168
+bool up185C = postAsian and sessionH >= up185
+bool dn185C = postAsian and sessionL <= dn185
+bool up220C = postAsian and sessionH >= up220
+bool dn220C = postAsian and sessionL <= dn220
+
+// Track directional extension vs opposite 132 order.
+var int dir25Bar = na
+var int dir50Bar = na
+var int opp132Bar = na
+if asianEnd
+    dir25Bar := na
+    dir50Bar := na
+    opp132Bar := na
+if postAsian and asianBias == "BULLISH"
+    if na(dir25Bar) and high >= up125
+        dir25Bar := bar_index
+    if na(dir50Bar) and high >= up150
+        dir50Bar := bar_index
+    if na(opp132Bar) and low <= dn132
+        opp132Bar := bar_index
+else if postAsian and asianBias == "BEARISH"
+    if na(dir25Bar) and low <= dn125
+        dir25Bar := bar_index
+    if na(dir50Bar) and low <= dn150
+        dir50Bar := bar_index
+    if na(opp132Bar) and high >= up132
+        opp132Bar := bar_index
+
+bool dir25First = not na(dir25Bar) and (na(opp132Bar) or dir25Bar < opp132Bar)
+bool dir50First = not na(dir50Bar) and (na(opp132Bar) or dir50Bar < opp132Bar)
+string rekeyState = dir50First ? "HEAVY DOWNGRADE (~15%)" : dir25First ? "DOWNGRADE (~22%)" : not na(opp132Bar) ? "REKEY 132 PRINTED" : "BASE"
+
+// =================================================================================================
+// 4. DAILY RANGE-LEFT SURFACE (BTC M5-derived; 03:00-19:00 NY)
+// =================================================================================================
+var t1q50 = array.from(462.9,424.7,391.0,366.5,318.9,291.1,260.3,214.8,146.0,99.1,55.5,23.8,0.0,0.0,0.0,0.0,0.0)
+var t1q75 = array.from(902.0,839.2,793.7,737.0,714.6,685.8,604.7,525.4,461.3,377.2,289.9,215.8,163.1,98.3,24.1,0.0,0.0)
+var t1q90 = array.from(1559.5,1521.2,1468.9,1435.8,1359.2,1305.6,1198.4,1074.4,974.5,796.9,693.0,606.5,501.2,362.0,256.4,70.5,0.0)
+var t2q50 = array.from(1224.0,1097.9,991.1,937.0,897.6,827.9,720.7,541.1,356.1,209.2,111.5,0.0,0.0,0.0,0.0,0.0,0.0)
+var t2q75 = array.from(1948.4,1877.9,1759.1,1667.2,1600.3,1453.7,1298.2,1057.1,868.5,700.0,550.9,351.1,229.2,57.5,0.0,0.0,0.0)
+var t2q90 = array.from(3087.3,2986.8,2900.2,2831.3,2753.6,2625.6,2395.9,1962.4,1604.0,1298.2,1155.2,1000.0,812.6,591.3,310.2,74.7,0.0)
+var t3q50 = array.from(1170.8,1094.0,1018.1,994.9,895.5,872.5,795.5,654.8,444.0,261.0,91.1,0.0,0.0,0.0,0.0,0.0,0.0)
+var t3q75 = array.from(2117.8,1977.5,1776.4,1769.1,1609.3,1595.9,1593.4,1394.4,1111.7,858.2,637.1,405.3,276.2,0.0,0.0,0.0,0.0)
+var t3q90 = array.from(3606.7,3240.9,3240.9,2940.6,2918.8,2870.4,2853.6,2292.0,1971.8,1521.3,1202.3,1057.1,708.4,525.1,277.2,28.3,0.0)
+
+f_interp(float[] a, float x) =>
+    float xx = math.max(0.0, math.min(16.0, x))
+    int i = int(math.floor(xx))
+    int j = math.min(i + 1, 16)
+    float frac = xx - i
+    array.get(a,i) + (array.get(a,j)-array.get(a,i))*frac
+
+f_rangeLeft(string t, int q) =>
+    float pos = ((hNY - 3) * 60.0 + mNY) / 60.0
+    float v = na
+    if hNY >= 3 and hNY < 19 and t != "NO_GO"
+        if t == "T1"
+            v := q == 50 ? f_interp(t1q50,pos) : q == 75 ? f_interp(t1q75,pos) : f_interp(t1q90,pos)
+        else if t == "T2"
+            v := q == 50 ? f_interp(t2q50,pos) : q == 75 ? f_interp(t2q75,pos) : f_interp(t2q90,pos)
+        else if t == "T3"
+            v := q == 50 ? f_interp(t3q50,pos) : q == 75 ? f_interp(t3q75,pos) : f_interp(t3q90,pos)
+    v
+
+float remDay50 = f_rangeLeft(tier,50)
+float remDay75 = f_rangeLeft(tier,75)
+float remDay90 = f_rangeLeft(tier,90)
+float printedP = not na(sessionH) and not na(sessionL) ? (sessionH-sessionL)/pipSize : na
+
+// =================================================================================================
+// 5. DIRECTION / FRONTIER ENGINE
+// =================================================================================================
+string frontier = "125"
+float fUp = up125
+float fDn = dn125
+bool fUpC = up125C
+bool fDnC = dn125C
+if up125C and dn125C
+    frontier := "132", fUp := up132, fDn := dn132, fUpC := up132C, fDnC := dn132C
+if up132C and dn132C
+    frontier := "168", fUp := up168, fDn := dn168, fUpC := up168C, fDnC := dn168C
+if up168C and dn168C
+    frontier := "185", fUp := up185, fDn := dn185, fUpC := up185C, fDnC := dn185C
+if up185C and dn185C
+    frontier := "220", fUp := up220, fDn := dn220, fUpC := up220C, fDnC := dn220C
+if up220C and dn220C
+    frontier := "DONE"
+
+float dUp = frontier != "DONE" ? math.max((fUp-close)/pipSize,0) : na
+float dDn = frontier != "DONE" ? math.max((close-fDn)/pipSize,0) : na
+float asym = na
+string pref = "SYMMETRIC"
+string dirConf = "NONE"
+if frontier != "DONE"
+    if fUpC and not fDnC
+        pref := "UP", asym := 0.0, dirConf := "CONFIRMED"
+    else if fDnC and not fUpC
+        pref := "DOWN", asym := 0.0, dirConf := "CONFIRMED"
+    else if not fUpC and not fDnC and math.max(dUp,dDn) > 0
+        asym := math.min(dUp,dDn)/math.max(dUp,dDn)
+        pref := dUp < dDn ? "UP" : dDn < dUp ? "DOWN" : "SYMMETRIC"
+        dirConf := asym < 0.25 ? "VERY HIGH" : asym < 0.50 ? "HIGH" : asym < 0.75 ? "MODERATE" : "NONE"
+
+bool biasAgree = (pref == "UP" and asianBias == "BULLISH") or (pref == "DOWN" and asianBias == "BEARISH")
+string dirConfAdj = biasAgree and (dirConf == "VERY HIGH" or dirConf == "HIGH" or dirConf == "MODERATE") ? dirConf + "+" : dirConf
+
+f_nextState(string side) =>
+    string st = "DONE"
+    float px = na
+    if side == "UP"
+        if not up125C
+            st := "125", px := up125
+        else if not up132C
+            st := "132", px := up132
+        else if not up168C
+            st := "168", px := up168
+        else if not up185C
+            st := "185", px := up185
+        else if not up220C
+            st := "220", px := up220
+    else if side == "DOWN"
+        if not dn125C
+            st := "125", px := dn125
+        else if not dn132C
+            st := "132", px := dn132
+        else if not dn168C
+            st := "168", px := dn168
+        else if not dn185C
+            st := "185", px := dn185
+        else if not dn220C
+            st := "220", px := dn220
+    [st,px]
+
+[nextState,nextPx] = f_nextState(pref)
+float nextDist = pref == "UP" and not na(nextPx) ? math.max((nextPx-close)/pipSize,0) : pref == "DOWN" and not na(nextPx) ? math.max((close-nextPx)/pipSize,0) : na
+string upState = up220C ? "220" : up185C ? "185" : up168C ? "168" : up132C ? "132" : up125C ? "125" : "100"
+string dnState = dn220C ? "220" : dn185C ? "185" : dn168C ? "168" : dn132C ? "132" : dn125C ? "125" : "100"
+
+// =================================================================================================
+// 6. LIVE NEWS FIELD / TWO-CLOCK ENGINE
+// =================================================================================================
+int barLenMs = timeframe.in_seconds(timeframe.period) * 1000
+bool modeledNewsBar = false
+int detectTmst = na
+string detectTitle = ""
+string detectCur = ""
+string detectFam = ""
+float detectStrength = -1.0
+int detectCluster = 0
+
+if array.size(modelWeek) > 0
+    for i = 0 to array.size(modelWeek) - 1
+        ev = array.get(modelWeek, i)
+        if ev.tmst >= time and ev.tmst < time + barLenMs
+            string ef = f_family(ev.cur, ev.ttl)
+            if ef != "UNMODELED"
+                [b25,b50,b75,b90] = f_band(ev.cur,ef,60)
+                if not na(b50)
+                    detectCluster += 1
+                    if b50 > detectStrength
+                        detectStrength := b50
+                        detectTmst := ev.tmst
+                        detectTitle := ev.ttl
+                        detectCur := ev.cur
+                        detectFam := ef
+                        modeledNewsBar := true
+
+var int activeNewsTime = na
+var string activeTitle = ""
+var string activeCur = ""
+var string activeFam = ""
+var int activeCluster = 0
+var float newsRef = na
+var float newsH = na
+var float newsL = na
+
+if modeledNewsBar and (na(activeNewsTime) or detectTmst != activeNewsTime)
+    activeNewsTime := detectTmst
+    activeTitle := detectTitle
+    activeCur := detectCur
+    activeFam := detectFam
+    activeCluster := detectCluster
+    newsRef := nz(close[1],open)
+    newsH := high
+    newsL := low
+else if not na(activeNewsTime) and time >= activeNewsTime
+    newsH := na(newsH) ? high : math.max(newsH,high)
+    newsL := na(newsL) ? low : math.min(newsL,low)
+
+float newsAge = not na(activeNewsTime) ? (time - activeNewsTime)/60000.0 : na
+float residueMin = not na(activeNewsTime) ? f_residue(activeCur,activeFam) : na
+int newsHorizon = na(newsAge) ? 60 : newsAge <= 15 ? 15 : newsAge <= 30 ? 30 : newsAge <= 60 ? 60 : 120
+[nq25,nq50,nq75,nq90] = f_band(activeCur,activeFam,newsHorizon)
+float realizedNews = not na(newsRef) and not na(newsH) and not na(newsL) ? math.max(newsH-newsRef,newsRef-newsL)/pipSize : na
+float nRem50 = not na(nq50) and not na(realizedNews) ? math.max(nq50-realizedNews,0) : na
+float nRem75 = not na(nq75) and not na(realizedNews) ? math.max(nq75-realizedNews,0) : na
+float nRem90 = not na(nq90) and not na(realizedNews) ? math.max(nq90-realizedNews,0) : na
+string newsStatus = na(newsAge) ? "NONE" : newsAge < 0 ? "PRE" : newsAge <= 15 ? "SHOCK" : newsAge <= 60 ? "ACTIVE" : not na(residueMin) and newsAge <= residueMin ? "RESIDUE" : "EXHAUSTED"
+string reachZone = "NA"
+if not na(nextDist) and not na(nRem90) and newsStatus != "EXHAUSTED"
+    reachZone := nextDist <= nRem50 ? "CORE/HIGH" : nextDist <= nRem75 ? "MODERATE" : nextDist <= nRem90 ? "TAIL" : "OUTSIDE Q90"
+
+// Find the next modeled release for the dashboard.
+int nextTmst = na
+string nextTitleNews = ""
+string nextCurNews = ""
+string nextFamNews = ""
+if array.size(modelWeek) > 0
+    for i = 0 to array.size(modelWeek) - 1
+        ev = array.get(modelWeek, i)
+        if ev.tmst > time
+            string ef = f_family(ev.cur,ev.ttl)
+            if ef != "UNMODELED"
+                [x25,x50,x75,x90] = f_band(ev.cur,ef,60)
+                if not na(x50) and (na(nextTmst) or ev.tmst < nextTmst)
+                    nextTmst := ev.tmst
+                    nextTitleNews := ev.ttl
+                    nextCurNews := ev.cur
+                    nextFamNews := ef
+
+// News candle high/low persistence, inspired by the supplied open-source reference.
+type NewsLevel
+    line ln
+    label lb
+    float val
+    bool isHigh
+    int startBar
+    int startTime
+    bool broken
+
+var activeNewsLevels = array.new<NewsLevel>()
+if modeledNewsBar
+    string stamp = str.format_time(detectTmst,"MM-dd HH:mm",displayTz)
+    line lh = line.new(bar_index,high,bar_index,high,color=color.new(color.lime,20),width=1)
+    label bh = label.new(bar_index,high,"NEWS H " + stamp,style=label.style_none,textcolor=color.new(color.lime,0),size=size.tiny)
+    array.push(activeNewsLevels,NewsLevel.new(lh,bh,high,true,bar_index,time,false))
+    line ll = line.new(bar_index,low,bar_index,low,color=color.new(color.red,20),width=1)
+    label bl = label.new(bar_index,low,"NEWS L " + stamp,style=label.style_none,textcolor=color.new(color.red,0),size=size.tiny)
+    array.push(activeNewsLevels,NewsLevel.new(ll,bl,low,false,bar_index,time,false))
+
+if array.size(activeNewsLevels) > 0
+    for i = array.size(activeNewsLevels)-1 to 0
+        nl = array.get(activeNewsLevels,i)
+        if not nl.broken
+            line.set_x2(nl.ln,bar_index)
+            label.set_x(nl.lb,bar_index)
+            if bar_index > nl.startBar and ((nl.isHigh and high > nl.val) or (not nl.isHigh and low < nl.val))
+                nl.broken := true
+                label.set_text(nl.lb,"")
+            if (time-nl.startTime)/86400000.0 >= 2.0
+                line.delete(nl.ln), label.delete(nl.lb), array.remove(activeNewsLevels,i)
+        else if bar_index > nl.startBar + 12
+            line.delete(nl.ln), label.delete(nl.lb), array.remove(activeNewsLevels,i)
+
+
+// =================================================================================================
+// 6B. BTC WEEKLY + MONTHLY RANGE TRACKERS (SEPARATE FROM DAILY ENGINE)
+// =================================================================================================
+int dowNY = dayofweek(time, TZ_NY)
+int domNY = dayofmonth(time, TZ_NY)
+
+// ----- WEEKLY: Sunday 17:00 -> Monday 17:00 NY anchor -----
+bool monRangeWin = (dowNY == dayofweek.sunday and hNY >= 17) or (dowNY == dayofweek.monday and hNY < 17)
+bool prevMonRangeWin = bar_index > 0 ? monRangeWin[1] : false
+bool monRangeStart = monRangeWin and not prevMonRangeWin
+bool monRangeEnd = not monRangeWin and prevMonRangeWin
+
+var float mrH = na
+var float mrL = na
+var float mrO = na
+var float lockedMRH = na
+var float lockedMRL = na
+var float lockedMRO = na
+var float weekH = na
+var float weekL = na
+
+if monRangeStart
+    mrH := high
+    mrL := low
+    mrO := open
+    weekH := high
+    weekL := low
+else
+    if monRangeWin
+        mrH := na(mrH) ? high : math.max(mrH, high)
+        mrL := na(mrL) ? low : math.min(mrL, low)
+    if not na(weekH)
+        weekH := math.max(weekH, high)
+        weekL := math.min(weekL, low)
+
+if monRangeEnd
+    lockedMRH := mrH
+    lockedMRL := mrL
+    lockedMRO := mrO
+
+float mondayRange = not na(lockedMRH) and not na(lockedMRL) ? lockedMRH - lockedMRL : na
+float mondayRangePct = not na(mondayRange) and not na(lockedMRO) and lockedMRO != 0 ? 100.0 * mondayRange / lockedMRO : na
+string weekTier = na(mondayRangePct) ? "FORMING" : mondayRangePct < 3.19 ? "W-T1" : mondayRangePct < 4.42 ? "W-T2" : "W-T3"
+float wF50 = weekTier == "W-T1" ? 2.99 : weekTier == "W-T2" ? 2.12 : weekTier == "W-T3" ? 1.79 : na
+float wF75 = weekTier == "W-T1" ? 4.08 : weekTier == "W-T2" ? 2.88 : weekTier == "W-T3" ? 2.10 : na
+float wF90 = weekTier == "W-T1" ? 7.00 : weekTier == "W-T2" ? 3.72 : weekTier == "W-T3" ? 2.99 : na
+float weekPrinted = not na(weekH) and not na(weekL) ? weekH - weekL : na
+float weekQ50 = not na(mondayRange) ? mondayRange * wF50 : na
+float weekQ75 = not na(mondayRange) ? mondayRange * wF75 : na
+float weekQ90 = not na(mondayRange) ? mondayRange * wF90 : na
+float weekRem50 = not na(weekQ50) and not na(weekPrinted) ? math.max(weekQ50 - weekPrinted, 0) : na
+float weekRem75 = not na(weekQ75) and not na(weekPrinted) ? math.max(weekQ75 - weekPrinted, 0) : na
+float weekRem90 = not na(weekQ90) and not na(weekPrinted) ? math.max(weekQ90 - weekPrinted, 0) : na
+float weekProg50 = not na(weekQ50) and weekQ50 > 0 ? math.min(100.0, 100.0 * weekPrinted / weekQ50) : na
+
+// ----- MONTHLY: checkpoint tracker using Day 3 / 7 / 10 / 15 / 20 calendar-day ranges -----
+bool newMonthNY = bar_index == 0 or month(time, TZ_NY) != month(time[1], TZ_NY) or year(time, TZ_NY) != year(time[1], TZ_NY)
+var float monthH = na
+var float monthL = na
+var float mR3 = na
+var float mR7 = na
+var float mR10 = na
+var float mR15 = na
+var float mR20 = na
+
+if newMonthNY
+    monthH := high
+    monthL := low
+    mR3 := na
+    mR7 := na
+    mR10 := na
+    mR15 := na
+    mR20 := na
+else
+    monthH := na(monthH) ? high : math.max(monthH, high)
+    monthL := na(monthL) ? low : math.min(monthL, low)
+
+bool monthDayClose = hNY == 23 and mNY == 55
+if monthDayClose and domNY == 3
+    mR3 := monthH - monthL
+if monthDayClose and domNY == 7
+    mR7 := monthH - monthL
+if monthDayClose and domNY == 10
+    mR10 := monthH - monthL
+if monthDayClose and domNY == 15
+    mR15 := monthH - monthL
+if monthDayClose and domNY == 20
+    mR20 := monthH - monthL
+
+string monthCheckpoint = not na(mR20) ? "D20" : not na(mR15) ? "D15" : not na(mR10) ? "D10" : not na(mR7) ? "D7" : not na(mR3) ? "D3" : "FORMING"
+float monthBaseRange = monthCheckpoint == "D20" ? mR20 : monthCheckpoint == "D15" ? mR15 : monthCheckpoint == "D10" ? mR10 : monthCheckpoint == "D7" ? mR7 : monthCheckpoint == "D3" ? mR3 : na
+float mF50 = monthCheckpoint == "D20" ? 1.08 : monthCheckpoint == "D15" ? 1.26 : monthCheckpoint == "D10" ? 1.62 : monthCheckpoint == "D7" ? 2.13 : monthCheckpoint == "D3" ? 3.20 : na
+float mF75 = monthCheckpoint == "D20" ? 1.32 : monthCheckpoint == "D15" ? 1.54 : monthCheckpoint == "D10" ? 2.17 : monthCheckpoint == "D7" ? 3.17 : monthCheckpoint == "D3" ? 4.48 : na
+float mF90 = monthCheckpoint == "D20" ? 1.55 : monthCheckpoint == "D15" ? 2.13 : monthCheckpoint == "D10" ? 3.28 : monthCheckpoint == "D7" ? 4.54 : monthCheckpoint == "D3" ? 7.84 : na
+float monthPrinted = not na(monthH) and not na(monthL) ? monthH - monthL : na
+float monthQ50 = not na(monthBaseRange) ? monthBaseRange * mF50 : na
+float monthQ75 = not na(monthBaseRange) ? monthBaseRange * mF75 : na
+float monthQ90 = not na(monthBaseRange) ? monthBaseRange * mF90 : na
+float monthRem50 = not na(monthQ50) and not na(monthPrinted) ? math.max(monthQ50 - monthPrinted, 0) : na
+float monthRem75 = not na(monthQ75) and not na(monthPrinted) ? math.max(monthQ75 - monthPrinted, 0) : na
+float monthRem90 = not na(monthQ90) and not na(monthPrinted) ? math.max(monthQ90 - monthPrinted, 0) : na
+float monthProg50 = not na(monthQ50) and monthQ50 > 0 ? math.min(100.0, 100.0 * monthPrinted / monthQ50) : na
+
+
+// =================================================================================================
+// 7. PLOTS
+// =================================================================================================
+bool plotDay = postAsian and hNY >= 3 and hNY < 19
+color c100 = color.new(color.gray,20)
+color c125 = color.new(#f1c40f,0)
+color c132 = color.new(#ffd54f,0)
+color c168 = color.new(#ff9800,0)
+color c185 = color.new(#ef5350,0)
+
+plot(showStateLevels and plotDay ? lockedAH : na,"100 UP / Asian High",c100,1,plot.style_linebr)
+plot(showStateLevels and plotDay ? lockedAL : na,"100 DN / Asian Low",c100,1,plot.style_linebr)
+plot(showStateLevels and plotDay ? up125 : na,"125 UP",c125,1,plot.style_linebr)
+plot(showStateLevels and plotDay ? dn125 : na,"125 DN",c125,1,plot.style_linebr)
+plot(showStateLevels and plotDay ? up132 : na,"132 UP",c132,2,plot.style_linebr)
+plot(showStateLevels and plotDay ? dn132 : na,"132 DN",c132,2,plot.style_linebr)
+plot(showStateLevels and plotDay ? up168 : na,"168 UP",c168,2,plot.style_linebr)
+plot(showStateLevels and plotDay ? dn168 : na,"168 DN",c168,2,plot.style_linebr)
+plot(showStateLevels and plotDay ? up185 : na,"185 UP",c185,2,plot.style_linebr)
+plot(showStateLevels and plotDay ? dn185 : na,"185 DN",c185,2,plot.style_linebr)
+plot(showStateLevels and plotDay ? up220 : na,"220 UP",color.new(color.fuchsia,20),2,plot.style_linebr)
+plot(showStateLevels and plotDay ? dn220 : na,"220 DN",color.new(color.fuchsia,20),2,plot.style_linebr)
+plot(showDir50 and plotDay and asianBias=="BULLISH" ? up150 : showDir50 and plotDay and asianBias=="BEARISH" ? dn150 : na,"Directional 50%",color.new(color.aqua,20),2,plot.style_linebr)
+plot(showWeeklyLevels ? lockedMRH : na,"BTC Weekly Monday High",color.new(color.orange,15),2,plot.style_linebr)
+plot(showWeeklyLevels ? lockedMRL : na,"BTC Weekly Monday Low",color.new(color.orange,15),2,plot.style_linebr)
+plot(showMonthlyLevels ? monthH : na,"BTC Month Running High",color.new(color.fuchsia,30),1,plot.style_linebr)
+plot(showMonthlyLevels ? monthL : na,"BTC Month Running Low",color.new(color.fuchsia,30),1,plot.style_linebr)
+
+bool activeField = showNewsBands and not na(activeNewsTime) and newsStatus != "EXHAUSTED" and not na(newsRef)
+plot(activeField ? newsRef + nq50*pipSize : na,"News +Q50",color.new(color.teal,20),1,plot.style_linebr)
+plot(activeField ? newsRef - nq50*pipSize : na,"News -Q50",color.new(color.teal,20),1,plot.style_linebr)
+plot(activeField ? newsRef + nq75*pipSize : na,"News +Q75",color.new(color.blue,40),1,plot.style_linebr)
+plot(activeField ? newsRef - nq75*pipSize : na,"News -Q75",color.new(color.blue,40),1,plot.style_linebr)
+plot(activeField ? newsRef + nq90*pipSize : na,"News +Q90",color.new(color.purple,50),1,plot.style_linebr)
+plot(activeField ? newsRef - nq90*pipSize : na,"News -Q90",color.new(color.purple,50),1,plot.style_linebr)
+
+// =================================================================================================
+// 8. DASHBOARD
+// =================================================================================================
+f_fmt(float x) => na(x) ? "NA" : str.tostring(x,"#.0")
+f_cell(table t, int c, int r, string txt, color bg, color fg) => table.cell(t,c,r,txt,bgcolor=bg,text_color=fg,text_size=size.tiny)
+
+var dash = table.new(position.top_right,2,18,border_width=1,frame_color=color.new(#d4af37,20),border_color=color.new(color.gray,70))
+if showDashboard and barstate.islast
+    color hdr = color.new(#151515,0)
+    color bg = color.new(#0b0b0b,5)
+    color gold = #d4af37
+    color white = #e8e8e8
+    color good = color.lime
+    color warn = color.orange
+    color bad = color.red
+    f_cell(dash,0,0,"CEREBUS BTC DAILY V1",hdr,gold), f_cell(dash,1,0,"M5 | 2022-2026",hdr,white)
+    f_cell(dash,0,1,"Asian Tier / AR",bg,white), f_cell(dash,1,1,tier + " / " + "$" + f_fmt(arP),bg,tier=="NO_GO"?bad:gold)
+    f_cell(dash,0,2,"Asian Bias",bg,white), f_cell(dash,1,2,asianBias,bg,asianBias=="BULLISH"?good:asianBias=="BEARISH"?bad:warn)
+    f_cell(dash,0,3,"Daily Printed",bg,white), f_cell(dash,1,3,"$"+f_fmt(printedP),bg,white)
+    f_cell(dash,0,4,"Range Left Q50/75/90",bg,white), f_cell(dash,1,4,"$"+f_fmt(remDay50)+" / $"+f_fmt(remDay75)+" / $"+f_fmt(remDay90),bg,gold)
+    f_cell(dash,0,5,"Frontier",bg,white), f_cell(dash,1,5,frontier + " | UP "+upState+" / DN "+dnState,bg,white)
+    f_cell(dash,0,6,"Preferred Branch",bg,white), f_cell(dash,1,6,pref,bg,pref=="UP"?good:pref=="DOWN"?bad:warn)
+    f_cell(dash,0,7,"Asym / Confidence",bg,white), f_cell(dash,1,7,f_fmt(asym)+" / "+dirConfAdj,bg,dirConf=="VERY HIGH"?good:dirConf=="HIGH"?gold:warn)
+    f_cell(dash,0,8,"Next State",bg,white), f_cell(dash,1,8,nextState+" @ "+"$"+f_fmt(nextDist),bg,gold)
+    f_cell(dash,0,9,"Opp. Rekey",bg,white), f_cell(dash,1,9,rekeyState,bg,dir50First?bad:dir25First?warn:white)
+    f_cell(dash,0,10,"Active News",bg,white), f_cell(dash,1,10,na(activeNewsTime)?"NONE":activeCur+" "+activeFam,bg,newsStatus=="SHOCK"?bad:newsStatus=="ACTIVE"?warn:gold)
+    f_cell(dash,0,11,"News Status / Age",bg,white), f_cell(dash,1,11,newsStatus+" / "+f_fmt(newsAge)+"m",bg,white)
+    f_cell(dash,0,12,"Event Band Q25/50/75/90",bg,white), f_cell(dash,1,12,"$"+f_fmt(nq25)+"/$"+f_fmt(nq50)+"/$"+f_fmt(nq75)+"/$"+f_fmt(nq90),bg,gold)
+    f_cell(dash,0,13,"Realized / Rem Q50",bg,white), f_cell(dash,1,13,"$"+f_fmt(realizedNews)+" / $"+f_fmt(nRem50),bg,white)
+    f_cell(dash,0,14,"Next-State News Zone",bg,white), f_cell(dash,1,14,reachZone,bg,reachZone=="CORE/HIGH"?good:reachZone=="OUTSIDE Q90"?bad:warn)
+    f_cell(dash,0,15,"Validation",bg,white), f_cell(dash,1,15,na(activeNewsTime)?"NA":f_validation(activeCur,activeFam),bg,white)
+    string nextNewsStr = na(nextTmst) ? "NONE" : nextCurNews+" "+nextFamNews+" "+str.format_time(nextTmst,"MM-dd HH:mm",displayTz)
+    f_cell(dash,0,16,"Next Modeled Release",bg,white), f_cell(dash,1,16,nextNewsStr,bg,gold)
+    f_cell(dash,0,17,"Doctrine",hdr,gold), f_cell(dash,1,17,"GEOMETRY -> REACH | NEWS -> KINETICS",hdr,white)
+else if not showDashboard
+    table.clear(dash,0,0,1,17)
+
+// ----- Separate Game-style higher-timeframe dashboards -----
+var table weekDash = table.new(position.middle_right,2,9,border_width=1,frame_color=color.new(color.orange,20),border_color=color.new(color.gray,70))
+if showWeeklyDashboard and barstate.islast
+    color wh = color.new(#24170a,0)
+    color wb = color.new(#0b0b0b,5)
+    color wg = #d4af37
+    color ww = #e8e8e8
+    f_cell(weekDash,0,0,"BTC L2 — WEEKLY",wh,wg), f_cell(weekDash,1,0,weekTier,wh,ww)
+    f_cell(weekDash,0,1,"Monday Range",wb,ww), f_cell(weekDash,1,1,"$"+f_fmt(mondayRange)+" / "+f_fmt(mondayRangePct)+"%",wb,wg)
+    f_cell(weekDash,0,2,"Week Printed",wb,ww), f_cell(weekDash,1,2,"$"+f_fmt(weekPrinted),wb,ww)
+    f_cell(weekDash,0,3,"Final Q50/75/90",wb,ww), f_cell(weekDash,1,3,"$"+f_fmt(weekQ50)+" / $"+f_fmt(weekQ75)+" / $"+f_fmt(weekQ90),wb,wg)
+    f_cell(weekDash,0,4,"Range Left Q50/75/90",wb,ww), f_cell(weekDash,1,4,"$"+f_fmt(weekRem50)+" / $"+f_fmt(weekRem75)+" / $"+f_fmt(weekRem90),wb,wg)
+    f_cell(weekDash,0,5,"Q50 Progress",wb,ww), f_cell(weekDash,1,5,f_fmt(weekProg50)+"%",wb,ww)
+    f_cell(weekDash,0,6,"OOS Tail Calibration",wb,ww), f_cell(weekDash,1,6,"Q75 ~80% | Q90 ~93%",wb,color.lime)
+    f_cell(weekDash,0,7,"Clock",wb,ww), f_cell(weekDash,1,7,"SUN 17 -> SUN 17 NY",wb,ww)
+    f_cell(weekDash,0,8,"Doctrine",wh,wg), f_cell(weekDash,1,8,"MON RANGE -> WEEK DISTRIBUTION",wh,ww)
+else if not showWeeklyDashboard
+    table.clear(weekDash,0,0,1,8)
+
+var table monthDash = table.new(position.bottom_right,2,9,border_width=1,frame_color=color.new(color.fuchsia,25),border_color=color.new(color.gray,70))
+if showMonthlyDashboard and barstate.islast
+    color mh = color.new(#1d0d24,0)
+    color mb = color.new(#0b0b0b,5)
+    color mg = #d4af37
+    color mw = #e8e8e8
+    f_cell(monthDash,0,0,"BTC L3 — MONTHLY",mh,mg), f_cell(monthDash,1,0,monthCheckpoint,mh,mw)
+    f_cell(monthDash,0,1,"Checkpoint Base",mb,mw), f_cell(monthDash,1,1,"$"+f_fmt(monthBaseRange),mb,mg)
+    f_cell(monthDash,0,2,"Month Printed",mb,mw), f_cell(monthDash,1,2,"$"+f_fmt(monthPrinted),mb,mw)
+    f_cell(monthDash,0,3,"Final Q50/75/90",mb,mw), f_cell(monthDash,1,3,"$"+f_fmt(monthQ50)+" / $"+f_fmt(monthQ75)+" / $"+f_fmt(monthQ90),mb,mg)
+    f_cell(monthDash,0,4,"Range Left Q50/75/90",mb,mw), f_cell(monthDash,1,4,"$"+f_fmt(monthRem50)+" / $"+f_fmt(monthRem75)+" / $"+f_fmt(monthRem90),mb,mg)
+    f_cell(monthDash,0,5,"Q50 Progress",mb,mw), f_cell(monthDash,1,5,f_fmt(monthProg50)+"%",mb,mw)
+    f_cell(monthDash,0,6,"OOS Status",mb,mw), f_cell(monthDash,1,6,"PROMISING | SMALL N",mb,color.orange)
+    f_cell(monthDash,0,7,"Clock",mb,mw), f_cell(monthDash,1,7,"D3 / 7 / 10 / 15 / 20",mb,mw)
+    f_cell(monthDash,0,8,"Doctrine",mh,mg), f_cell(monthDash,1,8,"CHECKPOINT -> MONTH DISTRIBUTION",mh,mw)
+else if not showMonthlyDashboard
+    table.clear(monthDash,0,0,1,8)
+
+// =================================================================================================
+// 9. ALERTS
+// =================================================================================================
+bool prevUp125 = bar_index > 0 ? up125C[1] : false
+bool prevDn125 = bar_index > 0 ? dn125C[1] : false
+bool prevUp132 = bar_index > 0 ? up132C[1] : false
+bool prevDn132 = bar_index > 0 ? dn132C[1] : false
+bool up125Now = up125C and not prevUp125
+bool dn125Now = dn125C and not prevDn125
+bool up132Now = up132C and not prevUp132
+bool dn132Now = dn132C and not prevDn132
+alertcondition(modeledNewsBar,"CEREBUS Modeled News Release","A modeled USD macro release is printing. Check the CEREBUS BTC Daily dashboard.")
+alertcondition(up125Now or dn125Now,"CEREBUS 125 Activation","CEREBUS 125 activation node touched.")
+alertcondition(up132Now or dn132Now,"CEREBUS 132 Confirmation","CEREBUS 132 structural confirmation touched.")
+alertcondition((dirConf=="VERY HIGH" or dirConf=="HIGH") and pref!="SYMMETRIC","CEREBUS Strong Directional Asymmetry","CEREBUS live geometry has a strong nearest-side asymmetry.")
+
+// =================================================================================================
+// NOTES
+// - BTCUSD M5 calibration: 2022-09 through 2026-09. Daily surface extends 03:00-19:00 New York.
+// - Asian session definition: 19:00-03:00 America/New_York.
+// - BTC Asian tiers: T1 < $750, T2 $750-$1,700, T3 $1,700-$3,000, >=$3,000 NO_GO.
+// - State ladder: 100 -> 125 -> 132 -> 168 -> 185 -> 220.
+// - News is used as kinetic probability reweighting, not as a headline-direction predictor.
+// - Direction comes primarily from live structural distance asymmetry; Asian bias is secondary confirmation.
+// - Same-time releases are treated as one cluster and the largest modeled Q50 family is used as the dominant band.
+// - Future Forex Factory rows schedule the model; only completed releases belong in statistical recalibration.
+// =================================================================================================
