@@ -1,0 +1,499 @@
+//@version=6
+indicator("CEREBUS EUR Quarter / Month Tracker V1", overlay=true, max_lines_count=300, max_labels_count=200)
+
+// ============================================================================
+// CEREBUS EUR QUARTER / MONTH TRACKER V1
+// Higher-order quarter/month distribution engine.
+// Purpose: destination + regime tracking. Not a full Game matrix.
+// Weekly and Daily engines remain independent by design.
+// Time basis: America/New_York.
+// ============================================================================
+
+// ------------------------------- Inputs -------------------------------------
+string TZ = input.string("America/New_York", "Timezone")
+bool showLevels = input.bool(true, "Show M1 Fib / Rekey Levels", group="Display")
+bool showExtensions = input.bool(true, "Show M1 Directional Extensions", group="Display")
+bool showMainTable = input.bool(true, "Show Main Dashboard", group="Display")
+bool showValidation = input.bool(true, "Show Validation Panel", group="Display")
+int rollingN = input.int(16, "Rolling completed quarters", minval=4, maxval=40, group="Validation")
+
+// Historical long-run M1 -> final-quarter range multiples.
+float HIST_Q50 = input.float(1.64, "Historical Q50 × M1", step=0.01, group="Quarter Range")
+float HIST_Q75 = input.float(2.26, "Historical Q75 × M1", step=0.01, group="Quarter Range")
+float HIST_Q90 = input.float(2.83, "Historical Q90 × M1", step=0.01, group="Quarter Range")
+
+// ------------------------------ Helpers -------------------------------------
+f_pct(float x) => na(x) ? "—" : str.tostring(x, "#.0") + "%"
+f_num(float x) => na(x) ? "—" : str.tostring(x, "#.2")
+f_pips(float x) => na(x) ? na : x / syminfo.mintick / 10.0
+f_rate(int wins, int n) => n <= 0 ? na : 100.0 * wins / n
+f_rate_text(int wins, int n) => n <= 0 ? "—" : str.tostring(100.0 * wins / n, "#.1") + "% (" + str.tostring(wins) + "/" + str.tostring(n) + ")"
+
+f_state_bin(float x) =>
+    na(x) ? -1 :
+     x < 0 ? 0 :
+     x < 25 ? 1 :
+     x < 50 ? 2 :
+     x < 68 ? 3 :
+     x < 80 ? 4 :
+     x < 100 ? 5 :
+     x < 110 ? 6 :
+     x < 120 ? 7 :
+     x < 132 ? 8 :
+     x < 168 ? 9 : 10
+
+f_state_name(int b) =>
+    switch b
+        0 => "<0 CONTINUATION"
+        1 => "0–25"
+        2 => "25–50 PULLBACK"
+        3 => "50–68 FAILURE"
+        4 => "68–80 DEEP FAILURE"
+        5 => "80–100 OPP BOUNDARY"
+        6 => "100–110 SNAP AOI"
+        7 => "110–120 LAST RECOVERY"
+        8 => "120–132 DEEP REKEY"
+        9 => "132–168 CONFIRMED"
+        10 => "168+ OUTER"
+        => "WAIT"
+
+f_percentile_nearest(float[] a, float p) =>
+    int n = array.size(a)
+    if n == 0
+        na
+    else
+        float[] c = array.copy(a)
+        array.sort(c, order.ascending)
+        int idx = math.max(0, math.min(n - 1, int(math.ceil((p / 100.0) * n)) - 1))
+        array.get(c, idx)
+
+// OOS benchmark for M3 checkpoint cell: returns [wins, n].
+f_oos_cell(int checkpoint, int b) =>
+    int w = 0
+    int n = 0
+    if checkpoint == 3
+        if b == 0
+            w := 3
+            n := 4
+        else if b == 1
+            w := 0
+            n := 1
+        else if b == 2
+            w := 1
+            n := 1
+        else if b == 3
+            w := 1
+            n := 3
+        else if b == 4
+            w := 1
+            n := 1
+        else if b == 5
+            w := 1
+            n := 2
+        else if b == 7
+            w := 1
+            n := 1
+        else if b == 8
+            w := 0
+            n := 1
+    else if checkpoint == 5
+        if b == 0
+            w := 3
+            n := 4
+        else if b == 1
+            w := 1
+            n := 1
+        else if b == 2
+            w := 1
+            n := 2
+        else if b == 3
+            w := 0
+            n := 1
+        else if b == 4
+            w := 0
+            n := 1
+        else if b == 5
+            w := 2
+            n := 2
+        else if b == 6
+            w := 0
+            n := 1
+        else if b == 8
+            w := 1
+            n := 2
+    [w, n]
+
+f_table_pos(string s) =>
+    switch s
+        "Top Left" => position.top_left
+        "Top Center" => position.top_center
+        "Top Right" => position.top_right
+        "Middle Left" => position.middle_left
+        "Middle Center" => position.middle_center
+        "Middle Right" => position.middle_right
+        "Bottom Left" => position.bottom_left
+        "Bottom Center" => position.bottom_center
+        => position.bottom_right
+
+string mainPosInput = input.string("Top Right", "Main table position", options=["Top Left","Top Center","Top Right","Middle Left","Middle Center","Middle Right","Bottom Left","Bottom Center","Bottom Right"], group="Display")
+string valPosInput = input.string("Bottom Right", "Validation panel position", options=["Top Left","Top Center","Top Right","Middle Left","Middle Center","Middle Right","Bottom Left","Bottom Center","Bottom Right"], group="Display")
+
+// ---------------------------- Calendar state --------------------------------
+int yy = year(time, TZ)
+int mm = month(time, TZ)
+int dd = dayofmonth(time, TZ)
+int qNum = int(math.floor((mm - 1) / 3)) + 1
+int qId = yy * 10 + qNum
+int monthPos = ((mm - 1) % 3) + 1
+bool newDay = dd != dayofmonth(time[1], TZ) or mm != month(time[1], TZ) or yy != year(time[1], TZ)
+bool newMonth = mm != month(time[1], TZ) or yy != year(time[1], TZ)
+bool newQuarter = qId != (year(time[1], TZ) * 10 + int(math.floor((month(time[1], TZ) - 1) / 3)) + 1)
+
+// ------------------------- Quarter working state -----------------------------
+var float qOpen = na
+var float qHigh = na
+var float qLow = na
+var int qDay = 0
+var int d3Dir = 0
+var bool d3Locked = false
+
+var float m1Open = na
+var float m1Close = na
+var float m1High = na
+var float m1Low = na
+var int m1Dir = 0
+var float m1Range = na
+var float m1DirEdge = na
+var float m1OppEdge = na
+var bool m1Locked = false
+
+var float m2High = na
+var float m2Low = na
+var float m3High = na
+var float m3Low = na
+var bool m2BreakM1 = false
+var int m2Day = 0
+var int m3Day = 0
+var int m3D3Bin = -1
+var int m3D5Bin = -1
+
+// Rolling completed-quarter record queues.
+var int[] rollD3Correct = array.new_int()
+var int[] rollAlignCorrect = array.new_int()   // -1 = no alignment event
+var int[] rollM2Break = array.new_int()
+var int[] rollD3Bin = array.new_int()
+var int[] rollD5Bin = array.new_int()
+var int[] rollM3Owner = array.new_int()
+var float[] rollM1Mult = array.new_float()
+
+// ---------------------------- Finalize quarter -------------------------------
+if newQuarter and not na(qOpen)
+    float prevQClose = close[1]
+    int prevQDir = prevQClose >= qOpen ? 1 : -1
+    int owner = 0
+    if prevQDir == 1
+        float mx = math.max(nz(m1High, -1e10), math.max(nz(m2High, -1e10), nz(m3High, -1e10)))
+        owner := math.abs(nz(m3High) - mx) <= syminfo.mintick * 2 ? 3 : math.abs(nz(m2High) - mx) <= syminfo.mintick * 2 ? 2 : 1
+    else
+        float mn = math.min(nz(m1Low, 1e10), math.min(nz(m2Low, 1e10), nz(m3Low, 1e10)))
+        owner := math.abs(nz(m3Low) - mn) <= syminfo.mintick * 2 ? 3 : math.abs(nz(m2Low) - mn) <= syminfo.mintick * 2 ? 2 : 1
+
+    int d3ok = d3Dir == 0 ? -1 : (d3Dir == prevQDir ? 1 : 0)
+    int alignok = (d3Dir != 0 and m1Dir != 0 and d3Dir == m1Dir) ? (m1Dir == prevQDir ? 1 : 0) : -1
+    int m3own = owner == 3 ? 1 : 0
+
+    array.push(rollD3Correct, d3ok)
+    array.push(rollAlignCorrect, alignok)
+    array.push(rollM2Break, m2BreakM1 ? 1 : 0)
+    array.push(rollD3Bin, m3D3Bin)
+    array.push(rollD5Bin, m3D5Bin)
+    array.push(rollM3Owner, m3own)
+    if not na(m1Range) and m1Range > 0
+        float finalQRange = qHigh - qLow
+        array.push(rollM1Mult, finalQRange / m1Range)
+
+    while array.size(rollD3Correct) > rollingN
+        array.shift(rollD3Correct)
+    while array.size(rollAlignCorrect) > rollingN
+        array.shift(rollAlignCorrect)
+    while array.size(rollM2Break) > rollingN
+        array.shift(rollM2Break)
+    while array.size(rollD3Bin) > rollingN
+        array.shift(rollD3Bin)
+    while array.size(rollD5Bin) > rollingN
+        array.shift(rollD5Bin)
+    while array.size(rollM3Owner) > rollingN
+        array.shift(rollM3Owner)
+    while array.size(rollM1Mult) > rollingN
+        array.shift(rollM1Mult)
+
+    // reset for new quarter
+    qOpen := open
+    qHigh := high
+    qLow := low
+    qDay := 1
+    d3Dir := 0
+    d3Locked := false
+    m1Open := open
+    m1Close := na
+    m1High := high
+    m1Low := low
+    m1Dir := 0
+    m1Range := na
+    m1DirEdge := na
+    m1OppEdge := na
+    m1Locked := false
+    m2High := na
+    m2Low := na
+    m3High := na
+    m3Low := na
+    m2BreakM1 := false
+    m2Day := 0
+    m3Day := 0
+    m3D3Bin := -1
+    m3D5Bin := -1
+else if na(qOpen)
+    qOpen := open
+    qHigh := high
+    qLow := low
+    qDay := 1
+    m1Open := open
+    m1High := high
+    m1Low := low
+
+// Update quarter extremes.
+qHigh := math.max(nz(qHigh, high), high)
+qLow := math.min(nz(qLow, low), low)
+
+// Day counter and first-3-day direction lock.
+if newDay and not newQuarter
+    if qDay == 3 and not d3Locked
+        d3Dir := close[1] >= qOpen ? 1 : -1
+        d3Locked := true
+    qDay += 1
+
+// ----------------------------- Month 1 --------------------------------------
+if monthPos == 1
+    m1High := math.max(nz(m1High, high), high)
+    m1Low := math.min(nz(m1Low, low), low)
+
+if newMonth and monthPos == 2 and not m1Locked
+    m1Close := close[1]
+    m1Dir := m1Close >= m1Open ? 1 : -1
+    m1Range := m1High - m1Low
+    m1DirEdge := m1Dir == 1 ? m1High : m1Low
+    m1OppEdge := m1Dir == 1 ? m1Low : m1High
+    m1Locked := true
+    m2Day := 1
+
+// ----------------------------- Month 2 --------------------------------------
+if monthPos == 2 and m1Locked
+    m2High := math.max(nz(m2High, high), high)
+    m2Low := math.min(nz(m2Low, low), low)
+    m2BreakM1 := m2BreakM1 or high > m1High or low < m1Low
+    if newDay and not newMonth
+        m2Day += 1
+
+// ----------------------------- Month 3 --------------------------------------
+f_norm(float px) =>
+    not m1Locked or na(m1Range) or m1Range <= 0 ? na :
+     m1Dir == 1 ? 100.0 * (m1DirEdge - px) / m1Range : 100.0 * (px - m1DirEdge) / m1Range
+
+if newMonth and monthPos == 3
+    m3Day := 1
+    m3High := high
+    m3Low := low
+
+if monthPos == 3 and m1Locked
+    m3High := math.max(nz(m3High, high), high)
+    m3Low := math.min(nz(m3Low, low), low)
+    if newDay and not newMonth
+        // Lock prior day's checkpoint at the first bar of the next trading day.
+        if m3Day == 3 and m3D3Bin < 0
+            m3D3Bin := f_state_bin(f_norm(close[1]))
+        if m3Day == 5 and m3D5Bin < 0
+            m3D5Bin := f_state_bin(f_norm(close[1]))
+        m3Day += 1
+
+// ----------------------------- Levels ---------------------------------------
+f_rekey_level(float pct) =>
+    not m1Locked ? na : m1Dir == 1 ? m1DirEdge - m1Range * (pct / 100.0) : m1DirEdge + m1Range * (pct / 100.0)
+
+f_ext_level(float pct) =>
+    not m1Locked ? na : m1Dir == 1 ? m1DirEdge + m1Range * (pct / 100.0) : m1DirEdge - m1Range * (pct / 100.0)
+
+float lv25 = f_rekey_level(25)
+float lv50 = f_rekey_level(50)
+float lv68 = f_rekey_level(68)
+float lv80 = f_rekey_level(80)
+float lv100 = f_rekey_level(100)
+float lv110 = f_rekey_level(110)
+float lv120 = f_rekey_level(120)
+float lv132 = f_rekey_level(132)
+float lv168 = f_rekey_level(168)
+float ex25 = f_ext_level(25)
+float ex50 = f_ext_level(50)
+float ex85 = f_ext_level(85)
+
+plot(showLevels ? m1DirEdge : na, "M1 Directional Edge", color=color.new(color.aqua, 0), linewidth=2, style=plot.style_linebr)
+plot(showLevels ? lv25 : na, "M1 25", color=color.new(color.yellow, 25), style=plot.style_linebr)
+plot(showLevels ? lv50 : na, "M1 50", color=color.new(color.yellow, 0), linewidth=2, style=plot.style_linebr)
+plot(showLevels ? lv68 : na, "M1 68", color=color.new(color.orange, 0), linewidth=2, style=plot.style_linebr)
+plot(showLevels ? lv80 : na, "M1 80", color=color.new(color.red, 15), style=plot.style_linebr)
+plot(showLevels ? lv100 : na, "M1 100", color=color.new(color.red, 0), linewidth=2, style=plot.style_linebr)
+plot(showLevels ? lv110 : na, "M1 110", color=color.new(color.fuchsia, 10), style=plot.style_linebr)
+plot(showLevels ? lv120 : na, "M1 120", color=color.new(color.fuchsia, 0), linewidth=2, style=plot.style_linebr)
+plot(showLevels ? lv132 : na, "M1 132", color=color.new(color.purple, 0), linewidth=2, style=plot.style_linebr)
+plot(showLevels ? lv168 : na, "M1 168", color=color.new(color.purple, 25), style=plot.style_linebr)
+plot(showExtensions ? ex25 : na, "M1 -25", color=color.new(color.lime, 0), linewidth=2, style=plot.style_linebr)
+plot(showExtensions ? ex50 : na, "M1 -50", color=color.new(color.lime, 20), style=plot.style_linebr)
+plot(showExtensions ? ex85 : na, "M1 -85", color=color.new(color.lime, 40), style=plot.style_linebr)
+
+// -------------------------- Acceptance duration ------------------------------
+float normNow = f_norm(close)
+var int t68 = na
+var int t80 = na
+var int t100 = na
+var int t120 = na
+var int t132 = na
+
+f_update_start(int startT, bool condition) =>
+    condition ? (na(startT) ? time : startT) : na
+
+t68 := f_update_start(t68, not na(normNow) and normNow >= 68)
+t80 := f_update_start(t80, not na(normNow) and normNow >= 80)
+t100 := f_update_start(t100, not na(normNow) and normNow >= 100)
+t120 := f_update_start(t120, not na(normNow) and normNow >= 120)
+t132 := f_update_start(t132, not na(normNow) and normNow >= 132)
+
+f_hours(int t0) => na(t0) ? 0.0 : (time - t0) / 3600000.0
+float h68 = f_hours(t68)
+float h80 = f_hours(t80)
+float h100 = f_hours(t100)
+float h120 = f_hours(t120)
+float h132 = f_hours(t132)
+
+// ----------------------------- Branch logic ---------------------------------
+int stateNow = f_state_bin(normNow)
+string phase = monthPos == 1 ? "M1 — RANGE SEED" : monthPos == 2 ? "M2 — SHAPING" : "M3 — RESOLUTION"
+string branch = "WAIT"
+string delivery = "—"
+if m1Locked
+    if monthPos == 2
+        branch := normNow < 0 ? "M2 EXPANSION / M3 STILL LIVE" : normNow < 50 ? "NORMAL SHAPING" : "DEFER / M3 RESOLUTION BIAS"
+        delivery := normNow < 0 ? "M1 -25 WATCH" : normNow >= 68 ? "M1 100 WATCH" : "M1 EDGE / 50 ZONE"
+    else if monthPos == 3
+        branch := normNow < 0 ? "M3 CONTINUATION" : normNow >= 68 ? "M3 REPAIR" : normNow >= 50 ? "FAILURE DEVELOPING" : "M3 UNRESOLVED"
+        delivery := normNow < 0 ? "M1 -25 FIRST" : normNow >= 68 ? "M1 100 FIRST" : normNow >= 50 ? "M1 100 WATCH" : "M1 EDGE"
+
+// ---------------------------- Rolling metrics --------------------------------
+f_sum_valid(int[] a) =>
+    int s = 0
+    int n = 0
+    int sz = array.size(a)
+    if sz > 0
+        for i = 0 to sz - 1
+            int v = array.get(a, i)
+            if v >= 0
+                s += v
+                n += 1
+    [s, n]
+
+[d3WinsRoll, d3NRoll] = f_sum_valid(rollD3Correct)
+[alignWinsRoll, alignNRoll] = f_sum_valid(rollAlignCorrect)
+[m2WinsRoll, m2NRoll] = f_sum_valid(rollM2Break)
+
+f_roll_cell(int cp, int b) =>
+    int w = 0
+    int n = 0
+    int sz = math.min(array.size(rollM3Owner), cp == 3 ? array.size(rollD3Bin) : array.size(rollD5Bin))
+    if cp > 0 and b >= 0 and sz > 0
+        for i = 0 to sz - 1
+            int cb = cp == 3 ? array.get(rollD3Bin, i) : array.get(rollD5Bin, i)
+            if cb == b
+                n += 1
+                w += array.get(rollM3Owner, i)
+    [w, n]
+
+float rollQ50 = f_percentile_nearest(rollM1Mult, 50)
+float rollQ75 = f_percentile_nearest(rollM1Mult, 75)
+float rollQ90 = f_percentile_nearest(rollM1Mult, 90)
+
+// Active validation checkpoint: latest locked D5 else D3.
+int activeCp = monthPos == 3 and m3D5Bin >= 0 ? 5 : monthPos == 3 and m3D3Bin >= 0 ? 3 : 0
+int activeBin = activeCp == 5 ? m3D5Bin : activeCp == 3 ? m3D3Bin : -1
+[oosCellWins, oosCellN] = f_oos_cell(activeCp, activeBin)
+[rollCellWins, rollCellN] = f_roll_cell(activeCp, activeBin)
+
+// ------------------------------ Dashboard -----------------------------------
+var table main = table.new(f_table_pos(mainPosInput), 2, 17, border_width=1, frame_color=color.new(#d4af37, 10), border_color=color.new(color.gray, 70))
+var table val = table.new(f_table_pos(valPosInput), 3, 7, border_width=1, frame_color=color.new(#d4af37, 10), border_color=color.new(color.gray, 70))
+
+f_cell(table t, int c, int r, string text_, color fg, color bg) =>
+    table.cell(t, c, r, text_, text_color=fg, bgcolor=bg, text_size=size.tiny)
+
+if barstate.islast and showMainTable
+    color hdr = color.new(#111111, 0)
+    color bg = color.new(#060606, 8)
+    color gold = #d4af37
+    color white = #eaeaea
+    color cyan = #00d9ff
+    color warn = color.orange
+    color red = color.red
+    color green = color.lime
+
+    string qTxt = str.tostring(yy) + " Q" + str.tostring(qNum)
+    string d3Txt = d3Dir == 1 ? "UP" : d3Dir == -1 ? "DOWN" : "BUILDING"
+    string m1Txt = m1Dir == 1 ? "UP" : m1Dir == -1 ? "DOWN" : "BUILDING"
+    string alignTxt = d3Dir != 0 and m1Dir != 0 ? (d3Dir == m1Dir ? "ALIGNED" : "DIVERGED") : "WAIT"
+    string dayTxt = monthPos == 2 ? "M2 D" + str.tostring(m2Day) : monthPos == 3 ? "M3 D" + str.tostring(m3Day) : "M1"
+    string histProj = m1Locked ? f_num(f_pips(m1Range) * HIST_Q50) + " / " + f_num(f_pips(m1Range) * HIST_Q75) + " / " + f_num(f_pips(m1Range) * HIST_Q90) + "p" : "—"
+    string rollProj = m1Locked and not na(rollQ50) ? f_num(f_pips(m1Range) * rollQ50) + " / " + f_num(f_pips(m1Range) * rollQ75) + " / " + f_num(f_pips(m1Range) * rollQ90) + "p" : "—"
+
+    f_cell(main,0,0,"CEREBUS EUR HIGHER ORDER",gold,hdr), f_cell(main,1,0,"QUARTER / MONTH V1",white,hdr)
+    f_cell(main,0,1,"Quarter / Phase",white,bg), f_cell(main,1,1,qTxt + " | " + phase,cyan,bg)
+    f_cell(main,0,2,"First 3 Days",white,bg), f_cell(main,1,2,d3Txt,d3Dir==1?green:d3Dir==-1?red:warn,bg)
+    f_cell(main,0,3,"Month 1 / Agreement",white,bg), f_cell(main,1,3,m1Txt + " | " + alignTxt,alignTxt=="ALIGNED"?green:alignTxt=="DIVERGED"?warn:white,bg)
+    f_cell(main,0,4,"M1 Range",white,bg), f_cell(main,1,4,m1Locked?f_num(f_pips(m1Range))+"p":"BUILDING",gold,bg)
+    f_cell(main,0,5,"Hist Q50/75/90",white,bg), f_cell(main,1,5,histProj,gold,bg)
+    f_cell(main,0,6,"Rolling Q50/75/90",white,bg), f_cell(main,1,6,rollProj,cyan,bg)
+    f_cell(main,0,7,"Checkpoint",white,bg), f_cell(main,1,7,dayTxt,white,bg)
+    f_cell(main,0,8,"M1-relative State",white,bg), f_cell(main,1,8,na(normNow)?"—":f_num(normNow)+"% | "+f_state_name(stateNow),stateNow<=2?green:stateNow>=4?red:warn,bg)
+    f_cell(main,0,9,"Branch",white,bg), f_cell(main,1,9,branch,branch=="M3 CONTINUATION"?green:branch=="M3 REPAIR"?red:warn,bg)
+    f_cell(main,0,10,"First Delivery",white,bg), f_cell(main,1,10,delivery,gold,bg)
+    f_cell(main,0,11,"Acceptance 68 / 80",white,bg), f_cell(main,1,11,f_num(h68)+"h / "+f_num(h80)+"h",white,bg)
+    f_cell(main,0,12,"Acceptance 100 / 120",white,bg), f_cell(main,1,12,f_num(h100)+"h / "+f_num(h120)+"h",white,bg)
+    f_cell(main,0,13,"Acceptance 132",white,bg), f_cell(main,1,13,f_num(h132)+"h",white,bg)
+    f_cell(main,0,14,"M2 broke M1?",white,bg), f_cell(main,1,14,m2BreakM1?"YES":"NO",m2BreakM1?green:white,bg)
+    f_cell(main,0,15,"M3 D3 / D5 Cell",white,bg), f_cell(main,1,15,(m3D3Bin>=0?f_state_name(m3D3Bin):"—")+" / "+(m3D5Bin>=0?f_state_name(m3D5Bin):"—"),white,bg)
+    f_cell(main,0,16,"Doctrine",white,bg), f_cell(main,1,16,"MONTHLY=DESTINATION | WEEKLY=PATH | DAILY=ENTRY",gold,bg)
+
+if barstate.islast and showValidation
+    color hdr = color.new(#111111,0)
+    color bg = color.new(#060606,8)
+    color gold = #d4af37
+    color white = #eaeaea
+    color cyan = #00d9ff
+    color warn = color.orange
+
+    f_cell(val,0,0,"VALIDATION",gold,hdr), f_cell(val,1,0,"OOS BENCH",white,hdr), f_cell(val,2,0,"ROLLING",cyan,hdr)
+    f_cell(val,0,1,"D3 -> Q Dir",white,bg), f_cell(val,1,1,"71.4% (10/14)",white,bg), f_cell(val,2,1,f_rate_text(d3WinsRoll,d3NRoll),cyan,bg)
+    f_cell(val,0,2,"D3+M1 Align",white,bg), f_cell(val,1,2,"100% (6/6)*",warn,bg), f_cell(val,2,2,f_rate_text(alignWinsRoll,alignNRoll),cyan,bg)
+    f_cell(val,0,3,"M2 Breaks M1",white,bg), f_cell(val,1,3,"71.4% (10/14)",white,bg), f_cell(val,2,3,f_rate_text(m2WinsRoll,m2NRoll),cyan,bg)
+    string cpName = activeCp == 3 ? "M3 D3 " + f_state_name(activeBin) : activeCp == 5 ? "M3 D5 " + f_state_name(activeBin) : "M3 CELL"
+    f_cell(val,0,4,cpName,white,bg), f_cell(val,1,4,f_rate_text(oosCellWins,oosCellN),oosCellN>0?white:warn,bg), f_cell(val,2,4,f_rate_text(rollCellWins,rollCellN),cyan,bg)
+    f_cell(val,0,5,"Range Mult Q50",white,bg), f_cell(val,1,5,"1.64x HIST",white,bg), f_cell(val,2,5,na(rollQ50)?"—":f_num(rollQ50)+"x",cyan,bg)
+    f_cell(val,0,6,"Small-N Rule",white,bg), f_cell(val,1,6,"SHOW N",warn,bg), f_cell(val,2,6,"DO NOT HARD-CODE",warn,bg)
+
+// ------------------------------- Alerts -------------------------------------
+bool m3Cont = monthPos == 3 and not na(normNow) and normNow < 0
+bool m3Repair = monthPos == 3 and not na(normNow) and normNow >= 68
+bool rekeyPromote = not na(normNow) and normNow >= 120 and h120 >= 8
+bool deepConfirm = not na(normNow) and normNow >= 132 and h132 >= 8
+
+alertcondition(d3Locked and not d3Locked[1], "EUR Quarter D3 Locked", "CEREBUS EUR Higher Order: first 3 trading-day direction locked.")
+alertcondition(m1Locked and not m1Locked[1], "EUR Month 1 Locked", "CEREBUS EUR Higher Order: Month 1 range locked.")
+alertcondition(m3Cont and not m3Cont[1], "EUR M3 Continuation State", "CEREBUS EUR Higher Order: M3 accepted beyond M1 directional edge.")
+alertcondition(m3Repair and not m3Repair[1], "EUR M3 Repair State", "CEREBUS EUR Higher Order: M3 at 68%+ M1 rekey depth.")
+alertcondition(rekeyPromote and not rekeyPromote[1], "EUR Monthly 120 Promotion", "CEREBUS EUR Higher Order: 120% monthly rekey accepted for 8h+.")
+alertcondition(deepConfirm and not deepConfirm[1], "EUR Monthly 132 Confirmation", "CEREBUS EUR Higher Order: 132% monthly rekey accepted for 8h+.")
