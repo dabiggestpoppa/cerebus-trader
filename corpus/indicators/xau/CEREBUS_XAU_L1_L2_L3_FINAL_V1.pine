@@ -1,0 +1,952 @@
+//@version=6
+// ============================================================================
+// CEREBUS XAU — FINAL L1 / L2 / L3 ENGINE V1
+// Research freeze: October 2026
+//
+// Architecture:
+//   L3 = quarter direction + quarter scale + monthly state
+//   L2 = weekly opportunity + path + pace + delivery clock
+//   L1 = daily execution
+//
+// Frozen doctrine:
+//   D1-D3 = M1 path seed
+//   D2-D11 = quarter-direction prior
+//   Full M1 = quarter-scale anchor
+//   M2 = shaping
+//   M3 = resolution
+//   L2 state != blind entry. L2 hands execution to L1.
+// ============================================================================
+
+indicator("CEREBUS XAU — FINAL MODEL V1", overlay=true, scale=scale.none,
+     max_lines_count=500, max_boxes_count=250, max_labels_count=350)
+
+// ============================================================================
+// INPUTS — SYSTEM / DISPLAY
+// ============================================================================
+
+string TZ = input.string("America/New_York", "Research Timezone",
+     options=["America/New_York","UTC","Europe/London"], group="System")
+bool enableAlerts = input.bool(true, "Enable dynamic alerts", group="System")
+
+bool showL1 = input.bool(true, "Show L1 Daily", group="Display")
+bool showL2 = input.bool(true, "Show L2 Weekly", group="Display")
+bool showL3 = input.bool(true, "Show L3 Quarter / Month", group="Display")
+
+bool showL1Panel = input.bool(true, "Show L1 Panel", group="Panel — L1")
+string l1PanelPosition = input.string("Top Right", "Position",
+     options=["Top Left","Top Center","Top Right","Middle Left","Middle Center","Middle Right","Bottom Left","Bottom Center","Bottom Right"],
+     group="Panel — L1")
+string l1PanelSize = input.string("Tiny", "Text Size",
+     options=["Tiny","Small","Normal","Large"], group="Panel — L1")
+
+bool showL2Panel = input.bool(true, "Show L2 Panel", group="Panel — L2")
+string l2PanelPosition = input.string("Middle Right", "Position",
+     options=["Top Left","Top Center","Top Right","Middle Left","Middle Center","Middle Right","Bottom Left","Bottom Center","Bottom Right"],
+     group="Panel — L2")
+string l2PanelSize = input.string("Tiny", "Text Size",
+     options=["Tiny","Small","Normal","Large"], group="Panel — L2")
+
+bool showL3Panel = input.bool(true, "Show L3 Panel", group="Panel — L3")
+string l3PanelPosition = input.string("Top Left", "Position",
+     options=["Top Left","Top Center","Top Right","Middle Left","Middle Center","Middle Right","Bottom Left","Bottom Center","Bottom Right"],
+     group="Panel — L3")
+string l3PanelSize = input.string("Tiny", "Text Size",
+     options=["Tiny","Small","Normal","Large"], group="Panel — L3")
+
+// ============================================================================
+// INPUTS — L1 DAILY
+// ============================================================================
+
+float L1_T1_MAX = input.float(32.0, "T1 Max", group="L1 — Daily")
+float L1_T2_MAX = input.float(58.0, "T2 Max", group="L1 — Daily")
+float L1_T3_MAX = input.float(95.0, "T3 Max / No-Go", group="L1 — Daily")
+int l1RelativeLookback = input.int(20, "Relative AR Lookback (sessions)",
+     minval=10, maxval=80, group="L1 — Daily")
+float L1_REL_UNDER_MAX = input.float(0.75, "Relative UNDER Max × Median (development)", step=0.01, group="L1 — Daily")
+float L1_REL_NORMAL_MAX = input.float(1.25, "Relative NORMAL Max × Median (development)", step=0.01, group="L1 — Daily")
+bool showL1Levels = input.bool(true, "Plot Asian H/M/L", group="L1 — Daily")
+bool showL1Deep = input.bool(false, "Plot 132 / 168", group="L1 — Daily")
+
+// ============================================================================
+// INPUTS — L2 WEEKLY
+// ============================================================================
+
+float L2_T1_MAX = input.float(18.13, "W-T1 Max", group="L2 — Weekly")
+float L2_T2_MAX = input.float(51.70, "W-T2 Max", group="L2 — Weekly")
+int l2NormalLookback = input.int(26, "Normal Weekly Range Lookback",
+     minval=13, maxval=52, group="L2 — Weekly")
+float L2_UNDER_MAX = input.float(0.411, "UNDER Max × Normal Week",
+     step=0.001, group="L2 — Weekly")
+float L2_NORMAL_MAX = input.float(0.765, "NORMAL Max × Normal Week",
+     step=0.001, group="L2 — Weekly")
+bool showL2Levels = input.bool(true, "Plot Monday Range H/M/L", group="L2 — Weekly")
+bool showL2Targets = input.bool(false, "Plot ±0.25 / ±0.50 MR", group="L2 — Weekly")
+bool showL2Labels = input.bool(true, "Show setup transition labels", group="L2 — Weekly")
+
+// ============================================================================
+// INPUTS — L3 QUARTER / MONTH
+// ============================================================================
+
+bool showSeedMap = input.bool(true, "Plot D1-D3 Seed Map", group="L3 — Quarter / Month")
+bool showM1Map = input.bool(true, "Plot Full-M1 Rekey Map", group="L3 — Quarter / Month")
+bool showM1Deep = input.bool(true, "Plot 68 / 80 / 100 / 120 / 132", group="L3 — Quarter / Month")
+bool showQuarterProjection = input.bool(false, "Plot Quarter Q50/Q75/Q90 Range Bands", group="L3 — Quarter / Month")
+bool showL3Labels = input.bool(true, "Show L3 setup transition labels", group="L3 — Quarter / Month")
+
+// ============================================================================
+// COLORS
+// ============================================================================
+
+color cL1HiLo = input.color(color.aqua, "Asian High / Low", group="Colors — L1")
+color cL1Mid = input.color(color.new(color.aqua, 50), "Asian Mid", group="Colors — L1")
+color cL1Deep = input.color(color.orange, "Asian 132 / 168", group="Colors — L1")
+
+color cMRHiLo = input.color(#d4af37, "Monday High / Low", group="Colors — L2")
+color cMRMid = input.color(color.new(#d4af37, 50), "Monday Mid", group="Colors — L2")
+color cMRTarget = input.color(color.lime, "Monday Targets", group="Colors — L2")
+
+color cSeedEdge = input.color(#d4af37, "Seed Directional Edge", group="Colors — L3 Seed")
+color cSeedOpp = input.color(color.aqua, "Seed Opposite Edge", group="Colors — L3 Seed")
+color cSeedReload = input.color(color.orange, "Seed Reload 25 / 50 / 68", group="Colors — L3 Seed")
+color cSeedTarget = input.color(color.lime, "Seed +0.25 / +0.50", group="Colors — L3 Seed")
+
+color cM1Edge = input.color(color.white, "M1 Directional Edge", group="Colors — L3 M1")
+color cM1Reload = input.color(#d4af37, "M1 25 / 50", group="Colors — L3 M1")
+color cM1Repair = input.color(color.orange, "M1 68 / 80", group="Colors — L3 M1")
+color cM1Opp = input.color(color.red, "M1 100", group="Colors — L3 M1")
+color cM1Deep = input.color(color.fuchsia, "M1 120 / 132", group="Colors — L3 M1")
+color cM1Ext = input.color(color.lime, "M1 -25 / -50 / -85", group="Colors — L3 M1")
+
+// ============================================================================
+// HELPERS
+// ============================================================================
+
+f_pos(string p) =>
+    switch p
+        "Top Left" => position.top_left
+        "Top Center" => position.top_center
+        "Top Right" => position.top_right
+        "Middle Left" => position.middle_left
+        "Middle Center" => position.middle_center
+        "Middle Right" => position.middle_right
+        "Bottom Left" => position.bottom_left
+        "Bottom Center" => position.bottom_center
+        => position.bottom_right
+
+f_size(string s) =>
+    s == "Tiny" ? size.tiny :
+     s == "Small" ? size.small :
+     s == "Normal" ? size.normal : size.large
+
+f_tier_text(int t, string prefix) =>
+    t == 1 ? prefix + "T1" : t == 2 ? prefix + "T2" : t == 3 ? prefix + "T3" : "NO-GO"
+
+f_dir_text(int d) =>
+    d == 1 ? "BULL" : d == -1 ? "BEAR" : "—"
+
+f_fmt(float x) =>
+    na(x) ? "—" : str.tostring(x, format.mintick)
+
+f_money(float x) =>
+    na(x) ? "—" : "$" + str.tostring(x, "#.##")
+
+f_pct(float x) =>
+    na(x) ? "—" : str.tostring(x, "#.0") + "%"
+
+f_med(array<float> a) =>
+    array.size(a) > 0 ? array.median(a) : na
+
+f_m1_level(float dirEdge, float m1Range, int dir, float pct) =>
+    na(dirEdge) or na(m1Range) or dir == 0 ? na : dirEdge - dir * m1Range * pct / 100.0
+
+f_ext_level(float dirEdge, float m1Range, int dir, float multiple) =>
+    na(dirEdge) or na(m1Range) or dir == 0 ? na : dirEdge + dir * m1Range * multiple
+
+f_same_side_target_hit(int dir, float level) =>
+    dir == 1 ? high >= level : dir == -1 ? low <= level : false
+
+f_in_zone(float px, float a, float b) =>
+    not na(px) and not na(a) and not na(b) and px >= math.min(a,b) and px <= math.max(a,b)
+
+// ============================================================================
+// CLOCKS / DAY STATE
+// ============================================================================
+
+int nyDow = dayofweek(time, TZ)
+int nyHour = hour(time, TZ)
+int nyMin = minute(time, TZ)
+int nyDay = dayofmonth(time, TZ)
+int nyMonth = month(time, TZ)
+int nyYear = year(time, TZ)
+
+bool newNyDay = ta.change(nyDay) != 0
+bool isWeekday = nyDow >= dayofweek.monday and nyDow <= dayofweek.friday
+
+int qNum = int(math.ceil(nyMonth / 3.0))
+int qKey = nyYear * 10 + qNum
+bool newQuarter = ta.change(qKey) != 0
+int monthPos = ((nyMonth - 1) % 3) + 1
+bool newMonth = ta.change(nyMonth) != 0
+
+// ============================================================================
+// L1 — DAILY ASIAN RANGE + RELATIVE STATE
+// ============================================================================
+
+bool inAsian = timeframe.isintraday and not na(time(timeframe.period, "1900-0300", TZ))
+bool asianStarted = inAsian and not inAsian[1]
+bool asianEnded = not inAsian and inAsian[1]
+
+var float arHiWork = na
+var float arLoWork = na
+var float arHi = na
+var float arLo = na
+var float ar = na
+var int l1Tier = 0
+var array<float> arHist = array.new_float()
+
+if asianStarted
+    arHiWork := high
+    arLoWork := low
+else if inAsian
+    arHiWork := na(arHiWork) ? high : math.max(arHiWork, high)
+    arLoWork := na(arLoWork) ? low : math.min(arLoWork, low)
+
+if asianEnded and not na(arHiWork) and not na(arLoWork)
+    arHi := arHiWork
+    arLo := arLoWork
+    ar := arHi - arLo
+    l1Tier := ar <= L1_T1_MAX ? 1 : ar <= L1_T2_MAX ? 2 : ar <= L1_T3_MAX ? 3 : 0
+    array.push(arHist, ar)
+    if array.size(arHist) > l1RelativeLookback
+        array.shift(arHist)
+
+float arNormal = f_med(arHist)
+float arRelative = not na(arNormal) and arNormal > 0 ? ar / arNormal : na
+string l1RelativeState =
+    na(arRelative) ? "BUILDING" :
+    arRelative < L1_REL_UNDER_MAX ? "UNDER" :
+    arRelative <= L1_REL_NORMAL_MAX ? "NORMAL" : "OVER"
+
+float arMid = not na(arHi) and not na(arLo) ? (arHi + arLo) / 2.0 : na
+float arUp132 = not na(ar) ? arHi + ar * 0.32 : na
+float arUp168 = not na(ar) ? arHi + ar * 0.68 : na
+float arDn132 = not na(ar) ? arLo - ar * 0.32 : na
+float arDn168 = not na(ar) ? arLo - ar * 0.68 : na
+
+bool l1RejectUp = not na(arUp132) and high >= arUp132 and close < arUp132
+bool l1RejectDn = not na(arDn132) and low <= arDn132 and close > arDn132
+
+string l1Setup = "WAIT FOR ASIAN LOCK"
+string l1Action = "WAIT"
+string l1Target = "—"
+string l1Invalid = "—"
+
+if not na(ar)
+    if l1Tier == 0
+        l1Setup := "DAILY NO-GO"
+        l1Action := "USE L2 / L3 CONTEXT"
+    else if l1Tier == 1
+        if l1RejectUp
+            l1Setup := "DEEP RESET — SHORT"
+            l1Action := "M5 RE-ENTRY"
+            l1Target := f_fmt(arMid)
+            l1Invalid := f_fmt(arUp168)
+        else if l1RejectDn
+            l1Setup := "DEEP RESET — LONG"
+            l1Action := "M5 RE-ENTRY"
+            l1Target := f_fmt(arMid)
+            l1Invalid := f_fmt(arDn168)
+        else if close > arHi
+            l1Setup := "COILED SPRING — LONG"
+            l1Action := "HOLD ABOVE AR HIGH"
+            l1Target := f_fmt(arHi + ar * 0.50)
+            l1Invalid := f_fmt(arMid)
+        else if close < arLo
+            l1Setup := "COILED SPRING — SHORT"
+            l1Action := "HOLD BELOW AR LOW"
+            l1Target := f_fmt(arLo - ar * 0.50)
+            l1Invalid := f_fmt(arMid)
+        else
+            l1Setup := "COILED SPRING"
+            l1Action := "WAIT FOR CONFIRMED AR BREAK"
+    else if l1Tier == 2
+        if l1RejectUp
+            l1Setup := "STANDARD REKEY — SHORT"
+            l1Action := "M5 RE-ENTRY"
+            l1Target := f_fmt(arMid)
+            l1Invalid := f_fmt(arUp168)
+        else if l1RejectDn
+            l1Setup := "STANDARD REKEY — LONG"
+            l1Action := "M5 RE-ENTRY"
+            l1Target := f_fmt(arMid)
+            l1Invalid := f_fmt(arDn168)
+        else
+            l1Setup := "STANDARD BREATH"
+            l1Action := close >= arMid ? "MID SUPPORT → AR HIGH" : "MID RESIST → AR LOW"
+            l1Target := close >= arMid ? f_fmt(arHi) : f_fmt(arLo)
+            l1Invalid := close >= arMid ? f_fmt(arDn132) : f_fmt(arUp132)
+    else
+        l1Setup := "L1-T3 EXHAUSTED"
+        l1Action := "NO CHASE — REQUIRE RE-ENTRY"
+        l1Target := f_fmt(arMid)
+
+// ============================================================================
+// L2 — WEEKLY RANGE / LEGACY STATE / MODERN TUESDAY PATH
+// ============================================================================
+
+bool inMondayRange = timeframe.isintraday and (
+    (nyDow == dayofweek.sunday and nyHour >= 17) or
+    (nyDow == dayofweek.monday and nyHour < 17)
+)
+bool mrStarted = inMondayRange and not inMondayRange[1]
+bool mrEnded = not inMondayRange and inMondayRange[1]
+
+var float mrHiWork = na
+var float mrLoWork = na
+var float mrHi = na
+var float mrLo = na
+var float mr = na
+var int l2Tier = 0
+
+var float weekHi = na
+var float weekLo = na
+var array<float> fullWeekHist = array.new_float()
+
+var bool weeklyOcc = false
+var int weeklyDir = 0
+var bool weeklyOppSweep = false
+var bool hit025 = false
+var bool hit050 = false
+var bool hit100 = false
+
+var bool tuePathLocked = false
+var int tuePathDir = 0
+var string tuePaceLocked = "—"
+var string tueLocationLocked = "—"
+var float tueRangeLeftRef = na
+
+if mrStarted
+    // Save the completed prior week before resetting.
+    if not na(weekHi) and not na(weekLo) and weekHi > weekLo
+        array.push(fullWeekHist, weekHi - weekLo)
+        if array.size(fullWeekHist) > l2NormalLookback
+            array.shift(fullWeekHist)
+    weekHi := high
+    weekLo := low
+    mrHiWork := high
+    mrLoWork := low
+    weeklyOcc := false
+    weeklyDir := 0
+    weeklyOppSweep := false
+    hit025 := false
+    hit050 := false
+    hit100 := false
+    tuePathLocked := false
+    tuePathDir := 0
+    tuePaceLocked := "—"
+    tueLocationLocked := "—"
+    tueRangeLeftRef := na
+else
+    if not na(weekHi)
+        weekHi := math.max(weekHi, high)
+        weekLo := math.min(weekLo, low)
+    if inMondayRange
+        mrHiWork := na(mrHiWork) ? high : math.max(mrHiWork, high)
+        mrLoWork := na(mrLoWork) ? low : math.min(mrLoWork, low)
+
+if mrEnded and not na(mrHiWork) and not na(mrLoWork)
+    mrHi := mrHiWork
+    mrLo := mrLoWork
+    mr := mrHi - mrLo
+    l2Tier := mr <= L2_T1_MAX ? 1 : mr <= L2_T2_MAX ? 2 : 3
+
+float mrMid = not na(mrHi) and not na(mrLo) ? (mrHi + mrLo) / 2.0 : na
+float mrUp025 = not na(mr) ? mrHi + mr * 0.25 : na
+float mrUp050 = not na(mr) ? mrHi + mr * 0.50 : na
+float mrUp100 = not na(mr) ? mrHi + mr : na
+float mrDn025 = not na(mr) ? mrLo - mr * 0.25 : na
+float mrDn050 = not na(mr) ? mrLo - mr * 0.50 : na
+float mrDn100 = not na(mr) ? mrLo - mr : na
+
+bool weeklyActive = not na(mr) and (
+    nyDow == dayofweek.monday or nyDow == dayofweek.tuesday or
+    nyDow == dayofweek.wednesday or nyDow == dayofweek.thursday or
+    nyDow == dayofweek.friday
+)
+
+if weeklyActive and not weeklyOcc
+    if close > mrHi
+        weeklyOcc := true
+        weeklyDir := 1
+    else if close < mrLo
+        weeklyOcc := true
+        weeklyDir := -1
+
+if weeklyActive and not weeklyOcc
+    if high > mrHi and close <= mrHi
+        weeklyOppSweep := true
+    if low < mrLo and close >= mrLo
+        weeklyOppSweep := true
+
+if weeklyOcc and weeklyDir == 1
+    hit025 := hit025 or high >= mrUp025
+    hit050 := hit050 or high >= mrUp050
+    hit100 := hit100 or high >= mrUp100
+if weeklyOcc and weeklyDir == -1
+    hit025 := hit025 or low <= mrDn025
+    hit050 := hit050 or low <= mrDn050
+    hit100 := hit100 or low <= mrDn100
+
+float normalWeek = f_med(fullWeekHist)
+float printedWeek = not na(weekHi) and not na(weekLo) ? weekHi - weekLo : na
+float weeklyConsumption = not na(normalWeek) and normalWeek > 0 ? printedWeek / normalWeek : na
+string weeklyPace =
+    na(weeklyConsumption) ? "BUILDING" :
+    weeklyConsumption < L2_UNDER_MAX ? "UNDER" :
+    weeklyConsumption <= L2_NORMAL_MAX ? "NORMAL" : "OVER"
+
+float weekLocation = not na(weekHi) and not na(weekLo) and weekHi > weekLo ? (close - weekLo) / (weekHi - weekLo) : na
+string weekLocationState =
+    na(weekLocation) ? "—" :
+    weekLocation < 1.0/3.0 ? "LOWER THIRD" :
+    weekLocation > 2.0/3.0 ? "UPPER THIRD" : "MIDDLE THIRD"
+
+// Primary modern Gold path checkpoint: first chart bar at/after Tuesday 15:00 NY.
+bool tuePrimeLock = nyDow == dayofweek.tuesday and nyHour >= 15 and not tuePathLocked
+
+if tuePrimeLock
+    tuePaceLocked := weeklyPace
+    tueLocationLocked := weekLocationState
+    bool nonOver = weeklyPace == "UNDER" or weeklyPace == "NORMAL"
+    tuePathDir := nonOver and weekLocationState == "UPPER THIRD" ? 1 :
+                  nonOver and weekLocationState == "LOWER THIRD" ? -1 : 0
+    tueRangeLeftRef := not na(normalWeek) ? math.max(normalWeek - printedWeek, 0) : na
+    tuePathLocked := true
+
+string legacyWeekly =
+    na(mr) ? "WAITING FOR MR" :
+    l2Tier == 1 ? (weeklyOppSweep ? "DEEP RESET" : "COILED SPRING") :
+    l2Tier == 2 ? (weeklyOppSweep ? "STANDARD REKEY" : "STANDARD BREATH") :
+    "W-T3 HIGH CONSUMPTION"
+
+string l2Setup =
+    tuePathDir != 0 ? "TUE DIRECTIONAL-THIRD CONTINUATION" :
+    legacyWeekly
+
+string l2Direction =
+    tuePathDir == 1 ? "LONG PATH" :
+    tuePathDir == -1 ? "SHORT PATH" :
+    weeklyDir == 1 ? "LONG OCC" :
+    weeklyDir == -1 ? "SHORT OCC" : "WAIT"
+
+string l2Delivery =
+    tuePaceLocked == "UNDER" ? "THU-FRI / FRI BIAS" :
+    tuePaceLocked == "NORMAL" ? "WED-FRI" :
+    tuePaceLocked == "OVER" ? "STATE-DEPENDENT" : "WAIT"
+
+string l2Target =
+    tuePathDir == 1 ? "NEW WEEK HIGH → L1 EXECUTION" :
+    tuePathDir == -1 ? "NEW WEEK LOW → L1 EXECUTION" :
+    l2Tier == 1 ? "+0.50 MR / +1.00 RUNNER" :
+    l2Tier == 2 ? "+0.25 MR / +0.50 RUNNER" :
+    "NO CHASE — REQUIRE L1"
+
+string l2Action =
+    tuePathDir != 0 ? "WAIT FOR L1 ENTRY IN PATH DIRECTION" :
+    weeklyOcc ? "STATE ACTIVE — EXECUTE WITH L1" :
+    "WAIT FOR OCC / TUE PATH LOCK"
+
+// ============================================================================
+// L3 — QUARTER DAY COUNTERS / SEED / D2-D11 / FULL M1
+// ============================================================================
+
+var int qTradeDay = 0
+var float qFirstOpen = na
+var float d2Open = na
+var float d11Close = na
+var int quarterPriorDir = 0
+var bool quarterPriorLocked = false
+
+var float seedHigh = na
+var float seedLow = na
+var float seedOpen = na
+var float seedClose = na
+var float seedRange = na
+var int seedDir = 0
+var bool seedLocked = false
+
+var float m1HighWork = na
+var float m1LowWork = na
+var float m1Open = na
+var float m1Close = na
+var float m1High = na
+var float m1Low = na
+var float m1Range = na
+var int m1Dir = 0
+var bool m1Locked = false
+
+if newQuarter
+    qTradeDay := 0
+    qFirstOpen := na
+    d2Open := na
+    d11Close := na
+    quarterPriorDir := 0
+    quarterPriorLocked := false
+    seedHigh := na
+    seedLow := na
+    seedOpen := na
+    seedClose := na
+    seedRange := na
+    seedDir := 0
+    seedLocked := false
+    m1HighWork := na
+    m1LowWork := na
+    m1Open := na
+    m1Close := na
+    m1High := na
+    m1Low := na
+    m1Range := na
+    m1Dir := 0
+    m1Locked := false
+
+// First bar of a new NY weekday counts as a trading day.
+// This is a chart-based calendar approximation; holidays simply do not create bars.
+if newNyDay and isWeekday and monthPos == 1
+    qTradeDay += 1
+    if qTradeDay == 1
+        qFirstOpen := open
+        seedOpen := open
+        m1Open := open
+    if qTradeDay == 2
+        d2Open := open
+    if qTradeDay == 4 and not seedLocked and not na(seedHigh) and not na(seedLow)
+        seedRange := seedHigh - seedLow
+        seedDir := seedClose >= seedOpen ? 1 : -1
+        seedLocked := true
+    if qTradeDay == 12 and not quarterPriorLocked and not na(d2Open)
+        d11Close := close[1]
+        quarterPriorDir := d11Close >= d2Open ? 1 : -1
+        quarterPriorLocked := true
+
+if monthPos == 1
+    m1HighWork := na(m1HighWork) ? high : math.max(m1HighWork, high)
+    m1LowWork := na(m1LowWork) ? low : math.min(m1LowWork, low)
+    if qTradeDay >= 1 and qTradeDay <= 3
+        seedHigh := na(seedHigh) ? high : math.max(seedHigh, high)
+        seedLow := na(seedLow) ? low : math.min(seedLow, low)
+        seedClose := close
+
+// Lock full M1 on the first bar of M2.
+if newMonth and monthPos == 2 and not m1Locked and not na(m1HighWork) and not na(m1LowWork)
+    m1High := m1HighWork
+    m1Low := m1LowWork
+    m1Range := m1High - m1Low
+    m1Close := close[1]
+    m1Dir := m1Close >= m1Open ? 1 : -1
+    m1Locked := true
+
+float seedDirEdge = seedLocked ? (seedDir == 1 ? seedHigh : seedLow) : na
+float seedOppEdge = seedLocked ? (seedDir == 1 ? seedLow : seedHigh) : na
+float seed25 = seedLocked ? seedDirEdge - seedDir * seedRange * 0.25 : na
+float seed50 = seedLocked ? seedDirEdge - seedDir * seedRange * 0.50 : na
+float seed68 = seedLocked ? seedDirEdge - seedDir * seedRange * 0.68 : na
+float seedX25 = seedLocked ? seedDirEdge + seedDir * seedRange * 0.25 : na
+float seedX50 = seedLocked ? seedDirEdge + seedDir * seedRange * 0.50 : na
+
+float m1DirEdge = m1Locked ? (m1Dir == 1 ? m1High : m1Low) : na
+float m1OppEdge = m1Locked ? (m1Dir == 1 ? m1Low : m1High) : na
+float m1_25 = f_m1_level(m1DirEdge, m1Range, m1Dir, 25)
+float m1_50 = f_m1_level(m1DirEdge, m1Range, m1Dir, 50)
+float m1_68 = f_m1_level(m1DirEdge, m1Range, m1Dir, 68)
+float m1_80 = f_m1_level(m1DirEdge, m1Range, m1Dir, 80)
+float m1_100 = f_m1_level(m1DirEdge, m1Range, m1Dir, 100)
+float m1_110 = f_m1_level(m1DirEdge, m1Range, m1Dir, 110)
+float m1_120 = f_m1_level(m1DirEdge, m1Range, m1Dir, 120)
+float m1_132 = f_m1_level(m1DirEdge, m1Range, m1Dir, 132)
+float m1_168 = f_m1_level(m1DirEdge, m1Range, m1Dir, 168)
+float m1_m25 = f_ext_level(m1DirEdge, m1Range, m1Dir, 0.25)
+float m1_m50 = f_ext_level(m1DirEdge, m1Range, m1Dir, 0.50)
+float m1_m85 = f_ext_level(m1DirEdge, m1Range, m1Dir, 0.85)
+
+// Quarter scale projection anchored to M1 range, plotted symmetrically from quarter open.
+float qQ50 = m1Locked ? m1Range * 1.72 : na
+float qQ75 = m1Locked ? m1Range * 2.23 : na
+float qQ90 = m1Locked ? m1Range * 2.80 : na
+float qBase = not na(qFirstOpen) ? qFirstOpen : na
+
+// ============================================================================
+// L3 — H1 ACCEPTANCE ENGINE
+// ============================================================================
+
+float h1Close = request.security(syminfo.tickerid, "60", close, lookahead=barmerge.lookahead_off)
+int h1Time = request.security(syminfo.tickerid, "60", time, lookahead=barmerge.lookahead_off)
+bool newH1 = ta.change(h1Time) != 0
+
+var int acc68 = 0
+var int acc80 = 0
+var int acc100 = 0
+var int acc120 = 0
+var int acc132 = 0
+
+beyondNode(float completedClose, float level, int dir) =>
+    not na(completedClose) and not na(level) and (dir == 1 ? completedClose <= level : completedClose >= level)
+// NOTE: rekey nodes are opposite M1 direction, so "beyond" uses <= for bullish M1 and >= for bearish M1.
+
+if newQuarter
+    acc68 := 0
+    acc80 := 0
+    acc100 := 0
+    acc120 := 0
+    acc132 := 0
+
+if newH1 and m1Locked
+    float hc = h1Close[1]
+    acc68 := beyondNode(hc, m1_68, m1Dir) ? acc68 + 1 : 0
+    acc80 := beyondNode(hc, m1_80, m1Dir) ? acc80 + 1 : 0
+    acc100 := beyondNode(hc, m1_100, m1Dir) ? acc100 + 1 : 0
+    acc120 := beyondNode(hc, m1_120, m1Dir) ? acc120 + 1 : 0
+    acc132 := beyondNode(hc, m1_132, m1Dir) ? acc132 + 1 : 0
+
+// ============================================================================
+// L3 — SETUP ENGINE
+// ============================================================================
+
+var bool seedBreakTriggered = false
+var bool seedReloadVisited = false
+var bool seedReloadTriggered = false
+var bool m3ContinuationTriggered = false
+
+if newQuarter
+    seedBreakTriggered := false
+    seedReloadVisited := false
+    seedReloadTriggered := false
+    m3ContinuationTriggered := false
+
+// Seed break requires completed H1 acceptance beyond directional edge.
+if newH1 and seedLocked and monthPos == 1 and not seedBreakTriggered
+    float hc = h1Close[1]
+    if seedDir == 1 and hc > seedDirEdge
+        seedBreakTriggered := true
+    if seedDir == -1 and hc < seedDirEdge
+        seedBreakTriggered := true
+
+if seedBreakTriggered and monthPos == 1 and not seedReloadTriggered
+    bool visited = seedDir == 1 ? low <= seed25 and high >= seed50 : high >= seed25 and low <= seed50
+    seedReloadVisited := seedReloadVisited or visited
+    if newH1 and seedReloadVisited
+        float hc = h1Close[1]
+        bool recovered25 = seedDir == 1 ? hc > seed25 : hc < seed25
+        if recovered25
+            seedReloadTriggered := true
+
+// M3 continuation: completed H1 close beyond the full-M1 directional edge.
+if newH1 and monthPos == 3 and m1Locked and not m3ContinuationTriggered
+    float hc = h1Close[1]
+    bool cont = m1Dir == 1 ? hc > m1DirEdge : hc < m1DirEdge
+    if cont
+        m3ContinuationTriggered := true
+
+bool state68to80 = acc68 >= 8 and acc80 < 8
+bool state80to100 = acc80 >= 8 and acc100 < 8
+bool state80to100Strong = acc80 >= 24 and acc100 < 8
+bool state120to132 = acc120 >= 8 and acc132 < 8
+bool state132Decision = acc132 >= 8
+
+string l3Setup = "BUILDING QUARTER"
+string l3Status = "WAIT"
+string l3Entry = "—"
+string l3Invalid = "—"
+string l3Target = "—"
+string l3Benchmark = "—"
+
+if monthPos == 1
+    if seedReloadTriggered
+        l3Setup := "M1 SEED RELOAD"
+        l3Status := "ACTIVE"
+        l3Entry := "RECOVERY THROUGH SEED 25"
+        l3Invalid := f_fmt(seed68)
+        l3Target := f_fmt(seedDirEdge)
+        l3Benchmark := "EDGE 83.6% | N55"
+    else if seedBreakTriggered
+        l3Setup := "M1 SEED BREAK"
+        l3Status := "ACTIVE"
+        l3Entry := "H1 BEYOND SEED EDGE"
+        l3Invalid := f_fmt(seed50)
+        l3Target := f_fmt(seedX25)
+        l3Benchmark := "+0.25 = 80.3% | N76"
+    else if quarterPriorLocked
+        l3Setup := "D2-D11 QUARTER PRIOR"
+        l3Status := f_dir_text(quarterPriorDir)
+        l3Entry := "CONTEXT ONLY"
+        l3Target := "QUARTER DIRECTION PRIOR"
+        l3Benchmark := "71.4% | N84"
+    else if seedLocked
+        l3Setup := "D1-D3 M1 PATH SEED"
+        l3Status := f_dir_text(seedDir)
+        l3Entry := "WAIT FOR SEED BREAK"
+        l3Benchmark := "PATH / FIRST-BREAK STATE"
+else if m1Locked
+    if state132Decision
+        l3Setup := "132 DEEP DECISION"
+        l3Status := "NO AUTO 168"
+        l3Entry := "CONTEXT / WAIT"
+        l3Invalid := f_fmt(m1_120)
+        l3Target := "168 NOT PROMOTED"
+        l3Benchmark := "132→168 PARKED"
+    else if state120to132
+        l3Setup := "120+8H → 132"
+        l3Status := "PRIMARY"
+        l3Entry := "120 ACCEPTED 8H"
+        l3Invalid := f_fmt(m1_100)
+        l3Target := f_fmt(m1_132)
+        l3Benchmark := "96.0% | N25"
+    else if state80to100Strong
+        l3Setup := "80+24H → 100"
+        l3Status := "STRONG PROMOTION"
+        l3Entry := "80 ACCEPTED 24H"
+        l3Invalid := f_fmt(m1_68)
+        l3Target := f_fmt(m1_100)
+        l3Benchmark := "~82.9%"
+    else if state80to100
+        l3Setup := "80+8H → 100"
+        l3Status := "SECONDARY"
+        l3Entry := "80 ACCEPTED 8H"
+        l3Invalid := f_fmt(m1_68)
+        l3Target := f_fmt(m1_100)
+        l3Benchmark := "67.5% | N40"
+    else if state68to80
+        l3Setup := "68+8H → 80"
+        l3Status := "PRIMARY"
+        l3Entry := "68 ACCEPTED 8H"
+        l3Invalid := f_fmt(m1_50)
+        l3Target := f_fmt(m1_80)
+        l3Benchmark := "87.5% | N48"
+    else if monthPos == 3 and m3ContinuationTriggered
+        l3Setup := "M3 RESOLUTION CONTINUATION"
+        l3Status := "PRIMARY / ROLL RATE"
+        l3Entry := "H1 BEYOND M1 EDGE"
+        l3Invalid := f_fmt(m1_25)
+        l3Target := f_fmt(m1_m25)
+        l3Benchmark := "ROLLING N REQUIRED"
+    else if monthPos == 2 and f_in_zone(close, m1_25, m1_50)
+        l3Setup := "M2 NORMAL RELOAD AOI"
+        l3Status := "CONTEXT ONLY"
+        l3Entry := "WAIT FOR L1"
+        l3Invalid := f_fmt(m1_68)
+        l3Target := "M1 EDGE / STATE DEPENDENT"
+        l3Benchmark := "NO STANDALONE ENTRY"
+    else
+        l3Setup := monthPos == 2 ? "M2 SHAPING" : "M3 RESOLUTION"
+        l3Status := "TRACK M1 GEOMETRY"
+        l3Entry := "WAIT FOR PROMOTED STATE"
+
+// ============================================================================
+// PLOTS
+// ============================================================================
+
+// L1
+plot(showL1 and showL1Levels ? arHi : na, "L1 Asian High", color=cL1HiLo, linewidth=2, style=plot.style_linebr)
+plot(showL1 and showL1Levels ? arMid : na, "L1 Asian Mid", color=cL1Mid, linewidth=1, style=plot.style_linebr)
+plot(showL1 and showL1Levels ? arLo : na, "L1 Asian Low", color=cL1HiLo, linewidth=2, style=plot.style_linebr)
+plot(showL1 and showL1Deep ? arUp132 : na, "L1 Up 132", color=cL1Deep, linewidth=1, style=plot.style_linebr)
+plot(showL1 and showL1Deep ? arUp168 : na, "L1 Up 168", color=color.new(cL1Deep, 25), linewidth=1, style=plot.style_linebr)
+plot(showL1 and showL1Deep ? arDn132 : na, "L1 Down 132", color=cL1Deep, linewidth=1, style=plot.style_linebr)
+plot(showL1 and showL1Deep ? arDn168 : na, "L1 Down 168", color=color.new(cL1Deep, 25), linewidth=1, style=plot.style_linebr)
+
+// L2
+plot(showL2 and showL2Levels ? mrHi : na, "L2 Monday High", color=cMRHiLo, linewidth=2, style=plot.style_linebr)
+plot(showL2 and showL2Levels ? mrMid : na, "L2 Monday Mid", color=cMRMid, linewidth=1, style=plot.style_linebr)
+plot(showL2 and showL2Levels ? mrLo : na, "L2 Monday Low", color=cMRHiLo, linewidth=2, style=plot.style_linebr)
+plot(showL2 and showL2Targets ? mrUp025 : na, "L2 +0.25 MR", color=cMRTarget, linewidth=1, style=plot.style_linebr)
+plot(showL2 and showL2Targets ? mrUp050 : na, "L2 +0.50 MR", color=color.new(cMRTarget, 20), linewidth=1, style=plot.style_linebr)
+plot(showL2 and showL2Targets ? mrDn025 : na, "L2 -0.25 MR", color=cMRTarget, linewidth=1, style=plot.style_linebr)
+plot(showL2 and showL2Targets ? mrDn050 : na, "L2 -0.50 MR", color=color.new(cMRTarget, 20), linewidth=1, style=plot.style_linebr)
+
+// Seed map
+plot(showL3 and showSeedMap ? seedDirEdge : na, "Seed Directional Edge", color=cSeedEdge, linewidth=2, style=plot.style_linebr)
+plot(showL3 and showSeedMap ? seedOppEdge : na, "Seed Opposite Edge", color=cSeedOpp, linewidth=1, style=plot.style_linebr)
+plot(showL3 and showSeedMap ? seed25 : na, "Seed 25", color=cSeedReload, linewidth=1, style=plot.style_linebr)
+plot(showL3 and showSeedMap ? seed50 : na, "Seed 50", color=color.new(cSeedReload, 15), linewidth=1, style=plot.style_linebr)
+plot(showL3 and showSeedMap ? seed68 : na, "Seed 68", color=color.new(cSeedReload, 35), linewidth=1, style=plot.style_linebr)
+plot(showL3 and showSeedMap ? seedX25 : na, "Seed +0.25", color=cSeedTarget, linewidth=2, style=plot.style_linebr)
+plot(showL3 and showSeedMap ? seedX50 : na, "Seed +0.50", color=color.new(cSeedTarget, 25), linewidth=1, style=plot.style_linebr)
+
+// Full-M1 map
+plot(showL3 and showM1Map ? m1DirEdge : na, "M1 Directional Edge", color=cM1Edge, linewidth=2, style=plot.style_linebr)
+plot(showL3 and showM1Map ? m1_25 : na, "M1 25", color=cM1Reload, linewidth=1, style=plot.style_linebr)
+plot(showL3 and showM1Map ? m1_50 : na, "M1 50", color=color.new(cM1Reload, 20), linewidth=1, style=plot.style_linebr)
+plot(showL3 and showM1Map and showM1Deep ? m1_68 : na, "M1 68", color=cM1Repair, linewidth=1, style=plot.style_linebr)
+plot(showL3 and showM1Map and showM1Deep ? m1_80 : na, "M1 80", color=color.new(cM1Repair, 15), linewidth=1, style=plot.style_linebr)
+plot(showL3 and showM1Map and showM1Deep ? m1_100 : na, "M1 100", color=cM1Opp, linewidth=2, style=plot.style_linebr)
+plot(showL3 and showM1Map and showM1Deep ? m1_110 : na, "M1 110", color=color.new(cM1Opp, 25), linewidth=1, style=plot.style_linebr)
+plot(showL3 and showM1Map and showM1Deep ? m1_120 : na, "M1 120", color=cM1Deep, linewidth=1, style=plot.style_linebr)
+plot(showL3 and showM1Map and showM1Deep ? m1_132 : na, "M1 132", color=color.new(cM1Deep, 10), linewidth=2, style=plot.style_linebr)
+plot(showL3 and showM1Map and showM1Deep ? m1_168 : na, "M1 168", color=color.new(cM1Deep, 45), linewidth=1, style=plot.style_linebr)
+plot(showL3 and showM1Map ? m1_m25 : na, "M1 -25", color=cM1Ext, linewidth=2, style=plot.style_linebr)
+plot(showL3 and showM1Map ? m1_m50 : na, "M1 -50", color=color.new(cM1Ext, 20), linewidth=1, style=plot.style_linebr)
+plot(showL3 and showM1Map ? m1_m85 : na, "M1 -85", color=color.new(cM1Ext, 40), linewidth=1, style=plot.style_linebr)
+
+// Quarter scale bands (visual envelope from quarter open)
+plot(showL3 and showQuarterProjection and not na(qBase) ? qBase + qQ50 : na, "Quarter +Q50", color=color.new(color.aqua, 35), linewidth=1, style=plot.style_linebr)
+plot(showL3 and showQuarterProjection and not na(qBase) ? qBase - qQ50 : na, "Quarter -Q50", color=color.new(color.aqua, 35), linewidth=1, style=plot.style_linebr)
+plot(showL3 and showQuarterProjection and not na(qBase) ? qBase + qQ75 : na, "Quarter +Q75", color=color.new(color.orange, 45), linewidth=1, style=plot.style_linebr)
+plot(showL3 and showQuarterProjection and not na(qBase) ? qBase - qQ75 : na, "Quarter -Q75", color=color.new(color.orange, 45), linewidth=1, style=plot.style_linebr)
+plot(showL3 and showQuarterProjection and not na(qBase) ? qBase + qQ90 : na, "Quarter +Q90", color=color.new(color.red, 55), linewidth=1, style=plot.style_linebr)
+plot(showL3 and showQuarterProjection and not na(qBase) ? qBase - qQ90 : na, "Quarter -Q90", color=color.new(color.red, 55), linewidth=1, style=plot.style_linebr)
+
+// ============================================================================
+// TRANSITION LABELS
+// ============================================================================
+
+var string prevL2Setup = ""
+var string prevL3Setup = ""
+
+if showL2Labels and l2Setup != prevL2Setup and not na(mr)
+    label.new(bar_index, high, "L2\n" + l2Setup,
+         style=label.style_label_down, color=color.new(#d4af37, 20),
+         textcolor=color.black, size=size.tiny)
+prevL2Setup := l2Setup
+
+if showL3Labels and l3Setup != prevL3Setup
+    label.new(bar_index, high, "L3\n" + l3Setup,
+         style=label.style_label_down, color=color.new(color.aqua, 20),
+         textcolor=color.black, size=size.tiny)
+prevL3Setup := l3Setup
+
+// ============================================================================
+// PANELS
+// ============================================================================
+
+var table tL1 = table.new(f_pos(l1PanelPosition), 2, 10, border_width=1)
+var table tL2 = table.new(f_pos(l2PanelPosition), 2, 12, border_width=1)
+var table tL3 = table.new(f_pos(l3PanelPosition), 2, 16, border_width=1)
+
+color hdr = color.rgb(15,18,24)
+color pnl = color.rgb(24,28,36)
+color gold = #d4af37
+
+if barstate.islast
+    if showL1Panel
+        table.clear(tL1, 0, 0, 1, 9)
+        table.cell(tL1,0,0,"CEREBUS XAU — L1",bgcolor=hdr,text_color=gold)
+        table.cell(tL1,1,0,f_tier_text(l1Tier,"L1-"),bgcolor=hdr,text_color=color.white)
+        table.cell(tL1,0,1,"Asian Range",bgcolor=pnl,text_color=color.white)
+        table.cell(tL1,1,1,f_money(ar),bgcolor=pnl,text_color=color.aqua)
+        table.cell(tL1,0,2,"Relative AR",bgcolor=pnl,text_color=color.white)
+        table.cell(tL1,1,2,l1RelativeState + " " + (na(arRelative) ? "" : str.tostring(arRelative,"#.00")+"x"),bgcolor=pnl,text_color=color.white)
+        table.cell(tL1,0,3,"Setup",bgcolor=pnl,text_color=color.white)
+        table.cell(tL1,1,3,l1Setup,bgcolor=pnl,text_color=color.yellow)
+        table.cell(tL1,0,4,"Action",bgcolor=pnl,text_color=color.white)
+        table.cell(tL1,1,4,l1Action,bgcolor=pnl,text_color=color.white)
+        table.cell(tL1,0,5,"Target",bgcolor=pnl,text_color=color.white)
+        table.cell(tL1,1,5,l1Target,bgcolor=pnl,text_color=color.lime)
+        table.cell(tL1,0,6,"Invalidation",bgcolor=pnl,text_color=color.white)
+        table.cell(tL1,1,6,l1Invalid,bgcolor=pnl,text_color=color.red)
+        table.cell(tL1,0,7,"Asian H / M / L",bgcolor=pnl,text_color=color.white)
+        table.cell(tL1,1,7,f_fmt(arHi)+" / "+f_fmt(arMid)+" / "+f_fmt(arLo),bgcolor=pnl,text_color=color.silver)
+        table.cell(tL1,0,8,"L2 Hand-off",bgcolor=pnl,text_color=color.white)
+        table.cell(tL1,1,8,tuePathDir != 0 ? l2Direction : "NO DIRECT PATH",bgcolor=pnl,text_color=tuePathDir != 0 ? color.aqua : color.gray)
+        table.cell(tL1,0,9,"Doctrine",bgcolor=hdr,text_color=gold)
+        table.cell(tL1,1,9,"EXECUTION LAYER",bgcolor=hdr,text_color=color.white)
+        for r = 0 to 9
+            for c = 0 to 1
+                table.cell_set_text_size(tL1,c,r,f_size(l1PanelSize))
+    else
+        table.clear(tL1,0,0,1,9)
+
+    if showL2Panel
+        table.clear(tL2, 0, 0, 1, 11)
+        table.cell(tL2,0,0,"CEREBUS XAU — L2",bgcolor=hdr,text_color=gold)
+        table.cell(tL2,1,0,f_tier_text(l2Tier,"W-"),bgcolor=hdr,text_color=color.white)
+        table.cell(tL2,0,1,"Monday Range",bgcolor=pnl,text_color=color.white)
+        table.cell(tL2,1,1,f_money(mr),bgcolor=pnl,text_color=color.aqua)
+        table.cell(tL2,0,2,"Legacy State",bgcolor=pnl,text_color=color.white)
+        table.cell(tL2,1,2,legacyWeekly,bgcolor=pnl,text_color=color.yellow)
+        table.cell(tL2,0,3,"Tue Pace",bgcolor=pnl,text_color=color.white)
+        table.cell(tL2,1,3,tuePaceLocked,bgcolor=pnl,text_color=tuePaceLocked=="UNDER"?color.lime:tuePaceLocked=="NORMAL"?color.aqua:color.orange)
+        table.cell(tL2,0,4,"Tue Location",bgcolor=pnl,text_color=color.white)
+        table.cell(tL2,1,4,tueLocationLocked,bgcolor=pnl,text_color=color.white)
+        table.cell(tL2,0,5,"Active State",bgcolor=pnl,text_color=color.white)
+        table.cell(tL2,1,5,l2Setup,bgcolor=pnl,text_color=color.yellow)
+        table.cell(tL2,0,6,"Direction",bgcolor=pnl,text_color=color.white)
+        table.cell(tL2,1,6,l2Direction,bgcolor=pnl,text_color=tuePathDir==1?color.lime:tuePathDir==-1?color.red:color.gray)
+        table.cell(tL2,0,7,"Target / Path",bgcolor=pnl,text_color=color.white)
+        table.cell(tL2,1,7,l2Target,bgcolor=pnl,text_color=color.lime)
+        table.cell(tL2,0,8,"Delivery Clock",bgcolor=pnl,text_color=color.white)
+        table.cell(tL2,1,8,l2Delivery,bgcolor=pnl,text_color=color.aqua)
+        table.cell(tL2,0,9,"Range Left Ref",bgcolor=pnl,text_color=color.white)
+        table.cell(tL2,1,9,na(tueRangeLeftRef)?"—":f_money(tueRangeLeftRef),bgcolor=pnl,text_color=color.white)
+        table.cell(tL2,0,10,"Action",bgcolor=pnl,text_color=color.white)
+        table.cell(tL2,1,10,l2Action,bgcolor=pnl,text_color=color.yellow)
+        table.cell(tL2,0,11,"Doctrine",bgcolor=hdr,text_color=gold)
+        table.cell(tL2,1,11,"PATH → WAIT FOR L1",bgcolor=hdr,text_color=color.white)
+        for r = 0 to 11
+            for c = 0 to 1
+                table.cell_set_text_size(tL2,c,r,f_size(l2PanelSize))
+    else
+        table.clear(tL2,0,0,1,11)
+
+    if showL3Panel
+        table.clear(tL3, 0, 0, 1, 15)
+        table.cell(tL3,0,0,"CEREBUS XAU — L3",bgcolor=hdr,text_color=gold)
+        table.cell(tL3,1,0,"Q"+str.tostring(qNum)+" • M"+str.tostring(monthPos),bgcolor=hdr,text_color=color.white)
+        table.cell(tL3,0,1,"D1-D3 Path",bgcolor=pnl,text_color=color.white)
+        table.cell(tL3,1,1,seedLocked?f_dir_text(seedDir):"BUILDING",bgcolor=pnl,text_color=color.aqua)
+        table.cell(tL3,0,2,"D2-D11 Quarter",bgcolor=pnl,text_color=color.white)
+        table.cell(tL3,1,2,quarterPriorLocked?f_dir_text(quarterPriorDir):"BUILDING",bgcolor=pnl,text_color=quarterPriorLocked?color.yellow:color.gray)
+        table.cell(tL3,0,3,"Quarter Prior",bgcolor=pnl,text_color=color.white)
+        table.cell(tL3,1,3,quarterPriorLocked?"71.4% | N84":"—",bgcolor=pnl,text_color=color.white)
+        table.cell(tL3,0,4,"M1 Range",bgcolor=pnl,text_color=color.white)
+        table.cell(tL3,1,4,f_money(m1Range),bgcolor=pnl,text_color=color.aqua)
+        table.cell(tL3,0,5,"Quarter Q50/Q75/Q90",bgcolor=pnl,text_color=color.white)
+        table.cell(tL3,1,5,m1Locked?str.tostring(1.72,"#.00")+"x / "+str.tostring(2.23,"#.00")+"x / "+str.tostring(2.80,"#.00")+"x":"—",bgcolor=pnl,text_color=color.white)
+        table.cell(tL3,0,6,"Active Setup",bgcolor=pnl,text_color=color.white)
+        table.cell(tL3,1,6,l3Setup,bgcolor=pnl,text_color=color.yellow)
+        table.cell(tL3,0,7,"Status",bgcolor=pnl,text_color=color.white)
+        table.cell(tL3,1,7,l3Status,bgcolor=pnl,text_color=color.aqua)
+        table.cell(tL3,0,8,"Entry / AOI",bgcolor=pnl,text_color=color.white)
+        table.cell(tL3,1,8,l3Entry,bgcolor=pnl,text_color=color.white)
+        table.cell(tL3,0,9,"Invalidation",bgcolor=pnl,text_color=color.white)
+        table.cell(tL3,1,9,l3Invalid,bgcolor=pnl,text_color=color.red)
+        table.cell(tL3,0,10,"Target",bgcolor=pnl,text_color=color.white)
+        table.cell(tL3,1,10,l3Target,bgcolor=pnl,text_color=color.lime)
+        table.cell(tL3,0,11,"Benchmark",bgcolor=pnl,text_color=color.white)
+        table.cell(tL3,1,11,l3Benchmark,bgcolor=pnl,text_color=color.white)
+        table.cell(tL3,0,12,"Acceptance 68/80",bgcolor=pnl,text_color=color.white)
+        table.cell(tL3,1,12,str.tostring(acc68)+"h / "+str.tostring(acc80)+"h",bgcolor=pnl,text_color=color.white)
+        table.cell(tL3,0,13,"Acceptance 100/120/132",bgcolor=pnl,text_color=color.white)
+        table.cell(tL3,1,13,str.tostring(acc100)+" / "+str.tostring(acc120)+" / "+str.tostring(acc132)+"h",bgcolor=pnl,text_color=color.white)
+        table.cell(tL3,0,14,"M1 Direction",bgcolor=pnl,text_color=color.white)
+        table.cell(tL3,1,14,m1Locked?f_dir_text(m1Dir):"BUILDING",bgcolor=pnl,text_color=color.white)
+        table.cell(tL3,0,15,"Doctrine",bgcolor=hdr,text_color=gold)
+        table.cell(tL3,1,15,"DESTINATION + SCALE",bgcolor=hdr,text_color=color.white)
+        for r = 0 to 15
+            for c = 0 to 1
+                table.cell_set_text_size(tL3,c,r,f_size(l3PanelSize))
+    else
+        table.clear(tL3,0,0,1,15)
+
+// ============================================================================
+// ALERTS — dynamic alert() calls, one TradingView alert on "Any alert() function call"
+// ============================================================================
+
+bool newSeedBreak = seedBreakTriggered and not seedBreakTriggered[1]
+bool newSeedReload = seedReloadTriggered and not seedReloadTriggered[1]
+bool newM3Cont = m3ContinuationTriggered and not m3ContinuationTriggered[1]
+bool newTuePath = tuePathLocked and not tuePathLocked[1] and tuePathDir != 0
+bool new68 = state68to80 and not state68to80[1]
+bool new120 = state120to132 and not state120to132[1]
+
+if enableAlerts
+    if newSeedBreak
+        alert("CEREBUS XAU: M1 Seed Break active | primary target +0.25 seed | invalidation seed 50", alert.freq_once_per_bar_close)
+    if newSeedReload
+        alert("CEREBUS XAU: M1 Seed Reload active | target seed edge | invalidation seed 68", alert.freq_once_per_bar_close)
+    if newTuePath
+        alert("CEREBUS XAU: Tuesday directional-third weekly path locked | wait for L1 execution", alert.freq_once_per_bar_close)
+    if newM3Cont
+        alert("CEREBUS XAU: M3 Resolution Continuation active | target M1 -25", alert.freq_once_per_bar_close)
+    if new68
+        alert("CEREBUS XAU: M1 68 accepted 8h | 80 promoted", alert.freq_once_per_bar_close)
+    if new120
+        alert("CEREBUS XAU: M1 120 accepted 8h | 132 promoted", alert.freq_once_per_bar_close)
