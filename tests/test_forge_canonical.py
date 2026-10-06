@@ -1,3 +1,7 @@
+import ast
+import re
+from pathlib import Path
+
 import pytest
 from pydantic import ValidationError
 
@@ -9,6 +13,7 @@ from app.forge.canonical import (
     ClaimComparison,
     ClaimIdentity,
     EvidenceStatus,
+    EvidenceType,
     Layer,
     ObjectType,
     ProductExposure,
@@ -195,3 +200,96 @@ def test_equal_claim_identity_same_population():
 )
 def test_material_claim_identity_mismatch_is_parallel(field, value):
     assert compare_claim_identity(claim(), claim(**{field: value})) == ClaimComparison.PARALLEL
+
+
+# ---------------------------------------------------------------------------
+# Acceptance-clause coverage: executable assertions for clauses that were
+# previously satisfied only by inspection (see ACCEPTANCE.md sections B, E, F).
+# ---------------------------------------------------------------------------
+
+_CANONICAL_MD = Path(__file__).resolve().parents[1] / "corpus" / "canonical"
+
+
+def _md_tokens(heading: str, filename: str) -> set[str]:
+    """Collect uppercase enum-like tokens under a markdown heading."""
+    lines = (_CANONICAL_MD / filename).read_text(encoding="utf-8").splitlines()
+    tokens: set[str] = set()
+    collecting = False
+    for line in lines:
+        stripped = line.strip()
+        if stripped == heading:
+            collecting = True
+            continue
+        if not collecting:
+            continue
+        if stripped.startswith("##"):
+            break
+        token = stripped.rstrip(".")
+        if token and re.fullmatch(r"[A-Z][A-Z0-9_]*", token):
+            tokens.add(token)
+    return tokens
+
+
+def test_object_type_covers_frozen_i1_registry_classes():
+    """ACCEPTANCE B: object type includes the frozen registry classes for I.1."""
+    assert {t.value for t in ObjectType} == {
+        "MODEL",
+        "CLAIM",
+        "EVIDENCE",
+        "SETUP",
+        "DOCTRINE",
+        "TERM",
+        "LINEAGE",
+        "ARTIFACT",
+    }
+
+
+def test_evidence_status_enum_matches_frozen_taxonomy():
+    frozen = _md_tokens("## Evidence statuses", "CEREBUS_CANONICAL_TAXONOMY_V1.md")
+    assert frozen, "taxonomy section must not be empty"
+    assert {s.value for s in EvidenceStatus} == frozen
+
+
+def test_evidence_type_enum_matches_frozen_taxonomy():
+    frozen = _md_tokens("### 12 EVIDENCE", "CEREBUS_CANONICAL_TAXONOMY_V1.md")
+    assert frozen, "taxonomy section must not be empty"
+    assert {t.value for t in EvidenceType} == frozen
+
+
+def test_exposure_enum_matches_frozen_exposure_rules():
+    frozen = _md_tokens("## Exposure classes", "PRODUCT_EXPOSURE_RULES_V1.md")
+    assert frozen, "exposure rules section must not be empty"
+    assert {e.value for e in ProductExposure} == frozen
+
+
+def test_claim_population_identity_excludes_result_values():
+    """ACCEPTANCE E: claim values/results are not part of population identity."""
+    assert set(ClaimIdentity.model_fields) == {
+        "market",
+        "event_definition",
+        "conditioning_event",
+        "clock_origin",
+        "horizon",
+        "tolerance",
+        "eligibility",
+        "implementation_semantics",
+    }
+    assert compare_claim_identity(
+        claim(result="69.5%"), claim(result="41.0%")
+    ) == ClaimComparison.SAME_POPULATION
+
+
+def test_kernel_imports_have_no_persistence_retrieval_or_provider_leakage():
+    """ACCEPTANCE F / kernel contract: no persistence, retrieval, UI or provider
+    behavior inside the I.1 kernel modules."""
+    allowed = {"__future__", "hashlib", "json", "re", "enum", "typing", "pydantic", "app"}
+    pkg_dir = Path(__file__).resolve().parents[1] / "app" / "forge"
+    for module in ("canonical.py", "schemas.py"):
+        tree = ast.parse((pkg_dir / module).read_text(encoding="utf-8"))
+        roots: set[str] = set()
+        for node in ast.walk(tree):
+            if isinstance(node, ast.Import):
+                roots.update(alias.name.split(".")[0] for alias in node.names)
+            elif isinstance(node, ast.ImportFrom) and node.module:
+                roots.add(node.module.split(".")[0])
+        assert roots <= allowed, f"{module} imports forbidden modules: {sorted(roots - allowed)}"
