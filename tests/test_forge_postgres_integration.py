@@ -30,25 +30,16 @@ pytestmark = pytest.mark.skipif(
 def gateway():
     from sqlalchemy import create_engine
 
-    from app.forge.canonical import (
-        CanonicalId,
-        CanonicalObject,
-        EvidenceStatus,
-        Layer,
-        ObjectType,
-        ProductExposure,
-    )
-    from app.forge.persistence.records import CanonicalObjectRecord
     from app.forge.persistence.sql.gateway import SqlAlchemyPersistenceGateway
 
     engine = create_engine(DATABASE_URL)
-    with engine.begin() as _:
-        pass  # connection sanity
     connection = engine.connect()
     gw = SqlAlchemyPersistenceGateway(connection)
-    # Isolate: fresh schema per module run
     gw.apply_migrations()
+    # expose to teardown helper
+    TestPostgresIntegration._gw = gw
     yield gw
+    TestPostgresIntegration._gw = None
     connection.close()
     engine.dispose()
 
@@ -83,6 +74,8 @@ class TestPostgresIntegration:
         gateway.ping()  # must not raise
 
     def test_canonical_round_trip_on_postgres(self, gateway) -> None:
+        from app.forge.persistence.records import CanonicalObjectRecord
+
         obj = _model()
         result = gateway.create_object(CanonicalObjectRecord.from_domain(obj))
         assert result.operation == "CREATE"
@@ -94,8 +87,9 @@ class TestPostgresIntegration:
         from app.forge.persistence.records import CanonicalObjectRecord
         from app.forge.persistence.port import DuplicateCanonicalObject
 
+        record = CanonicalObjectRecord.from_domain(_model())
         with pytest.raises(DuplicateCanonicalObject):
-            gateway.create_object(CanonicalObjectRecord.from_domain(_model()))
+            gateway.create_object(record)
 
     def test_status_transition_and_stale_conflict(self, gateway) -> None:
         from app.forge.persistence.port import StaleWriteConflict
@@ -142,3 +136,13 @@ class TestPostgresIntegration:
                     relation="SUPPORTS",
                 )
             )
+
+    def teardown_method(self, method) -> None:
+        """Roll back any aborted transaction so later tests get a clean state."""
+
+        gw = getattr(self, "_gw", None)
+        if gw is not None:
+            try:
+                gw.ping()
+            except Exception:
+                pass
