@@ -266,13 +266,22 @@ class InMemoryPersistenceGateway:
 
     def create_identity_link(self, link: ExternalIdentityLink) -> None:
         key = (link.provider, link.provider_subject)
-        if key in self._links:
+        pending_links = {
+            (r.provider, r.provider_subject)
+            for op, r in self._buffer
+            if op == "link"
+        }
+        if key in self._links or key in pending_links:
             raise DuplicateIdentityLink(link.provider, link.provider_subject)
         if (
             link.forge_user_id not in self._users
             and link.forge_user_id not in self._pending_user_ids()
         ):
             raise UserNotFound(link.forge_user_id)
+        if self._in_transaction:
+            # Commit-deferred so a rollback discards the link atomically.
+            self._buffer.append(("link", link))
+            return
         self._links[key] = link
 
     def get_identity_link(
@@ -365,6 +374,7 @@ class InMemoryPersistenceGateway:
         buffered_objects = [r for op, r in self._buffer if op == "object"]
         buffered_users = [r for op, r in self._buffer if op == "user"]
         buffered_sessions = [r for op, r in self._buffer if op == "session"]
+        buffered_links = [r for op, r in self._buffer if op == "link"]
         self._buffer.clear()
         self._in_transaction = False
         # Validate ALL buffered objects against pre-commit state (atomicity).
@@ -380,8 +390,6 @@ class InMemoryPersistenceGateway:
             version = self._objects[record.canonical_id][1] + 1 if record.canonical_id in self._objects else 1
             self._objects[record.canonical_id] = (record, version)
         # II.3: validate then apply buffered identity/session writes atomically.
-        # (Links are applied inline in create_identity_link; only users and
-        # sessions are commit-deferred, mirroring objects.)
         for user in buffered_users:
             if user.user_id in self._users:
                 raise DuplicateForgeUser(user.user_id)
@@ -395,6 +403,8 @@ class InMemoryPersistenceGateway:
         for session in buffered_sessions:
             self._sessions[session.session_id] = (session, 1)
             self._sessions_by_digest[session.token_digest] = session.session_id
+        for link in buffered_links:
+            self._links[(link.provider, link.provider_subject)] = link
 
     def _rollback_buffer(self) -> None:
         self._buffer.clear()
