@@ -389,11 +389,21 @@ class SqlAlchemyPersistenceGateway:
                 },
             )
         except Exception as exc:
+            # A failed statement poisons the DB transaction; roll it back so
+            # the connection remains usable (PostgreSQL semantics), then map
+            # the error to the port's deterministic identity.
+            self._safe_rollback()
             if _is_unique_violation(exc):
                 raise DuplicateProvenanceEdge(
                     record.artifact_id, record.object_id, record.relation
                 ) from None
             raise
+
+    def _safe_rollback(self) -> None:
+        try:
+            self._connection.rollback()
+        except Exception:  # pragma: no cover - rollback is best-effort
+            pass
 
     def _edge_key_set(self, object_id: str) -> set[tuple[str, str, str]]:
         rows = self._connection.execute(
@@ -445,6 +455,17 @@ def _is_unique_violation(exc: Exception) -> bool:
     name = type(exc).__name__.lower()
     text_exc = str(exc).lower()
     return "integrityerror" in name or "unique" in text_exc or "23505" in text_exc
+
+
+def _is_fk_violation(exc: Exception) -> bool:
+    # PostgreSQL fk_violation (23503); SQLite foreign-key IntegrityError.
+    name = type(exc).__name__.lower()
+    text_exc = str(exc).lower()
+    return (
+        "23503" in text_exc
+        or "foreign key" in text_exc
+        or ("integrityerror" in name and "foreign" in text_exc)
+    )
 
 
 def record_status(value: str):

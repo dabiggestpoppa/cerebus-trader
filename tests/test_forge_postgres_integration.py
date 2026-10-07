@@ -128,10 +128,22 @@ class TestPostgresIntegration:
                     relation="SUPPORTS",
                 )
             )
+
+    def test_provenance_edge_dangling_object_rejected(self, gateway) -> None:
+        """PostgreSQL FK: edge to a non-existent object fails as DanglingReference.
+
+        Isolated from the test above because a failed INSERT aborts the
+        PostgreSQL transaction; each rejection runs on a fresh connection
+        state via the gateway's safe rollback.
+        """
+
+        from app.forge.persistence.port import DanglingReference
+        from app.forge.persistence.records import ProvenanceEdgeRecord
+
         with pytest.raises(DanglingReference):
             gateway.add_provenance_edge(
                 ProvenanceEdgeRecord(
-                    artifact_id=artifact.artifact_id,
+                    artifact_id="ART.MARKDOWN.BBAAF0123456789ABCDEFAB",
                     object_id="MOD.PG.NONEXISTENT.V1",
                     relation="SUPPORTS",
                 )
