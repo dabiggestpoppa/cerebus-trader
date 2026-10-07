@@ -2,7 +2,11 @@
 
 Explicit and testable. No network provider is contacted during import.
 No future provider is contacted during startup.
-No persistence is required at II.1.
+
+II.2: when a persistence gateway is injected, startup pings the backend and
+checks migration compatibility BEFORE readiness. A required-persistence
+failure flips container health state so readiness reports honestly
+(not READY). No credentials, URLs or raw DB errors are logged.
 """
 
 from __future__ import annotations
@@ -11,13 +15,14 @@ import logging
 from typing import Any
 
 from app.forge.config import ForgeConfig
+from app.forge.persistence.port import MigrationOutcome
 from app.forge.service.container import ForgeServiceContainer
 
 logger = logging.getLogger("forge")
 
 
 class ForgeLifecycle:
-    """Minimal FORGE lifecycle at II.1."""
+    """FORGE lifecycle (II.2-aware)."""
 
     def __init__(self, container: ForgeServiceContainer) -> None:
         self._container = container
@@ -26,27 +31,59 @@ class ForgeLifecycle:
     def startup(self) -> dict[str, Any]:
         """FORGE startup sequence.
 
-        At II.1 this is intentionally lightweight:
         - load config (already provided via container)
         - initialize observability logger identity
-        - note that DB/policy/providers are NOT initialized (II.1 scope)
+        - ping persistence when wired; record migration compatibility
+        - policy/providers are NOT initialized (II.2 scope)
         """
 
-        logger.info(
-            "FORGE starting: service=%s api_version=%s version=%s env=%s",
-            self._container.config.service_name,
-            self._container.config.api_version,
-            self._container.config.application_version,
-            self._container.config.environment,
-        )
-        self._started = True
-        return {
+        startup_context = {
             "service": self._container.config.service_name,
             "api_version": self._container.config.api_version,
             "version": self._container.config.application_version,
             "environment": self._container.config.environment,
             "started": True,
         }
+
+        persistence = self._container.persistence
+        if persistence is not None:
+            try:
+                persistence.ping()
+            except BaseException as exc:  # NOSONAR: normalized; detail never logged
+                logger.error(
+                    "FORGE persistence ping failed: %s", type(exc).__name__
+                )
+                self._container.mark_persistence_health(False)
+            else:
+                self._container.mark_persistence_health(True)
+                try:
+                    outcome = persistence.apply_migrations()
+                    compatibility = persistence.check_compatibility()
+                except BaseException as exc:  # NOSONAR: normalized; detail never logged
+                    logger.error(
+                        "FORGE migration check failed: %s", type(exc).__name__
+                    )
+                    self._container.set_migration_status("INCOMPATIBLE")
+                else:
+                    logger.info(
+                        "FORGE migrations outcome=%s compatibility=%s",
+                        outcome,
+                        compatibility,
+                    )
+                    self._container.set_migration_status(compatibility)
+        else:
+            self._container.set_migration_status("NOT_CONFIGURED")
+
+        logger.info(
+            "FORGE starting: service=%s api_version=%s version=%s env=%s persistence=%s",
+            self._container.config.service_name,
+            self._container.config.api_version,
+            self._container.config.application_version,
+            self._container.config.environment,
+            "enabled" if persistence is not None else "disabled",
+        )
+        self._started = True
+        return startup_context
 
     def shutdown(self) -> dict[str, Any]:
         """FORGE shutdown/drain sequence."""
