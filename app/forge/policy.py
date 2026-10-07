@@ -283,6 +283,12 @@ _CAPABILITY_EXPOSURES: dict[str, frozenset[ProductExposure]] = {
             ProductExposure.RESEARCH_LAB,
         }
     ),
+    # Admin atoms are governance capabilities, NOT read capabilities: they
+    # admit no exposure class at II.4 (fail closed). Book VI / later governance
+    # wiring owns granting them authority; the empty rows exist so the matrix
+    # lookup is total and an admin atom can never widen read access.
+    CAPABILITY_ADMIN_RESEARCH: frozenset(),
+    CAPABILITY_ADMIN_COMMERCE: frozenset(),
     CAPABILITY_FORGE_INTERNAL: frozenset(set(ProductExposure)),
 }
 
@@ -355,7 +361,24 @@ class DefaultDenyPolicyEngine(PolicyEngine):
                 PolicyReason.UNKNOWN_EXPOSURE, "resource carries no recognized exposure"
             )
 
-        # 5. Internal classes admit ONLY the forge.internal capability.
+        # 5. Authenticated principals read PUBLIC_TEACHING without any
+        #    capability (frozen matrix row: auth/no-cap ⇒ ALLOW). Still
+        #    VIEW/QUERY only.
+        if (
+            resource.exposure is ProductExposure.PUBLIC_TEACHING
+            and resolved_action in (PolicyAction.VIEW, PolicyAction.QUERY)
+        ):
+            return PolicyDecision.allow(detail="public teaching is readable")
+
+        # 6. The V1 read matrix grants VIEW/QUERY only. OPERATE/ADMINISTER are
+        #    governance actions; no V1 capability grants them (fail closed).
+        if resolved_action in (PolicyAction.OPERATE, PolicyAction.ADMINISTER):
+            return PolicyDecision.deny(
+                PolicyReason.ENTITLEMENT_MISSING,
+                "no V1 capability grants operate/administer authority",
+            )
+
+        # 7. Internal classes admit ONLY the forge.internal capability.
         if resource.exposure in (ProductExposure.INTERNAL_METHOD, ProductExposure.INTERNAL_CODE):
             if context.has(CAPABILITY_FORGE_INTERNAL):
                 return PolicyDecision.allow(
@@ -366,7 +389,7 @@ class DefaultDenyPolicyEngine(PolicyEngine):
                 "internal exposure is not accessible to customer principals",
             )
 
-        # 6. Ordinary exposures: the principal must hold one ordinary
+        # 8. Ordinary exposures: the principal must hold one ordinary
         #    capability whose admitted set covers the exposure. Exact atoms
         #    only; forge.internal never *reduces* access.
         for capability in sorted(_ORDINARY_CAPABILITIES):
