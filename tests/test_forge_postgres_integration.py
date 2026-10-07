@@ -159,3 +159,150 @@ class TestPostgresIntegration:
                 gw.ping()
             except Exception:
                 pass
+
+
+# ---------------------------------------------------------------------------
+# Book II / Bloc II.3 — identity & session on real PostgreSQL
+# ---------------------------------------------------------------------------
+
+
+def _iso(dt) -> str:
+    from app.forge.identity import utc_now_iso
+
+    return utc_now_iso(dt)
+
+
+class TestPostgresIdentitySession:
+    """II.3 acceptance T1–T6 against the real PostgreSQL 16 CI service."""
+
+    def teardown_method(self, method) -> None:
+        gw = getattr(self, "_gw", None)
+        if gw is not None:
+            try:
+                gw.ping()
+            except Exception:
+                pass
+
+    def test_identity_migration_chain_and_noop(self, gateway) -> None:
+        self._gw = gateway
+        # 001 + 002 are both recorded; compatibility is OK, re-run is a no-op
+        from app.forge.persistence.sql.migrations import discover_migrations
+
+        versions = [m.version for m in discover_migrations()]
+        assert versions == [1, 2]
+        assert gateway.check_compatibility() == "OK"
+        assert gateway.apply_migrations() == "CURRENT"
+
+    def test_user_persistence_and_duplicate_rejection(self, gateway) -> None:
+        from app.forge.identity import ForgeUser
+        from app.forge.persistence.port import DuplicateForgeUser
+
+        self._gw = gateway
+        user = ForgeUser.create(email="pg-integ@example.com")
+        assert gateway.create_user(user).operation == "CREATE"
+        fetched = gateway.get_user(user.user_id)
+        assert fetched.user_id == user.user_id
+        assert fetched.email == "pg-integ@example.com"
+        with pytest.raises(DuplicateForgeUser):
+            gateway.create_user(user)
+
+    def test_provider_identity_mapping_and_uniqueness(self, gateway) -> None:
+        from app.forge.identity import ExternalIdentityLink, ForgeUser
+        from app.forge.persistence.port import DuplicateIdentityLink
+
+        self._gw = gateway
+        user = ForgeUser.create()
+        gateway.create_user(user)
+        gateway.create_identity_link(
+            ExternalIdentityLink(
+                provider="whop", provider_subject="pg-subject-1", forge_user_id=user.user_id
+            )
+        )
+        resolved = gateway.get_identity_link("whop", "pg-subject-1")
+        assert resolved.forge_user_id == user.user_id
+        # real composite-PK constraint surfaces the duplicate
+        with pytest.raises(DuplicateIdentityLink):
+            gateway.create_identity_link(
+                ExternalIdentityLink(
+                    provider="whop",
+                    provider_subject="pg-subject-1",
+                    forge_user_id=user.user_id,
+                )
+            )
+
+    def test_session_persistence_and_token_digest_lookup(self, gateway) -> None:
+        from datetime import timedelta
+
+        from app.forge.identity import ForgeUser
+        from app.forge.service.authentication import ForgeAuthenticationService
+
+        self._gw = gateway
+        user = ForgeUser.create()
+        gateway.create_user(user)
+        auth = ForgeAuthenticationService(gateway)
+        issued = auth.open_session(user, ttl=timedelta(minutes=10))
+        found = gateway.find_session_by_token_digest(
+            __import__("app.forge.identity", fromlist=["token_digest"]).token_digest(
+                issued.bearer_token
+            )
+        )
+        assert found.session_id == issued.session.session_id
+        principal = auth.authenticate_bearer(f"Bearer {issued.bearer_token}")
+        assert principal.authenticated is True
+        assert principal.forge_user_id == user.user_id
+
+    def test_session_fk_enforced_by_real_constraint(self, gateway) -> None:
+        from datetime import timedelta
+
+        from app.forge.identity import (
+            ForgeSession,
+            new_forge_session_id,
+            token_digest,
+            new_session_token,
+            utc_now_iso,
+        )
+        from app.forge.persistence.port import UserNotFound
+
+        self._gw = gateway
+        ghost = ForgeUser.create(user_id="ghost-user-pg")
+        session = ForgeSession(
+            session_id=new_forge_session_id(),
+            user_id=ghost.user_id,
+            token_digest=token_digest(new_session_token()),
+            expires_at=utc_now_iso(),
+        )
+        with pytest.raises(UserNotFound):
+            gateway.create_session(session)
+
+    def test_revocation_and_revoke_all(self, gateway) -> None:
+        from datetime import timedelta
+
+        from app.forge.identity import ForgeUser
+        from app.forge.service.authentication import (
+            AuthenticationFailure,
+            ForgeAuthenticationService,
+        )
+
+        self._gw = gateway
+        user = ForgeUser.create()
+        gateway.create_user(user)
+        auth = ForgeAuthenticationService(gateway)
+        a = auth.open_session(user, ttl=timedelta(minutes=10))
+        b = auth.open_session(user, ttl=timedelta(minutes=10))
+        assert gateway.revoke_all_sessions(user.user_id) == 2
+        for token in (a.bearer_token, b.bearer_token):
+            with pytest.raises(AuthenticationFailure):
+                auth.authenticate_bearer(f"Bearer {token}")
+
+    def test_optimistic_concurrency_on_identity(self, gateway) -> None:
+        from app.forge.identity import ForgeUser
+        from app.forge.persistence.port import StaleWriteConflict
+
+        self._gw = gateway
+        user = ForgeUser.create()
+        gateway.create_user(user)
+        gateway.transition_user_state(user.user_id, "DISABLED")  # version 2
+        with pytest.raises(StaleWriteConflict):
+            gateway.transition_user_state(
+                user.user_id, "ACTIVE", expected_version=1
+            )

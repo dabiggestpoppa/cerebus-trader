@@ -49,3 +49,5 @@ jobs:
         run: python -m pytest -q
       - name: PostgreSQL integration evidence
         run: python -m pytest -v tests/test_forge_postgres_integration.py
+      - name: PostgreSQL II.3 identity & session evidence
+        run: python -m pytest -v tests/test_forge_postgres_integration.py -k TestPostgresIdentitySession
