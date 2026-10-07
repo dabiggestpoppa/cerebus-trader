@@ -218,7 +218,22 @@ protocol, implemented by `InMemoryPersistenceGateway` and
   persistence + token-digest lookup + full authentication round trip;
   FK rejection for session of unknown user; revocation + revoke-all;
   optimistic-concurrency conflict on identity mutation.
-- CI run for the bloc head: to be recorded after push (see RATIFICATION).
+- CI run for the bloc head: **run 37686152520 (SUCCESS — both jobs)** for
+  repair head `6f2e5492dd221317a1d41202608283d4a5ce3286`:
+  - `postgres` job: full suite against live PostgreSQL 16 — **297 passed**;
+    integration module — **14 passed in 0.20s**, including ALL 7
+    `TestPostgresIdentitySession` tests PASSED (migration chain, user
+    persistence + real-PK duplicate, provider mapping + composite-PK
+    uniqueness, session persistence + digest lookup + authentication round
+    trip, real-FK rejection, revocation + revoke-all, optimistic
+    concurrency);
+  - `test` job: SUCCESS.
+- Honest repair note: the FIRST push (run 37685834508, `ea1ca46`) FAILED in
+  the postgres job — CI exposed `DanglingReference` import missing in the
+  SQL gateway (same clobber class as the memory.py repair) and a missing
+  `ForgeUser` import in a new PG identity test. Repaired append-only at
+  `6f2e549`, re-pushed fast-forward, re-run to SUCCESS. Local suites were
+  blind to both because the PG module skips without a live server.
 
 ## Exact tests
 

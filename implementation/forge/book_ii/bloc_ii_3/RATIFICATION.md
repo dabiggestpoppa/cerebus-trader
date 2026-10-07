@@ -3,6 +3,7 @@
 Status: RATIFICATION
 Date: 2026-10-07
 Bloc head: `f28721b6e41c2caa11845237cc8f1d6e5c39d826`
+Final evidence/ratification head: `6f2e5492dd221317a1d41202608283d4a5ce3286`
 Starting remote HEAD: `772a0d2d3f4f8b617ba02d85000333a42cad4c48`
 Freeze head: `60e067547b9d9165d94e4f074e0db0ba58e59e24` (ancestor, verified)
 Dependency ratifications: I.1 `aca9438`, I.2 `5ce3246`, II.1 `598b34c`, II.2 `772a0d2`
@@ -50,13 +51,19 @@ This ratification does **NOT** authorize, implement, or permit:
 
 Those remain with their frozen owners (Book II / Bloc II.4 and Book VI).
 
-## CI evidence
+## CI evidence (executed)
 
-The bloc was pushed after local PASS; the `test` and `postgres` jobs
-(GitHub Actions, PostgreSQL 16 service, including the dedicated
-`TestPostgresIdentitySession` step) were run against the bloc head; their
-SUCCESS status completes this evidence. II.2's ratified rule is preserved:
-if CI had exposed a defect, repair would be append-only with re-ratification.
+- First push (`ea1ca46`): run 37685834508 — postgres job FAILED (CI-exposed
+  import defects invisible locally; PG module skips without a live server).
+- Repair pushed append-only (`6f2e549`): run **37686152520 — SUCCESS**, both
+  jobs (`test`, `postgres`). The postgres job proved against live
+  PostgreSQL 16: full suite 297 passed; integration module 14 passed,
+  including ALL 7 `TestPostgresIdentitySession` tests (migration chain,
+  user/link/session persistence, digest lookup, real-FK rejection,
+  revocation, optimistic concurrency).
+
+The append-only repair rule was honored: no amend, no squash, no rebase, no
+force-push; the defect and repair are recorded in EVIDENCE.md.
 
 ## STOP
 
