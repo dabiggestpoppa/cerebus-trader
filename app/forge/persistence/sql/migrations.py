@@ -77,8 +77,12 @@ class SqlMigrationRunner:
         self._connection = connection
         self._migrations = discover_migrations()
 
-    def _fetch(self, sql: str, params: tuple = ()) -> List[Any]:
-        result = self._connection.execute(text(sql), params)
+    def _fetch(self, sql: str, params: dict | None = None) -> List[Any]:
+        # Never pass an empty positional sequence: newer SQLAlchemy deprecates it.
+        if params:
+            result = self._connection.execute(text(sql), params)
+        else:
+            result = self._connection.execute(text(sql))
         return list(result.fetchall())
 
     def _applied_versions(self) -> List[int]:

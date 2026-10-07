@@ -36,6 +36,7 @@ jobs:
     env:
       FORGE_DATABASE_ENABLED: "1"
       FORGE_DATABASE_URL: postgresql+psycopg2://forge:forge_ci_password@localhost:5432/forge_test
+      FORGE_TEST_DATABASE_URL: postgresql+psycopg2://forge:forge_ci_password@localhost:5432/forge_test
       FORGE_MIGRATION_COMPATIBILITY_REQUIRED: "1"
     steps:
       - uses: actions/checkout@v4
@@ -44,4 +45,7 @@ jobs:
           python-version: "3.11"
       - run: python -m pip install --upgrade pip
       - run: pip install -r requirements.txt
-      - run: python -m pytest -q
+      - name: Full suite against live PostgreSQL
+        run: python -m pytest -q
+      - name: PostgreSQL integration evidence
+        run: python -m pytest -v tests/test_forge_postgres_integration.py
