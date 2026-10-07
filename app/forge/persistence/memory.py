@@ -8,6 +8,7 @@ durability; it exists so unit truth never requires a database server.
 
 from __future__ import annotations
 
+from dataclasses import replace
 from typing import Any, Iterator
 
 from app.forge.canonical import validate_status_transition
@@ -40,11 +41,13 @@ class _Transaction:
         self._gateway = gateway
 
     def __enter__(self) -> "_Transaction":
+        self._gateway._in_transaction = True
         return self
 
     def __exit__(self, exc_type: Any, exc: Any, tb: Any) -> None:
         if exc_type is not None:
-            return  # nothing applied yet; writes inside were buffered only
+            self._gateway._rollback_buffer()
+            return
         self._gateway._commit_buffer()
 
 
@@ -54,6 +57,7 @@ class InMemoryPersistenceGateway:
         self._artifacts: dict[str, tuple[ArtifactRecord, int]] = {}
         self._edges: dict[tuple[str, str, str], ProvenanceEdgeRecord] = {}
         self._buffer: list[tuple[str, Any]] = []
+        self._in_transaction: bool = False
         self._simulate_unavailable = simulate_unavailable
         self._migrations_applied: tuple[int, ...] = MIGRATION_VERSIONS
 
@@ -73,6 +77,8 @@ class InMemoryPersistenceGateway:
         self, key: str, expected: int | None, store: dict[str, tuple[Any, int]]
     ) -> int:
         if key not in store:
+            if expected is not None:
+                raise StaleWriteConflict(key, expected)
             return 0
         current = store[key][1]
         if expected is not None and expected != current:
@@ -86,7 +92,7 @@ class InMemoryPersistenceGateway:
         if record.canonical_id in self._objects:
             raise DuplicateCanonicalObject(record.canonical_id)
         self._validate_references(record)
-        if self._buffer:
+        if self._in_transaction:
             self._buffer.append(("object", record))
             return WriteResult("CREATE", record.canonical_id, -1)
         version = self._check_version(record.canonical_id, expected_version, self._objects) + 1
@@ -146,6 +152,32 @@ class InMemoryPersistenceGateway:
         entry = self._artifacts.get(artifact_id)
         return entry[0] if entry else None
 
+    def transition_artifact_state(
+        self, artifact_id: str, target_state: str, expected_version: int | None = None
+    ) -> WriteResult:
+        """Governed artifact source-state transition (I.2 machine) with
+        optimistic version check. Reuses the frozen domain transition rules."""
+
+        from app.forge.provenance import SourceState, validate_source_state_transition
+
+        if artifact_id not in self._artifacts:
+            raise ObjectNotFound(artifact_id)
+        record, version = self._artifacts[artifact_id]
+        if expected_version is not None and expected_version != version:
+            raise StaleWriteConflict(artifact_id, expected_version)
+        target = SourceState(target_state)
+        try:
+            validate_source_state_transition(SourceState(record.source_state), target)
+            if target is SourceState.MISSING and record.content_identity is not None:
+                raise ValueError("a MISSING source cannot carry content identity")
+        except ValueError as exc:
+            raise IllegalStatusTransition(
+                artifact_id, record.source_state, target_state
+            ) from exc
+        updated = replace(record, source_state=target.value)
+        self._artifacts[artifact_id] = (updated, version + 1)
+        return WriteResult("TRANSITION", artifact_id, version + 1)
+
     # -- provenance ----------------------------------------------------------
     def add_provenance_edge(self, record: ProvenanceEdgeRecord) -> None:
         key = (record.artifact_id, record.object_id, record.relation)
@@ -178,6 +210,7 @@ class InMemoryPersistenceGateway:
     def _commit_buffer(self) -> None:
         buffered_objects = [r for op, r in self._buffer if op == "object"]
         self._buffer.clear()
+        self._in_transaction = False
         # Validate ALL buffered objects against pre-commit state (atomicity).
         for record in buffered_objects:
             if record.canonical_id in self._objects:
@@ -190,6 +223,10 @@ class InMemoryPersistenceGateway:
         for record in buffered_objects:
             version = self._objects[record.canonical_id][1] + 1 if record.canonical_id in self._objects else 1
             self._objects[record.canonical_id] = (record, version)
+
+    def _rollback_buffer(self) -> None:
+        self._buffer.clear()
+        self._in_transaction = False
 
     # -- infrastructure --------------------------------------------------------
     def ping(self) -> None:

@@ -150,12 +150,23 @@ class TestForgeServiceContainer:
         assert container.config.service_name == "test-forge"
         assert container.config.environment == "test"
 
-    def test_container_rejects_wired_persistence_at_ii_1(self) -> None:
+    def test_container_persistence_contract_updates_at_ii_2(self) -> None:
+        """II.2 handoff honored: the II.1 persistence prohibition was replaced.
+
+        Persistence is now an injected port implementation; non-port objects
+        are still rejected (the guard's principle is preserved).
+        """
+
         from app.forge.config import ForgeConfig
+        from app.forge.persistence.memory import InMemoryPersistenceGateway
         from app.forge.service.container import ForgeServiceContainer
 
         cfg = ForgeConfig()
-        with pytest.raises(RuntimeError, match="II.2"):
+        container = ForgeServiceContainer(
+            config=cfg, persistence=InMemoryPersistenceGateway()
+        )
+        assert container.persistence is not None
+        with pytest.raises(TypeError, match="PersistenceGateway"):
             ForgeServiceContainer(
                 config=cfg, persistence=object()  # type: ignore[arg-type]
             )

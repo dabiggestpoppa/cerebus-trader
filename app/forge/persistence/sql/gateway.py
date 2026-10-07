@@ -21,6 +21,7 @@ def _sql(statement: str):
     return text(statement)
 
 from app.forge.canonical import ObjectType, validate_status_transition
+from dataclasses import replace
 from app.forge.persistence.port import (
     DuplicateArtifact,
     DuplicateCanonicalObject,
@@ -333,6 +334,40 @@ class SqlAlchemyPersistenceGateway:
             observed_at=row["observed_at"],
             metadata=json.loads(row["metadata_json"]),
         )
+
+    def transition_artifact_state(
+        self, artifact_id: str, target_state: str, expected_version: int | None = None
+    ) -> WriteResult:
+        """Governed artifact source-state transition (I.2 machine) with
+        optimistic version check."""
+
+        from app.forge.provenance import SourceState, validate_source_state_transition
+
+        record = self.get_artifact(artifact_id)
+        if record is None:
+            raise ObjectNotFound(artifact_id)
+        if expected_version is not None:
+            current = self._artifact_version(artifact_id)
+            if expected_version != current:
+                raise StaleWriteConflict(artifact_id, expected_version)
+        target = SourceState(target_state)
+        try:
+            validate_source_state_transition(SourceState(record.source_state), target)
+            if target is SourceState.MISSING and record.content_identity is not None:
+                raise ValueError("a MISSING source cannot carry content identity")
+        except ValueError as exc:
+            raise IllegalStatusTransition(
+                artifact_id, record.source_state, target_state
+            ) from exc
+        new_version = self._artifact_version(artifact_id) + 1
+        self._connection.execute(
+            text(
+                "UPDATE artifacts SET source_state = :state, persisted_version = :pv"
+                " WHERE artifact_id = :aid"
+            ),
+            {"state": target.value, "pv": new_version, "aid": artifact_id},
+        )
+        return WriteResult("TRANSITION", artifact_id, new_version)
 
     # -- provenance -----------------------------------------------------------------
     def add_provenance_edge(self, record: ProvenanceEdgeRecord) -> None:

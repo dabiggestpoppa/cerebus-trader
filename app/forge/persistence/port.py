@@ -137,6 +137,13 @@ class PersistenceGateway(Protocol):
 
     def get_artifact(self, artifact_id: str) -> ArtifactRecord | None: ...
 
+    def transition_artifact_state(
+        self, artifact_id: str, target_state: str, expected_version: int | None = None
+    ) -> WriteResult:
+        """Governed artifact source-state transition with optimistic check."""
+
+        ...
+
     # -- provenance --------------------------------------------------------
     def add_provenance_edge(self, record: ProvenanceEdgeRecord) -> None: ...
 
