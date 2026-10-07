@@ -36,6 +36,7 @@ def gateway():
     connection = engine.connect()
     gw = SqlAlchemyPersistenceGateway(connection)
     gw.apply_migrations()
+    connection.commit()  # DDL durability: PostgreSQL rolls back uncommitted DDL
     # expose to teardown helper
     TestPostgresIntegration._gw = gw
     yield gw
