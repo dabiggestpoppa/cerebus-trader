@@ -7,6 +7,10 @@ from fastapi import FastAPI, HTTPException, Request, Response
 from fastapi.responses import JSONResponse
 
 from app import config
+from app.forge.config import forge_config_from_environment
+from app.forge.service.container import ForgeServiceContainer
+from app.forge.service.lifecycle import ForgeLifecycle
+from app.forge.service.routes import create_forge_router
 from app.state_engine import get_engine, reset_engine
 from app.trade_log import get_recent_signals, log_signal
 from app.validator import validate
@@ -20,6 +24,39 @@ logger = logging.getLogger(__name__)
 _start_time = time.time()
 
 app = FastAPI(title="CEREBUS Signal Guard", version="1.0.0")
+
+
+def _build_forge_container() -> ForgeServiceContainer:
+    """FORGE composition root for the existing application.
+
+    This keeps FORGE isolated from Signal Guard domain behavior while reusing
+    the single existing FastAPI application.
+    """
+    return ForgeServiceContainer(config=forge_config_from_environment())
+
+
+def _attach_forge_router() -> None:
+    """Explicitly attach FORGE routes so integration is intentional."""
+    container = _build_forge_container()
+    lifecycle = ForgeLifecycle(container=container)
+    forge_router = create_forge_router(
+        config=container.config,
+        container=container,
+    )
+    app.include_router(forge_router)
+    # Sub-router on_event handlers never fire once included, so lifecycle is
+    # appended to the application's own startup/shutdown sequence. This does
+    # not alter the existing Signal Guard startup handler below.
+    app.router.on_startup.append(lifecycle.startup)
+    app.router.on_shutdown.append(lifecycle.shutdown)
+    logger.info(
+        "FORGE router attached: prefix=/forge/v1 env=%s",
+        container.config.environment,
+    )
+
+
+# Attach FORGE service skeleton at application startup.
+_attach_forge_router()
 
 
 @app.on_event("startup")
