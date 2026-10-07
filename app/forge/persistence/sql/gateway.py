@@ -31,6 +31,7 @@ from app.forge.identity import (
     validate_user_state_transition,
 )
 from app.forge.persistence.port import (
+    DanglingReference,
     DuplicateArtifact,
     DuplicateCanonicalObject,
     DuplicateForgeUser,

@@ -256,6 +256,7 @@ class TestPostgresIdentitySession:
 
         from app.forge.identity import (
             ForgeSession,
+            ForgeUser,
             new_forge_session_id,
             token_digest,
             new_session_token,
