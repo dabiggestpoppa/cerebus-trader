@@ -24,6 +24,7 @@ from typing import Any
 
 from app.forge.config import ForgeConfig
 from app.forge.persistence.port import PersistenceGateway
+from app.forge.service.authentication import ForgeAuthenticationService
 
 
 @dataclass
@@ -40,6 +41,12 @@ class ForgeServiceContainer:
     canonical: Any = field(default=None, repr=False)
     provenance: Any = field(default=None, repr=False)
     persistence: PersistenceGateway | None = field(default=None, repr=False)
+    # II.3: the runtime authentication boundary (credential -> principal).
+    # Injected explicitly like persistence; built lazily from the persistence
+    # gateway when not supplied.
+    authentication: ForgeAuthenticationService | None = field(
+        default=None, repr=False
+    )
     policy: Any = field(default=None, repr=False)
     providers: Any = field(default=None, repr=False)
     observability: Any = field(default=None, repr=False)
@@ -56,6 +63,16 @@ class ForgeServiceContainer:
         ):  # runtime_checkable protocol: structural check
             raise TypeError(
                 "persistence must implement the PersistenceGateway port"
+            )
+        # II.3: an explicitly injected authentication service must be of the
+        # FORGE-owned boundary type; the default is derived from persistence.
+        if self.authentication is None and self.persistence is not None:
+            self.authentication = ForgeAuthenticationService(self.persistence)
+        elif self.authentication is not None and not isinstance(
+            self.authentication, ForgeAuthenticationService
+        ):
+            raise TypeError(
+                "authentication must be a ForgeAuthenticationService"
             )
         if self.policy is not None:
             raise RuntimeError(
