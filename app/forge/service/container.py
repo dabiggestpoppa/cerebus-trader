@@ -25,6 +25,7 @@ from typing import Any
 from app.forge.config import ForgeConfig
 from app.forge.persistence.port import PersistenceGateway
 from app.forge.service.authentication import ForgeAuthenticationService
+from app.forge.policy import PolicyEngine
 
 
 @dataclass
@@ -47,7 +48,10 @@ class ForgeServiceContainer:
     authentication: ForgeAuthenticationService | None = field(
         default=None, repr=False
     )
-    policy: Any = field(default=None, repr=False)
+    # II.4: the central policy authority (pure PolicyEngine). Injected
+    # explicitly; default None because the pure kernel needs no wiring to
+    # exist. Providers remain forbidden until II.5 owns that boundary.
+    policy: PolicyEngine | None = field(default=None, repr=False)
     providers: Any = field(default=None, repr=False)
     observability: Any = field(default=None, repr=False)
 
@@ -74,10 +78,10 @@ class ForgeServiceContainer:
             raise TypeError(
                 "authentication must be a ForgeAuthenticationService"
             )
-        if self.policy is not None:
-            raise RuntimeError(
-                "FORGE policy engine is not wired at II.2; II.4 owns that boundary"
-            )
+        # II.4 owns the policy seam: an injected engine must implement the
+        # pure PolicyEngine port (structural check).
+        if self.policy is not None and not isinstance(self.policy, PolicyEngine):
+            raise TypeError("policy must implement the PolicyEngine port")
         if self.providers is not None:
             raise RuntimeError(
                 "FORGE provider adapters are not wired at II.2; II.5 owns that boundary"

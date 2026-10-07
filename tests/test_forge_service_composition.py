@@ -172,11 +172,18 @@ class TestForgeServiceContainer:
             )
 
     def test_container_rejects_wired_policy_at_ii_1(self) -> None:
+        """II.4 supersedes the II.1-forbidden policy seam: the container now
+        accepts a real PolicyEngine but still rejects non-conforming values
+        (fail-closed guard preserved, ownership moved to II.4)."""
+
         from app.forge.config import ForgeConfig
+        from app.forge.policy import DefaultDenyPolicyEngine
         from app.forge.service.container import ForgeServiceContainer
 
         cfg = ForgeConfig()
-        with pytest.raises(RuntimeError, match="II.4"):
+        container = ForgeServiceContainer(config=cfg, policy=DefaultDenyPolicyEngine())
+        assert container.policy is not None
+        with pytest.raises(TypeError, match="PolicyEngine"):
             ForgeServiceContainer(
                 config=cfg, policy=object()  # type: ignore[arg-type]
             )
