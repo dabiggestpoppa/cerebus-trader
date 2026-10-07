@@ -117,9 +117,15 @@ class TestPortAndInjection:
             )
 
     def test_container_still_rejects_policy_and_providers(self) -> None:
+        from app.forge.policy import DefaultDenyPolicyEngine
         from app.forge.service.container import ForgeServiceContainer
 
-        with pytest.raises(RuntimeError, match="II.4"):
+        # II.4 supersedes the II.2-era RuntimeError guard: a valid PolicyEngine
+        # is now accepted (the II.4 seam); arbitrary objects are still refused.
+        ForgeServiceContainer(
+            config=ForgeConfig(environment="test"), policy=DefaultDenyPolicyEngine()
+        )
+        with pytest.raises(TypeError, match="PolicyEngine"):
             ForgeServiceContainer(
                 config=ForgeConfig(environment="test"), policy=object()
             )
