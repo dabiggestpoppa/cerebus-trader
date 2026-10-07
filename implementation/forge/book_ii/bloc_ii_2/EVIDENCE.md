@@ -18,8 +18,20 @@ Starting remote/dependency head: `598b34c` (II.1 ratification)
    readiness
 5. `56250e3` II.2 tests: add persistence acceptance suite; governed artifact
    transitions
-6. `II.2 evidence:` — this file (EVIDENCE COMMIT)
-7. `II.2 ratification: PASS — persistence gate closed` (see RATIFICATION.md)
+6. `cca3bd9` II.2 evidence: record executable results and integration status
+   (EVIDENCE COMMIT)
+7. `438a35e` II.2 ratification: PASS — persistence gate closed
+   (RATIFICATION COMMIT)
+8. `5542105` II.2 platform: register SQLAlchemy/psycopg2 dependency and CI
+   postgres integration job
+9. `3c5564c` II.2 repair: pin ratified runtime versions, add real-PostgreSQL
+   CI evidence tests
+10. `1b42dfb` II.2 repair: fix CI postgres integration test isolation and imports
+11. `1ba8ee1` II.2 repair: import ObjectType in postgres round-trip test
+12. `7a7347a` II.2 repair: safe rollback after failed SQL insert; isolate PG
+    FK rejection test
+13. `2d5a8e6` II.2 repair: commit DDL so PostgreSQL migration tables persist
+    (CI green: test SUCCESS + postgres SUCCESS)
 
 IMPLEMENTATION HEAD (the executable gate below ran at this commit)
 = `56250e3` — the last commit on which all recorded test results were produced.
@@ -97,16 +109,33 @@ II.1 `598b34c`.
 
 ## PostgreSQL integration evidence
 
-**POSTGRESQL INTEGRATION: NOT EXECUTED (local)** — the local environment has
-no Docker and no PostgreSQL server; no live Postgres evidence was produced
-locally and none is claimed. The frozen deferred-proof rule is honored by:
-(1) the port-level unit/contract evidence below (in-memory gateway is a real
-port implementation, not a Postgres mock); (2) SQLite execution of the
-portable SQL migration contract (schema/dialect truth, explicitly NOT claimed
-as production-Postgres equivalence); (3) the new CI `postgres` job that
-executes the real integration proof on push. Ratification declares this the
-same way: deferred proof, named owner (forge-tests.yml `postgres` job),
-first-push trigger.
+**POSTGRESQL INTEGRATION: NOT EXECUTED (local); EXECUTED IN CI** — the local
+environment has no Docker and no PostgreSQL server, so no live-Postgres
+evidence was produced locally and none was claimed locally. The deferred
+proof was executed remotely:
+
+- CI run for commit `2d5a8e6` ("II.2 repair: commit DDL so PostgreSQL
+  migration tables persist"): **FORGE Tests / postgres — SUCCESS**
+  (run 37627625500, 55s), with the `test` job also SUCCESS.
+- Evidence produced by the postgres job:
+  1. **Full repository suite executed against live PostgreSQL 16**
+     (`FORGE_DATABASE_*` env): 217 tests passed (the II.2 suite's
+     SQLAlchemy-skipif guards did not skip).
+  2. **Explicit integration module passed**
+     (`tests/test_forge_postgres_integration.py`, 6 tests EXECUTED):
+     migration apply + current-schema no-op on empty PostgreSQL resource;
+     ping; canonical-object round trip preserving content hash; duplicate
+     canonical ID rejected; status transition with optimistic-version stale
+     conflict; provenance edge with real PK/FK constraints (duplicate edge
+     and dangling-object FK rejection); artifact persisted.
+- Local unit truth remains the port + SQLite-dialect contract recorded
+  below; none of it was replaced by CI — it is the same code path over
+  `psycopg2` + PostgreSQL 16 in CI.
+
+Repair commits that made CI pass (all post-ratification, append-only):
+`3c5564c` (pin runtime versions + evidence tests), `1b42dfb` (test isolation
+fix), `1ba8ee1` (missing import), `7a7347a` (safe rollback after failed
+INSERT — PostgreSQL aborted-transaction semantics), `2d5a8e6` (commit DDL).
 
 ## Exact executable results (IMPLEMENTATION HEAD `56250e3`)
 
@@ -169,9 +198,15 @@ same pattern as before; SQLAlchemy is present so none actually skip).
 
 ## Known gaps / honest limitations
 
-1. POSTGRESQL INTEGRATION: NOT EXECUTED locally (see above) — deferred to the
-   CI postgres job; first remote CI execution still pending as of this
-   evidence commit.
+1. POSTGRESQL INTEGRATION: executed in CI (run 37627002127 → 37627625500
+   journey, final SUCCESS); not executable locally (no Docker/psql) — the
+   explicit skip-with-message in the integration module is the local gap,
+   by design.
+2. First CI runs also exposed real defects (env drift: fastapi
+   0.142/starlette 1.7/SQLAlchemy 2.1 vs ratified evidence versions 0.136.1
+   /2.0.49) which broke route-collection tests remotely; repaired by pinning
+   `fastapi<0.137, SQLAlchemy<2.1` — requirements now encode the ratified
+   evidence environment rather than an unfounded compatibility claim.
 2. No connection pooling/lifecycle hardening yet: the gateway wraps one
    engine/connection injected by the deployment; production pooling belongs
    to the II.3+ runtime hardening pass.

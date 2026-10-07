@@ -17,14 +17,17 @@ HEAD `56250e3`.
 **Book II / Bloc II.2 — Persistence
 CLOSED — PASS**
 
-POSTGRESQL INTEGRATION: **NOT EXECUTED / DEFERRED PROOF** (declared honestly;
-see "Integration evidence status"). It is not a frozen blocker for II.2
-ratification because the frozen contract's acceptance (application boot,
-health/readiness semantics, test runtime without paid/external provider,
-provider-free domain imports, migration-before-readiness) is fully satisfied
-by the port + contract implementation, and the live-Postgres execution is
-assigned to the CI `postgres` job introduced in the same ladder. It was NOT
-claimed as verified, locally or in CI.
+POSTGRESQL INTEGRATION: **NOT EXECUTED locally / EXECUTED IN CI — VERIFIED**
+(declared honestly; see "Integration evidence status"). The deferred proof
+that this ratification assigned to the CI `postgres` job has since executed
+successfully: run 37627625500 (commit `2d5a8e6`) shows both `test` and
+`postgres` jobs SUCCESS, including the explicit integration module
+(`tests/test_forge_postgres_integration.py`: migrations on live PostgreSQL,
+round trip with hash preservation, real-constraint duplicate/FK rejections,
+optimistic stale-conflict). First runs exposed and fixed real defects
+(environment drift plus PostgreSQL transaction/DLL semantics) recorded in
+EVIDENCE.md; the ratified evidence environment is now pinned in
+requirements.txt.
 
 ## Acceptance verification (all clauses)
 
@@ -93,11 +96,15 @@ Authority; Artifact != Evidence; terminal statuses intact).
 ## Integration evidence status
 
 - Local: **NOT EXECUTED** (no Docker/PostgreSQL in the environment) —
-  declared, not implied away.
+  declared, not implied away; the integration module skips locally with an
+  explicit message.
 - Deferred proof owner: `.github/workflows/forge-tests.yml` `postgres` job
-  (Postgres 16 service; full suite with FORGE_DATABASE_* env), first
-  triggered by this ladder's push. If that CI job fails, integration remains
-  an open gap to be re-ratified against CI evidence later.
+  (Postgres 16 service; full suite with FORGE_DATABASE_* env).
+- Deferred proof **EXECUTED AND PASSED**: run 37627625500, commit `2d5a8e6`,
+  conclusion SUCCESS for both jobs. The full suite (217 tests) ran against
+  live PostgreSQL, and the dedicated integration module executed its 6
+  tests. Earlier runs (37623041116, 37627002127 failures) diagnosed real
+  defects that were fixed on the append-only ladder; no failure was hidden.
 
 ## GAP/ADR
 
@@ -109,9 +116,10 @@ recorded in PLAN/EVIDENCE.
 ## Commit ladder (append-only from `598b34c`)
 
 `10b8a5f` → `6b3e423` → `e080e9d` (implementation) → `1c0bf85` (integration)
-→ `56250e3` (tests) → evidence commit (this file's predecessor) →
-ratification commit (this file). Exact SHAs recorded in EVIDENCE.md and the
-final report.
+→ `56250e3` (tests) → `cca3bd9` (evidence) → `438a35e` (ratification — this
+file) → `5542105` (platform/CI) → `3c5564c` → `1b42dfb` → `1ba8ee1` →
+`7a7347a` → `2d5a8e6` (repairs; CI SUCCESS both jobs). Exact SHAs recorded
+in EVIDENCE.md and the final report.
 
 ## Next authorized packet
 
