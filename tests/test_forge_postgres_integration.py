@@ -74,6 +74,7 @@ class TestPostgresIntegration:
         gateway.ping()  # must not raise
 
     def test_canonical_round_trip_on_postgres(self, gateway) -> None:
+        from app.forge.canonical import ObjectType
         from app.forge.persistence.records import CanonicalObjectRecord
 
         obj = _model()
@@ -102,7 +103,6 @@ class TestPostgresIntegration:
             )
 
     def test_provenance_edge_with_real_fk(self, gateway) -> None:
-        from app.forge.canonical import ObjectType
         from app.forge.persistence.port import DuplicateProvenanceEdge, DanglingReference
         from app.forge.persistence.records import ArtifactRecord, ProvenanceEdgeRecord
 
