@@ -112,7 +112,11 @@ class InMemoryPersistenceGateway:
     ) -> WriteResult:
         if record.canonical_id in self._objects:
             raise DuplicateCanonicalObject(record.canonical_id)
-        self._validate_references(record)
+        # Inside a transaction, reference resolution is deferred to the atomic
+        # commit check (which validates the whole batch together, matching SQL
+        # semantics where earlier inserts in the open transaction are visible).
+        if not self._in_transaction:
+            self._validate_references(record)
         if self._in_transaction:
             self._buffer.append(("object", record))
             return WriteResult("CREATE", record.canonical_id, -1)
@@ -204,9 +208,18 @@ class InMemoryPersistenceGateway:
         key = (record.artifact_id, record.object_id, record.relation)
         if key in self._edges:
             raise DuplicateProvenanceEdge(*key)
-        if record.artifact_id not in self._artifacts:
+        # Inside a transaction, edge endpoints may be buffered batch members
+        # (artifacts/objects created earlier in the same open transaction);
+        # resolution is enforced atomically at commit below.
+        buffered_artifacts = {
+            a.artifact_id for op, a in self._buffer if op == "artifact"
+        }
+        buffered_objects = {
+            r.canonical_id for op, r in self._buffer if op == "object"
+        }
+        if record.artifact_id not in self._artifacts and record.artifact_id not in buffered_artifacts:
             raise DanglingReference("provenance_edge", record.artifact_id)
-        if record.object_id not in self._objects:
+        if record.object_id not in self._objects and record.object_id not in buffered_objects:
             raise DanglingReference("provenance_edge", record.object_id)
         self._edges[key] = record
 
@@ -378,14 +391,20 @@ class InMemoryPersistenceGateway:
         buffered_links = [r for op, r in self._buffer if op == "link"]
         self._buffer.clear()
         self._in_transaction = False
-        # Validate ALL buffered objects against pre-commit state (atomicity).
+        # Validate ALL buffered objects as one atomic batch (I.3 repair: the
+        # batch's OWN objects count as resolvable targets — SQL validates
+        # inside the open transaction where earlier inserts are visible, and
+        # legitimate aggregates reference each other mutually, e.g.
+        # CLAIM <-> EVIDENCE. Eager per-insert checks remain active outside
+        # transactions and for the no-transaction path below.
+        batch_ids = {record.canonical_id for record in buffered_objects}
         for record in buffered_objects:
             if record.canonical_id in self._objects:
                 raise DuplicateCanonicalObject(record.canonical_id)
             for ref in record.references:
                 if ref.target_id == record.canonical_id:
                     raise SelfReferenceForbidden(record.canonical_id)
-                if not ref.allow_unresolved_historical and ref.target_id not in self._objects:
+                if not ref.allow_unresolved_historical and ref.target_id not in self._objects and ref.target_id not in batch_ids:
                     raise DanglingReference(record.canonical_id, ref.target_id)
         for record in buffered_objects:
             version = self._objects[record.canonical_id][1] + 1 if record.canonical_id in self._objects else 1
