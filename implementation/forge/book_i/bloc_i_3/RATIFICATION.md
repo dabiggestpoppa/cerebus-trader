@@ -113,3 +113,14 @@ ratification — local equivalents (full suite + PG job shape) executed green.
 - **Book II / II.3 authentication and Book VI entitlement** remain exactly
   where they are; I.3 created no identity, session, route, or commercial
   object.
+
+## Post-ratification verification
+
+- Rung `7aab0f1` (after this file): PG integration fixture grants
+  fresh-database semantics per invocation — a fixture-only CI repair exposing
+  a hidden rerun-state dependency of the postgres job; no assertion changed,
+  no acceptance-affecting code touched.
+- CI run `37800246168` on `7aab0f1`: **test job ✓ (19s), postgres job ✓ (58s)**
+  — full suite against live PostgreSQL plus both evidence reruns green.
+- Final remote head verified via `git ls-remote origin refs/heads/forge`:
+  `7aab0f10823f639f746ca8877bc670d9304a6690`.

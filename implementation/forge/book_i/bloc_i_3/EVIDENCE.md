@@ -364,16 +364,23 @@ column. 001 SHA pin unchanged (`test_001_and_002_unchanged`).
    I.3 normalize order (R4). Retrieval (I.4) must not treat reference order as
    identity; if cross-store hash equality is required, I.4 should hash the
    normalized payload.
-3. **PG integration suite needs a fresh database per run** (CI semantics: the
-   `postgres` job gets a new service container). Local reruns must truncate the
-   forge_test data tables first; the suite does not self-clean by design.
+3. **PG integration suite grants fresh-database semantics per invocation**
+   (fixture truncates data tables; schema and migration ledger untouched).
+   CI's postgres job runs the module three times against one service
+   container; without this the second run would see committed residue. Local
+   reruns need no manual cleanup.
 4. **Quarantined sources stay quarantined**: the 9 non-card files are
    inventory-only; no attempt was made to canonicalize Pine code or
    conversation-derived doctrine into empirical objects (K1/J1).
-5. **CI result**: the push-triggered workflow (`forge-tests.yml`, test +
-   postgres jobs) runs after Phase 7 push; local equivalents executed above
-   (446/18 full suite; 18 PG on PostgreSQL 16.15). Remote CI status is recorded
-   in the ratification handoff when observable.
+5. **CI result (observed).** Push-triggered workflow `forge-tests.yml`:
+   first run `37799721801` exposed a hidden rerun-state dependency — the
+   postgres job runs the PG module three times against one service container,
+   which previously only passed because no test committed rows between
+   invocations; the new committing tests surfaced duplicate-key residue.
+   Repaired in rung `7aab0f1` (fixture truncates data tables per invocation,
+   mirroring the fresh container; no assertion changed — locally reproduced
+   all three CI steps: 464 / 18 / 7 passed). Verification run `37800246168`
+   on `7aab0f1`: **both jobs green** (`test` 19s, `postgres` 58s).
 
 ## Acceptance-clause mapping (A–X)
 
