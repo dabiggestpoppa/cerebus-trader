@@ -526,3 +526,142 @@ class TestPostgresTransactionBatchSemantics:
                 gw.ping()
             except Exception:
                 pass
+
+
+# ---------------------------------------------------------------------------
+# Book I / Bloc I.4 — retrieval index built from real PostgreSQL
+# (cross-store index identity + freshness after a real transaction)
+# ---------------------------------------------------------------------------
+
+
+def _retrieval_probe_record():
+    from app.forge.canonical import (
+        CanonicalId,
+        CanonicalObject,
+        EvidenceStatus,
+        Layer,
+        ObjectType,
+        ProductExposure,
+    )
+    from app.forge.persistence.records import CanonicalObjectRecord
+
+    obj = CanonicalObject(
+        canonical_id=CanonicalId(
+            value="MOD.PG.RETRIEVAL.V1", object_type=ObjectType.MODEL
+        ),
+        title="Postgres retrieval index probe",
+        version="v1",
+        status=EvidenceStatus.CANDIDATE,
+        exposure=ProductExposure.SUBSCRIBER_MODEL,
+        layer=Layer.NONE,
+        metadata={"provenance": "ci-i4"},
+    )
+    return CanonicalObjectRecord.from_domain(obj)
+
+
+def _ensure_probe(gateway) -> None:
+    if gateway.get_object("MOD.PG.RETRIEVAL.V1") is None:
+        with gateway.transaction():
+            gateway.create_object(_retrieval_probe_record())
+
+
+class TestPostgresRetrievalIndex:
+    """I.4 acceptance U1/U2 against the real PostgreSQL 16 CI service.
+
+    U1: an index compiled from the PostgreSQL store is byte-identical to one
+    compiled from the in-memory store over the same governed state (proof that
+    reference order, JSON round-trips and persistence-owned fields never leak
+    into record identity).
+    U2: freshness is observable after a real transactional status transition
+    and cleared by a rebuild.
+    """
+
+    def teardown_method(self, method) -> None:
+        gw = getattr(self, "_gw", None)
+        if gw is not None:
+            try:
+                gw.ping()
+            except Exception:
+                pass
+
+    def test_index_builds_from_postgres_with_identical_hash_and_freshness(
+        self, gateway
+    ) -> None:
+        from pathlib import Path
+
+        from app.forge.backfill.runner import BackfillMode, run_backfill
+        from app.forge.persistence.memory import InMemoryPersistenceGateway
+        from app.forge.retrieval import (
+            IndexBuildMode,
+            IndexBuildOutcome,
+            RetrievalIndex,
+            run_index_build,
+        )
+
+        self._gw = gateway
+        repo_root = Path(__file__).resolve().parents[1]
+
+        # Both stores hold identical governed state: the applied corpus plus
+        # every object/artifact/edge earlier tests left on this PostgreSQL
+        # server (mirrored verbatim so the comparison is exact).
+        run_backfill(gateway, repo_root, BackfillMode.APPLY)  # idempotent
+        _ensure_probe(gateway)
+        memory = InMemoryPersistenceGateway()
+        run_backfill(memory, repo_root, BackfillMode.APPLY)
+        with memory.transaction():
+            for object_id in gateway.list_object_ids():
+                if memory.get_object(object_id) is None:
+                    memory.create_object(gateway.get_object(object_id))
+            for object_id in gateway.list_object_ids():
+                for edge in gateway.edges_for_object(object_id):
+                    if memory.get_artifact(edge.artifact_id) is None:
+                        memory.create_artifact(gateway.get_artifact(edge.artifact_id))
+                    already = any(
+                        existing.artifact_id == edge.artifact_id
+                        and existing.object_id == edge.object_id
+                        and existing.relation == edge.relation
+                        for existing in memory.edges_for_object(object_id)
+                    )
+                    if not already:
+                        memory.add_provenance_edge(edge)
+        assert set(gateway.list_object_ids()) == set(memory.list_object_ids())
+
+        pg_index = RetrievalIndex()
+        pg_report = run_index_build(
+            gateway, repo_root, IndexBuildMode.APPLY, pg_index
+        )
+        memory_index = RetrievalIndex()
+        memory_report = run_index_build(
+            memory, repo_root, IndexBuildMode.APPLY, memory_index
+        )
+
+        # U1 — cross-store identity
+        assert pg_report.compiled == len(memory.list_object_ids())
+        assert pg_report.compiled >= 31
+        assert pg_report.index_hash == memory_report.index_hash
+        assert pg_report.source_fingerprint == memory_report.source_fingerprint
+        assert pg_index.require().content_hash() == memory_index.require().content_hash()
+        assert pg_index.is_stale(gateway) is False
+
+        # U2 — freshness after a real PostgreSQL status transition
+        result = gateway.transition_status("MOD.PG.RETRIEVAL.V1", "PARKED")
+        assert result.operation == "TRANSITION"
+        assert pg_index.is_stale(gateway) is True
+
+        rebuilt = run_index_build(gateway, repo_root, IndexBuildMode.APPLY, pg_index)
+        assert rebuilt.outcome is IndexBuildOutcome.PUBLISHED
+        assert rebuilt.changed == ("MOD.PG.RETRIEVAL.V1",)
+        assert rebuilt.added == () and rebuilt.removed == ()
+        assert rebuilt.generation == 2
+        assert pg_index.is_stale(gateway) is False
+        assert (
+            pg_index.require()
+            .record("MOD.PG.RETRIEVAL.V1")
+            .status.value
+            == "PARKED"
+        )
+
+        # an immediate second rebuild is a deterministic no-op
+        again = run_index_build(gateway, repo_root, IndexBuildMode.APPLY, pg_index)
+        assert again.outcome is IndexBuildOutcome.UNCHANGED
+        assert again.index_hash == rebuilt.index_hash
