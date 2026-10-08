@@ -17,7 +17,7 @@ from app.forge.backfill.canonicalizer import (
     MigrationPlan,
     canonicalize_files,
 )
-from app.forge.backfill.mappings import NAMED_ARTIFACT_EDGES
+from app.forge.backfill.mappings import CLAIM_REGISTRY_PATH, NAMED_ARTIFACT_EDGES
 from app.forge.persistence.port import PersistenceGateway
 
 # Repository-rooted in-scope card corpus + named artifact paths.
@@ -37,10 +37,16 @@ def load_corpus_files(repo_root: Path) -> dict[str, str]:
     no arbitrary path acceptance — only the frozen globs and the registry's
     named edges are ever read."""
     files: dict[str, str] = {}
-    for pattern in CARD_GLOBS + CONVERSATION_DERIVED_GLOBS:
+    for pattern in CARD_GLOBS + CONVERSATION_DERIVED_GLOBS + (CLAIM_REGISTRY_PATH,):
         for path in sorted(repo_root.glob(pattern)):
             if path.is_file():
-                files[path.as_posix()] = path.read_text(encoding="utf-8")
+                # Normalize to repo-relative POSIX keys regardless of the
+                # absolute/relative form of repo_root or the platform.
+                try:
+                    key = path.resolve().relative_to(repo_root.resolve()).as_posix()
+                except ValueError:
+                    key = path.as_posix()
+                files[key] = path.read_text(encoding="utf-8")
     for named in NAMED_ARTIFACT_EDGES:
         candidate = repo_root / named.path
         if candidate.is_file() and named.path not in files:
@@ -147,45 +153,6 @@ def _apply_plan(gateway: PersistenceGateway, plan: MigrationPlan) -> None:
             gateway.add_provenance_edge(edge)
 
 
-            if record.canonical_id in existing_ids:
-                current = gateway.get_object(record.canonical_id)
-                if current is not None and _governed_payload(current) == _governed_payload(record):
-                    plan.report.unchanged += 1
-                    continue
-                plan.report.conflicts += 1
-                raise ConflictError(
-                    f"canonical id exists with different governed content: "
-                    f"{record.canonical_id}"
-                )
-            gateway.create_object(record)
-
-        # 2. Artifacts.
-        for artifact in plan.artifacts:
-            if gateway.get_artifact(artifact.artifact_id) is None:
-                gateway.create_artifact(artifact)
-
-        # 3. Provenance edges (tolerate duplicate edges only when identical
-        #    content already persisted; never overwrite differing content).
-        for artifact_id, object_id, relation, note in plan.edges:
-            already = any(
-                e.artifact_id == artifact_id
-                and e.object_id == object_id
-                and e.relation == relation
-                for e in gateway.edges_for_object(object_id)
-            )
-            if not already:
-                from app.forge.persistence.records import ProvenanceEdgeRecord
-
-                gateway.add_provenance_edge(
-                    ProvenanceEdgeRecord(
-                        artifact_id=artifact_id,
-                        object_id=object_id,
-                        relation=relation,
-                        note=note,
-                    )
-                )
-
-
 def _governed_payload(record) -> str:
     """Deterministic governed-content comparison (persistence-owned fields
     excluded)."""
@@ -202,11 +169,17 @@ def _governed_payload(record) -> str:
         "status": record.status.value,
         "exposure": record.exposure.value,
         "layer": record.layer.value,
-        "references": [
-            {"target_id": r.target_id, "relation": r.relation,
-             "allow_unresolved_historical": r.allow_unresolved_historical}
-            for r in record.references
-        ],
+        "references": sorted(
+            (
+                {
+                    "target_id": r.target_id,
+                    "relation": r.relation,
+                    "allow_unresolved_historical": r.allow_unresolved_historical,
+                }
+                for r in record.references
+            ),
+            key=lambda d: (d["target_id"], d["relation"], d["allow_unresolved_historical"]),
+        ),
         "metadata": record.metadata,
         "claim_identity": (
             record.claim_identity.comparison_key()

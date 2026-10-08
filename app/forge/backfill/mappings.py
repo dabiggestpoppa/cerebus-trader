@@ -23,6 +23,14 @@ class MigrationClass(str, Enum):
     MISSING_SOURCE = "MISSING_SOURCE"
     UNRESOLVED_REFERENCE = "UNRESOLVED_REFERENCE"
     UNSUPPORTED_CLAIM = "UNSUPPORTED_CLAIM"
+    GOVERNANCE_CONTRACT = "GOVERNANCE_CONTRACT"
+
+
+# The claim registry is an in-scope I.3 source artifact (ACCEPTANCE A1): it is
+# inventoried and registered as an artifact with DEFINES edges to every
+# registry CLAIM (ACCEPTANCE I1), but it is NOT canonicalized into a domain
+# object itself (it is the rule source for claims, not a card).
+CLAIM_REGISTRY_PATH = "corpus/canonical/CLAIM_REGISTRY_V1.md"
 
 
 @dataclass(frozen=True)

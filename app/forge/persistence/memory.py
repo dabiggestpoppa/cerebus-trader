@@ -169,6 +169,18 @@ class InMemoryPersistenceGateway:
     ) -> WriteResult:
         if record.artifact_id in self._artifacts:
             raise DuplicateArtifact(record.artifact_id)
+        if self._in_transaction:
+            # Buffered like objects: a duplicate within the SAME batch is
+            # rejected too (SQL's primary key would reject it), and a failed
+            # batch must not leave artifacts behind (rollback parity).
+            if any(
+                a.artifact_id == record.artifact_id
+                for op, a in self._buffer
+                if op == "artifact"
+            ):
+                raise DuplicateArtifact(record.artifact_id)
+            self._buffer.append(("artifact", record))
+            return WriteResult("CREATE", record.artifact_id, -1)
         version = self._check_version(record.artifact_id, expected_version, self._artifacts) + 1
         self._artifacts[record.artifact_id] = (record, version)
         return WriteResult("CREATE", record.artifact_id, version)
@@ -208,9 +220,10 @@ class InMemoryPersistenceGateway:
         key = (record.artifact_id, record.object_id, record.relation)
         if key in self._edges:
             raise DuplicateProvenanceEdge(*key)
-        # Inside a transaction, edge endpoints may be buffered batch members
-        # (artifacts/objects created earlier in the same open transaction);
-        # resolution is enforced atomically at commit below.
+        # Edge endpoints may be buffered batch members (artifacts/objects
+        # created earlier in the same open transaction); the write itself is
+        # buffered so a failed batch rolls back without leaking edges, and
+        # duplicates WITHIN the batch are rejected (SQL PK parity).
         buffered_artifacts = {
             a.artifact_id for op, a in self._buffer if op == "artifact"
         }
@@ -221,6 +234,17 @@ class InMemoryPersistenceGateway:
             raise DanglingReference("provenance_edge", record.artifact_id)
         if record.object_id not in self._objects and record.object_id not in buffered_objects:
             raise DanglingReference("provenance_edge", record.object_id)
+        if self._in_transaction:
+            if any(
+                e.artifact_id == record.artifact_id
+                and e.object_id == record.object_id
+                and e.relation == record.relation
+                for op, e in self._buffer
+                if op == "edge"
+            ):
+                raise DuplicateProvenanceEdge(*key)
+            self._buffer.append(("edge", record))
+            return
         self._edges[key] = record
 
     def edges_for_object(self, object_id: str) -> tuple[ProvenanceEdgeRecord, ...]:
@@ -386,30 +410,55 @@ class InMemoryPersistenceGateway:
 
     def _commit_buffer(self) -> None:
         buffered_objects = [r for op, r in self._buffer if op == "object"]
+        buffered_artifacts = [r for op, r in self._buffer if op == "artifact"]
+        buffered_edges = [r for op, r in self._buffer if op == "edge"]
         buffered_users = [r for op, r in self._buffer if op == "user"]
         buffered_sessions = [r for op, r in self._buffer if op == "session"]
         buffered_links = [r for op, r in self._buffer if op == "link"]
         self._buffer.clear()
         self._in_transaction = False
-        # Validate ALL buffered objects as one atomic batch (I.3 repair: the
-        # batch's OWN objects count as resolvable targets — SQL validates
-        # inside the open transaction where earlier inserts are visible, and
-        # legitimate aggregates reference each other mutually, e.g.
-        # CLAIM <-> EVIDENCE. Eager per-insert checks remain active outside
-        # transactions and for the no-transaction path below.
+        # ---- PHASE 1: validate the WHOLE batch as one unit. Nothing is
+        # applied yet, so any failure below leaves the store untouched and
+        # _Transaction.__exit__ propagates it (atomic rollback parity with
+        # SQL, where every statement shares one rolled-back DB transaction).
+        #
+        # I.3 repair (mutual references): the batch's OWN objects count as
+        # resolvable targets — SQL validates inside the open transaction
+        # where earlier inserts are visible, and legitimate aggregates
+        # reference each other mutually, e.g. CLAIM <-> EVIDENCE. Eager
+        # per-insert checks remain active outside transactions and for the
+        # no-transaction path below. Unresolved ordinary references are
+        # still forbidden after commit.
         batch_ids = {record.canonical_id for record in buffered_objects}
+        batch_artifact_ids = {a.artifact_id for a in buffered_artifacts}
+        seen_batch: set[str] = set()
         for record in buffered_objects:
-            if record.canonical_id in self._objects:
+            # I.3 repair: duplicates WITHIN the batch are rejected too — a
+            # second same-id record must never silently overwrite the first
+            # (SQL's primary key would reject it).
+            if record.canonical_id in self._objects or record.canonical_id in seen_batch:
                 raise DuplicateCanonicalObject(record.canonical_id)
+            seen_batch.add(record.canonical_id)
             for ref in record.references:
                 if ref.target_id == record.canonical_id:
                     raise SelfReferenceForbidden(record.canonical_id)
                 if not ref.allow_unresolved_historical and ref.target_id not in self._objects and ref.target_id not in batch_ids:
                     raise DanglingReference(record.canonical_id, ref.target_id)
-        for record in buffered_objects:
-            version = self._objects[record.canonical_id][1] + 1 if record.canonical_id in self._objects else 1
-            self._objects[record.canonical_id] = (record, version)
-        # II.3: validate then apply buffered identity/session writes atomically.
+        seen_artifacts: set[str] = set()
+        for artifact in buffered_artifacts:
+            if artifact.artifact_id in self._artifacts or artifact.artifact_id in seen_artifacts:
+                raise DuplicateArtifact(artifact.artifact_id)
+            seen_artifacts.add(artifact.artifact_id)
+        seen_edges: set[tuple[str, str, str]] = set()
+        for edge in buffered_edges:
+            key = (edge.artifact_id, edge.object_id, edge.relation)
+            if key in self._edges or key in seen_edges:
+                raise DuplicateProvenanceEdge(*key)
+            seen_edges.add(key)
+            if edge.artifact_id not in self._artifacts and edge.artifact_id not in batch_artifact_ids:
+                raise DanglingReference("provenance_edge", edge.artifact_id)
+            if edge.object_id not in self._objects and edge.object_id not in batch_ids:
+                raise DanglingReference("provenance_edge", edge.object_id)
         for user in buffered_users:
             if user.user_id in self._users:
                 raise DuplicateForgeUser(user.user_id)
@@ -418,6 +467,15 @@ class InMemoryPersistenceGateway:
                 raise DuplicateSession(session.session_id)
             if session.token_digest in self._sessions_by_digest:
                 raise DuplicateSession("token_digest")
+
+        # ---- PHASE 2: apply. Pure dict writes over already-validated data;
+        # cannot fail, so no partial state is possible here.
+        for artifact in buffered_artifacts:
+            self._artifacts[artifact.artifact_id] = (artifact, 1)
+        for record in buffered_objects:
+            self._objects[record.canonical_id] = (record, 1)
+        for edge in buffered_edges:
+            self._edges[(edge.artifact_id, edge.object_id, edge.relation)] = edge
         for user in buffered_users:
             self._users[user.user_id] = (user, 1)
         for session in buffered_sessions:

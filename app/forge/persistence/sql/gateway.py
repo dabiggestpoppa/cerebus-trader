@@ -73,6 +73,13 @@ class SqlAlchemyPersistenceGateway:
         self._runner = SqlMigrationRunner(connection)
         self._migrations_required = migrations_required
         self._in_transaction = False
+        # I.3: records created inside an open transaction whose ordinary
+        # reference targets may still be pending in the SAME batch. Their
+        # dangling check is deferred to commit and validated as one unit
+        # (parity with the in-memory gateway; mutual CLAIM <-> EVIDENCE
+        # references inside a batch are legal, unresolved ordinary
+        # references after commit are not).
+        self._pending_records: list[CanonicalObjectRecord] = []
 
     # -- infrastructure -------------------------------------------------------
     def ping(self) -> None:
@@ -97,7 +104,13 @@ class SqlAlchemyPersistenceGateway:
     def create_object(
         self, record: CanonicalObjectRecord, expected_version: int | None = None
     ) -> WriteResult:
-        self._validate_references(record)
+        if self._in_transaction:
+            # Defer only the ordinary dangling check to commit: the batch's
+            # remaining records may not be inserted yet (mutual references).
+            # Self-reference and claim_identity rules stay eager.
+            self._validate_references(record, check_dangling=False)
+        else:
+            self._validate_references(record)
         exists = self._exists("canonical_objects", record.canonical_id)
         if exists and expected_version is not None:
             current = self._object_version(record.canonical_id)
@@ -126,9 +139,18 @@ class SqlAlchemyPersistenceGateway:
                 "meta": json.dumps(record.metadata, sort_keys=True),
                 "claim_identity": (
                     json.dumps(
-                        record.claim_identity.comparison_key_dict()
-                        if hasattr(record.claim_identity, "comparison_key_dict")
-                        else {},
+                        {
+                            "market": record.claim_identity.market,
+                            "event_definition": record.claim_identity.event_definition,
+                            "conditioning_event": record.claim_identity.conditioning_event,
+                            "clock_origin": record.claim_identity.clock_origin,
+                            "horizon": record.claim_identity.horizon,
+                            "tolerance": record.claim_identity.tolerance,
+                            "eligibility": record.claim_identity.eligibility,
+                            "implementation_semantics": (
+                                record.claim_identity.implementation_semantics
+                            ),
+                        },
                         sort_keys=True,
                     )
                     if record.claim_identity
@@ -140,6 +162,8 @@ class SqlAlchemyPersistenceGateway:
         )
         for ref in record.references:
             self._insert_reference(record.canonical_id, ref)
+        if self._in_transaction:
+            self._pending_records.append(record)
         return WriteResult("CREATE", record.canonical_id, 1)
 
     def _insert_reference(self, canonical_id: str, ref: CanonicalReference) -> None:
@@ -183,16 +207,20 @@ class SqlAlchemyPersistenceGateway:
             from app.forge.canonical import ClaimIdentity
 
             dims = _json.loads(row["claim_identity_json"])
-            claim_identity = ClaimIdentity(
-                market=dims["market"],
-                event_definition=dims["event_definition"],
-                conditioning_event=dims["conditioning_event"],
-                clock_origin=dims["clock_origin"],
-                horizon=dims["horizon"],
-                tolerance=dims["tolerance"],
-                eligibility=dims["eligibility"],
-                implementation_semantics=dims["implementation_semantics"],
-            )
+            # Empty dict = identity never persisted (legacy rows written by an
+            # older serializer): surface as ABSENT identity, never fabricate
+            # dimension values and never crash the read path.
+            if dims:
+                claim_identity = ClaimIdentity(
+                    market=dims["market"],
+                    event_definition=dims["event_definition"],
+                    conditioning_event=dims["conditioning_event"],
+                    clock_origin=dims["clock_origin"],
+                    horizon=dims["horizon"],
+                    tolerance=dims["tolerance"],
+                    eligibility=dims["eligibility"],
+                    implementation_semantics=dims["implementation_semantics"],
+                )
         return CanonicalObjectRecord(
             canonical_id=row["canonical_id"],
             object_type=ObjectType(row["object_type"]),
@@ -257,16 +285,33 @@ class SqlAlchemyPersistenceGateway:
             raise ObjectNotFound(canonical_id)
         return int(row[0])
 
-    def _validate_references(self, record: CanonicalObjectRecord) -> None:
+    def _validate_references(
+        self, record: CanonicalObjectRecord, *, check_dangling: bool = True
+    ) -> None:
         if record.claim_identity is not None and record.object_type is not ObjectType.CLAIM:
             raise ValueError("claim_identity is only valid on CLAIM objects")
         for ref in record.references:
             if ref.target_id == record.canonical_id:
                 raise SelfReferenceForbidden(record.canonical_id)
-            if not ref.allow_unresolved_historical and not self._exists(
-                "canonical_objects", ref.target_id
+            if (
+                check_dangling
+                and not ref.allow_unresolved_historical
+                and not self._exists("canonical_objects", ref.target_id)
             ):
                 raise DanglingReference(record.canonical_id, ref.target_id)
+
+    def _validate_pending_references(self) -> None:
+        """I.3 unit validation at commit: every ordinary reference of every
+        record created in this transaction must resolve against the open
+        transaction's visible state (earlier inserts in the same batch are
+        visible, so mutual references resolve). Runs BEFORE COMMIT; a failure
+        rolls the whole batch back."""
+        for record in self._pending_records:
+            for ref in record.references:
+                if ref.allow_unresolved_historical or ref.target_id == record.canonical_id:
+                    continue
+                if not self._exists("canonical_objects", ref.target_id):
+                    raise DanglingReference(record.canonical_id, ref.target_id)
 
     def _exists(self, table: str, key: str) -> bool:
         # table comes from module constants only, never user input (P2)
@@ -458,7 +503,7 @@ class SqlAlchemyPersistenceGateway:
 
     # -- transactions ------------------------------------------------------------------
     def transaction(self) -> Any:
-        return _SqlConnectionTransaction(self._connection)
+        return _SqlGatewayTransaction(self)
 
     # -- identity / session (Book II / Bloc II.3) ---------------------------------
     def create_user(
@@ -844,3 +889,40 @@ class _SqlConnectionTransaction:
             self._connection.execute(text("COMMIT"))
         else:
             self._connection.execute(text("ROLLBACK"))
+
+
+class _SqlGatewayTransaction:
+    """Gateway-aware transaction (Book I / Bloc I.3 repair).
+
+    Opens the deferred-validation window on the gateway, then on clean exit
+    validates the WHOLE pending record unit before COMMIT — so mutually
+    referencing records in one batch (e.g. CLAIM <-> EVIDENCE) commit
+    together, while any unresolved ordinary reference still rolls the batch
+    back atomically. On exception: ROLLBACK, no partial truth.
+    """
+
+    def __init__(self, gateway: "SqlAlchemyPersistenceGateway") -> None:
+        self._gateway = gateway
+
+    def __enter__(self) -> "_SqlGatewayTransaction":
+        self._gateway._connection.execute(text("BEGIN"))
+        self._gateway._in_transaction = True
+        self._gateway._pending_records = []
+        return self
+
+    def __exit__(self, exc_type: Any, exc: Any, tb: Any) -> None:
+        gateway = self._gateway
+        gateway._in_transaction = False
+        try:
+            if exc_type is None:
+                try:
+                    gateway._validate_pending_references()
+                except Exception:
+                    # Unit validation failed: roll back the whole batch.
+                    gateway._connection.execute(text("ROLLBACK"))
+                    raise
+                gateway._connection.execute(text("COMMIT"))
+            else:
+                gateway._connection.execute(text("ROLLBACK"))
+        finally:
+            gateway._pending_records = []

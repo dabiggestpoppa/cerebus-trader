@@ -469,9 +469,14 @@ def canonicalize_files(files: dict[str, str]) -> MigrationPlan:
     """
     plan = MigrationPlan()
     report = plan.report
+    seen_object_ids: set[str] = set()
 
     # 1. Card files (models, evidence, setups) -> canonical objects.
     for path in sorted(files):
+        if path == M.CLAIM_REGISTRY_PATH:
+            # Governance contract: inventoried + artifact-registered below
+            # (step 2.5), never parsed as a card and never quarantined.
+            continue
         text = files[path]
         card = parse_card(path, text)
         report.sources_inventoried += 1
@@ -481,7 +486,7 @@ def canonicalize_files(files: dict[str, str]) -> MigrationPlan:
         outcome_type: str | None = None
 
         if card.kind == "MODEL CARD":
-            machine, reason = _model(card)
+            machine, reason, model_flags = _model(card)
             outcome_type = ObjectType.MODEL.value
             if machine is None:
                 report.quarantined += 1
@@ -490,7 +495,18 @@ def canonicalize_files(files: dict[str, str]) -> MigrationPlan:
                 )
                 continue
             legacy_id = card.fields.get("model_id", "").strip()
-            obj = _machine_to_object(machine, legacy_id, [])
+            obj = _machine_to_object(machine, legacy_id, model_flags)
+            if obj.canonical_id.value in seen_object_ids:
+                report.conflicts += 1
+                report.outcomes += (
+                    MigrationOutcome(
+                        path, obj.canonical_id.value, M.MigrationClass.QUARANTINED,
+                        "duplicate canonical id from a second source card",
+                        outcome_type,
+                    ),
+                )
+                continue
+            seen_object_ids.add(obj.canonical_id.value)
             plan.objects.append(CanonicalObjectRecord.from_domain(obj))
             outcome_id = obj.canonical_id.value
             report.models += 1
@@ -552,9 +568,47 @@ def canonicalize_files(files: dict[str, str]) -> MigrationPlan:
         )
 
     # 2. Registry claims.
-    for record in build_claim_objects():
+    claim_records = build_claim_objects()
+    for record in claim_records:
         plan.objects.append(record)
         report.claims += 1
+
+    # 2.5. Claim registry artifact (ACCEPTANCE A1: the claim registry is an
+    # in-scope source artifact; ACCEPTANCE I1: every migrated object —
+    # including CLAIMs — carries >=1 provenance edge from a registered
+    # artifact with deterministic content identity). A missing registry is
+    # classified MISSING_SOURCE, never fabricated (ACCEPTANCE I4).
+    registry_text = files.get(M.CLAIM_REGISTRY_PATH)
+    if registry_text is None:
+        report.missing_source += 1
+        report.outcomes += (
+            MigrationOutcome(
+                M.CLAIM_REGISTRY_PATH, None, M.MigrationClass.MISSING_SOURCE,
+                "claim registry not present in provided corpus state",
+                ObjectType.CLAIM.value,
+            ),
+        )
+    else:
+        report.sources_inventoried += 1
+        registry_artifact = _artifact_record(M.CLAIM_REGISTRY_PATH, registry_text)
+        plan.artifacts.append(registry_artifact)
+        for record in claim_records:
+            plan.edges.append(
+                (
+                    registry_artifact.artifact_id,
+                    record.canonical_id,
+                    "DEFINES",
+                    "claim registry defines this claim",
+                )
+            )
+        report.outcomes += (
+            MigrationOutcome(
+                M.CLAIM_REGISTRY_PATH, None, M.MigrationClass.GOVERNANCE_CONTRACT,
+                "governance contract inventoried (defines registry claims); "
+                "not canonicalized into a domain object",
+                ObjectType.CLAIM.value,
+            ),
+        )
 
     # 3. Named implementation/support/visualization artifacts + edges.
     for named in M.NAMED_ARTIFACT_EDGES:
@@ -599,6 +653,9 @@ def canonicalize_files(files: dict[str, str]) -> MigrationPlan:
         if o.classification is M.MigrationClass.QUARANTINED
     )
     return plan
+
+
+def _ask(card: ParsedCard, key: str, fallback: str = _NOT_SPECIFIED) -> str:
     value = card.ask_line(key)
     return value if value else fallback
 
@@ -610,23 +667,27 @@ def _forbidden(card: ParsedCard) -> tuple[str, ...]:
     return tuple(part.strip(" ;.") for part in raw.split(";") if part.strip(" ;."))
 
 
-def _model(card: ParsedCard) -> tuple[ModelCard | None, str]:
-    """Canonicalize one model card. Returns (ModelCard|None, reason)."""
+def _model(
+    card: ParsedCard,
+) -> tuple[ModelCard | None, str, list[tuple[str, object]]]:
+    """Canonicalize one model card. Returns (ModelCard|None, reason, flags)."""
     f = card.fields
+    flags: list[tuple[str, object]] = []
     legacy_id = f.get("model_id", "").strip()
     try:
         canonical_id = M.resolve_canonical_id(legacy_id, ObjectType.MODEL)
     except ValueError as exc:
-        return None, f"id mapping failed: {exc}"
+        return None, f"id mapping failed: {exc}", flags
 
     status_resolved = M.resolve_status(f.get("status", ""))
     if status_resolved is None:
-        return None, f"unknown legacy status: {f.get('status', '')!r}"
+        return None, f"unknown legacy status: {f.get('status', '')!r}", flags
     status, status_map = status_resolved
+    flags.extend(status_map.metadata_flags)
 
     layer_resolved = M.resolve_layer(f.get("layer", ""))
     if layer_resolved is None:
-        return None, f"unknown layer expression: {f.get('layer', '')!r}"
+        return None, f"unknown layer expression: {f.get('layer', '')!r}", flags
     layer_value, layer_detail = layer_resolved
 
     try:
@@ -634,13 +695,13 @@ def _model(card: ParsedCard) -> tuple[ModelCard | None, str]:
     except ValueError:
         return None, (
             f"unknown/missing product_exposure: {f.get('product_exposure', '')!r}"
-        )
+        ), flags
 
     evidence_ids = M.MODEL_EVIDENCE_LINKS.get(canonical_id, ())
     model_type = f.get("model_type", "").strip()
     purpose = card.section_text("Purpose") or _NOT_SPECIFIED
     if purpose == _NOT_SPECIFIED and not card.section("Purpose"):
-        return None, "model card has no Purpose section"
+        return None, "model card has no Purpose section", flags
 
     machine = ModelCard(
         model_id=canonical_id,
@@ -678,4 +739,4 @@ def _model(card: ParsedCard) -> tuple[ModelCard | None, str]:
         researcher_summary=_ask(card, "Researcher"),
         forbidden_overclaims=_forbidden(card),
     )
-    return machine, "ok"
+    return machine, "ok", flags
