@@ -23,8 +23,9 @@
 | 3 | `b940732` | I.4 build + retrieval: DRY_RUN/APPLY build, fingerprint/index-hash identity, idempotence, staleness, atomic publication, quarantine catalog, structured filters, deterministic ranking |
 | 4 | `2b5f0db` | I.4 policy integration: retrieval service sequence, FOUND vs SUPPORTED navigation, policy-gated quarantine discovery |
 | 5 | `1738f04` | I.4 tests: focused suite + PG cross-store index identity/staleness evidence |
-| 6 | (this file) | I.4 evidence: harness `tools/index_evidence.py`, generation-identity regression test, EVIDENCE.md |
-| 7 | (follows) | I.4 ratification — final head recorded there |
+| 6 | `eaf0e5a` | I.4 evidence: harness `tools/index_evidence.py`, generation-identity regression test, EVIDENCE.md |
+| 7 | `017fc96` | I.4 ratification — CLOSED — PASS |
+| 8 | (this file) | I.4 verification record: CI run `37861618933` green on `017fc96` (test + postgres) |
 
 `git status` at evidence time: only `tests/test_forge_retrieval.py` modified
 (one added test), the new `implementation/forge/book_i/bloc_i_4/tools/` folder,
@@ -395,7 +396,7 @@ Focused suite moved 123 → **124**; no existing test was weakened or removed.
 | T1/T2 reproducibility, no clock/random | `test_two_builds_are_byte_identical`, `test_report_is_deterministic` |
 | U1 cross-store identical hash | PG integration (19 passed) |
 | U2 staleness on real PG | PG integration (19 passed) |
-| U3 CI green on final head | recorded in RATIFICATION.md post-ratification verification |
+| U3 CI green on final head | CI run `37861618933` on `017fc96`: test ✓, postgres ✓ (recorded in RATIFICATION.md post-ratification verification) |
 | V1 deny-before-load | instrumented-loader tests (search + navigation) |
 | V2 no snippet on denial | `test_denial_never_produces_a_body` |
 | V3 quarantine + internal fail closed | quarantine + `TestInternalMaterial` tests |

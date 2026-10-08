@@ -149,5 +149,12 @@ INTERNAL_* rows, so those classes are exercised on synthetic fixtures;
 
 ## Post-ratification verification
 
-_(recorded after push — CI results appended in the verification rung that
-follows this file)_
+- CI run `37861618933` on `017fc96` (this ratification head): **test ✓,
+  postgres ✓** — full suite + PostgreSQL integration evidence green on the
+  exact ratified SHA. Local equivalents had already executed green (focused
+  124, full 570/19, CI-shaped 589/0, PG 19 ×3, harness 95/95).
+- Final remote head verified via `git ls-remote origin refs/heads/forge`:
+  `017fc96aa95a8c6428857aed474591d26122a7c5` (fast-forward from
+  `05c74a1`; no amend, reset, rebase, squash or force-push at any point).
+- The verification rung that follows this file is documentation-only; CI is
+  re-run on it by the push and its result is reported with the I.4 closeout.
