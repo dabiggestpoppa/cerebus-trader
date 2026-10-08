@@ -570,6 +570,117 @@ class TestWritesAndTransitions:
         # Nothing committed: the good object must not exist.
         assert gateway.get_object("MOD.TEST.TX.GOOD.V1") is None
 
+    # -----------------------------------------------------------------------
+    # I.3 repairs — mutual references in one batch + in-batch duplicate ids
+    # -----------------------------------------------------------------------
+
+    def test_mutual_references_commit_as_one_unit(self) -> None:
+        """Repair A: CLAIM <-> EVIDENCE that reference each other inside one
+        transaction commit together; unresolved ordinary references after
+        commit remain forbidden."""
+        gateway = InMemoryPersistenceGateway()
+        claim = _record(
+            _obj(
+                cid="CL.TEST.MUTUAL.V1",
+                object_type=ObjectType.CLAIM,
+                references=(
+                    CanonicalReference(
+                        target_id="EV.TEST.MUTUAL.V1", relation="supported_by"
+                    ),
+                ),
+            )
+        )
+        evidence = _record(
+            _obj(
+                cid="EV.TEST.MUTUAL.V1",
+                object_type=ObjectType.EVIDENCE,
+                references=(
+                    CanonicalReference(
+                        target_id="CL.TEST.MUTUAL.V1", relation="evidence_for"
+                    ),
+                ),
+            )
+        )
+        with gateway.transaction():
+            gateway.create_object(claim)
+            gateway.create_object(evidence)
+
+        restored_claim = gateway.get_object("CL.TEST.MUTUAL.V1")
+        restored_evidence = gateway.get_object("EV.TEST.MUTUAL.V1")
+        assert restored_claim is not None and restored_evidence is not None
+        # After commit every ordinary reference resolves against the store:
+        # batch-internal resolution never permits post-commit dangling truth.
+        for record in (restored_claim, restored_evidence):
+            for ref in record.references:
+                assert ref.allow_unresolved_historical is False
+                assert ref.target_id in gateway.list_object_ids()
+
+        # A lone record whose ordinary reference target never arrives is
+        # still rejected (batch-internal resolution is not a blanket pass).
+        lone = _record(
+            _obj(
+                cid="CL.TEST.LONE.V1",
+                object_type=ObjectType.CLAIM,
+                references=(
+                    CanonicalReference(
+                        target_id="EV.TEST.ABSENT.V1", relation="supported_by"
+                    ),
+                ),
+            )
+        )
+        with pytest.raises(DanglingReference):
+            with gateway.transaction():
+                gateway.create_object(lone)
+        assert gateway.get_object("CL.TEST.LONE.V1") is None
+
+    def test_duplicate_canonical_id_within_one_batch_rejected(self) -> None:
+        """Repair B: two pending records with the same canonical id are
+        rejected even when neither exists in the committed store — the second
+        record must never silently overwrite the first."""
+        gateway = InMemoryPersistenceGateway()
+        first = _record(_obj(cid="MOD.TEST.BATCHDUP.V1", metadata={"who": "first"}))
+        second = _record(_obj(cid="MOD.TEST.BATCHDUP.V1", metadata={"who": "second"}))
+        with pytest.raises(DuplicateCanonicalObject):
+            with gateway.transaction():
+                gateway.create_object(first)
+                gateway.create_object(second)
+        # Atomic: neither duplicate committed and no partial batch truth.
+        assert gateway.get_object("MOD.TEST.BATCHDUP.V1") is None
+
+    def test_failed_batch_does_not_leak_artifacts_or_edges(self) -> None:
+        """A failed logical batch must not leave ANY partial truth: objects,
+        artifacts and provenance edges all roll back together (parity with
+        the SQL gateway's single rolled-back DB transaction)."""
+        gateway = InMemoryPersistenceGateway()
+        artifact = _artifact(aid="ART.MARKDOWN.CCBBF0123456789ABCDEFAB")
+        obj = _record(_obj(cid="MOD.TEST.LEAK.V1"))
+        bad = _record(
+            _obj(
+                cid="MOD.TEST.LEAKBAD.V1",
+                references=(
+                    CanonicalReference(
+                        target_id="MOD.TEST.GONE.V1", relation="SUPPORTS"
+                    ),
+                ),
+            )
+        )
+        with pytest.raises(DanglingReference):
+            with gateway.transaction():
+                gateway.create_artifact(artifact)
+                gateway.create_object(obj)
+                gateway.add_provenance_edge(
+                    ProvenanceEdgeRecord(
+                        artifact_id=artifact.artifact_id,
+                        object_id=obj.canonical_id,
+                        relation="DEFINES",
+                        note="leak probe",
+                    )
+                )
+                gateway.create_object(bad)
+        assert gateway.list_object_ids() == ()
+        assert gateway.get_artifact(artifact.artifact_id) is None
+        assert gateway.edges_for_object(obj.canonical_id) == ()
+
     def test_legal_transition_persists(self) -> None:
         gateway = InMemoryPersistenceGateway()
         gateway.create_object(_record(_obj(cid="MOD.TEST.LEGAL.V1", status=EvidenceStatus.OBSERVED)))
@@ -741,6 +852,78 @@ class TestMigrations:
 # ---------------------------------------------------------------------------
 # P — security
 # ---------------------------------------------------------------------------
+
+
+@pytest.mark.skipif(not SQLA_AVAILABLE, reason="SQLAlchemy not installed")
+class TestSqlClaimIdentityRoundtrip:
+    """Regression: a CLAIM's ClaimIdentity must survive the SQL gateway
+    (the old serializer silently stored {} and the read path crashed on
+    reconstruction — proven by the I.3 corpus apply on PostgreSQL)."""
+
+    def _fresh(self):
+        from sqlalchemy import create_engine
+
+        from app.forge.persistence.sql.gateway import SqlAlchemyPersistenceGateway
+
+        engine = create_engine("sqlite://")
+        gw = SqlAlchemyPersistenceGateway(engine.connect())
+        gw.apply_migrations()
+        return gw
+
+    def test_claim_identity_survives_sql_roundtrip(self) -> None:
+        from app.forge.canonical import ClaimIdentity
+
+        identity = ClaimIdentity(
+            market="EURUSD",
+            event_definition="D3 state at quarter close",
+            conditioning_event="session=London",
+            clock_origin="exchange_rth_open",
+            horizon="M3",
+            tolerance="+-1 bar",
+            eligibility="liquid sessions only",
+            implementation_semantics="bar-close confirm",
+        )
+        record = CanonicalObjectRecord(
+            canonical_id="CL.SQL.IDENTITY.V1",
+            object_type=ObjectType.CLAIM,
+            title="identity roundtrip",
+            version="V1",
+            status=EvidenceStatus.CANDIDATE,
+            exposure=ProductExposure.SUBSCRIBER_MODEL,
+            layer=Layer.NONE,
+            references=(),
+            metadata={"who": "sql-roundtrip"},
+            claim_identity=identity,
+        )
+        gw = self._fresh()
+        gw.create_object(record)
+        restored = gw.get_object("CL.SQL.IDENTITY.V1")
+        assert restored is not None
+        assert restored.claim_identity is not None
+        assert restored.claim_identity == identity
+        assert restored.claim_identity.comparison_key() == identity.comparison_key()
+        assert restored.metadata == {"who": "sql-roundtrip"}
+
+    def test_missing_identity_is_absent_not_crash(self) -> None:
+        # A claim row without persisted identity reads back as None instead
+        # of raising (read path never crashes, never fabricates dimensions).
+        gw = self._fresh()
+        record = CanonicalObjectRecord(
+            canonical_id="CL.SQL.NOIDENT.V1",
+            object_type=ObjectType.CLAIM,
+            title="no identity",
+            version="V1",
+            status=EvidenceStatus.CANDIDATE,
+            exposure=ProductExposure.SUBSCRIBER_MODEL,
+            layer=Layer.NONE,
+            references=(),
+            metadata={},
+            claim_identity=None,
+        )
+        gw.create_object(record)
+        restored = gw.get_object("CL.SQL.NOIDENT.V1")
+        assert restored is not None
+        assert restored.claim_identity is None
 
 
 class TestSecurity:

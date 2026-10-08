@@ -307,3 +307,201 @@ class TestPostgresIdentitySession:
             gateway.transition_user_state(
                 user.user_id, "ACTIVE", expected_version=1
             )
+
+
+# ---------------------------------------------------------------------------
+# Book I / Bloc I.3 — transaction batch semantics on real PostgreSQL
+# (in-memory gateway parity: mutual references, in-batch duplicate ids,
+#  atomic rollback of objects + artifacts + edges)
+# ---------------------------------------------------------------------------
+
+
+def _typed(cid: str, object_type, references=()):
+    from app.forge.canonical import (
+        CanonicalId,
+        CanonicalObject,
+        EvidenceStatus,
+        Layer,
+        ProductExposure,
+    )
+    from app.forge.persistence.records import CanonicalObjectRecord
+
+    obj = CanonicalObject(
+        canonical_id=CanonicalId(value=cid, object_type=object_type),
+        title="I.3 batch probe",
+        version="v1",
+        status=EvidenceStatus.CANDIDATE,
+        exposure=ProductExposure.SUBSCRIBER_MODEL,
+        layer=Layer.NONE,
+        references=tuple(references),
+        metadata={"probe": "i3"},
+    )
+    return CanonicalObjectRecord.from_domain(obj)
+
+
+class TestPostgresTransactionBatchSemantics:
+    def test_mutual_references_commit_in_one_transaction(self, gateway) -> None:
+        """I.3 repair A on PostgreSQL: mutually referencing CLAIM and
+        EVIDENCE records commit as one unit; their ordinary references
+        resolve after COMMIT."""
+        from app.forge.canonical import CanonicalReference, ObjectType
+        from app.forge.persistence.port import DanglingReference
+
+        self._gw = gateway
+        claim = _typed(
+            "CL.PG.MUTUAL.V1",
+            ObjectType.CLAIM,
+            references=(
+                CanonicalReference(
+                    target_id="EV.PG.MUTUAL.V1", relation="supported_by"
+                ),
+            ),
+        )
+        evidence = _typed(
+            "EV.PG.MUTUAL.V1",
+            ObjectType.EVIDENCE,
+            references=(
+                CanonicalReference(
+                    target_id="CL.PG.MUTUAL.V1", relation="evidence_for"
+                ),
+            ),
+        )
+        with gateway.transaction():
+            gateway.create_object(claim)
+            gateway.create_object(evidence)
+        restored = gateway.get_object("CL.PG.MUTUAL.V1")
+        restored_ev = gateway.get_object("EV.PG.MUTUAL.V1")
+        assert restored is not None and restored_ev is not None
+        for record in (restored, restored_ev):
+            for ref in record.references:
+                assert gateway.get_object(ref.target_id) is not None
+
+        # The unit rule never becomes a blanket pass: a reference whose
+        # target is absent from the batch and the store still fails.
+        lone = _typed(
+            "CL.PG.LONE.V1",
+            ObjectType.CLAIM,
+            references=(
+                CanonicalReference(
+                    target_id="EV.PG.ABSENT.V1", relation="supported_by"
+                ),
+            ),
+        )
+        with pytest.raises(DanglingReference):
+            with gateway.transaction():
+                gateway.create_object(lone)
+        assert gateway.get_object("CL.PG.LONE.V1") is None
+
+    def test_duplicate_canonical_id_within_batch_rejected(self, gateway) -> None:
+        """I.3 repair B on PostgreSQL: a second record with a canonical id
+        already inserted earlier in the SAME transaction is rejected (real
+        primary key / eager existence check) and the batch rolls back."""
+        from app.forge.canonical import ObjectType
+        from app.forge.persistence.port import DuplicateCanonicalObject
+
+        self._gw = gateway
+        first = _typed("MOD.PG.BATCHDUP.V1", ObjectType.MODEL)
+        second = _typed("MOD.PG.BATCHDUP.V1", ObjectType.MODEL)
+        with pytest.raises(DuplicateCanonicalObject):
+            with gateway.transaction():
+                gateway.create_object(first)
+                gateway.create_object(second)
+        assert gateway.get_object("MOD.PG.BATCHDUP.V1") is None
+
+    def test_failed_batch_rolls_back_objects_artifacts_edges(
+        self, gateway
+    ) -> None:
+        """I.3 atomic rollback on PostgreSQL: an unresolved ordinary
+        reference detected at commit rolls back objects, artifacts AND
+        provenance edges from the same logical batch."""
+        from app.forge.canonical import CanonicalReference, ObjectType
+        from app.forge.persistence.port import DanglingReference
+        from app.forge.persistence.records import ArtifactRecord, ProvenanceEdgeRecord
+
+        self._gw = gateway
+        artifact = ArtifactRecord(
+            artifact_id="ART.MARKDOWN.DDCCF0123456789ABCDEFAB",
+            source_class="MARKDOWN",
+            content_identity="sha256:" + "d" * 64,
+            source_state="VERIFIED",
+            locator="corpus/probe.md",
+        )
+        good = _typed("MOD.PG.LEAK.V1", ObjectType.MODEL)
+        bad = _typed(
+            "MOD.PG.LEAKBAD.V1",
+            ObjectType.MODEL,
+            references=(
+                CanonicalReference(
+                    target_id="MOD.PG.GONE.V1", relation="SUPPORTS"
+                ),
+            ),
+        )
+        with pytest.raises(DanglingReference):
+            with gateway.transaction():
+                gateway.create_artifact(artifact)
+                gateway.create_object(good)
+                gateway.add_provenance_edge(
+                    ProvenanceEdgeRecord(
+                        artifact_id=artifact.artifact_id,
+                        object_id=good.canonical_id,
+                        relation="DEFINES",
+                        note="rollback probe",
+                    )
+                )
+                gateway.create_object(bad)
+        assert gateway.get_object("MOD.PG.LEAK.V1") is None
+        assert gateway.get_object("MOD.PG.LEAKBAD.V1") is None
+        assert gateway.get_artifact(artifact.artifact_id) is None
+        assert gateway.edges_for_object("MOD.PG.LEAK.V1") == ()
+
+    def test_full_corpus_backfill_apply_on_postgres(self, gateway) -> None:
+        """I.3 P1/P2/Q1 on real PostgreSQL: the full canonical corpus commits
+        through the port in ONE transaction batch (mutual CLAIM<->EVIDENCE
+        included), and a second apply over identical source state is a NO-OP
+        with zero conflicts (no silent overwrite, no duplicate truth)."""
+        from pathlib import Path
+
+        from app.forge.backfill.canonicalizer import canonicalize_files
+        from app.forge.backfill.runner import BackfillMode, load_corpus_files, run_backfill
+
+        self._gw = gateway
+        repo_root = Path(__file__).resolve().parents[1]
+        plan = canonicalize_files(load_corpus_files(repo_root))
+        assert len(plan.objects) == 30
+
+        result = run_backfill(gateway, repo_root, BackfillMode.APPLY)
+        assert result.report.migrated == 30
+        assert result.report.conflicts == 0
+        for record in plan.objects:
+            restored = gateway.get_object(record.canonical_id)
+            assert restored is not None, record.canonical_id
+            assert restored.status is record.status
+            assert restored.claim_identity == record.claim_identity
+            # references preserve semantic content as an unordered set
+            # (frozen schema PK = canonical_id + target_id + relation)
+            assert {
+                (r.target_id, r.relation, r.allow_unresolved_historical)
+                for r in restored.references
+            } == {
+                (r.target_id, r.relation, r.allow_unresolved_historical)
+                for r in record.references
+            }
+            assert restored.metadata == record.metadata
+        # mutual reference pair present on PostgreSQL
+        claim = gateway.get_object("CL.FIB.R11.GENERATOR_FAILURE")
+        assert any(
+            r.target_id == "EV.FIB.R11.ANCHOR_OVERGEN.V1" for r in claim.references
+        )
+
+        second = run_backfill(gateway, repo_root, BackfillMode.APPLY)
+        assert second.report.unchanged == 30
+        assert second.report.conflicts == 0
+        assert len(gateway.list_object_ids()) >= 30
+
+    def teardown_method(self, method) -> None:
+        gw = getattr(self, "_gw", None)
+        if gw is not None:
+            try:
+                gw.ping()
+            except Exception:
+                pass
