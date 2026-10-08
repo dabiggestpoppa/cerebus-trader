@@ -28,7 +28,7 @@ pytestmark = pytest.mark.skipif(
 
 @pytest.fixture(scope="module")
 def gateway():
-    from sqlalchemy import create_engine
+    from sqlalchemy import create_engine, text
 
     from app.forge.persistence.sql.gateway import SqlAlchemyPersistenceGateway
 
@@ -37,6 +37,27 @@ def gateway():
     gw = SqlAlchemyPersistenceGateway(connection)
     gw.apply_migrations()
     connection.commit()  # DDL durability: PostgreSQL rolls back uncommitted DDL
+    # Fresh-database semantics for EVERY invocation: the CI postgres job runs
+    # this module three times against one service container (full suite, then
+    # two verbose evidence runs), and committed rows from a previous run must
+    # never surface as duplicate-key failures. Data tables are truncated;
+    # schema and the migration ledger are untouched; every test's write and
+    # assertion still executes against the real server.
+    tables = connection.execute(
+        text(
+            "SELECT tablename FROM pg_tables WHERE schemaname = 'public' "
+            "AND tablename <> 'forge_schema_migrations'"
+        )
+    ).fetchall()
+    if tables:
+        connection.execute(
+            text(
+                "TRUNCATE "
+                + ", ".join(f'"{row[0]}"' for row in tables)
+                + " RESTART IDENTITY CASCADE"
+            )
+        )
+    connection.commit()
     # expose to teardown helper
     TestPostgresIntegration._gw = gw
     yield gw
