@@ -12,6 +12,7 @@ integrity, reproducibility and security.
 from __future__ import annotations
 
 import hashlib
+import json
 import re
 from dataclasses import replace
 from pathlib import Path
@@ -1277,6 +1278,30 @@ class TestBuildLaws:
         assert report.removed == ()
         assert report.generation == 2
         assert idx.require().record("MOD.SYNTH.ADDED.V1") is not None
+
+    def test_generation_metadata_never_changes_record_identity(self) -> None:
+        """Index-generation bookkeeping is not content: a record recompiled
+        into a later generation keeps its exact ``content_hash()``."""
+        gateway = _applied()
+        idx = RetrievalIndex()
+        run_index_build(gateway, REPO_ROOT, IndexBuildMode.APPLY, idx)
+        first = idx.require()
+        survivor = "CL.XAU.PROMOTION.68_80"
+        first_record = first.record(survivor)
+        first_hash = first_record.content_hash()
+        assert first_record.generation == 1
+        # top-level generation bookkeeping is excluded from identity (the
+        # source generation inside conflict metadata is content, F3)
+        assert "generation" not in json.loads(first_record.deterministic_payload())
+
+        with gateway.transaction():
+            gateway.create_object(_record("MOD.SYNTH.ADDED.V1", ObjectType.MODEL))
+        run_index_build(gateway, REPO_ROOT, IndexBuildMode.APPLY, idx)
+        second = idx.require()
+        assert second.generation == 2
+        rebuilt = second.record(survivor)
+        assert rebuilt.generation == 2
+        assert rebuilt.content_hash() == first_hash
 
     def test_duplicate_listing_conflicts_and_publishes_nothing(self) -> None:
         gateway = _applied()
