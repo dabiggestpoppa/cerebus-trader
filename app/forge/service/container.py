@@ -24,6 +24,7 @@ from dataclasses import dataclass, field
 from typing import Any
 
 from app.forge.config import ForgeConfig
+from app.forge.observability.service import ForgeObservabilityService
 from app.forge.persistence.port import PersistenceGateway
 from app.forge.providers.doctrine import HEALTH_STATUSES, PORTS
 from app.forge.providers.registry import ProviderRegistry
@@ -59,7 +60,13 @@ class ForgeServiceContainer:
     # Default None keeps composition explicit — no hidden singleton; the
     # application composition root passes providers_from_config(config).
     providers: ProviderRegistry | None = field(default=None, repr=False)
-    observability: Any = field(default=None, repr=False)
+    # II.6: the typed observability boundary. Default None because FORGE
+    # must run and test with no telemetry wiring at all (ACCEPTANCE K3);
+    # the composition root passes observability_from_config(config) when
+    # enabled. Telemetry is never a serving dependency (required=False).
+    observability: ForgeObservabilityService | None = field(
+        default=None, repr=False
+    )
 
     _persistence_healthy: bool = field(default=False, repr=False, init=False)
     _migration_status: str = field(default="NOT_CHECKED", repr=False, init=False)
@@ -95,6 +102,14 @@ class ForgeServiceContainer:
             self.providers, ProviderRegistry
         ):
             raise TypeError("providers must be a ProviderRegistry")
+        # II.6 owns the observability seam: an injected service must be the
+        # FORGE-owned facade (structural check), like persistence/policy.
+        if self.observability is not None and not isinstance(
+            self.observability, ForgeObservabilityService
+        ):
+            raise TypeError(
+                "observability must be a ForgeObservabilityService"
+            )
 
     def _postgresql_dependency(self) -> dict[str, Any]:
         """Honest postgresql readiness entry (II.2 semantics).
@@ -189,6 +204,12 @@ class ForgeServiceContainer:
                 self.providers.bound_names() if self.providers is not None else {}
             ),
             "observability_wired": self.observability is not None,
+            # II.6: bounded counter snapshot only — never event payloads.
+            "observability": (
+                self.observability.snapshot()
+                if self.observability is not None
+                else None
+            ),
         }
 
     def mark_persistence_health(self, healthy: bool) -> None:
@@ -257,5 +278,23 @@ class ForgeServiceContainer:
                 "status": "NOT_APPLICABLE",
                 "required": False,
                 "note": "Ask CEREBUS is a later Book IV service, not II.1",
+            },
+            # II.6: telemetry is never a serving dependency. Wired => READY
+            # (describes, never blocks); unwired => NOT_CONFIGURED. Overall
+            # readiness never depends on this entry (required=False).
+            "observability": {
+                "status": (
+                    "READY"
+                    if self.observability is not None
+                    else "NOT_CONFIGURED"
+                ),
+                "required": False,
+                "note": (
+                    "in-process observability substrate wired; telemetry "
+                    "never blocks serving"
+                    if self.observability is not None
+                    else "observability not wired; FORGE serves without "
+                    "telemetry (II.6)"
+                ),
             },
         }

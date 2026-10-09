@@ -106,6 +106,21 @@ class ForgeLifecycle:
             self._container.config.environment,
             "enabled" if persistence is not None else "disabled",
         )
+        # II.6: lifecycle event (telemetry stream). Observability DESCRIBES
+        # the startup; it is never a startup requirement.
+        if self._container.observability is not None:
+            self._container.observability.emit(
+                severity="INFO",
+                component="observability",
+                operation="forge.startup",
+                outcome="success",
+                attributes={
+                    "persistence": (
+                        "enabled" if persistence is not None else "disabled"
+                    ),
+                    "providers_wired": self._container.providers is not None,
+                },
+            )
         self._started = True
         return startup_context
 
@@ -119,6 +134,13 @@ class ForgeLifecycle:
             self._container.config.service_name,
             self._container.config.environment,
         )
+        if self._container.observability is not None:
+            self._container.observability.emit(
+                severity="INFO",
+                component="observability",
+                operation="forge.shutdown",
+                outcome="success",
+            )
         self._started = False
         return {"service": self._container.config.service_name, "shutdown": True}
 

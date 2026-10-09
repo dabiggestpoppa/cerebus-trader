@@ -15,6 +15,7 @@ from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 
 from app.forge.config import ForgeConfig
+from app.forge.observability.correlation import correlation_scope
 from app.forge.service.correlation import generate_request_id, parse_request_id
 from app.forge.service.container import ForgeServiceContainer
 from app.forge.service.errors import internal_error_payload
@@ -71,10 +72,18 @@ def create_forge_router(
             request_id,
             config.environment,
         )
-        try:
-            status = health.liveness()["status"]
-        except Exception as exc:
-            return _safe_internal_response(request_id, exc)
+        # II.6: correlation scope binds the request id for every observed
+        # event emitted while serving this request (Ch II.6.1).
+        with correlation_scope(request_id):
+            try:
+                status = health.liveness()["status"]
+            except Exception as exc:
+                return _safe_internal_response(request_id, exc)
+            _observe_request(
+                container,
+                operation="GET /forge/v1/health",
+                request_id=request_id,
+            )
         return ForgeLivenessResponse(
             service=config.service_name,
             status=status,
@@ -87,10 +96,19 @@ def create_forge_router(
         x_request_id: str | None = Header(default=None, alias="X-Request-Id"),
     ) -> ForgeReadinessResponse | JSONResponse:
         request_id = _effective_request_id(x_request_id)
-        try:
-            readiness = health.readiness()
-        except Exception as exc:
-            return _safe_internal_response(request_id, exc)
+        with correlation_scope(request_id):
+            try:
+                readiness = health.readiness()
+            except Exception as exc:
+                return _safe_internal_response(request_id, exc)
+            _observe_request(
+                container,
+                operation="GET /forge/v1/ready",
+                request_id=request_id,
+                outcome=(
+                    "success" if readiness["status"] == "ready" else "degraded"
+                ),
+            )
         return ForgeReadinessResponse(
             service=config.service_name,
             status=readiness["status"],
@@ -104,10 +122,16 @@ def create_forge_router(
         x_request_id: str | None = Header(default=None, alias="X-Request-Id"),
     ) -> ForgeMetaResponse | JSONResponse:
         request_id = _effective_request_id(x_request_id)
-        try:
-            meta = health.meta()
-        except Exception as exc:
-            return _safe_internal_response(request_id, exc)
+        with correlation_scope(request_id):
+            try:
+                meta = health.meta()
+            except Exception as exc:
+                return _safe_internal_response(request_id, exc)
+            _observe_request(
+                container,
+                operation="GET /forge/v1/meta",
+                request_id=request_id,
+            )
         return ForgeMetaResponse(
             service=meta["service"],
             api_version=meta["api_version"],
@@ -125,6 +149,35 @@ def _effective_request_id(inbound: str | None) -> str:
     if parsed:
         return parsed
     return generate_request_id()
+
+
+def _observe_request(
+    container: ForgeServiceContainer,
+    *,
+    operation: str,
+    request_id: str,
+    outcome: str = "success",
+) -> None:
+    """Emit the per-request telemetry event when observability is wired.
+
+    Telemetry absence is invisible to serving (ACCEPTANCE K3); a failing
+    sink is isolated inside the emitter and never reaches the response.
+    """
+
+    obs = container.observability
+    if obs is None:
+        return
+    metrics = obs.metrics
+    metrics.increment("requests_total")
+    if outcome != "success":
+        metrics.increment("request_errors_total")
+    obs.emit(
+        severity="INFO" if outcome == "success" else "WARNING",
+        component="api",
+        operation=operation,
+        outcome=outcome,
+        request_id=request_id,
+    )
 
 
 def _safe_internal_response(request_id: str, exc: Exception) -> JSONResponse:

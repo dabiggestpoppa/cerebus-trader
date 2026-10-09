@@ -8,6 +8,7 @@ from fastapi.responses import JSONResponse
 
 from app import config
 from app.forge.config import forge_config_from_environment
+from app.forge.observability.service import observability_from_config
 from app.forge.providers.registry import providers_from_config
 from app.forge.service.container import ForgeServiceContainer
 from app.forge.service.lifecycle import ForgeLifecycle
@@ -36,11 +37,20 @@ def _build_forge_container() -> ForgeServiceContainer:
     II.5: configuration selects the provider adapters here (Ch II.5.6) —
     deterministic in-process fakes until Book IV/VI register concrete
     builders. Unknown provider names fail closed at startup.
+
+    II.6: the observability seam is wired from config when enabled
+    (in-process sinks only, no vendor); disabled leaves it unwired and
+    readiness discloses NOT_CONFIGURED honestly.
     """
     forge_config = forge_config_from_environment()
     return ForgeServiceContainer(
         config=forge_config,
         providers=providers_from_config(forge_config),
+        observability=(
+            observability_from_config(forge_config)
+            if forge_config.observability_enabled
+            else None
+        ),
     )
 
 

@@ -77,6 +77,12 @@ class ForgeConfig:
     # diagnostics (Ch II.5.1 redaction law). Only configured-booleans surface.
     openrouter_api_key: str = field(default="", repr=False)
     whop_api_key: str = field(default="", repr=False)
+    # II.6: observability substrate selection. In-process only; no vendor,
+    # no network. `observability_enabled=False` leaves the seam unwired
+    # (readiness discloses NOT_CONFIGURED, core execution unaffected).
+    observability_enabled: bool = True
+    observability_event_capacity: int = 512
+    observability_log_sinks: bool = True
 
     def __post_init__(self) -> None:
         # Fail-closed validation (II.5): a malformed provider selection or
@@ -91,6 +97,8 @@ class ForgeConfig:
             raise ValueError("circuit_failure_threshold must be >= 1")
         if self.circuit_recovery_seconds < 0:
             raise ValueError("circuit_recovery_seconds must be >= 0")
+        if self.observability_event_capacity < 1:
+            raise ValueError("observability_event_capacity must be >= 1")
 
     def is_production(self) -> bool:
         return self.environment.strip().lower() == "production"
@@ -133,6 +141,10 @@ class ForgeConfig:
             "circuit_recovery_seconds": self.circuit_recovery_seconds,
             "openrouter_api_key_configured": bool(self.openrouter_api_key),
             "whop_api_key_configured": bool(self.whop_api_key),
+            # II.6: observability presence/booleans only, never event payloads.
+            "observability_enabled": self.observability_enabled,
+            "observability_event_capacity": self.observability_event_capacity,
+            "observability_log_sinks": self.observability_log_sinks,
         }
 
 
@@ -182,6 +194,14 @@ def forge_config_from_environment() -> ForgeConfig:
         # Credential presence only; values are never read by FORGE at II.5.
         openrouter_api_key=_env("FORGE_OPENROUTER_API_KEY", ""),
         whop_api_key=_env("FORGE_WHOP_API_KEY", ""),
+        # II.6 observability substrate (in-process, vendor-free).
+        observability_enabled=_bool_env("FORGE_OBSERVABILITY_ENABLED", True),
+        observability_event_capacity=_int_env(
+            "FORGE_OBSERVABILITY_EVENT_CAPACITY", 512
+        ),
+        observability_log_sinks=_bool_env(
+            "FORGE_OBSERVABILITY_LOG_SINKS", True
+        ),
     )
 
 
