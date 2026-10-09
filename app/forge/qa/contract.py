@@ -201,6 +201,8 @@ class Assertion(BaseModel):
 
     object_id: str
     object_type: str
+    layer: str = ""
+    market_scope: tuple[str, ...] = ()
     status: str                      # frozen EvidenceStatus, verbatim
     epistemic_label: str | None      # PLAN §2.2 table; None ⇒ qualification
     text: str                        # governed retrieval_text, never a body
@@ -249,16 +251,20 @@ class Citation(BaseModel):
 
     @model_validator(mode="after")
     def _complete(self) -> "Citation":
-        for field_name in (
+        required = (
             "claim_id",
-            "evidence_id",
             "artifact_id",
             "relation",
             "content_identity",
             "locator",
-        ):
+        )
+        for field_name in required:
             if not getattr(self, field_name):
                 raise ValueError(f"citation field {field_name} must be non-empty")
+        if not self.evidence_id and self.relation != "DEFINES":
+            raise ValueError(
+                "only a DEFINES (doctrine) citation may omit the evidence id"
+            )
         if not self.content_identity.startswith("sha256:"):
             raise ValueError("citation content_identity must be a sha256 identity")
         return self
@@ -430,6 +436,7 @@ def validate_answer(answer: Answer) -> Answer:
     o = answer.outcome
     emp = answer.answer_class is AnswerClass.EMPIRICAL
     gaps = [a for a in answer.assertions if a.verdict is AssertionVerdict.GAP]
+    has_gap = bool(gaps) or bool(answer.gaps)
 
     # -- bounds ------------------------------------------------------------
     if len(answer.assertions) > MAX_ASSERTIONS:
@@ -485,8 +492,13 @@ def validate_answer(answer: Answer) -> Answer:
         raise AnswerValidationError("CONTRADICTED requires a conflict note")
 
     if o is AnswerOutcome.ANSWERABLE:
-        if gaps:
+        if has_gap:
             raise AnswerValidationError("ANSWERABLE cannot contain gaps")
+        if answer.qualifications:
+            raise AnswerValidationError(
+                "ANSWERABLE cannot carry mandatory qualifications "
+                "(use ANSWERABLE_QUALIFIED)"
+            )
         if answer.conflicts:
             raise AnswerValidationError("ANSWERABLE cannot contain conflicts")
         if not answer.assertions:
@@ -504,7 +516,7 @@ def validate_answer(answer: Answer) -> Answer:
                     )
 
     if o is AnswerOutcome.ANSWERABLE_QUALIFIED:
-        if gaps:
+        if has_gap:
             raise AnswerValidationError("qualified answer cannot contain gaps")
         if not answer.qualifications and not answer.conflicts:
             raise AnswerValidationError(
@@ -512,7 +524,7 @@ def validate_answer(answer: Answer) -> Answer:
             )
 
     if o is AnswerOutcome.PARTIAL:
-        if not gaps:
+        if not has_gap:
             raise AnswerValidationError("PARTIAL requires at least one gap")
         if not any(
             a.verdict is not AssertionVerdict.GAP for a in answer.assertions
@@ -539,7 +551,7 @@ def validate_answer(answer: Answer) -> Answer:
             raise AnswerValidationError(
                 f"citation claim {citation.claim_id} not referenced by answer"
             )
-        if citation.evidence_id not in evidence_refs:
+        if citation.evidence_id and citation.evidence_id not in evidence_refs:
             raise AnswerValidationError(
                 f"citation evidence {citation.evidence_id} not referenced"
             )
