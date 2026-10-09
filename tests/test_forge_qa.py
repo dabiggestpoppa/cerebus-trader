@@ -638,6 +638,31 @@ def test_e5_statistic_without_complete_identity_is_refused():
         )
 
 
+def test_e6_unknown_evidence_status_and_label_are_refused():
+    # checklist #25: an unknown status never validates (N5 fail-closed)
+    with pytest.raises(ValueError):
+        Assertion(
+            object_id="CL.SYNTH.V1",
+            object_type="CLAIM",
+            status="MADE_UP_STATUS",
+            epistemic_label="VALIDATED",
+            text="text",
+            numerical=False,
+            verdict=AssertionVerdict.ASSERT,
+        )
+    # an unknown epistemic label is equally refused
+    with pytest.raises(ValueError):
+        Assertion(
+            object_id="CL.SYNTH.V1",
+            object_type="MODEL",
+            status="VALIDATED",
+            epistemic_label="VIBES",
+            text="text",
+            numerical=False,
+            verdict=AssertionVerdict.ASSERT,
+        )
+
+
 # ---------------------------------------------------------------------------
 # F. Citation and evidence chains
 # ---------------------------------------------------------------------------
@@ -1753,31 +1778,32 @@ def test_adv8_cannot_infer_current_from_historical(qa, generation):
 
 def test_adv9_cannot_use_visual_artifact_as_proof(qa, generation):
     claim = _record_for(generation, "CL.XAU.PROMOTION.68_80")
-    tampered = _service_with(
-        generation,
-        **{
-            claim.object_id: {
-                "support": SupportAssessment(
-                    supported=False,
-                    classification="VISUAL_ONLY",
-                    gaps=("NON_EMPIRICAL_SOURCE",),
-                )
-            }
-        },
-    )
-    answer = ask(tampered, "Is CL.XAU.PROMOTION.68_80 validated?")
-    assert answer.outcome in {
-        AnswerOutcome.UNSUPPORTED,
-        AnswerOutcome.PARTIAL,
-    }
-    assert not any(
-        c.claim_id == claim.object_id for c in answer.citations
-    )
-    assert answer.ladder.supported is False or all(
-        a.verdict is AssertionVerdict.GAP
-        for a in answer.assertions
-        if a.object_id == claim.object_id
-    )
+    for classification in ("VISUAL_ONLY", "CONVERSATION_DERIVED"):
+        tampered = _service_with(
+            generation,
+            **{
+                claim.object_id: {
+                    "support": SupportAssessment(
+                        supported=False,
+                        classification=classification,
+                        gaps=("NON_EMPIRICAL_SOURCE",),
+                    )
+                }
+            },
+        )
+        answer = ask(tampered, "Is CL.XAU.PROMOTION.68_80 validated?")
+        assert answer.outcome in {
+            AnswerOutcome.UNSUPPORTED,
+            AnswerOutcome.PARTIAL,
+        }
+        assert not any(
+            c.claim_id == claim.object_id for c in answer.citations
+        )
+        assert answer.ladder.supported is False or all(
+            a.verdict is AssertionVerdict.GAP
+            for a in answer.assertions
+            if a.object_id == claim.object_id
+        )
 
 
 def test_adv10_cannot_fabricate_btc_game_rules(qa):
