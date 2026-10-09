@@ -207,9 +207,16 @@ Checklist 1–46 → tests: 1→d3/f1, 2→c3, 3→c5, 4→f5, 5→f6/f2, 6→h1
 
 - Local full suite (Windows, Python 3.11): 712 passed, 19 skipped —
   recorded above.
-- The CI verification (workflow `forge-tests.yml`, `test` + `postgres`
-  jobs) is executed after the fast-forward push and recorded in the
-  post-push verification record on `origin/forge`, exactly as I.4 did.
+- **CI verification (post-push record):** workflow `FORGE Tests`
+  (`forge-tests.yml`) run **37872174840** on final head
+  `686faa7627d36d502351d90eae41aadd6a81f49e`:
+  - `test` job ✓ — `712 passed, 19 skipped` (3.94s)
+  - `postgres` job ✓ — full suite against live PostgreSQL:
+    `731 passed` (0 failed = 712 + all 19 PG tests), plus PG integration
+    evidence `19 passed` and II.3 identity/session evidence `7 passed,
+    12 deselected`.
+  - Remote `origin/forge` verified at `686faa7` after fast-forward push
+    `b61a29c..686faa7` (strict descendant; no force).
 - QA adds no persistence, retrieval-boundary or policy-behavior change
   (the only engine change is inside `app/forge/qa/kernel.py`), so the PG
   job runs the whole suite unchanged.
