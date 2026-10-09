@@ -667,6 +667,7 @@ class QAService:
             # supporting evidence records (sample_n + citation triples)
             sample_n = None
             claim_citations: list[Citation] = []
+            missing_evidence: list[str] = []
             for evidence_id in sorted(set(record.support.evidence_ids)):
                 evidence = evidence_cache.get(evidence_id)
                 if evidence is None:
@@ -675,6 +676,9 @@ class QAService:
                     )
                     evidence_cache[evidence_id] = evidence
                 if evidence is None:
+                    # the governed evidence id does not resolve to a
+                    # loadable record: disclose, never cite by similarity
+                    missing_evidence.append(evidence_id)
                     continue
                 if sample_n is None and evidence.structured.sample_n is not None:
                     sample_n = evidence.structured.sample_n
@@ -691,6 +695,25 @@ class QAService:
                             locator=prov.locator,
                         )
                     )
+            if missing_evidence:
+                # missing source/evidence is a disclosed gap (F5), never a
+                # citation to a merely similar retrieved document (F6)
+                assertions.append(
+                    self._claim_assertion(
+                        record, AssertionVerdict.GAP, label=None, quals=()
+                    )
+                )
+                gaps.append(
+                    Gap(
+                        code=GapCode.NO_SOURCE_ARTIFACT,
+                        detail=(
+                            "supporting evidence id does not resolve to a "
+                            "loadable governed record"
+                        ),
+                        object_id=record.object_id,
+                    )
+                )
+                continue
             claim_citations.sort(
                 key=lambda c: (
                     0 if c.relation == "DEFINES" else 1,
