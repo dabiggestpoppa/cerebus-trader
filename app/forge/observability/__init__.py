@@ -16,6 +16,7 @@ from __future__ import annotations
 
 from app.forge.observability.audit import (
     DEFAULT_AUDIT_CAPACITY,
+    ENTITLEMENT_EVENT_TYPES,
     BoundedAuditTrail,
     EntitlementAuditRecord,
     RetrievalAccessAuditRecord,

@@ -60,12 +60,18 @@ def scrub_text(value: str) -> str:
 
 
 def bounded_string(value: str, *, limit: int = MAX_ATTRIBUTE_VALUE_LENGTH) -> str:
-    """Scrub then hard-bound a string value (pre-emission minimization)."""
+    """Scrub then hard-bound a string value (pre-emission minimization).
+
+    A value exceeding the bound is OMITTED ENTIRELY and replaced by a
+    length-only marker: prefix-truncation would still carry the head of a
+    protected corpus body or a raw provider payload into the sink, which the
+    redaction law forbids (no partial protected content, ever).
+    """
 
     scrubbed = scrub_text(value)
     if len(scrubbed) <= limit:
         return scrubbed
-    return scrubbed[:limit] + TRUNCATED
+    return f"{TRUNCATED} {len(scrubbed)} chars"
 
 
 def safe_scalar(value: Any, *, limit: int = MAX_ATTRIBUTE_VALUE_LENGTH) -> Any:

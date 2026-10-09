@@ -196,6 +196,21 @@ class ForgeObservabilityService:
         )
         self._entitlement_audit.append(record)
         self._metrics.increment("commerce_events_total")
+        self._emitter.safe_emit(
+            severity="INFO",
+            stream="entitlement_audit",
+            component="policy",
+            operation=f"entitlement.{event_type}",
+            outcome="success",
+            request_id=record.correlation_id,
+            actor_class="system",
+            object_type="entitlement",
+            object_id=entitlement_id,
+            reason_code=event_type,
+            provider_type=provider_type,
+            provider_name=provider_name,
+            attributes={"source_event_id": source_event_id},
+        )
         return record
 
     def entitlement_audit_records(self) -> tuple[EntitlementAuditRecord, ...]:
@@ -236,6 +251,23 @@ class ForgeObservabilityService:
             input_tokens=input_tokens,
             output_tokens=output_tokens,
             normalized_cost=normalized_cost,
+        )
+        self._emitter.safe_emit(
+            severity="INFO",
+            stream="usage_ledger",
+            component="provider",
+            operation=f"{provider_type}.usage",
+            outcome="success" if success else "failure",
+            request_id=record.request_id,
+            provider_type=provider_type,
+            provider_name=provider_name,
+            model_id=model_id,
+            duration_ms=latency_ms,
+            attributes={
+                "input_tokens": input_tokens,
+                "output_tokens": output_tokens,
+                "normalized_cost": normalized_cost,
+            },
         )
         return record
 
