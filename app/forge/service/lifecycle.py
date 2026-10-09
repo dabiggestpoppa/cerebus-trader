@@ -7,6 +7,10 @@ II.2: when a persistence gateway is injected, startup pings the backend and
 checks migration compatibility BEFORE readiness. A required-persistence
 failure flips container health state so readiness reports honestly
 (not READY). No credentials, URLs or raw DB errors are logged.
+
+II.5: provider registries are built by the composition root (never here);
+startup probes each bound port's health() and logs the exception class name
+only — never payloads, credentials, or provider internals.
 """
 
 from __future__ import annotations
@@ -34,7 +38,8 @@ class ForgeLifecycle:
         - load config (already provided via container)
         - initialize observability logger identity
         - ping persistence when wired; record migration compatibility
-        - policy/providers are NOT initialized (II.2 scope)
+        - probe provider health when wired (II.5); log class names only
+        - policy is NOT initialized here (pure kernel needs no wiring)
         """
 
         startup_context = {
@@ -73,6 +78,25 @@ class ForgeLifecycle:
                     self._container.set_migration_status(compatibility)
         else:
             self._container.set_migration_status("NOT_CONFIGURED")
+
+        providers = self._container.providers
+        if providers is not None:
+            for port in providers.ports():
+                try:
+                    health = providers.get(port).health()
+                except BaseException as exc:  # NOSONAR: normalized; detail never logged
+                    logger.error(
+                        "FORGE provider health failed: port=%s error=%s",
+                        port,
+                        type(exc).__name__,
+                    )
+                else:
+                    logger.info(
+                        "FORGE provider wired: port=%s name=%s status=%s",
+                        port,
+                        providers.name(port),
+                        health.status,
+                    )
 
         logger.info(
             "FORGE starting: service=%s api_version=%s version=%s env=%s persistence=%s",

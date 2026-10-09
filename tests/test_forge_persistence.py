@@ -118,20 +118,31 @@ class TestPortAndInjection:
 
     def test_container_still_rejects_policy_and_providers(self) -> None:
         from app.forge.policy import DefaultDenyPolicyEngine
-        from app.forge.service.container import ForgeServiceContainer
-
-        # II.4 supersedes the II.2-era RuntimeError guard: a valid PolicyEngine
+        from app.forge.service.container import ForgeServiceContainer        # II.4 supersedes the II.2-era RuntimeError guard: a valid PolicyEngine
         # is now accepted (the II.4 seam); arbitrary objects are still refused.
         ForgeServiceContainer(
-            config=ForgeConfig(environment="test"), policy=DefaultDenyPolicyEngine()
+            config=ForgeConfig(environment="test"),
+            policy=DefaultDenyPolicyEngine(),
         )
         with pytest.raises(TypeError, match="PolicyEngine"):
             ForgeServiceContainer(
-                config=ForgeConfig(environment="test"), policy=object()
+                config=ForgeConfig(environment="test"),
+                policy=object()
             )
-        with pytest.raises(RuntimeError, match="II.5"):
+        # II.5 supersedes the II.1-era RuntimeError guard: a valid
+        # ProviderRegistry is now accepted (the II.5 seam); arbitrary objects
+        # are still refused with the fail-closed type check.
+        from app.forge.providers.registry import providers_from_config
+
+        test_cfg = ForgeConfig(environment="test")
+        ForgeServiceContainer(
+            config=test_cfg,
+            providers=providers_from_config(test_cfg),
+        )
+        with pytest.raises(TypeError, match="ProviderRegistry"):
             ForgeServiceContainer(
-                config=ForgeConfig(environment="test"), providers=object()
+                config=ForgeConfig(environment="test"),
+                providers=object()
             )
 
     def test_domain_modules_have_no_persistence_imports(self) -> None:

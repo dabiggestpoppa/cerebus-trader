@@ -189,11 +189,29 @@ class TestForgeServiceContainer:
             )
 
     def test_container_rejects_wired_providers_at_ii_1(self) -> None:
+        """II.5 supersedes the II.1-forbidden provider seam: the container now
+        accepts a real ProviderRegistry (config-selected, frozen after
+        composition) but still rejects non-conforming values — the fail-closed
+        guard's principle is preserved, ownership moved to II.5.
+        """
+
         from app.forge.config import ForgeConfig
+        from app.forge.providers.registry import providers_from_config
         from app.forge.service.container import ForgeServiceContainer
 
         cfg = ForgeConfig()
-        with pytest.raises(RuntimeError, match="II.5"):
+        container = ForgeServiceContainer(
+            config=cfg, providers=providers_from_config(cfg)
+        )
+        assert container.providers is not None
+        assert container.providers.is_frozen is True
+        assert container.providers.bound_names() == {
+            "llm": "fake",
+            "commerce": "fake",
+            "notification": "fake",
+            "storage": "fake",
+        }
+        with pytest.raises(TypeError, match="ProviderRegistry"):
             ForgeServiceContainer(
                 config=cfg, providers=object()  # type: ignore[arg-type]
             )

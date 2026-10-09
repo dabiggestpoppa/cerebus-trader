@@ -1649,9 +1649,23 @@ class TestBoundaryIntegrity:
             assert client.get(forbidden).status_code == 404
 
     def test_no_commercial_or_provider_object_is_created(self) -> None:
+        """II.5 supersedes the II.1-era assertion: the composition root now
+        wires the provider registry. The bound objects are deterministic
+        in-process fakes — still no commercial vendor object, no credential
+        material, and no network client.
+        """
         from app.main import _build_forge_container
 
-        assert _build_forge_container().providers is None
+        container = _build_forge_container()
+        assert container.providers is not None
+        assert container.providers.bound_names() == {
+            "llm": "fake",
+            "commerce": "fake",
+            "notification": "fake",
+            "storage": "fake",
+        }
+        for impl in container.providers.implementations():
+            assert type(impl).__module__ == "app.forge.providers.fakes"
 
     def test_no_new_migration(self) -> None:
         from app.forge.persistence.sql.migrations import discover_migrations
