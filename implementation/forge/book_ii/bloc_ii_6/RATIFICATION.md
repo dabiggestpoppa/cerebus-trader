@@ -58,8 +58,13 @@ Ladder (append-only from the accepted start SHA `0b88b47`): `0b88b47` →
 ## Limitations carried forward
 
 - PostgreSQL integration executes in CI only (19 local skips) — same standing
-  limitation as every prior bloc; CI evidence recorded in the verification
-  rung that follows this commit.
+  limitation as every prior bloc. **For the II.6 head the postgres CI job did
+  not complete**: it fails in `Initialize containers` (Docker image pull)
+  before any test runs, across 5 retries — a runner-registry outage, not a
+  test failure (workflow unchanged by II.6; same job green on the II.5 head,
+  run `37967280111`, postgres 805 passed). The CI test job is green on the
+  pushed SHA. This is recorded as an open verification gap in EVIDENCE §5,
+  not as a pass; the job should be re-run when the registry recovers.
 - Distributed span infrastructure, real log shipping and metric backends are
   out of scope by design (frozen plan requires no observability vendor).
 

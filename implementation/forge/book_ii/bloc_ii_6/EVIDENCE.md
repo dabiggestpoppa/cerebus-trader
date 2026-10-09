@@ -93,10 +93,22 @@ limitation of every bloc; executed in the CI postgres job).
 
 ## 5. CI / PostgreSQL
 
-Recorded after the fast-forward push (see RATIFICATION + the verification
-rung commit that follows it): CI run on the final SHA — test job and postgres
-job both green; postgres job executes the 19 PG integration tests plus the
-7 II.3 identity PG tests locally skipped.
+CI run `37989879501` on the pushed head `fec9be0`:
+
+- **test job: SUCCESS** — full repository suite green on the pushed SHA
+  (890 passed / 19 skipped locally on the identical tree).
+- **postgres job: BLOCKED BY RUNNER INFRASTRUCTURE, not by a test defect.**
+  The job fails in `Initialize containers` with `Docker pull failed with exit
+code 1` (service image `postgres:16`) before any test executes. Retried 5×
+over ~10 minutes with backoff; every attempt failed at the same pull. The
+workflow file is unchanged by II.6 (`git diff 0b88b47..HEAD` touches no
+`.github/` path), and the same job executed the full PG suite green on the
+II.5 head (`37967280111`, postgres 805 passed). II.6 adds no PostgreSQL
+tests and modifies no persistence code paths exercised by the PG suite, but
+**the postgres CI verification for the II.6 head did not complete** — this is
+recorded as an open verification gap, not as a pass. No local docker/psql is
+available to substitute (the 19 PG tests remain CI-only as in every prior
+bloc). Re-running the job when the runner registry recovers will close it.
 
 ## 6. Security proofs
 
