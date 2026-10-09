@@ -93,14 +93,17 @@ limitation of every bloc; executed in the CI postgres job).
 
 ## 5. CI / PostgreSQL
 
-CI run `37989879501` on the pushed head `fec9be0`:
+CI runs `37989879501` (head `fec9be0`) and `37991271771` (final head
+`0efc4de`):
 
 - **test job: SUCCESS** — full repository suite green on the pushed SHA
   (890 passed / 19 skipped locally on the identical tree).
 - **postgres job: BLOCKED BY RUNNER INFRASTRUCTURE, not by a test defect.**
   The job fails in `Initialize containers` with `Docker pull failed with exit
 code 1` (service image `postgres:16`) before any test executes. Retried 5×
-over ~10 minutes with backoff; every attempt failed at the same pull. The
+over ~10 minutes on `37989879501` plus a fresh run on the final head
+`37991271771`; every attempt failed at the same pull, across different
+runners — confirming a registry-side outage. The
 workflow file is unchanged by II.6 (`git diff 0b88b47..HEAD` touches no
 `.github/` path), and the same job executed the full PG suite green on the
 II.5 head (`37967280111`, postgres 805 passed). II.6 adds no PostgreSQL
