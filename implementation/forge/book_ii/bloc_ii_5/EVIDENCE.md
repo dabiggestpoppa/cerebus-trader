@@ -177,7 +177,14 @@ wall-clock assertions (< 0.5–1.0 s for 8–32 simulated seconds) enforce it.
   the matrix (zero suite changes required).
 - Rung `7c52ff1` is not self-contained (§7); CI runs the final SHA only.
 
-## 10. CI verification
+## 10. CI verification (recorded after push)
 
-Pushed and verified in the final verification-record rung (see git log after
-this file's commit). Local exit statuses above were captured directly.
+- Fast-forward push `218c521..1496c16` to `origin/forge`; remote SHA verified
+  equal to local HEAD: `1496c16bed65c15ec9c12740b4e93594a34a5560`.
+- CI run `37966955527` ("FORGE Tests", push, on `1496c16`): **success** —
+  `test` job ✓ `786 passed, 19 skipped` (6.07 s, matches local exactly);
+  `postgres` job ✓ `805 passed` full suite against live PostgreSQL
+  (786 + 19 PG-enabled), including PostgreSQL integration evidence `19
+  passed` and II.3 identity/session evidence `7 passed`.
+- All local exit statuses above were captured directly (`EXIT=0` on the final
+  full-suite run over the ratification tree).

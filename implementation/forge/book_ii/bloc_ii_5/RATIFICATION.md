@@ -53,7 +53,8 @@ Ladder (append-only from the accepted start SHA `218c521`): `218c521` →
 ## Limitations carried forward
 
 - PostgreSQL integration executes in CI only (19 local skips) — same standing
-  limitation as I.5/II.4; CI evidence lands in the verification-record rung.
+  limitation as I.5/II.4; CI evidence landed: run `37966955527` green on
+  `1496c16`, postgres job `805 passed` (incl. `19 passed` PG integration).
 - Concrete adapters (OpenRouter → Book IV, Whop → Book VI) and their real
   contract-matrix runs remain future-bloc work by design.
 
