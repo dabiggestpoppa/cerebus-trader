@@ -224,6 +224,10 @@ class RetrievalObject(BaseModel):
     leakage: LeakageMetadata = Field(default_factory=LeakageMetadata)
     conflict: ConflictMetadata = Field(default_factory=ConflictMetadata)
     support: SupportAssessment = Field(default_factory=SupportAssessment)
+    # governed qualifier flags preserved by the I.3 migration (small_n,
+    # research_sample, relationship_statistic) surfaced for answer
+    # qualification (I.5). Values come from the frozen flag table only.
+    qualifiers: tuple[str, ...] = ()
 
     # navigation
     related_ids: tuple[RelatedLink, ...] = ()

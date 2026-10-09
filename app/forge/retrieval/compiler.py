@@ -58,6 +58,15 @@ from app.forge.retrieval.objects import (
 
 _INTERNAL_EXPOSURES = (ProductExposure.INTERNAL_METHOD, ProductExposure.INTERNAL_CODE)
 
+# Governed qualifier flags (I.5): exact table over the boolean metadata keys
+# the I.3 migration preserves from legacy status/type mappings. Unknown flags
+# are never projected (no fuzzy carry-over).
+QUALIFIER_FLAG_TABLE: dict[str, str] = {
+    "small_n": "SMALL_N",
+    "research_sample": "RESEARCH_SAMPLE",
+    "relationship_statistic": "RELATIONSHIP_STATISTIC",
+}
+
 # Code constructs. A retrieval record is generated text; code must never ride
 # along (Ch I.4.3 / Product Exposure Rules "internal code ... never retrieved").
 _CODE_PATTERNS: tuple[re.Pattern[str], ...] = (
@@ -555,6 +564,16 @@ def compile_record(
     )
     source_artifact_ids = tuple(sorted({edge.artifact_id for edge in edges}))
 
+    # Governed qualifier flags (I.5): exact table over the boolean metadata
+    # the I.3 migration preserves — never inferred, never fuzzy.
+    qualifiers = tuple(
+        sorted(
+            QUALIFIER_FLAG_TABLE[flag]
+            for flag, enabled in QUALIFIER_FLAG_TABLE.items()
+            if record.metadata.get(flag) is True
+        )
+    )
+
     beginner, operator, researcher = ROUTING_WEIGHTS[record.object_type]
     has_evidence_ref = bool(_evidence_targets(record))
     requires_evidence = (
@@ -616,6 +635,7 @@ def compile_record(
             generation=_generation(record, card),
         ),
         support=evaluate_support(record, context),
+        qualifiers=qualifiers,
         related_ids=tuple(
             sorted(references, key=lambda item: (item.relation, item.target_id))
         ),

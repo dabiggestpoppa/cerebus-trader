@@ -406,6 +406,30 @@ class RetrievalService:
         )
         return response.results[0] if response.results else None
 
+    def load_record(
+        self,
+        principal: ForgePrincipal,
+        context: AuthorizationContext,
+        canonical_id: str,
+        *,
+        correlation_id: str = "",
+    ) -> "RetrievalObject | None":
+        """Policy-guarded full-record load (I.5 answer-quality seam).
+
+        Deny-before-load is preserved: the record loader runs only inside the
+        ratified II.4 ``guard()`` primitive after an ALLOW decision on this
+        exact resource. A missing header, a denied decision, or an unloaded
+        record yields ``None`` — the body is never touched.
+        """
+
+        generation = self._index.require()
+        access, _resource = self._authorize_record(
+            principal, context, generation, canonical_id, correlation_id
+        )
+        if access is None or not access.allowed:
+            return None
+        return access.payload
+
     # -- quarantine ---------------------------------------------------------
 
     def _quarantine_notices(
