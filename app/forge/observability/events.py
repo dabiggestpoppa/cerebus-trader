@@ -24,7 +24,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Any, Mapping
 
-from app.forge.observability.redaction import safe_attributes
+from app.forge.observability.redaction import safe_attributes, scrub_text
 
 EVENT_SCHEMA_VERSION = "FORGE_EVENT_V1"
 
@@ -140,9 +140,13 @@ class ForgeEvent:
             "error_class",
             "provider_failure_class",
         ):
-            object.__setattr__(
-                self, name, _bounded(name, getattr(self, name))
-            )
+            value = getattr(self, name)
+            if isinstance(value, str) and value:
+                # Pre-emission scrub for TYPED fields too: a caller passing a
+                # secret-shaped value (provider key, bearer token, opaque
+                # run) into an id/label field must never reach a sink. The
+                # bound still fails closed first (oversized => refuse).
+                object.__setattr__(self, name, scrub_text(_bounded(name, value)))
         object.__setattr__(
             self,
             "attributes",
