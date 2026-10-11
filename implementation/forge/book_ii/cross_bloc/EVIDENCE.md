@@ -62,9 +62,13 @@ Policy / Providers / Observability / Evidence pack) is `ACCEPTANCE.md` §L:
 each row is satisfied either by this packet or by a ratified prior suite
 (II.1–II.6 + Book I), so no gate row is dropped.
 
-All 19 acceptance-named classes/tests were verified to exist in the collected
-suite (programmatic `ACCEPTANCE.md` ↔ `pytest --collect-only` cross-check:
-missing = none).
+Executable-gate completeness was verified programmatically by extracting
+every backticked `test_*` token (standalone or `Class.test_name`) from
+`ACCEPTANCE.md` and intersecting it with `pytest --collect-only` on the
+suite: **60 tokens extracted — all 56 `Class.test_name` gates collected;
+the only non-matches are 4 suite-file references** (`test_forge_cross_bloc`,
+`test_forge_qa`, `test_forge_retrieval`, `test_forge_service_*`), which name
+schedules rather than gates. No acceptance gate is unimplemented.
 
 ---
 
