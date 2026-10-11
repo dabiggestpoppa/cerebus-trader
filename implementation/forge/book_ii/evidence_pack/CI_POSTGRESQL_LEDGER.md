@@ -34,6 +34,7 @@ jobs: `test` = plain suite; `postgres` = live PostgreSQL 16 service,
 | L-11 | 38180999390 | `5c58414` (step-7 VERIFICATION) | `test` ✅ `postgres` ✅ | doc-only rung; counts not re-extracted (identical suite to L-10/L-12) | PASS |
 | L-12 | 38181284353 | **`ae35276` (EVIDENCE HEAD)** | `test` ✅ `postgres` ✅ | `test` **946 passed, 19 skipped**; PG full **965**, integration **19**, identity/session **7** | PASS — CI green on the exact authorized evidence SHA |
 | L-13 | local run (this packet) | `ae35276` tree | approved local PostgreSQL 16 (`forge@127.0.0.1:5432/forge_test`) | PG module **19 passed**; full suite under CI postgres env **965 passed, 0 skipped** | PASS — independent non-CI PostgreSQL execution (step-7 ledger, reproduced) |
+| L-14 | 38183868608 | `cbeac2e` (this evidence pack, rung 3 — post-push verification) | `test` ✅ `postgres` ✅ | `test` **946 passed, 19 skipped**; PG full **965 passed**, integration **19**, identity/session **7** | PASS — CI green on the pushed evidence-pack head (Phase 9 remote-SHA verification) |
 
 Book I-era green runs for context only (not Book II coverage):
 `37861618933` (`017fc96`), `37861865244` (`b61a29c`), `37872174840`
