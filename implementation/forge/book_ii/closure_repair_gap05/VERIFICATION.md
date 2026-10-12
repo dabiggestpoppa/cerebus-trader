@@ -77,5 +77,7 @@
 
 ## 4. Post-push final CI (append-only record)
 
-Filled after this commit's push — see the trailer line appended below and
-the report delivered to the operator.
+- Push of this VERIFICATION (`0d9cd8504cc68cfde4d0729339ecb24f0122f75f`):
+  run **38263059238** — both jobs **success** (recorded here append-only,
+  mirroring the closure-repair VERIFICATION pattern; the run for the commit
+  carrying this line is confirmed green in the operator report).
