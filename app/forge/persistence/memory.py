@@ -9,7 +9,8 @@ durability; it exists so unit truth never requires a database server.
 from __future__ import annotations
 
 from dataclasses import replace
-from typing import Any, Iterator
+from datetime import datetime
+from typing import Any, Iterable, Iterator
 
 from app.forge.canonical import validate_status_transition
 from app.forge.identity import (
@@ -32,6 +33,7 @@ from app.forge.persistence.port import (
     IdentityLinkNotFound,
     IllegalStatusTransition,
     IllegalUserStateTransition,
+    InvalidRecord,
     MigrationOutcome,
     ObjectNotFound,
     PersistenceUnavailable,
@@ -39,11 +41,16 @@ from app.forge.persistence.port import (
     SessionNotFound,
     StaleWriteConflict,
     UserNotFound,
+    cosine_distance,
+    exposure_allowlist,
+    validate_similarity_query,
+    validate_vector_projection,
 )
 from app.forge.persistence.records import (
     ArtifactRecord,
     CanonicalObjectRecord,
     ProvenanceEdgeRecord,
+    VectorProjectionRecord,
     WriteResult,
 )
 
@@ -77,6 +84,11 @@ class InMemoryPersistenceGateway:
         self._links: dict[tuple[str, str], ExternalIdentityLink] = {}
         self._sessions: dict[str, tuple[ForgeSession, int]] = {}
         self._sessions_by_digest: dict[str, str] = {}
+        # Ch II.2.4 vector projection store (closure repair GAP-01). The
+        # in-memory implementation is the deterministic reference double:
+        # authoritative pgvector proof executes on PostgreSQL (CI).
+        self._vectors: dict[str, tuple[VectorProjectionRecord, int]] = {}
+        self._vector_versions: dict[str, int] = {}
         self._buffer: list[tuple[str, Any]] = []
         self._in_transaction: bool = False
         self._simulate_unavailable = simulate_unavailable
@@ -487,6 +499,111 @@ class InMemoryPersistenceGateway:
     def _rollback_buffer(self) -> None:
         self._buffer.clear()
         self._in_transaction = False
+
+    # -- vector projection (frozen Ch II.2.4; GAP-01 closure) ---------------
+    def _canonical_projection_reference(self, record: VectorProjectionRecord) -> None:
+        """Cross-check a projection against canonical truth; never re-labels."""
+
+        entry = self._objects.get(record.object_id)
+        if entry is None:
+            raise InvalidRecord(
+                f"vector projection references unknown canonical object {record.object_id}"
+            )
+        canonical = entry[0]
+        if record.object_version != canonical.version:
+            raise InvalidRecord(
+                "vector projection object_version does not match canonical version"
+            )
+        if record.exposure_class != canonical.exposure:
+            raise InvalidRecord(
+                "vector projection exposure_class does not match canonical exposure"
+            )
+        if record.canonical_hash != canonical.to_domain().content_hash():
+            raise InvalidRecord(
+                "vector projection canonical_hash does not match canonical content hash"
+            )
+
+    def put_vector_projection(self, record: VectorProjectionRecord) -> None:
+        validate_vector_projection(record)
+        self._canonical_projection_reference(record)
+        version = self._vector_versions.get(record.object_id, 0) + 1
+        stamped = replace(record, generated_at=datetime.now())
+        self._vectors[record.object_id] = (stamped, version)
+        self._vector_versions[record.object_id] = version
+
+    def get_vector_projection(
+        self,
+        object_id: str,
+        *,
+        allowed_exposures: Iterable[Any],
+        tenant: str | None = None,
+    ) -> VectorProjectionRecord | None:
+        exposures = exposure_allowlist(allowed_exposures)
+        if not object_id or not exposures:
+            return None  # fail closed: no allow-set, no content
+        entry = self._vectors.get(object_id)
+        if entry is None:
+            return None
+        record = entry[0]
+        if record.exposure_class.value not in exposures:
+            return None  # denied is indistinguishable from missing
+        if record.owner_user_id is not None and record.owner_user_id != tenant:
+            return None
+        return record
+
+    def search_vectors(
+        self,
+        embedding: Iterable[Any],
+        *,
+        allowed_exposures: Iterable[Any],
+        tenant: str | None = None,
+        limit: int = 10,
+    ) -> tuple[VectorProjectionRecord, ...]:
+        query = validate_similarity_query(embedding)
+        exposures = exposure_allowlist(allowed_exposures)
+        if not exposures or limit <= 0:
+            return ()
+        results: list[tuple[float, str, VectorProjectionRecord]] = []
+        for object_id, (record, _version) in self._vectors.items():
+            if record.exposure_class.value not in exposures:
+                continue  # never selected, never loaded by the caller
+            if record.owner_user_id is not None and record.owner_user_id != tenant:
+                continue
+            if record.embedding_dim != len(query):
+                continue  # similarity is defined within one dimension only
+            distance = cosine_distance(query, record.embedding)
+            results.append((distance, object_id, record))
+        results.sort(key=lambda item: (item[0], item[1]))
+        return tuple(record for _distance, _object_id, record in results[: int(limit)])
+
+    def delete_vector_projection(self, object_id: str) -> None:
+        self._vectors.pop(object_id, None)
+        self._vector_versions.pop(object_id, None)
+
+    def rebuild_vector_projection(
+        self, records: Iterable[VectorProjectionRecord]
+    ) -> tuple[int, int]:
+        batch = tuple(records)
+        object_ids = [record.object_id for record in batch]
+        if len(set(object_ids)) != len(object_ids):
+            raise InvalidRecord("duplicate object_id in rebuild batch")
+        # Validate the whole batch before mutating (mirrors SQL transaction).
+        for record in batch:
+            validate_vector_projection(record)
+            self._canonical_projection_reference(record)
+        keep = set(object_ids)
+        for record in batch:
+            version = self._vector_versions.get(record.object_id, 0) + 1
+            self._vectors[record.object_id] = (
+                replace(record, generated_at=datetime.now()),
+                version,
+            )
+            self._vector_versions[record.object_id] = version
+        stale = [key for key in list(self._vectors) if key not in keep]
+        for key in stale:
+            del self._vectors[key]
+            self._vector_versions.pop(key, None)
+        return (len(batch), len(stale))
 
     # -- infrastructure --------------------------------------------------------
     def ping(self) -> None:

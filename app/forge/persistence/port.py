@@ -14,13 +14,18 @@ Implementations:
 
 from __future__ import annotations
 
+import json
+import math
+import re
 from typing import Any, Iterable, Protocol, runtime_checkable
 
+from app.forge.canonical import ProductExposure
 from app.forge.identity import ExternalIdentityLink, ForgeSession, ForgeUser
 from app.forge.persistence.records import (
     ArtifactRecord,
     CanonicalObjectRecord,
     ProvenanceEdgeRecord,
+    VectorProjectionRecord,
     WriteResult,
 )
 
@@ -161,6 +166,105 @@ class MigrationOutcome:
     INCOMPATIBLE = "INCOMPATIBLE"
 
 
+# -- vector projection contract (frozen Ch II.2.4, Book II closure repair) ---
+
+VECTOR_MAX_DIMS = 16000  # pgvector storage ceiling; Book VII owns model choice
+
+_CANONICAL_HASH_RE = re.compile(r"^[0-9a-f]{64}$")
+
+
+def exposure_allowlist(allowed_exposures: Iterable[Any]) -> tuple[str, ...]:
+    """Normalized, sorted exposure allow-set; empty means fail closed."""
+
+    values = {
+        getattr(item, "value", item) if isinstance(item, ProductExposure) else str(item)
+        for item in allowed_exposures
+    }
+    return tuple(sorted(values))
+
+
+def validate_vector_projection(record: VectorProjectionRecord) -> None:
+    """Shared write-path validation — byte-identical rules on every gateway.
+
+    STORAGE != INTELLIGENCE: Book II validates shape, dimension, provenance
+    fields and vocabulary membership; embedding generation/model selection is
+    Book VII, canonical truth is Book I.
+    """
+
+    if not record.object_id or not record.object_id.strip():
+        raise InvalidRecord("vector projection requires a non-empty object_id")
+    if not record.object_version or not record.object_version.strip():
+        raise InvalidRecord("vector projection requires a non-empty object_version")
+    if record.embedding_dim <= 0 or record.embedding_dim > VECTOR_MAX_DIMS:
+        raise InvalidRecord(
+            f"embedding_dim must be in 1..{VECTOR_MAX_DIMS}, got {record.embedding_dim}"
+        )
+    if len(record.embedding) != record.embedding_dim:
+        raise InvalidRecord(
+            f"embedding length {len(record.embedding)} != embedding_dim {record.embedding_dim}"
+        )
+    for value in record.embedding:
+        try:
+            numeric = float(value)
+        except (TypeError, ValueError):
+            raise InvalidRecord("embedding values must be numeric") from None
+        if not math.isfinite(numeric):
+            raise InvalidRecord("embedding values must be finite")
+    if all(float(value) == 0.0 for value in record.embedding):
+        raise InvalidRecord("embedding must be non-zero (cosine similarity domain)")
+    if not record.embedding_model or not record.embedding_model.strip():
+        raise InvalidRecord("embedding_model is required (stored, never selected here)")
+    if not record.embedding_version or not record.embedding_version.strip():
+        raise InvalidRecord("embedding_version is required")
+    if not _CANONICAL_HASH_RE.match(record.canonical_hash or ""):
+        raise InvalidRecord("canonical_hash must be a 64-char lowercase hex digest")
+    if not isinstance(record.exposure_class, ProductExposure):
+        raise InvalidRecord(
+            "exposure_class must be a frozen ProductExposure member (fail closed)"
+        )
+    try:
+        json.loads(record.payload_json)
+    except (TypeError, ValueError):
+        raise InvalidRecord("payload_json must be valid JSON") from None
+    if record.owner_user_id is not None and not record.owner_user_id.strip():
+        raise InvalidRecord("owner_user_id must be None or a non-empty user id")
+
+
+def validate_similarity_query(embedding: Iterable[Any]) -> tuple[float, ...]:
+    """Validate a caller-supplied query vector before it reaches any backend."""
+
+    try:
+        query = tuple(float(value) for value in embedding)
+    except (TypeError, ValueError):
+        raise InvalidRecord("query embedding must be numeric") from None
+    if not query:
+        raise InvalidRecord("query embedding must be non-empty")
+    if len(query) > VECTOR_MAX_DIMS:
+        raise InvalidRecord(f"query embedding exceeds {VECTOR_MAX_DIMS} dimensions")
+    if any(not math.isfinite(value) for value in query):
+        raise InvalidRecord("query embedding must be finite")
+    if all(value == 0.0 for value in query):
+        raise InvalidRecord("query embedding must be non-zero (cosine similarity domain)")
+    return query
+
+
+def cosine_distance(a: tuple[float, ...], b: tuple[float, ...]) -> float:
+    """1 - cosine similarity, matching the pgvector `<=>` operator domain."""
+
+    dot = sum(x * y for x, y in zip(a, b))
+    na = math.sqrt(sum(x * x for x in a))
+    nb = math.sqrt(sum(y * y for y in b))
+    if na == 0.0 or nb == 0.0:
+        return 1.0
+    similarity = dot / (na * nb)
+    # Numeric clamp: cosine is defined on [-1, 1].
+    if similarity > 1.0:
+        similarity = 1.0
+    elif similarity < -1.0:
+        similarity = -1.0
+    return 1.0 - similarity
+
+
 @runtime_checkable
 class PersistenceGateway(Protocol):
     """The persistence port. Reads return FORGE records, never raw rows."""
@@ -257,6 +361,58 @@ class PersistenceGateway(Protocol):
 
         ...
 
+    # -- vector projection (frozen Ch II.2.4; GAP-01 closure) ---------------
+    def put_vector_projection(self, record: VectorProjectionRecord) -> None:
+        """Validate and upsert one projection row.
+
+        Identity = object_id (a model/version change replaces attributes and
+        never identity); canonical cross-checks (version/exposure/hash) must
+        pass or InvalidRecord is raised with nothing written.
+        """
+
+        ...
+
+    def get_vector_projection(
+        self,
+        object_id: str,
+        *,
+        allowed_exposures: Iterable[Any],
+        tenant: str | None = None,
+    ) -> VectorProjectionRecord | None:
+        """Deny-before-content-load: exposure allow-set and tenant scope are
+        part of the lookup itself; denied and missing are both None (no
+        content returned, no existence oracle)."""
+
+        ...
+
+    def search_vectors(
+        self,
+        embedding: Iterable[Any],
+        *,
+        allowed_exposures: Iterable[Any],
+        tenant: str | None = None,
+        limit: int = 10,
+    ) -> tuple[VectorProjectionRecord, ...]:
+        """Cosine-distance candidates with exposure+tenant filtering applied
+        BEFORE any content is selected. Similarity never grants authority:
+        persistence decides nothing about entitlement or policy."""
+
+        ...
+
+    def delete_vector_projection(self, object_id: str) -> None:
+        """Delete one projection row; canonical truth is never touched."""
+
+        ...
+
+    def rebuild_vector_projection(
+        self, records: Iterable[VectorProjectionRecord]
+    ) -> tuple[int, int]:
+        """Independent deterministic replacement rebuild from authorized
+        source records: (rows_written, rows_removed). Projection-only —
+        never reads or writes canonical tables beyond cross-checks."""
+
+        ...
+
     # -- transaction / infrastructure --------------------------------------
     def transaction(self) -> Any:
         """Context manager committing a multi-record logical write atomically."""
@@ -278,6 +434,12 @@ def result_identity(result: WriteResult) -> tuple[str, str, int]:
 
 __all__ = [
     "PersistenceGateway",
+    "VectorProjectionRecord",
+    "VECTOR_MAX_DIMS",
+    "validate_vector_projection",
+    "validate_similarity_query",
+    "exposure_allowlist",
+    "cosine_distance",
     "PersistenceError",
     "DuplicateCanonicalObject",
     "DuplicateArtifact",

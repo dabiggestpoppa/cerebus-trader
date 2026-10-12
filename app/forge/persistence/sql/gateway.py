@@ -9,7 +9,7 @@ schema/dialect truth; PostgreSQL remains the production target.
 from __future__ import annotations
 
 import json
-from typing import Any, Iterator
+from typing import Any, Iterable, Iterator
 
 from sqlalchemy import text
 from sqlalchemy.engine import Connection
@@ -41,6 +41,7 @@ from app.forge.persistence.port import (
     IdentityLinkNotFound,
     IllegalStatusTransition,
     IllegalUserStateTransition,
+    InvalidRecord,
     MigrationOutcome,
     ObjectNotFound,
     PersistenceUnavailable,
@@ -48,11 +49,15 @@ from app.forge.persistence.port import (
     SessionNotFound,
     StaleWriteConflict,
     UserNotFound,
+    exposure_allowlist,
+    validate_similarity_query,
+    validate_vector_projection,
 )
 from app.forge.persistence.records import (
     ArtifactRecord,
     CanonicalObjectRecord,
     ProvenanceEdgeRecord,
+    VectorProjectionRecord,
     WriteResult,
 )
 from app.forge.persistence.sql.migrations import SqlMigrationRunner
@@ -836,6 +841,235 @@ class SqlAlchemyPersistenceGateway:
     # -- compatibility: not part of the port contract below ----------------------------
     def _unused(self) -> None:  # pragma: no cover - keeps import list honest
         return None
+
+    # -- vector projection (frozen Ch II.2.4; GAP-01 closure) ---------------
+    # Storage substrate only: Book II stores/validates/projects; embedding
+    # generation and model selection are Book VII; canonical truth is Book
+    # I. Acceptance proof executes on PostgreSQL+pgvector (CI); the gateway
+    # fails closed where pgvector storage cannot exist — SQLite is never
+    # substituted as vector proof.
+
+    _VECTOR_SELECT = (
+        "object_id, object_version, payload_json, semantic_text,"
+        " embedding::text AS embedding, embedding_dim, embedding_model,"
+        " embedding_version, exposure_class, canonical_hash, owner_user_id,"
+        " generated_at, persisted_version"
+    )
+
+    def _require_postgresql_vector(self) -> None:
+        dialect = getattr(getattr(self._connection, "dialect", None), "name", "") or ""
+        if dialect and dialect != "postgresql":
+            raise PersistenceUnavailable("vector_storage_requires_postgresql")
+
+    def _canonical_projection_reference(self, record: VectorProjectionRecord) -> None:
+        """Cross-check against canonical truth; a projection can never re-label
+        version, exposure or identity."""
+
+        row = self._connection.execute(
+            _sql(
+                "SELECT version, exposure, content_hash FROM canonical_objects"
+                " WHERE canonical_id = :cid"
+            ),
+            {"cid": record.object_id},
+        ).first()
+        if row is None:
+            raise InvalidRecord(
+                f"vector projection references unknown canonical object {record.object_id}"
+            )
+        if record.object_version != row[0]:
+            raise InvalidRecord(
+                "vector projection object_version does not match canonical version"
+            )
+        if record.exposure_class.value != row[1]:
+            raise InvalidRecord(
+                "vector projection exposure_class does not match canonical exposure"
+            )
+        if record.canonical_hash != str(row[2]).strip():
+            raise InvalidRecord(
+                "vector projection canonical_hash does not match canonical content hash"
+            )
+
+    @staticmethod
+    def _vector_row(row: Any) -> VectorProjectionRecord:
+        raw = str(row["embedding"]).strip()
+        if raw.startswith("[") and raw.endswith("]"):
+            raw = raw[1:-1]
+        embedding = tuple(float(part) for part in raw.split(",")) if raw else ()
+        return VectorProjectionRecord(
+            object_id=row["object_id"],
+            object_version=row["object_version"],
+            payload_json=row["payload_json"],
+            semantic_text=row["semantic_text"],
+            embedding=embedding,
+            embedding_dim=int(row["embedding_dim"]),
+            embedding_model=row["embedding_model"],
+            embedding_version=row["embedding_version"],
+            exposure_class=record_exposure(row["exposure_class"]),
+            canonical_hash=str(row["canonical_hash"]).strip(),
+            owner_user_id=row["owner_user_id"],
+            generated_at=row["generated_at"],
+        )
+
+    @staticmethod
+    def _embedding_literal(embedding: Iterable[float]) -> str:
+        return "[" + ",".join(repr(float(value)) for value in embedding) + "]"
+
+    def put_vector_projection(self, record: VectorProjectionRecord) -> None:
+        self._require_postgresql_vector()
+        validate_vector_projection(record)
+        self._canonical_projection_reference(record)
+        try:
+            self._connection.execute(
+                _sql(
+                    "INSERT INTO retrieval_vectors (object_id, object_version,"
+                    " payload_json, semantic_text, embedding, embedding_dim,"
+                    " embedding_model, embedding_version, exposure_class,"
+                    " canonical_hash, owner_user_id, generated_at)"
+                    " VALUES (:oid, :over, :payload, :semtext, CAST(:emb AS vector),"
+                    " :edim, :emodel, :ever, :exp, :chash, :owner, CURRENT_TIMESTAMP)"
+                    " ON CONFLICT (object_id) DO UPDATE SET"
+                    " object_version = EXCLUDED.object_version,"
+                    " payload_json = EXCLUDED.payload_json,"
+                    " semantic_text = EXCLUDED.semantic_text,"
+                    " embedding = EXCLUDED.embedding,"
+                    " embedding_dim = EXCLUDED.embedding_dim,"
+                    " embedding_model = EXCLUDED.embedding_model,"
+                    " embedding_version = EXCLUDED.embedding_version,"
+                    " exposure_class = EXCLUDED.exposure_class,"
+                    " canonical_hash = EXCLUDED.canonical_hash,"
+                    " owner_user_id = EXCLUDED.owner_user_id,"
+                    " generated_at = CURRENT_TIMESTAMP,"
+                    " persisted_version = retrieval_vectors.persisted_version + 1"
+                ),
+                {
+                    "oid": record.object_id,
+                    "over": record.object_version,
+                    "payload": record.payload_json,
+                    "semtext": record.semantic_text,
+                    "emb": self._embedding_literal(record.embedding),
+                    "edim": record.embedding_dim,
+                    "emodel": record.embedding_model,
+                    "ever": record.embedding_version,
+                    "exp": record.exposure_class.value,
+                    "chash": record.canonical_hash,
+                    "owner": record.owner_user_id,
+                },
+            )
+        except Exception as exc:
+            if _is_fk_violation(exc):
+                raise InvalidRecord(
+                    f"vector projection references unknown canonical object {record.object_id}"
+                ) from None
+            raise _op_error(exc) from None
+
+    def get_vector_projection(
+        self,
+        object_id: str,
+        *,
+        allowed_exposures: Iterable[Any],
+        tenant: str | None = None,
+    ) -> VectorProjectionRecord | None:
+        self._require_postgresql_vector()
+        exposures = exposure_allowlist(allowed_exposures)
+        if not object_id or not exposures:
+            return None  # fail closed: no allow-set, no content
+        params: dict[str, Any] = {"oid": object_id, "tenant": tenant}
+        marks: list[str] = []
+        for index, value in enumerate(exposures):
+            params[f"e{index}"] = value
+            marks.append(f":e{index}")
+        row = self._connection.execute(
+            _sql(
+                "SELECT "
+                + self._VECTOR_SELECT
+                + " FROM retrieval_vectors WHERE object_id = :oid"
+                + f" AND exposure_class IN ({', '.join(marks)})"
+                + " AND (owner_user_id IS NULL OR owner_user_id = :tenant)"
+                + " LIMIT 1"
+            ),
+            params,
+        ).first()
+        if row is None:
+            return None  # denied is indistinguishable from missing
+        return self._vector_row(row)
+
+    def search_vectors(
+        self,
+        embedding: Iterable[Any],
+        *,
+        allowed_exposures: Iterable[Any],
+        tenant: str | None = None,
+        limit: int = 10,
+    ) -> tuple[VectorProjectionRecord, ...]:
+        self._require_postgresql_vector()
+        query = validate_similarity_query(embedding)
+        exposures = exposure_allowlist(allowed_exposures)
+        if not exposures or int(limit) <= 0:
+            return ()
+        params: dict[str, Any] = {
+            "q": self._embedding_literal(query),
+            "qdim": len(query),
+            "tenant": tenant,
+            "lim": int(limit),
+        }
+        marks: list[str] = []
+        for index, value in enumerate(exposures):
+            params[f"e{index}"] = value
+            marks.append(f":e{index}")
+        rows = self._connection.execute(
+            _sql(
+                "SELECT "
+                + self._VECTOR_SELECT
+                + " FROM retrieval_vectors"
+                + f" WHERE exposure_class IN ({', '.join(marks)})"
+                + " AND (owner_user_id IS NULL OR owner_user_id = :tenant)"
+                + " AND vector_dims(embedding) = :qdim"
+                + " ORDER BY (embedding <=> CAST(:q AS vector)) ASC, object_id ASC"
+                + " LIMIT :lim"
+            ),
+            params,
+        ).fetchall()
+        # Exposure/tenant filtering happened in the WHERE clause: denied rows
+        # were never selected, so their content columns never leave the DB.
+        return tuple(self._vector_row(row) for row in rows)
+
+    def delete_vector_projection(self, object_id: str) -> None:
+        self._require_postgresql_vector()
+        try:
+            self._connection.execute(
+                _sql("DELETE FROM retrieval_vectors WHERE object_id = :oid"),
+                {"oid": object_id},
+            )
+        except Exception as exc:
+            raise _op_error(exc) from None
+
+    def rebuild_vector_projection(
+        self, records: Iterable[VectorProjectionRecord]
+    ) -> tuple[int, int]:
+        """Independent deterministic replacement rebuild (G-D4): every source
+        row upserted, stale rows removed, canonical tables untouched."""
+
+        self._require_postgresql_vector()
+        batch = tuple(records)
+        object_ids = [record.object_id for record in batch]
+        if len(set(object_ids)) != len(object_ids):
+            raise InvalidRecord("duplicate object_id in rebuild batch")
+        for record in batch:  # validate the whole batch before mutating
+            validate_vector_projection(record)
+            self._canonical_projection_reference(record)
+        for record in batch:
+            self.put_vector_projection(record)
+        keep = set(object_ids)
+        rows = self._connection.execute(
+            _sql("SELECT object_id FROM retrieval_vectors")
+        ).fetchall()
+        stale = [row[0] for row in rows if row[0] not in keep]
+        if stale:
+            self._connection.execute(
+                _sql("DELETE FROM retrieval_vectors WHERE object_id = ANY(:stale)"),
+                {"stale": stale},
+            )
+        return (len(batch), len(stale))
 
 
 def _is_unique_violation(exc: Exception) -> bool:

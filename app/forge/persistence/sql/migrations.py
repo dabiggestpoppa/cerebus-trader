@@ -25,6 +25,14 @@ class Migration:
     version: int
     identity: str
     sql: str
+    # Dialect restriction: migrations whose storage engine exists on only
+    # some dialects (e.g. 003 needs pgvector) declare it in a header marker
+    # (`-- FORGE dialect: postgresql`). The portable subset doctrine is the
+    # 001 header's own text: "SQLite test execution accepts the portable
+    # subset" — non-PostgreSQL dialects apply the portable migrations only,
+    # and PostgreSQL must always see every migration (fail loud, never
+    # silently forked acceptance).
+    postgresql_only: bool = False
 
 
 def split_sql_statements(sql_text: str) -> List[str]:
@@ -62,8 +70,17 @@ def discover_migrations() -> tuple[Migration, ...]:
             if line.startswith("-- FORGE persistence — migration "):
                 identity_line = line.split("— migration ", 1)[1].strip()
                 break
+        postgresql_only = any(
+            line.strip() == "-- FORGE dialect: postgresql"
+            for line in text.splitlines()
+        )
         found.append(
-            Migration(version=int(match.group(1)), identity=identity_line or name, sql=text)
+            Migration(
+                version=int(match.group(1)),
+                identity=identity_line or name,
+                sql=text,
+                postgresql_only=postgresql_only,
+            )
         )
     found.sort(key=lambda m: m.version)
     versions = [m.version for m in found]
@@ -76,6 +93,21 @@ class SqlMigrationRunner:
     def __init__(self, connection: Any) -> None:
         self._connection = connection
         self._migrations = discover_migrations()
+        dialect = getattr(getattr(connection, "dialect", None), "name", "") or ""
+        self._dialect = dialect
+
+    def applicable_migrations(self) -> tuple[Migration, ...]:
+        """Migrations representable on this connection's dialect.
+
+        PostgreSQL (and unknown dialects, which must fail loud rather than
+        silently skip) see every migration. SQLite applies the portable
+        subset only: 003 needs the pgvector type system and is explicitly
+        marked `-- FORGE dialect: postgresql`.
+        """
+
+        if self._dialect in ("", "postgresql"):
+            return self._migrations
+        return tuple(m for m in self._migrations if not m.postgresql_only)
 
     def _fetch(self, sql: str, params: dict | None = None) -> List[Any]:
         # Never pass an empty positional sequence: newer SQLAlchemy deprecates it.
@@ -110,7 +142,7 @@ class SqlMigrationRunner:
         """OK / BEHIND / INCOMPATIBLE / AHEAD schema identity."""
 
         applied = self._applied_versions()
-        code_versions = [m.version for m in self._migrations]
+        code_versions = [m.version for m in self.applicable_migrations()]
         if not code_versions:
             return MigrationOutcome.INCOMPATIBLE
         latest_code = code_versions[-1]
@@ -126,7 +158,7 @@ class SqlMigrationRunner:
         self._ensure_table()
         applied = set(self._applied_versions())
         outcome = MigrationOutcome.CURRENT
-        for migration in self._migrations:
+        for migration in self.applicable_migrations():
             if migration.version in applied:
                 continue
             for statement in split_sql_statements(migration.sql):

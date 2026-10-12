@@ -8,6 +8,7 @@ domain->record->domain is explicit and lossless for governed fields.
 from __future__ import annotations
 
 from dataclasses import dataclass, field
+from datetime import datetime
 from typing import Any
 
 # Importing domain modules from persistence is allowed (dependency direction:
@@ -131,6 +132,34 @@ class ProvenanceEdgeRecord:
     object_id: str
     relation: str
     note: str = ""
+
+
+@dataclass(frozen=True)
+class VectorProjectionRecord:
+    """Durable frozen Ch II.2.4 retrieval/embedding projection row.
+
+    STORAGE ONLY: Book II stores and validates this record; embedding
+    generation and model selection belong to Book VII; canonical/retrieval
+    authority belongs to Book I. A projection can never re-label canonical
+    truth: `object_version` / `exposure_class` / `canonical_hash` must equal
+    the referenced canonical row's `version` / `exposure` / `content_hash`.
+    Changing `embedding_model` / `embedding_version` replaces attributes and
+    never changes `object_id` identity (Ch II.2.4). `generated_at` is
+    persistence-owned on write and is NOT part of projection identity.
+    """
+
+    object_id: str
+    object_version: str
+    payload_json: str
+    semantic_text: str
+    embedding: tuple[float, ...]
+    embedding_dim: int
+    embedding_model: str
+    embedding_version: str
+    exposure_class: ProductExposure
+    canonical_hash: str
+    owner_user_id: str | None = None
+    generated_at: datetime | None = None
 
 
 @dataclass(frozen=True)

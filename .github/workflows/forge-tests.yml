@@ -21,7 +21,12 @@ jobs:
     runs-on: ubuntu-latest
     services:
       postgres:
-        image: postgres:16
+        # Closure repair (GAP-01): the frozen gate G-D1 names "empty
+        # Postgres+pgvector -> current schema", so the acceptance database
+        # must be Postgres WITH pgvector. pgvector/pgvector:pg16 is the
+        # official pgvector image on the same postgres:16 base — additive
+        # capability only; jobs, env vars and tests are unchanged.
+        image: pgvector/pgvector:pg16
         env:
           POSTGRES_USER: forge
           POSTGRES_PASSWORD: forge_ci_password
