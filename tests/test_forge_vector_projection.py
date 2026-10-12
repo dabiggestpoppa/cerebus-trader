@@ -282,7 +282,10 @@ class TestVectorProjectionContract:
 
     # -- D1/D2/D3/D5 isolation matrix ------------------------------------------
     def test_isolation_matrix_zero_leakage(self) -> None:
+        from app.forge.identity import ForgeUser
+
         gateway = InMemoryPersistenceGateway()
+        gateway.create_user(ForgeUser.create(user_id="user_a"))  # tenant owner (FK parity)
         public = _canonical("MOD.TEST.VEC.M_PUBLIC.V1")
         operator = _canonical(
             "MOD.TEST.VEC.M_OPERATOR.V1", exposure=ProductExposure.OPERATOR_ONLY
@@ -464,6 +467,14 @@ def pg_connection(pg_gateway):
     reason="FORGE_TEST_DATABASE_URL not set — pgvector acceptance executes on CI Postgres+pgvector only (local pgvector infra gap recorded, never substituted)",
 )
 class TestPostgresVectorProjection:
+    @pytest.fixture(autouse=True)
+    def _clean_transaction(self, pg_connection):
+        # Every test starts from a clean transaction: a failed statement in
+        # one test must never poison the next (InFailedSqlTransaction).
+        pg_connection.rollback()
+        yield
+        pg_connection.rollback()
+
     def _seed(self, gateway, canonical) -> None:
         gateway.create_object(canonical)
 
@@ -663,11 +674,13 @@ class TestPostgresVectorProjection:
     def test_isolation_matrix_on_postgres(self, pg_gateway, pg_connection) -> None:
         from sqlalchemy import text
 
-        gateway, connection = pg_gateway, pg_connection
+        from app.forge.identity import ForgeUser
 
+        gateway, connection = pg_gateway, pg_connection
         # isolation starts from a clean projection so the id sets are exact
         connection.execute(text("TRUNCATE retrieval_vectors"))
         connection.commit()
+        gateway.create_user(ForgeUser.create(user_id="user_a"))  # tenant owner FK
         public = _canonical("MOD.TEST.VEC.PG_PUBLIC.V1")
         operator = _canonical(
             "MOD.TEST.VEC.PG_OPERATOR.V1", exposure=ProductExposure.OPERATOR_ONLY

@@ -501,13 +501,19 @@ class InMemoryPersistenceGateway:
         self._in_transaction = False
 
     # -- vector projection (frozen Ch II.2.4; GAP-01 closure) ---------------
-    def _canonical_projection_reference(self, record: VectorProjectionRecord) -> None:
-        """Cross-check a projection against canonical truth; never re-labels."""
+    def _validate_projection_references(self, record: VectorProjectionRecord) -> None:
+        """Cross-check a projection against canonical truth and the tenant
+        owner; never re-labels version/exposure/hash, never references a
+        user row that does not exist (parity with the SQL FKs)."""
 
         entry = self._objects.get(record.object_id)
         if entry is None:
             raise InvalidRecord(
                 f"vector projection references unknown canonical object {record.object_id}"
+            )
+        if record.owner_user_id is not None and record.owner_user_id not in self._users:
+            raise InvalidRecord(
+                f"vector projection references unknown user {record.owner_user_id}"
             )
         canonical = entry[0]
         if record.object_version != canonical.version:
@@ -525,7 +531,7 @@ class InMemoryPersistenceGateway:
 
     def put_vector_projection(self, record: VectorProjectionRecord) -> None:
         validate_vector_projection(record)
-        self._canonical_projection_reference(record)
+        self._validate_projection_references(record)
         version = self._vector_versions.get(record.object_id, 0) + 1
         stamped = replace(record, generated_at=datetime.now())
         self._vectors[record.object_id] = (stamped, version)
@@ -590,7 +596,7 @@ class InMemoryPersistenceGateway:
         # Validate the whole batch before mutating (mirrors SQL transaction).
         for record in batch:
             validate_vector_projection(record)
-            self._canonical_projection_reference(record)
+            self._validate_projection_references(record)
         keep = set(object_ids)
         for record in batch:
             version = self._vector_versions.get(record.object_id, 0) + 1

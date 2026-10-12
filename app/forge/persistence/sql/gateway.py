@@ -959,6 +959,11 @@ class SqlAlchemyPersistenceGateway:
             )
         except Exception as exc:
             if _is_fk_violation(exc):
+                detail = str(exc)
+                if "retrieval_vectors_owner_fkey" in detail:
+                    raise InvalidRecord(
+                        f"vector projection references unknown user {record.owner_user_id}"
+                    ) from None
                 raise InvalidRecord(
                     f"vector projection references unknown canonical object {record.object_id}"
                 ) from None
