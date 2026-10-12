@@ -33,11 +33,16 @@ Evidence head when drafted: `ae35276`.
 - [x] **G-D5 (GAP-02) closed** — backup→restore→verify smoke executed on
       live PostgreSQL and recorded (same run, ledger L-17). Re-verify at
       ratification.
-- [x] **GAP-05 ruled** — ownership interpretation recorded in
+- [x] **GAP-05 closed** — ownership interpretation recorded in
       `../closure_repair/GOVERNANCE.md` §2 (Book II owns durable
-      operational/security audit infrastructure); implementation of the
-      durable audit/event ledger remains the sole open Book II blocker and
-      is tracked as the GAP-05 residual in `OPEN_GAP_REGISTER.md`.
+      operational/security audit infrastructure) and the durable audit/event
+      ledger is now **implemented and executed** by the Build Agent #14
+      packet (`../closure_repair_gap05/`: plan+acceptance committed before
+      implementation; migration 004 + `DurableAuditLedger` + all six
+      Ch II.2.6 record classes durable; CI run 38261712088 green on
+      `3529a0d`, test 1016/29, postgres 1045/0; evidence + operator decisions
+      in that packet’s EVIDENCE.md and G-P4_GAP-03_RECONCILIATION.md).
+      Re-verify at ratification; pack re-audit still pending.
 - [ ] G-P4 reading confirmed by operator (seam-level demonstration accepted
       as satisfying “entitlement revocation observed promptly” within frozen
       Book II ownership) — GAP-03.
@@ -62,12 +67,16 @@ Evidence head when drafted: `ae35276`.
 
 - Schema/domain version: `FORGE_DOMAIN_V1`; event schema `FORGE_EVENT_V1`.
 - Migration head: `001_initial_schema.sql`, `002_identity_session.sql`,
-  `003_vector_projection.sql` (head **3** after the closure-repair packet),
-  compatibility `OK` under `FORGE_MIGRATION_COMPATIBILITY_REQUIRED=1`.
+  `003_vector_projection.sql`, `004_audit_ledger.sql` (head **4** after the
+  GAP-05 packet; 003 PG-only, 004 portable), compatibility `OK` under
+  `FORGE_MIGRATION_COMPATIBILITY_REQUIRED=1`.
 - Test counts: capture at the ratification head (last recorded: 946
   passed/19 skipped local; 965/0 PostgreSQL-attached; closure-repair
   packet: 975 passed/27 skipped local, 975/27 CI `test`, 1002 passed/0
-  skipped CI `postgres` — see `../closure_repair/EVIDENCE.md`).
+  skipped CI `postgres` — see `../closure_repair/EVIDENCE.md`; GAP-05
+  packet (BA-14): 1016 passed/29 skipped local, 1016/29 CI `test`,
+  **1045 passed/0 skipped** CI `postgres` on `3529a0d` — see
+  `../closure_repair_gap05/EVIDENCE.md` §8/§9).
 - Provider contract versions: `ProviderContractSpec` (8 elements) ×
   {llm, commerce, notification, storage}, implementations `fake` only.
 - Policy version/hash: `POLICY_MODULE_SHA256 =

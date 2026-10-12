@@ -10,7 +10,8 @@ Suites referenced: `S1=test_forge_service_composition.py (36)`,
 `S2=test_forge_persistence.py (56)`, `S3=test_forge_identity.py (66)`,
 `S4=test_forge_policy.py (86)`, `S5=test_forge_providers.py (74, +
 tests/provider_contract.py harness)`, `S6=test_forge_observability.py (104)`,
-`XB=test_forge_cross_bloc.py (56)`, `PG=test_forge_postgres_integration.py (19+7)`.
+`XB=test_forge_cross_bloc.py (56)`, `PG=test_forge_postgres_integration.py (19+7)`,
+`AUD=test_forge_audit_ledger.py (41 local + 2 PG; GAP-05 packet)`.
 
 ## Section A — Book-level ratification gate
 (Frozen source: Book II plan, `# BOOK II ACCEPTANCE / RATIFICATION GATE`)
@@ -28,7 +29,7 @@ tests/provider_contract.py harness)`, `S6=test_forge_observability.py (104)`,
 
 | ID | Requirement | Owner | Implementation | Executable test | Evidence / Ratification | Disp. | Qualification / gap |
 |---|---|---|---|---|---|---|---|
-| G-D1 | empty Postgres+pgvector → current schema | II.2 (+closure repair) | `persistence/sql/001`, `002`, `003` + dialect-aware `migrations.py` | PG: migrations apply on empty Postgres+pgvector; extension/table/constraint assertions in `TestPostgresVectorProjection::test_empty_database_applies_pgvector_schema`; chain pins `[1,2,3]` | closure_repair EVIDENCE §3; ledger L-17 (run 38188302328) | D | pgvector half demonstrated on CI (GAP-01 closed by repair) |
+| G-D1 | empty Postgres+pgvector → current schema | II.2 (+closure repair) | `persistence/sql/001`, `002`, `003` + dialect-aware `migrations.py` | PG: migrations apply on empty Postgres+pgvector; extension/table/constraint assertions in `TestPostgresVectorProjection::test_empty_database_applies_pgvector_schema`; chain pins `[1,2,3,4]` | closure_repair EVIDENCE §3; ledger L-17 (run 38188302328); pins advanced by GAP-05 packet (run 38261712088) | D | pgvector half demonstrated on CI (GAP-01 closed by repair); 004 portable addition verified on both dialects |
 | G-D2 | migration verification passes | II.2 | `check_compatibility`, `FORGE_MIGRATION_COMPATIBILITY_REQUIRED=1` | S2 J tests; CI postgres job runs with requirement=1 | II.2 RAT J; EVIDENCE §J | D | — |
 | G-D3 | canonical projection loads | II.2 | canonical tables + gateway | S2 B/C/D round-trip matrix; PG round trip | II.2 RAT B/C/D | D | — |
 | G-D4 | vector projection rebuilds independently | II.2 (+closure repair) | `003_vector_projection.sql` + `rebuild_vector_projection` (SQL + memory) | PG: `test_rebuild_deterministic_stale_and_corruption_recovery`, `test_projection_deletion_leaves_canonical_truth_intact`; contract rebuild trio | closure_repair EVIDENCE §3; ledger L-17 | D | Independent deterministic rebuild proven (wipe→canonical intact→restore; stale removal; corruption recovery) |
@@ -119,7 +120,7 @@ tests/provider_contract.py harness)`, `S6=test_forge_observability.py (104)`,
 | CH-II.2.3 | Provenance/relationship graph | `artifacts`, `provenance_edges` | S2 E | D | — |
 | CH-II.2.4 | Retrieval/embedding storage | `003_vector_projection.sql` `retrieval_vectors` + `VectorProjectionRecord` (storage substrate only) | vector contract (29) + PG (7) suites; PG schema test | D | Storage only — embedding generation/model selection remain Book VII (frozen ownership, PLAN §7 exclusions held) |
 | CH-II.2.5 | Account and access tables | `forge_users`, `external_identity_links`, `forge_sessions` | S3 I/J; PG identity 7 | D | Accounts = internal users only; org/billing accounts are Book VI (excluded) → GAP-03-related |
-| CH-II.2.6 | Audit/event ledger | typed append-only in-process trails (`observability/audit.py`); **no durable audit/event tables; no provider-event tables** | S6 E/F trails; redaction tests | **Q** | Record semantics + redaction demonstrated; durability not. **Ownership ruled** (closure_repair/GOVERNANCE §2: durable operational/security audit = Book II) → implementation pending, reclassified from operator-pending to a Book II open item (GAP-05) |
+| CH-II.2.6 | Audit/event ledger | durable `004_audit_ledger.sql` (`forge_audit_events`, append-only, content-minimized) + `observability/audit_ledger.py` (`DurableAuditLedger`) + II.6 durable mirrors across all six Ch II.2.6 record classes, over `AuditEventPort` (persistence-side coercion; observability stays persistence/provenance-free) | `test_forge_audit_ledger.py` (41 local + 2 PG); S6 E/F trails; redaction tests; failure matrix + restart recovery | D | Durability executed on SQLite (schema contract, five seams, redaction-before-storage, fault/recovery matrix, restart survival) and on real PostgreSQL in CI run **38261712088** (`3529a0d`, postgres job 1045 passed). Streams stay in frozen `STREAMS`; no Book VI business table; provider-event/entitlement **business tables** remain Book VI (GOVERNANCE §2). GAP-05 closed; pack re-audit pending |
 | CH-II.2.7 | Transaction/concurrency rules | `transaction()`, optimistic versions | S2 G/N; XB D1–D5, F9 | D | — |
 | CH-II.2.8 | Migration discipline | first-party runner, ledger | S2 J | D | — |
 | CH-II.2.9 | Backup/restore contract | mechanism (replayable migrations + version ledger) + executed smoke | `test_forge_backup_restore.py` | D | Smoke executed on CI (GAP-02 closed by repair); launch-scale drills remain Book VIII |
@@ -210,13 +211,13 @@ tests/provider_contract.py harness)`, `S6=test_forge_observability.py (104)`,
 
 **Totals:** 41 requirement rows (Section A: gate §Runtime–§Final evidence
 records), 56 chapter rows (Section B: Ch II.1.1–II.6.10), 19 cross-cutting
-rows (Section C) = **116 frozen requirement rows: 105 D, 10 Q, 1 ND**
+rows (Section C) = **116 frozen requirement rows: 106 D, 9 Q, 1 ND**
 (ND = G-F7, the ratification commit, pending by design). Re-counted
 programmatically after the Book II closure-repair update (ledger L-15…L-17;
 GAP-01 and GAP-02 rows moved to D on executed CI evidence; G-D4/CH-II.2.4
-were ND before that repair). Row-level detail above is authoritative; the
-only ND row is **G-F7**. Residual Q rows (10): G-P3 (vector sub-clause now
-D; GAP-07 minor remains), G-P4 (GAP-03), CH-II.1.7 (GAP-04), CH-II.2.6
-(GAP-05, ownership ruled — implementation pending), CH-II.3.2, CH-II.3.7,
-CH-II.4.3, CH-II.4.6, CH-II.4.9 (Book-VI-owned or deferred scope), C-C10
-(GAP-03).
+were ND before that repair) and again after the GAP-05 packet (CH-II.2.6
+Q → D on executed CI evidence, run 38261712088). Row-level detail above is
+authoritative; the only ND row is **G-F7**. Residual Q rows (9): G-P3
+(vector sub-clause now D; GAP-07 minor remains), G-P4 (GAP-03), CH-II.1.7
+(GAP-04), CH-II.3.2, CH-II.3.7, CH-II.4.3, CH-II.4.6, CH-II.4.9
+(Book-VI-owned or deferred scope), C-C10 (GAP-03).

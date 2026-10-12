@@ -242,3 +242,20 @@ ACCEPTANCE.md's amended criteria:
    `MAX(seq)+1` by the gateway inside a bounded unique-violation retry, and
    each append commits its own durable unit (unless an explicit gateway
    transaction is open) — giving record-before-read and restart survival.
+8. **G-P4/GAP-03 paraphrase corrected** — the Problem statement above
+   paraphrased G-P4/GAP-03 as "external token revocation observed promptly
+   vs recorded-before-read (Spec §8)". That wording is not in the frozen
+   sources; the authoritative anchors are the Book II plan gate bullet
+   "entitlement revocation observed promptly", ACCEPTANCE_MATRIX row G-P4
+   (state Q), OPEN_GAP_REGISTER row GAP-03 (classification D, Book VI), and
+   the RATIFICATION_CHECKLIST operator-confirmation item. The reconciliation
+   against those anchors is `G-P4_GAP-03_RECONCILIATION.md` in this
+   directory; no requirement relied on the incorrect paraphrase.
+9. **K5/K7 import law (frozen)** — XB
+   `test_security_audit_is_distinct_from_provenance` forbids the
+   observability package from importing `app.forge.persistence` (as well as
+   provenance). The pre-implementation assumption that observability could
+   import `AuditEventRecord` was wrong; the built design hands the record
+   duck-shaped (`LedgerEvent`) and persistence coerces it
+   (`persistence.port.coerce_audit_event`), keeping observability
+   persistence-free while the ledger stays in the observability package.
