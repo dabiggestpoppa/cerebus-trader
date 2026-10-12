@@ -66,8 +66,8 @@ Evidence head when drafted: `ae35276`.
   compatibility `OK` under `FORGE_MIGRATION_COMPATIBILITY_REQUIRED=1`.
 - Test counts: capture at the ratification head (last recorded: 946
   passed/19 skipped local; 965/0 PostgreSQL-attached; closure-repair
-  packet: 974 passed/19 skipped local, 975/0 on CI postgres — see
-  `../closure_repair/EVIDENCE.md`).
+  packet: 975 passed/27 skipped local, 975/27 CI `test`, 1002 passed/0
+  skipped CI `postgres` — see `../closure_repair/EVIDENCE.md`).
 - Provider contract versions: `ProviderContractSpec` (8 elements) ×
   {llm, commerce, notification, storage}, implementations `fake` only.
 - Policy version/hash: `POLICY_MODULE_SHA256 =
