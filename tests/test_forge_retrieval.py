@@ -1670,7 +1670,8 @@ class TestBoundaryIntegrity:
     def test_no_new_migration(self) -> None:
         from app.forge.persistence.sql.migrations import discover_migrations
 
-        assert [migration.version for migration in discover_migrations()] == [1, 2]
+        # Exact authorized set incl. operator-authorized 003 (closure repair).
+        assert [migration.version for migration in discover_migrations()] == [1, 2, 3]
 
     def test_retrieval_package_has_no_credential_material(self) -> None:
         package = REPO_ROOT / "app" / "forge" / "retrieval"

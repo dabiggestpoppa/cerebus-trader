@@ -1579,7 +1579,8 @@ def test_o2_no_public_qa_route_is_added():
 def test_o3_no_new_migration_or_dependency():
     from app.forge.persistence.sql.migrations import discover_migrations
 
-    assert [m.version for m in discover_migrations()] == [1, 2]
+    # Exact authorized set incl. operator-authorized 003 (closure repair).
+    assert [m.version for m in discover_migrations()] == [1, 2, 3]
 
 
 def test_o4_no_commercial_or_entitlement_objects_in_qa():

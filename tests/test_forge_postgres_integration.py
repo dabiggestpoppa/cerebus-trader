@@ -206,11 +206,14 @@ class TestPostgresIdentitySession:
 
     def test_identity_migration_chain_and_noop(self, gateway) -> None:
         self._gw = gateway
-        # 001 + 002 are both recorded; compatibility is OK, re-run is a no-op
+        # 001 + 002 + 003 are all recorded on Postgres+pgvector; compatibility
+        # is OK, re-run is a no-op
         from app.forge.persistence.sql.migrations import discover_migrations
 
         versions = [m.version for m in discover_migrations()]
-        assert versions == [1, 2]
+        assert versions == [1, 2, 3]
+        migrations = {m.version: m for m in discover_migrations()}
+        assert migrations[3].identity == "003_vector_projection"
         assert gateway.check_compatibility() == "OK"
         assert gateway.apply_migrations() == "CURRENT"
 

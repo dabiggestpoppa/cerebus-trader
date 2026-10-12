@@ -666,7 +666,11 @@ class TestScopeGuards:
     def test_no_new_migration(self) -> None:
         from app.forge.persistence.sql.migrations import discover_migrations
 
-        assert [m.version for m in discover_migrations()] == [1, 2]
+        # Exact authorized set: 001/002 (historical) + 003_vector_projection
+        # (Book II closure repair, operator-authorized — see
+        # implementation/forge/book_ii/closure_repair/PLAN.md). Still a pin:
+        # any further migration fails here without its own authorization.
+        assert [m.version for m in discover_migrations()] == [1, 2, 3]
 
     def test_001_and_002_unchanged(self) -> None:
         import hashlib
@@ -681,7 +685,11 @@ class TestScopeGuards:
         from app.forge.persistence.sql.migrations import discover_migrations
 
         identities = {m.version: m.identity for m in discover_migrations()}
-        assert identities == {1: "001_initial_schema", 2: "002_identity_session"}
+        assert identities == {
+            1: "001_initial_schema",
+            2: "002_identity_session",
+            3: "003_vector_projection",
+        }
 
     def test_no_policy_or_audit_tables(self) -> None:
         from sqlalchemy import create_engine, text
