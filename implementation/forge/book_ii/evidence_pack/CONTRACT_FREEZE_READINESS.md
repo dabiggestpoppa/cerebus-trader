@@ -44,8 +44,12 @@ A book-level readiness claim below never borrows the last state.
 - Gate rows: G-D2/D3/D6 **D**; G-D1 **Q** and G-D4 **ND** (pgvector never
   instantiated — GAP-01); G-D5 **Q** (no smoke executed — GAP-02); Ch II.2.6
   durable audit/event ledger + Book-VI domain tables — GAP-05 (operator).
-- Status: **NOT READY** — GAP-01 and GAP-02 are ratification blockers;
-  GAP-05 needs an operator ruling.
+- Status (updated 2026-10-12 after the closure repair): GAP-01 and GAP-02
+  are **CLOSED by executed repair** (CI 38188302328 / `914cc04`, postgres
+  job 1002 passed) — still awaiting **evidence re-audit** before this
+  document’s verdict can change; GAP-05 has been **ruled** (Book II owns
+  durable audit infrastructure) and its implementation remains the open
+  Book II item.
 
 ### 2.3 Identity/session contracts
 
@@ -155,13 +159,16 @@ A book-level readiness claim below never borrows the last state.
 ## 3. Gate rollup (from ACCEPTANCE_MATRIX.md, recomputed at this head)
 
 116 frozen requirement rows = 41 gate (A) + 56 chapter (B) +
-19 cross-cutting (C): **99 D, 14 Q, 3 ND**.
+19 cross-cutting (C): **99 D, 14 Q, 3 ND** at `ae35276`; recounted after
+the closure-repair update to **105 D, 10 Q, 1 ND** (G-D1, G-D4, G-D5,
+CH-II.2.4, CH-II.2.9 and C-DEF5 moved to D on executed CI evidence;
+programmatic recount matches the matrix Totals line).
 
-- ND set: G-D4 (vector projection), CH-II.2.4 (retrieval/embedding
-  storage), G-F7 (ratification commit — pending by design).
-- Blocking Q set: G-D1-vector, G-D5, G-P3-vector (GAP-01/GAP-02 family).
-- Every other Q is a downstream/nonblocking qualification with a named
-  gap ID.
+- ND set now: G-F7 (ratification commit — pending by design).
+- Residual Q rows: G-P3 (GAP-07 minor; vector sub-clause now D), G-P4
+  (GAP-03), CH-II.2.6 (GAP-05 — ruled, implementation pending),
+  CH-II.1.7, CH-II.3.2, CH-II.3.7, CH-II.4.3, CH-II.4.6, CH-II.4.9,
+  C-C10 — each with a named gap ID.
 
 ## 4. Readiness ladder (explicit)
 
@@ -194,11 +201,14 @@ describes the ratification SHA and CI must be re-queried.
 
 ## 7. Known-limitation cross-references
 
-Blockers: GAP-01, GAP-02. Operator: GAP-05, GAP_ADR_001. Downstream:
-GAP-03, GAP-06, GAP-10, GAP-11, GAP-13, GAP-14. Accepted nonblocking:
-GAP-04, GAP-07, GAP-08, GAP-09, GAP-12. Evidence for every
-classification: `OPEN_GAP_REGISTER.md` (columns Evidence / What would
-close it).
+Updated 2026-10-12 (closure repair): **Closed by repair (C):** GAP-01,
+GAP-02 — executed evidence, re-audit pending. **Blocker (B):** GAP-05
+(durable audit/event ledger — ownership ruled, implementation absent).
+**Disposed:** GAP_ADR_001. Downstream: GAP-03, GAP-06, GAP-10, GAP-11,
+GAP-13, GAP-14 (+ former GAP-05’s Book-VI business-table share).
+Accepted nonblocking: GAP-04, GAP-07, GAP-08, GAP-09, GAP-12. Evidence for
+every classification: `OPEN_GAP_REGISTER.md` (columns Evidence / What would
+close it) + `../closure_repair/`.
 
 ## 8. Production-readiness boundary (explicit non-claims)
 
@@ -237,22 +247,31 @@ Re-executed programmatically in this assignment against
 
 **BOOK II RATIFICATION BLOCKED — REPAIR REQUIRED**
 
-Basis:
+Basis (updated 2026-10-12 after the authorized closure-repair packet):
 
-1. **GAP-01** — frozen Ch II.2.4 / gate bullets G-D1 (pgvector half),
-   G-D4, G-P3 vector sub-clause are ND/Q with no vector/embedding storage
-   anywhere in the schema or code. Frozen Book II scope, no ownership
-   conflict; closable by implementation or operator-approved plan
-   amendment, then re-run of this pack.
-2. **GAP-02** — G-D5 backup/restore smoke never executed (mechanism only).
-   Same closure path.
-3. **GAP-05** (operator ruling pending) — durable audit/event ledger +
-   Book-VI-owned persistence domains: plan language vs implementation.
-   Until ruled, no clean READY assessment can be issued.
-4. **GAP_ADR_001** (operator decision pending) — phase-order vs
-   bloc-dependency contradiction, carried OPEN since II.5, byte-identical
-   through every later packet.
+1. **GAP-01 — CLOSED by executed repair** (re-audit pending): frozen
+   Ch II.2.4 storage substrate implemented (`003_vector_projection.sql`,
+   typed contract, canonical cross-checks, deny-before-content-load,
+   deterministic rebuild) and executed on CI Postgres+pgvector — run
+   38188302328, postgres job **1002 passed**. Gate bullets G-D1/G-D4 and
+   the G-P3 vector sub-clause moved to D in the matrix.
+2. **GAP-02 — CLOSED by executed repair** (re-audit pending): real
+   pg_dump → fresh-DB pg_restore → independent verification smoke ran in
+   the same run (G-D5/CH-II.2.9 → D). Local execution remains a recorded
+   infra gap, never substituted.
+3. **GAP-05 — ruled; implementation remains the open blocker**: ownership
+   interpretation recorded and verified against frozen contracts
+   (`../closure_repair/GOVERNANCE.md` §2) — Book II owns durable
+   operational/security audit infrastructure. The durable audit/event
+   ledger is still unimplemented (in-process trails only), so this is now
+   an explicit Book II blocker rather than a pending question.
+4. **GAP_ADR_001 — DISPOSED**: operator interpretation recorded
+   (`../closure_repair/GOVERNANCE.md` §1); frozen planning documents
+   remain byte-identical (re-verified in the repair VERIFICATION).
 
+The verdict string above therefore still holds — but its basis has
+narrowed: **the repair is complete and awaits evidence re-audit; the single
+remaining ratification blocker is the GAP-05 durable audit/event ledger.**
 The six Bloc ratifications and the cross-bloc PASS VERIFICATION stand as
 committed; this verdict is about the frozen **Book-level** gate only, and
 this document is not a ratification.

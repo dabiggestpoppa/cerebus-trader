@@ -26,16 +26,18 @@ Evidence head when drafted: `ae35276`.
 
 ## Gate completeness (from ACCEPTANCE_MATRIX.md §A)
 
-- [ ] **G-D1 / G-D4 / G-P3-vector (GAP-01) closed** — embedding storage +
+- [x] **G-D1 / G-D4 / G-P3-vector (GAP-01) closed** — embedding storage +
       independent vector-projection rebuild + vector-leakage fail-closed
-      test executed, **or** operator-approved plan amendment narrowing these
-      bullets with recorded rationale (audit §12 change-control law).
-- [ ] **G-D5 (GAP-02) closed** — backup→restore→verify smoke executed on
-      live PostgreSQL and recorded, **or** explicit operator acceptance of
-      the Ch II.2.9 mechanism/drill split as satisfying the bullet.
-- [ ] **GAP-05 ruled** — operator decision recorded on durable audit/event
-      ledger + Book-VI-owned persistence domains (implement at Book II vs
-      defer with amendment).
+      test executed in the closure-repair packet (CI postgres job 1002,
+      ledger L-17; matrix rows → D). Re-verify at ratification.
+- [x] **G-D5 (GAP-02) closed** — backup→restore→verify smoke executed on
+      live PostgreSQL and recorded (same run, ledger L-17). Re-verify at
+      ratification.
+- [x] **GAP-05 ruled** — ownership interpretation recorded in
+      `../closure_repair/GOVERNANCE.md` §2 (Book II owns durable
+      operational/security audit infrastructure); implementation of the
+      durable audit/event ledger remains the sole open Book II blocker and
+      is tracked as the GAP-05 residual in `OPEN_GAP_REGISTER.md`.
 - [ ] G-P4 reading confirmed by operator (seam-level demonstration accepted
       as satisfying “entitlement revocation observed promptly” within frozen
       Book II ownership) — GAP-03.
@@ -59,11 +61,13 @@ Evidence head when drafted: `ae35276`.
 ## Book-level evidence records to embed at ratification (G-F1…G-F7)
 
 - Schema/domain version: `FORGE_DOMAIN_V1`; event schema `FORGE_EVENT_V1`.
-- Migration head: `001_initial_schema.sql`, `002_identity_session.sql`
-  (head **2**), compatibility `OK` under
-  `FORGE_MIGRATION_COMPATIBILITY_REQUIRED=1`.
+- Migration head: `001_initial_schema.sql`, `002_identity_session.sql`,
+  `003_vector_projection.sql` (head **3** after the closure-repair packet),
+  compatibility `OK` under `FORGE_MIGRATION_COMPATIBILITY_REQUIRED=1`.
 - Test counts: capture at the ratification head (last recorded: 946
-  passed/19 skipped local; 965/0 PostgreSQL-attached).
+  passed/19 skipped local; 965/0 PostgreSQL-attached; closure-repair
+  packet: 974 passed/19 skipped local, 975/0 on CI postgres — see
+  `../closure_repair/EVIDENCE.md`).
 - Provider contract versions: `ProviderContractSpec` (8 elements) ×
   {llm, commerce, notification, storage}, implementations `fake` only.
 - Policy version/hash: `POLICY_MODULE_SHA256 =
@@ -81,8 +85,9 @@ Evidence head when drafted: `ae35276`.
       ratification SHA.
 - [ ] Change-control after freeze: audit §12 — later changes need GAP/ADR +
       plan versioning, never silent edits.
-- [ ] GAP_ADR_001 disposition recorded (may remain OPEN with an explicit
-      operator note; it must not be closed implicitly by ratification).
+- [x] GAP_ADR_001 disposition recorded — DISPOSED with operator
+      interpretation (`../closure_repair/GOVERNANCE.md` §1); not closed
+      implicitly by ratification.
 - [ ] Downstream consumers notified of exactly what Books III/IV/VI may
       assume (Book II plan `# HANDOFF TO BOOK III / VI`).
 

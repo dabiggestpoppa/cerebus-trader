@@ -5,7 +5,11 @@ this assignment or quoted verbatim from the committed bloc packets.
 Workflow under test throughout: `.github/workflows/forge-tests.yml` (two
 jobs: `test` = plain suite; `postgres` = live PostgreSQL 16 service,
 `FORGE_TEST_DATABASE_URL` set, full suite + `-v` integration module +
-`-k TestPostgresIdentitySession`).
+`-k TestPostgresIdentitySession`). **Since the closure repair (rows L-15+) the
+service image is `pgvector/pgvector:pg16`** — the frozen gate G-D1 names
+"empty Postgres+pgvector → current schema", so the acceptance database must
+be Postgres WITH pgvector; same jobs, same env vars, same tests (see
+`closure_repair/PLAN.md` §2).
 
 ## 1. Classification key
 
@@ -35,6 +39,9 @@ jobs: `test` = plain suite; `postgres` = live PostgreSQL 16 service,
 | L-12 | 38181284353 | **`ae35276` (EVIDENCE HEAD)** | `test` ✅ `postgres` ✅ | `test` **946 passed, 19 skipped**; PG full **965**, integration **19**, identity/session **7** | PASS — CI green on the exact authorized evidence SHA |
 | L-13 | local run (this packet) | `ae35276` tree | approved local PostgreSQL 16 (`forge@127.0.0.1:5432/forge_test`) | PG module **19 passed**; full suite under CI postgres env **965 passed, 0 skipped** | PASS — independent non-CI PostgreSQL execution (step-7 ledger, reproduced) |
 | L-14 | 38183868608 | `cbeac2e` (this evidence pack, rung 3 — post-push verification) | `test` ✅ `postgres` ✅ | `test` **946 passed, 19 skipped**; PG full **965 passed**, integration **19**, identity/session **7** | PASS — CI green on the pushed evidence-pack head (Phase 9 remote-SHA verification) |
+| L-15 | 38187591174 | `6a426de` (closure repair rung 4) | `test` ✅ `postgres` ❌ | `test` 975/27 executed; `postgres` **995 passed, 6 failed, 1 error** | **FAIL(app)** — closure-repair test/gateway defects (RowMapping access, txn-abort cascade, backup fixture field); repaired append-only → L-16. Never claimed as a pass |
+| L-16 | 38187953980 | `9f44d81` (closure repair rung 5) | `test` ✅ `postgres` ❌ | `test` 975/27 executed; `postgres` **1000 passed, 2 failed** | **FAIL(app)** — tenant projection referenced an unseeded user (003 owner FK working as designed) + one swallowed `def`; repaired append-only → L-17 |
+| L-17 | 38188302328 | **`914cc04` (closure-repair evidence head)** | `test` ✅ `postgres` ✅ | `test` **975 passed, 27 skipped**; PG full **1002 passed, 0 skipped**; integration **19**; identity/session **7** | PASS — closure-repair acceptance executed: pgvector schema + rebuild + isolation + backup/restore smoke all green on the changed service image `pgvector/pgvector:pg16` (required by frozen G-D1; jobs/env unchanged) |
 
 Book I-era green runs for context only (not Book II coverage):
 `37861618933` (`017fc96`), `37861865244` (`b61a29c`), `37872174840`

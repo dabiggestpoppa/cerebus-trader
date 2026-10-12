@@ -2,7 +2,10 @@
 
 Status: EVIDENCE PACK — PREPARED FOR OPERATOR REVIEW
 Date: 2026-10-11
-Evidence head: `ae352762a0ef6b9a277b3e112e8826cd8feb96f1` (= `origin/forge`, verified)
+Evidence head: `ae352762a0ef6b9a277b3e112e8826cd8feb96f1` (= `origin/forge` at pack time, verified)
+Closure-repair update (2026-10-12): `origin/forge` advanced through the
+authorized closure-repair ladder (GAP-01/02/05, GAP_ADR_001) — rows updated
+below cite their own heads/runs; see `../closure_repair/EVIDENCE.md` §1.
 Planning freeze head: `60e067547b9d9165d94e4f074e0db0ba58e59e24` (ancestor, verified)
 
 **This packet does NOT ratify or freeze Book II, does NOT authorize Book III,
@@ -52,11 +55,16 @@ freeze commits at the evidence head (Phase 8 validation, recorded in
 
 **BOOK II RATIFICATION BLOCKED — REPAIR REQUIRED**
 
-See `CONTRACT_FREEZE_READINESS.md` §10 for the verdict basis and
-`OPEN_GAP_REGISTER.md` for the classifications: ratification blockers
-GAP-01 (vector family) and GAP-02 (backup/restore smoke not executed);
-operator decisions pending on GAP-05 (durable audit/event ledger +
-Book-VI-owned persistence domains) and GAP_ADR_001 (phase order).
+Basis updated 2026-10-12 after the Book II closure-repair packet
+(`implementation/forge/book_ii/closure_repair/`): **GAP-01 and GAP-02 are
+CLOSED by executed repair** (CI run 38188302328 on `914cc04`, postgres job
+1002 passed — vector substrate + backup/restore smoke) and **GAP_ADR_001 is
+DISPOSED** (interpretation recorded, frozen plans unchanged). The remaining
+ratification blocker is **GAP-05**: its ownership was RULED (Book II owns
+durable operational/security audit infrastructure) and the durable
+audit/event ledger is still unimplemented. The repaired pack now awaits
+**evidence re-audit** before any readiness verdict can change — see
+`CONTRACT_FREEZE_READINESS.md` §10 and `OPEN_GAP_REGISTER.md`.
 
 ## Phase 8 validation record (executed at `ae35276`, this packet)
 
@@ -70,10 +78,13 @@ Book-VI-owned persistence domains) and GAP_ADR_001 (phase order).
 | Commit-SHA references | `git cat-file -e <sha>^{commit}` for every backticked SHA | all valid (the only non-matches were GitHub Actions run IDs, verified separately) |
 | CI run provenance | live `gh run list --branch forge` re-query | every run ID in `CI_POSTGRESQL_LEDGER.md` present with the recorded head SHA and conclusion (incl. failures `37989879501`/`37991271771` preserved as FAIL(infra)) |
 | Test-name existence | backticked `test_*` names vs `pytest --collect-only -q` (965 collected) | all 66 cited test names exist |
-| Matrix totals | programmatic recount of disposition cells per section | 116 rows = 41 A + 56 B + 19 C; 99 D / 14 Q / 3 ND — matches the Totals line |
-| Gap-register consistency | `GAP-01..14` + `GAP_ADR_001` cross-reference scan across all files | 15 defined, 0 used-but-undefined, 0 defined-but-unused |
+| Matrix totals | programmatic recount of disposition cells per section | 116 rows = 41 A + 56 B + 19 C; **99 D / 14 Q / 3 ND** at `ae35276` — matched the Totals line then; recounted to **105 D / 10 Q / 1 ND** after the closure-repair update (G-D1/G-D4/G-D5/CH-II.2.4/CH-II.2.9/C-DEF5 moved on executed CI evidence) |
+| Gap-register consistency | `GAP-01..14` + `GAP_ADR_001` cross-reference scan across all files | 15 defined, 0 used-but-undefined, 0 defined-but-unused (re-run after the closure-repair reclassifications: still 15, 0/0) |
 | Unsupported-PASS scan | `\bPASS\b` scan of all seven files | only per-CI-run classifications and bloc-as-committed verdicts (sourced); no Book-level PASS assertion |
 | Full regression | `python -m pytest tests/ -q` | **946 passed, 19 skipped** in 12.23s (matches CI `test` job at the evidence head; 19 = CI-only PostgreSQL tests, see ledger L-13 for executed-PG evidence) |
+| Closure-repair validation (2026-10-12) | same battery re-run after `implementation/forge/book_ii/closure_repair/` + this update | local **975 passed, 27 skipped**; CI `test` 975/27; CI `postgres` **1002 passed, 0 skipped** (L-17); matrix recount 116 = 105/10/1; register 15 IDs 0/0 orphans; no unsupported Book-level PASS introduced |
 
-No application logic was modified: `git status` shows this packet directory
-as the only addition.
+At the time of the Phase 8 record above, no application logic was modified.
+The later closure-repair packet changed `app/forge/persistence/*` and the CI
+service image under its own explicit operator authorization (GAP-01/GAP-02);
+that change history is append-only in `closure_repair/EVIDENCE.md` §1.
