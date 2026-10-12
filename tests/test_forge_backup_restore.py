@@ -53,6 +53,9 @@ EXPECTED_TABLES = {
     "external_identity_links",
     "forge_sessions",
     "retrieval_vectors",
+    # GAP-05 durable audit/event ledger (Ch II.2.6): part of the backed-up
+    # surface — content-minimized, append-oriented, no business columns.
+    "forge_audit_events",
 }
 FORBIDDEN_BUSINESS_TABLES = {
     "policies",
@@ -326,7 +329,7 @@ class TestBackupRestoreSmoke:
                 assert EXPECTED_TABLES <= restored["tables"]
                 assert restored["counts"] == source_before["counts"]
                 assert restored["hashes"] == source_before["hashes"]
-                assert restored["head"] == [1, 2, 3]
+                assert restored["head"] == [1, 2, 3, 4]
                 assert restored["vectors"] == source_before["vectors"]
 
                 # projection <-> canonical reconciliation in the restored DB

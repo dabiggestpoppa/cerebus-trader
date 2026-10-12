@@ -61,6 +61,14 @@ from app.forge.observability.metrics import (
     ALL_HISTOGRAMS,
     MetricsRegistry,
 )
+from app.forge.observability.audit_ledger import (
+    AUDIT_WRITE_POLICIES,
+    AUDIT_WRITE_POLICY_BEST_EFFORT,
+    AUTHENTICATION_EVENT_TYPES,
+    DurableAuditLedger,
+    DurableAuditWriteError,
+    FallbackAuditMarker,
+)
 from app.forge.observability.redaction import (
     MAX_ATTRIBUTE_VALUE_LENGTH,
     MAX_ATTRIBUTES,
@@ -80,6 +88,9 @@ __all__ = [
     "ALL_COUNTERS",
     "ALL_GAUGES",
     "ALL_HISTOGRAMS",
+    "AUDIT_WRITE_POLICIES",
+    "AUDIT_WRITE_POLICY_BEST_EFFORT",
+    "AUTHENTICATION_EVENT_TYPES",
     "COMPONENTS",
     "DEFAULT_AUDIT_CAPACITY",
     "ENTITLEMENT_EVENT_TYPES",
@@ -107,7 +118,10 @@ __all__ = [
     "UsageLedger",
     "UsageRecord",
     "BoundedAuditTrail",
+    "DurableAuditLedger",
+    "DurableAuditWriteError",
     "EntitlementAuditRecord",
+    "FallbackAuditMarker",
     "RetrievalAccessAuditRecord",
     "bounded_string",
     "correlation_scope",

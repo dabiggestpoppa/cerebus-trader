@@ -393,11 +393,15 @@ class TestVectorProjectionContract:
         from app.forge.persistence.sql.migrations import discover_migrations
 
         migrations = {m.version: m for m in discover_migrations()}
-        assert [m.version for m in migrations.values()] == [1, 2, 3]
+        # 004 = GAP-05 durable audit/event ledger (Build Agent #14 packet);
+        # it is PORTABLE (unlike 003) — the SQLite subset must include it.
+        assert [m.version for m in migrations.values()] == [1, 2, 3, 4]
         assert migrations[3].identity == "003_vector_projection"
+        assert migrations[4].identity == "004_audit_ledger"
         assert migrations[1].postgresql_only is False
         assert migrations[2].postgresql_only is False
         assert migrations[3].postgresql_only is True
+        assert migrations[4].postgresql_only is False
 
     def test_sqlite_portable_subset_has_no_vector_table_and_fails_closed(self) -> None:
         from sqlalchemy import create_engine, text

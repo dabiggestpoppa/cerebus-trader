@@ -44,17 +44,20 @@ from app.forge.persistence.port import (
     InvalidRecord,
     MigrationOutcome,
     ObjectNotFound,
+    PersistenceError,
     PersistenceUnavailable,
     SelfReferenceForbidden,
     SessionNotFound,
     StaleWriteConflict,
     UserNotFound,
+    coerce_audit_event,
     exposure_allowlist,
     validate_similarity_query,
     validate_vector_projection,
 )
 from app.forge.persistence.records import (
     ArtifactRecord,
+    AuditEventRecord,
     CanonicalObjectRecord,
     ProvenanceEdgeRecord,
     VectorProjectionRecord,
@@ -1078,6 +1081,122 @@ class SqlAlchemyPersistenceGateway:
             )
         return (len(batch), len(stale))
 
+    # -- durable audit/event ledger (frozen Ch II.2.6; GAP-05) -----------------
+
+    def append_audit_event(self, record: Any) -> bool:
+        """Append one durable audit/event row (idempotent by `event_id`).
+
+        Any record-shaped envelope is coerced to the storage record at this
+        boundary (`coerce_audit_event`) — the observability package is
+        forbidden from importing persistence types (frozen K5/K7 law).
+
+        `seq` is persistence-owned: allocated as MAX(seq)+1 in the same
+        write, with a bounded retry when a concurrent writer wins the unique
+        race (monotonic allocation, not gap-freedom — the same ordering
+        contract as the frozen in-process trails). Each successful append
+        commits its own durable unit unless an explicit gateway transaction
+        is open, so an audit fact is recorded before it can be read back and
+        survives process restart. Repeat append of a stored `event_id`
+        returns False and writes nothing; backend faults raise
+        PersistenceUnavailable (redacted details only).
+        """
+
+        try:
+            record = coerce_audit_event(record)
+            if self._audit_event_exists(record.event_id):
+                return False
+            for _attempt in range(3):
+                seq = self._next_audit_seq()
+                try:
+                    self._connection.execute(
+                        _sql(
+                            "INSERT INTO forge_audit_events (seq, event_id, stream,"
+                            " event_type, severity, environment, occurred_at, request_id,"
+                            " actor_type, actor_id, resource, outcome, reason, details_json)"
+                            " VALUES (:seq, :eid, :stream, :etype, :severity, :env,"
+                            " :occurred, :rid, :atype, :aid, :resource, :outcome, :reason,"
+                            " :details)"
+                        ),
+                        {
+                            "seq": seq,
+                            "eid": record.event_id,
+                            "stream": record.stream,
+                            "etype": record.event_type,
+                            "severity": record.severity,
+                            "env": record.environment,
+                            "occurred": record.occurred_at,
+                            "rid": record.request_id,
+                            "atype": record.actor_type,
+                            "aid": record.actor_id,
+                            "resource": record.resource,
+                            "outcome": record.outcome,
+                            "reason": record.reason,
+                            "details": record.details_json,
+                        },
+                    )
+                except Exception as exc:
+                    self._safe_rollback()
+                    if _is_unique_violation(exc):
+                        # Either the idempotency key (already stored — no-op)
+                        # or a concurrent seq allocation (retry with a fresh
+                        # allocation).
+                        if self._audit_event_exists(record.event_id):
+                            return False
+                        continue
+                    raise _op_error(exc) from None
+                if not self._in_transaction:
+                    try:
+                        self._connection.commit()
+                    except Exception as exc:
+                        raise _op_error(exc) from None
+                return True
+            raise _op_error(RuntimeError("audit seq allocation race"))
+        except PersistenceError:
+            raise
+        except Exception as exc:
+            raise _op_error(exc) from None
+
+    def list_audit_events(
+        self, *, limit: int = 100, stream: str | None = None
+    ) -> tuple[AuditEventRecord, ...]:
+        """Bounded, append-ordered read-back of stored audit/event rows."""
+
+        try:
+            bound = max(1, min(int(limit), 1000))
+            params: dict[str, Any] = {"lim": bound}
+            where = ""
+            if stream:
+                where = " WHERE stream = :stream"
+                params["stream"] = stream
+            rows = self._connection.execute(
+                _sql(
+                    "SELECT seq, event_id, stream, event_type, severity, environment,"
+                    " occurred_at, request_id, actor_type, actor_id, resource, outcome,"
+                    " reason, details_json, created_at FROM forge_audit_events"
+                    + where
+                    + " ORDER BY seq ASC LIMIT :lim"
+                ),
+                params,
+            ).mappings().fetchall()
+            return tuple(_audit_row(row) for row in rows)
+        except PersistenceError:
+            raise
+        except Exception as exc:
+            raise _op_error(exc) from None
+
+    def _audit_event_exists(self, event_id: str) -> bool:
+        row = self._connection.execute(
+            _sql("SELECT 1 FROM forge_audit_events WHERE event_id = :eid"),
+            {"eid": event_id},
+        ).fetchone()
+        return row is not None
+
+    def _next_audit_seq(self) -> int:
+        row = self._connection.execute(
+            _sql("SELECT COALESCE(MAX(seq), 0) + 1 FROM forge_audit_events")
+        ).fetchone()
+        return int(row[0])
+
 
 def _is_unique_violation(exc: Exception) -> bool:
     # SQLite: IntegrityError with UNIQUE constraint; PostgreSQL: unique_violation.
@@ -1094,6 +1213,31 @@ def _is_fk_violation(exc: Exception) -> bool:
         "23503" in text_exc
         or "foreign key" in text_exc
         or ("integrityerror" in name and "foreign" in text_exc)
+    )
+
+
+def _audit_row(row: Any) -> AuditEventRecord:
+    """Map one forge_audit_events row to its record (storage values out)."""
+
+    created = row["created_at"]
+    if created is not None and not isinstance(created, str):
+        created = str(created)  # dialect TIMESTAMP -> storage string
+    return AuditEventRecord(
+        seq=int(row["seq"]),
+        event_id=str(row["event_id"]),
+        stream=str(row["stream"]),
+        event_type=str(row["event_type"]),
+        severity=str(row["severity"]),
+        environment=str(row["environment"]),
+        occurred_at=str(row["occurred_at"]),
+        request_id=row["request_id"],
+        actor_type=str(row["actor_type"]),
+        actor_id=row["actor_id"],
+        resource=str(row["resource"]),
+        outcome=str(row["outcome"]),
+        reason=str(row["reason"]),
+        details_json=str(row["details_json"]),
+        created_at=created,
     )
 
 

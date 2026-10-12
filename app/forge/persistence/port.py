@@ -23,6 +23,7 @@ from app.forge.canonical import ProductExposure
 from app.forge.identity import ExternalIdentityLink, ForgeSession, ForgeUser
 from app.forge.persistence.records import (
     ArtifactRecord,
+    AuditEventRecord,
     CanonicalObjectRecord,
     ProvenanceEdgeRecord,
     VectorProjectionRecord,
@@ -427,6 +428,82 @@ class PersistenceGateway(Protocol):
         """Return OK / BEHIND / INCOMPATIBLE / AHEAD schema identity."""
 
 
+@runtime_checkable
+class AuditEventPort(Protocol):
+    """Durable audit/event ledger port (Book II GAP-05, frozen Ch II.2.6).
+
+    Deliberately SEPARATE from `PersistenceGateway`: the ledger is an
+    append-oriented operational/security surface, not part of the canonical/
+    identity domain contract, and the dependency direction stays
+    observability -> persistence (persistence never imports observability,
+    and the frozen K5/K7 law forbids observability importing persistence —
+    so `record` is accepted as ANY record-shaped envelope and coerced here
+    via `coerce_audit_event`; returns are persistence-side records read back
+    duck-typed). Implementations: the SQL gateway (PostgreSQL/SQLite) and
+    the in-memory gateway (bounded reference double).
+    """
+
+    def append_audit_event(self, record: Any) -> bool:
+        """Append one event row. Returns True when newly stored, False when
+        the same `event_id` already exists (idempotent, never raises for a
+        repeat). Raises PersistenceUnavailable on backend faults."""
+
+        ...
+
+    def list_audit_events(
+        self, *, limit: int = 100, stream: str | None = None
+    ) -> tuple[AuditEventRecord, ...]:
+        """Bounded, seq-ordered (append order) read-back of stored events."""
+
+        ...
+
+
+_AUDIT_EVENT_FIELDS = (
+    "event_id",
+    "stream",
+    "event_type",
+    "severity",
+    "occurred_at",
+    "details_json",
+    "request_id",
+    "actor_type",
+    "actor_id",
+    "resource",
+    "outcome",
+    "reason",
+    "environment",
+)
+
+_AUDIT_REQUIRED_FIELDS = ("event_id", "stream", "event_type", "severity", "occurred_at")
+
+
+def coerce_audit_event(record: Any) -> AuditEventRecord:
+    """Normalize any record-shaped audit envelope into `AuditEventRecord`.
+
+    The frozen K5/K7 import law forbids the observability package from
+    importing persistence types, so the durable ledger hands over its own
+    duck-shaped `LedgerEvent` (identical field names) or a plain mapping.
+    Coercion happens HERE, on the persistence side of the boundary; unknown
+    shapes fail closed with `InvalidRecord`. `seq`/`created_at` are
+    persistence-owned: caller-supplied values are ignored, never trusted.
+    """
+
+    if isinstance(record, AuditEventRecord):
+        return record
+    if isinstance(record, dict):
+        values = {name: record.get(name) for name in _AUDIT_EVENT_FIELDS}
+    else:
+        values = {
+            name: getattr(record, name, None) for name in _AUDIT_EVENT_FIELDS
+        }
+    missing = [name for name in _AUDIT_REQUIRED_FIELDS if not values[name]]
+    if missing:
+        raise InvalidRecord(f"audit event missing required fields: {missing}")
+    return AuditEventRecord(
+        **{name: values[name] for name in _AUDIT_EVENT_FIELDS if values[name] is not None}
+    )
+
+
 def result_identity(result: WriteResult) -> tuple[str, str, int]:
     """Deterministic identity for write outcomes (used by tests)."""
     return (result.operation, result.canonical_id, result.persisted_version)
@@ -434,6 +511,9 @@ def result_identity(result: WriteResult) -> tuple[str, str, int]:
 
 __all__ = [
     "PersistenceGateway",
+    "AuditEventPort",
+    "AuditEventRecord",
+    "coerce_audit_event",
     "VectorProjectionRecord",
     "VECTOR_MAX_DIMS",
     "validate_vector_projection",

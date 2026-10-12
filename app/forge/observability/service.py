@@ -27,6 +27,10 @@ from app.forge.observability.audit import (
     RetrievalAccessAuditRecord,
     security_audit_event,
 )
+from app.forge.observability.audit_ledger import (
+    AUTHENTICATION_EVENT_TYPES,
+    DurableAuditLedger,
+)
 from app.forge.observability.correlation import (
     correlation_scope,
     current_request_id,
@@ -38,7 +42,7 @@ from app.forge.observability.emitter import (
     StructuredLogSink,
     utc_now_iso,
 )
-from app.forge.observability.events import ForgeEvent
+from app.forge.observability.events import ForgeEvent, OUTCOMES
 from app.forge.observability.metrics import MetricsRegistry
 from app.forge.observability.usage import UsageLedger, UsageRecord
 
@@ -55,6 +59,7 @@ class ForgeObservabilityService:
         audit_capacity: int = 256,
         with_log_sink: bool = True,
         clock: Callable[[], str] = utc_now_iso,
+        audit_ledger: DurableAuditLedger | None = None,
     ) -> None:
         self._emitter = emitter
         self._metrics = metrics or MetricsRegistry()
@@ -68,6 +73,11 @@ class ForgeObservabilityService:
             audit_capacity
         )
         self._usage_ledger: UsageLedger = UsageLedger(audit_capacity)
+        # GAP-05 / Ch II.2.6: optional durable audit/event ledger. Default
+        # None keeps every existing behavior byte-identical; the composition
+        # root wires it only when config.audit_durable.enabled (fail-closed
+        # config validation guarantees a persistence port is present).
+        self._audit_ledger = audit_ledger
 
     # -- primitives ----------------------------------------------------------
 
@@ -88,6 +98,91 @@ class ForgeObservabilityService:
         """Emit raising on malformed input (tests/strict internal paths)."""
 
         return self._emitter.emit(**kwargs)
+
+    # -- durable audit/event ledger (frozen Ch II.2.6; GAP-05) ---------------
+
+    def _durable(self, **kwargs: Any) -> bool | None:
+        """Mirror one audit fact into the durable ledger when wired.
+
+        Recording only: the durable mirror never re-decides anything and is
+        byte-invisible when unwired. Fault semantics live in the ledger
+        (`best_effort` contains, `require_durable` raises the typed error).
+        """
+
+        if self._audit_ledger is None:
+            return None
+        return self._audit_ledger.append_event(**kwargs)
+
+    @property
+    def audit_ledger(self) -> DurableAuditLedger | None:
+        return self._audit_ledger
+
+    def durable_audit_events(
+        self, *, limit: int = 100, stream: str | None = None
+    ) -> tuple[Any, ...]:
+        """Bounded, append-ordered durable read-back (empty when unwired).
+
+        Returns persistence-side audit records, duck-typed (frozen K5/K7
+        law: observability never imports persistence types).
+        """
+
+        if self._audit_ledger is None:
+            return ()
+        return self._audit_ledger.list_events(limit=limit, stream=stream)
+
+    def record_authentication_event(
+        self,
+        *,
+        event_type: str,
+        outcome: str = "success",
+        actor_type: str = "system",
+        actor_id: str | None = None,
+        resource: str = "",
+        reason: str = "",
+        request_id: str | None = None,
+        details: dict[str, Any] | None = None,
+        at: str | None = None,
+    ) -> bool | None:
+        """Append one authentication/security event (Ch II.2.6).
+
+        Vocabulary-validated (fail closed) and content-free: session ids,
+        user ids and failure kinds only — never credential material. The II.3
+        boundary stays the single credential authority; this method only
+        RECORDS the fact another module established. Returns the durable
+        result (None when the ledger is unwired).
+        """
+
+        if event_type not in AUTHENTICATION_EVENT_TYPES:
+            raise ValueError(
+                f"event_type must be one of {AUTHENTICATION_EVENT_TYPES}"
+            )
+        if outcome not in OUTCOMES:
+            raise ValueError(f"outcome must be one of {OUTCOMES}")
+        self._emitter.safe_emit(
+            severity="INFO" if outcome == "success" else "WARNING",
+            stream="security_audit",
+            component="authentication",
+            operation=event_type,
+            outcome=outcome,
+            request_id=request_id or "",
+            actor_class=actor_type,
+            actor_id=actor_id or "",
+            reason_code=reason,
+            attributes={},
+        )
+        return self._durable(
+            stream="security_audit",
+            event_type=event_type,
+            severity="INFO" if outcome == "success" else "WARNING",
+            occurred_at=at,
+            request_id=request_id,
+            actor_type=actor_type,
+            actor_id=actor_id,
+            resource=resource,
+            outcome=outcome,
+            reason=reason,
+            details=details,
+        )
 
     def correlation_scope(self, request_id: str | None) -> Any:
         """Bind correlation for a scope (Ch II.6.1 propagation)."""
@@ -114,7 +209,7 @@ class ForgeObservabilityService:
         self._metrics.increment(
             "policy_allow_total" if allowed else "policy_deny_total"
         )
-        return self._emitter.safe_emit(
+        emitted = self._emitter.safe_emit(
             severity=event.severity,
             stream="security_audit",
             component="policy",
@@ -129,6 +224,24 @@ class ForgeObservabilityService:
             reason_code=event.reason_code,
             attributes=dict(event.attributes),
         )
+        # Durable mirror (Ch II.2.6 "policy decisions"): records the II.4
+        # decision projection above — never re-decides it.
+        self._durable(
+            stream="security_audit",
+            event_type="policy.allow" if allowed else "policy.deny",
+            severity=event.severity,
+            occurred_at=(
+                getattr(policy_record, "at", "") or event.timestamp or None
+            ),
+            request_id=event.request_id or None,
+            actor_type=event.actor_class,
+            actor_id=event.actor_id or None,
+            resource=f"{event.object_type}:{event.object_id}",
+            outcome=event.outcome,
+            reason=event.reason_code,
+            details=dict(event.attributes),
+        )
+        return emitted
 
     # -- retrieval access audit (Ch II.6.5) ----------------------------------
 
@@ -163,6 +276,27 @@ class ForgeObservabilityService:
             self._metrics.increment(
                 "retrieval_objects_total", float(len(canonical_object_ids))
             )
+        # Durable mirror (Ch II.2.6 "protected retrieval access"): IDs and
+        # decisions only — full source content never enters the ledger.
+        # Stream: security_audit (frozen STREAMS vocabulary — an access
+        # decision is an authorization fact; event_type names the class).
+        self._durable(
+            stream="security_audit",
+            event_type="retrieval.access",
+            severity="INFO" if decision == "ALLOW" else "WARNING",
+            occurred_at=record.at or None,
+            request_id=record.correlation_id or None,
+            actor_type="user",
+            actor_id=record.principal_id,
+            resource=record.exposure,
+            outcome="success" if decision == "ALLOW" else "denied",
+            details={
+                "service": record.service,
+                "capability": record.capability,
+                "canonical_object_ids": ", ".join(record.canonical_object_ids),
+                "retrieval_object_ids": ", ".join(record.retrieval_object_ids),
+            },
+        )
         return record
 
     def retrieval_audit_records(self) -> tuple[RetrievalAccessAuditRecord, ...]:
@@ -210,6 +344,26 @@ class ForgeObservabilityService:
             provider_type=provider_type,
             provider_name=provider_name,
             attributes={"source_event_id": source_event_id},
+        )
+        # Durable mirror (Ch II.2.6 "entitlement changes"): a RECORD of the
+        # vocabulary entry only — II.6 records, Book VI owns the meaning
+        # (GOVERNANCE §2: no entitlement authority is derived here).
+        self._durable(
+            stream="entitlement_audit",
+            event_type=f"entitlement.{event_type}",
+            severity="INFO",
+            occurred_at=record.at or None,
+            request_id=record.correlation_id or None,
+            actor_type="system",
+            actor_id=record.principal_id or None,
+            resource=record.entitlement_id,
+            outcome="recorded",
+            reason=event_type,
+            details={
+                "source_event_id": source_event_id,
+                "provider_type": provider_type,
+                "provider_name": provider_name,
+            },
         )
         return record
 
@@ -269,6 +423,26 @@ class ForgeObservabilityService:
                 "normalized_cost": normalized_cost,
             },
         )
+        # Durable mirror (Ch II.2.6 "provider event"): usage observation as
+        # a usage_ledger-stream record (frozen STREAMS vocabulary) — counts
+        # and ids only, never prompts or raw provider payloads.
+        self._durable(
+            stream="usage_ledger",
+            event_type="provider.usage",
+            severity="INFO" if success else "WARNING",
+            occurred_at=record.at or None,
+            request_id=record.request_id or None,
+            actor_type="system",
+            resource=f"{provider_type}:{provider_name}",
+            outcome="success" if success else "failure",
+            details={
+                "model_id": model_id,
+                "input_tokens": input_tokens,
+                "output_tokens": output_tokens,
+                "normalized_cost": normalized_cost,
+                "latency_ms": latency_ms,
+            },
+        )
         return record
 
     def usage_records(self) -> tuple[UsageRecord, ...]:
@@ -279,7 +453,7 @@ class ForgeObservabilityService:
     def snapshot(self) -> dict[str, Any]:
         """Bounded, safe snapshot for health/meta diagnostics (no payloads)."""
 
-        return {
+        snapshot: dict[str, Any] = {
             "environment": self._environment,
             "events_recorded": self._emitter.seq,
             "dropped_events": self._emitter.dropped_events,
@@ -289,13 +463,26 @@ class ForgeObservabilityService:
             "usage_records": len(self._usage_ledger),
             "metrics": self._metrics.snapshot(),
         }
+        # GAP-05: disclose durable ledger health ONLY when configured — the
+        # unwired snapshot stays byte-identical to the pre-GAP-05 shape.
+        if self._audit_ledger is not None:
+            snapshot["durable_audit"] = self._audit_ledger.snapshot()
+        return snapshot
 
 
-def observability_from_config(config: ForgeConfig) -> ForgeObservabilityService:
+def observability_from_config(
+    config: ForgeConfig, persistence: Any = None
+) -> ForgeObservabilityService:
     """Composition-root factory (Ch II.6 wiring).
 
     In-process sinks only: bounded in-memory ring + stdlib structured log
     line. No external telemetry vendor, no network, no credentials.
+
+    GAP-05 (frozen Ch II.2.6): when `config.audit_durable.enabled`, the
+    durable audit/event ledger is wired through the injected persistence
+    port. Fail-closed: enabled WITHOUT a persistence port raises — durable
+    audit is never silently downgraded to in-memory. Unchanged when disabled
+    (the default), byte-identical to the pre-GAP-05 factory.
     """
 
     sinks: list[Any] = [InMemoryEventSink(config.observability_event_capacity)]
@@ -305,11 +492,25 @@ def observability_from_config(config: ForgeConfig) -> ForgeObservabilityService:
         environment=config.environment,
         sinks=tuple(sinks),
     )
+    audit_ledger: DurableAuditLedger | None = None
+    if config.audit_durable.enabled:
+        if persistence is None:
+            raise ValueError(
+                "audit_durable enabled but no persistence gateway supplied "
+                "(fail closed: durable audit is never in-memory-only)"
+            )
+        audit_ledger = DurableAuditLedger(
+            persistence,
+            capacity=config.audit_durable.capacity,
+            write_policy=config.audit_durable.write_policy,
+            environment=config.environment,
+        )
     return ForgeObservabilityService(
         emitter,
         environment=config.environment,
         audit_capacity=config.observability_event_capacity,
         with_log_sink=config.observability_log_sinks,
+        audit_ledger=audit_ledger,
     )
 
 

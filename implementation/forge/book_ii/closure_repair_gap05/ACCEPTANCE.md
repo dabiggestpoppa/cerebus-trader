@@ -108,3 +108,35 @@ recorded honestly in EVIDENCE.md / VERIFICATION.md — never weakened silently.
   local DB only, per Ch II.2.1-4).
 - No change to entitlement/usage accounting semantics, no brokerage surface, no
   public API route added by this rung.
+
+## G. Amendments (rung 2; supersedes the matching plan details)
+
+Recorded after recon against the code as found; acceptance bar unchanged:
+
+- **G1 (B3 columns)**: `forge_audit_events` columns are: `seq BIGINT PK`,
+  `event_id VARCHAR(36) UNIQUE NOT NULL`, `stream`, `event_type`, `severity`,
+  `environment`, `occurred_at VARCHAR(64) NOT NULL`, `request_id`,
+  `actor_type NOT NULL DEFAULT 'system'`, `actor_id`, `resource`, `outcome`,
+  `reason`, `details_json TEXT NOT NULL`, `created_at TIMESTAMP NOT NULL
+  DEFAULT CURRENT_TIMESTAMP` + four portable `CREATE INDEX IF NOT EXISTS`
+  indexes. The plan's `is_authoritative/is_evidence/is_view` columns are
+  DROPPED (Book I evidence-authority semantics — out of scope by GOVERNANCE §2);
+  `stream` is restricted to the frozen `STREAMS` vocabulary.
+- **G2 (single migration file)**: one portable `004_audit_ledger.sql` (the
+  runner allows one file per version; PG-only content would be unnecessary
+  anyway). Applicable sets: `[1,2,4]` SQLite / `[1,2,3,4]` PostgreSQL.
+- **G3 (composition)**: `container.persistence` stays `None` in the composition
+  root (frozen test pins it); the ledger gets a dedicated gateway built only
+  when `FORGE_AUDIT_DURABLE_ENABLED=1`. No container.py change.
+- **G4 (config)**: gate = `FORGE_AUDIT_DURABLE_ENABLED` (default off), URL =
+  `FORGE_AUDIT_DURABLE_URL` else `FORGE_DATABASE_URL`; enabled-without-URL and
+  enabled-without-observability both raise at config build; write policy ∈
+  {`best_effort`, `require_durable`}; no `unsafe_no_failover_postgres` flag and
+  no configurable table name.
+- **G5 (write sites)**: durable mirrors live on the II.6 facade methods
+  (policy decision, retrieval access, entitlement record, usage, plus new
+  `record_authentication_event` with frozen `AUTHENTICATION_EVENT_TYPES`);
+  ratified II.3 authentication / II.4 enforcement modules stay byte-identical.
+- **G6 (pins)**: the six exact `[1, 2, 3]` migration-list pins advance to
+  `[1, 2, 3, 4]` (precedent: `6a426de` advanced `[1, 2]` → `[1, 2, 3]`); pins
+  remain exact and none is removed.

@@ -41,6 +41,7 @@ from app.forge.persistence.port import (
     SessionNotFound,
     StaleWriteConflict,
     UserNotFound,
+    coerce_audit_event,
     cosine_distance,
     exposure_allowlist,
     validate_similarity_query,
@@ -48,6 +49,7 @@ from app.forge.persistence.port import (
 )
 from app.forge.persistence.records import (
     ArtifactRecord,
+    AuditEventRecord,
     CanonicalObjectRecord,
     ProvenanceEdgeRecord,
     VectorProjectionRecord,
@@ -55,6 +57,12 @@ from app.forge.persistence.records import (
 )
 
 MIGRATION_VERSIONS: tuple[int, ...] = (1,)
+
+# Durable audit/event ledger double (frozen Ch II.2.6, GAP-05): the memory
+# gateway stores audit events in a bounded FIFO (the durable store in SQL is
+# append-oriented; the memory reference double stays bounded per the memory
+# doctrine — both are append-only and never rewrite history).
+AUDIT_LEDGER_CAPACITY: int = 10_000
 
 
 class _Transaction:
@@ -93,6 +101,11 @@ class InMemoryPersistenceGateway:
         self._in_transaction: bool = False
         self._simulate_unavailable = simulate_unavailable
         self._migrations_applied: tuple[int, ...] = MIGRATION_VERSIONS
+        # Durable audit/event ledger double (Ch II.2.6, GAP-05): append-only,
+        # monotonic seq, idempotent by event_id, bounded FIFO.
+        self._audit_events: list[AuditEventRecord] = []
+        self._audit_event_ids: set[str] = set()
+        self._audit_seq: int = 0
 
     # -- integrity helpers ---------------------------------------------------
     def _validate_references(self, record: CanonicalObjectRecord) -> None:
@@ -615,6 +628,38 @@ class InMemoryPersistenceGateway:
     def ping(self) -> None:
         if self._simulate_unavailable:
             raise PersistenceUnavailable("simulated_backend_down")
+
+    # -- durable audit/event ledger (frozen Ch II.2.6; GAP-05) -----------------
+
+    def append_audit_event(self, record: Any) -> bool:
+        if self._simulate_unavailable:
+            raise PersistenceUnavailable("simulated_backend_down")
+        # Coerce at the boundary: observability may not import persistence
+        # types (frozen K5/K7 law), so envelopes arrive duck-shaped.
+        record = coerce_audit_event(record)
+        if record.event_id in self._audit_event_ids:
+            return False  # idempotent by event_id
+        self._audit_seq += 1
+        stored = replace(record, seq=self._audit_seq)
+        self._audit_events.append(stored)
+        self._audit_event_ids.add(record.event_id)
+        if len(self._audit_events) > AUDIT_LEDGER_CAPACITY:
+            evicted = self._audit_events.pop(0)
+            self._audit_event_ids.discard(evicted.event_id)
+        return True
+
+    def list_audit_events(
+        self, *, limit: int = 100, stream: str | None = None
+    ) -> tuple[AuditEventRecord, ...]:
+        if self._simulate_unavailable:
+            raise PersistenceUnavailable("simulated_backend_down")
+        bound = max(1, min(int(limit), AUDIT_LEDGER_CAPACITY))
+        selected = [
+            record
+            for record in self._audit_events
+            if stream is None or record.stream == stream
+        ]
+        return tuple(selected[:bound])
 
     def apply_migrations(self) -> str:
         self._migrations_applied = MIGRATION_VERSIONS

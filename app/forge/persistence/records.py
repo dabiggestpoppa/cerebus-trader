@@ -163,6 +163,40 @@ class VectorProjectionRecord:
 
 
 @dataclass(frozen=True)
+class AuditEventRecord:
+    """Durable Ch II.2.6 audit/event ledger row (Book II GAP-05).
+
+    Append-oriented and content-minimized: identifiers, classifications and
+    bounded/redacted scalar details only — never secrets, raw payloads or
+    corpus content. `details_json` is a storage-value JSON object STRING
+    (byte-identical handling on SQLite and PostgreSQL; the gateway never
+    parses it). `seq` and `created_at` are persistence-owned on write and
+    are NOT part of event identity; `event_id` is the caller identity and
+    the idempotency key (a repeated append of the same event is a no-op).
+
+    Authority separation (GOVERNANCE §2): this record carries operational/
+    security audit facts. It is not Book I evidence provenance and not Book
+    VI entitlement truth — those authorities are never derived from it.
+    """
+
+    event_id: str
+    stream: str
+    event_type: str
+    severity: str
+    occurred_at: str
+    details_json: str = "{}"
+    request_id: str | None = None
+    actor_type: str = "system"
+    actor_id: str | None = None
+    resource: str = ""
+    outcome: str = ""
+    reason: str = ""
+    environment: str = "local"
+    seq: int | None = None
+    created_at: str | None = None
+
+
+@dataclass(frozen=True)
 class WriteResult:
     """Deterministic write outcome."""
 

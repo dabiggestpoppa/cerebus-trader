@@ -49,6 +49,45 @@ def _provider_env(name: str, default: str = "fake") -> str:
     return value
 
 
+# Durable audit/event ledger write policies (Ch II.2.6 / GAP-05).
+AUDIT_WRITE_POLICIES: tuple[str, ...] = ("best_effort", "require_durable")
+
+
+@dataclass(frozen=True)
+class AuditDurableConfig:
+    """Durable audit/event ledger selection (frozen Ch II.2.6; GAP-05).
+
+    Opt-in and fail-closed: disabled by default; enabling REQUIRES a
+    database URL — durable audit is never silently downgraded to
+    in-memory-only. `database_url` carries credentials and is excluded from
+    repr and diagnostics (Ch II.5.1-style redaction: presence booleans
+    only). Migrations are never applied by config/composition (frozen
+    rule): migration 004 must be applied explicitly before enabling.
+    """
+
+    enabled: bool = False
+    database_url: str = field(default="", repr=False)
+    capacity: int = 10_000
+    write_policy: str = "best_effort"
+
+    def __post_init__(self) -> None:
+        if self.enabled and not self.database_url:
+            raise ValueError(
+                "audit_durable enabled requires a database url "
+                "(fail closed: durable audit is never in-memory-only)"
+            )
+        if self.capacity < 1:
+            raise ValueError("audit_durable capacity must be >= 1")
+        if self.write_policy not in AUDIT_WRITE_POLICIES:
+            raise ValueError(
+                f"audit_durable write_policy must be one of {AUDIT_WRITE_POLICIES}"
+            )
+        if self.write_policy == "require_durable" and not self.enabled:
+            raise ValueError(
+                "audit_durable write_policy 'require_durable' requires enabled"
+            )
+
+
 @dataclass(frozen=True)
 class ForgeConfig:
     """Typed FORGE configuration with safe LOCAL/TEST defaults."""
@@ -83,6 +122,9 @@ class ForgeConfig:
     observability_enabled: bool = True
     observability_event_capacity: int = 512
     observability_log_sinks: bool = True
+    # GAP-05 / Ch II.2.6: durable audit/event ledger selection. Disabled by
+    # default (byte-identical behavior); enabled only via explicit config.
+    audit_durable: AuditDurableConfig = field(default_factory=AuditDurableConfig)
 
     def __post_init__(self) -> None:
         # Fail-closed validation (II.5): a malformed provider selection or
@@ -99,6 +141,11 @@ class ForgeConfig:
             raise ValueError("circuit_recovery_seconds must be >= 0")
         if self.observability_event_capacity < 1:
             raise ValueError("observability_event_capacity must be >= 1")
+        if self.audit_durable.enabled and not self.observability_enabled:
+            raise ValueError(
+                "audit_durable enabled requires observability_enabled "
+                "(fail closed: durable audit lives behind the observability seam)"
+            )
 
     def is_production(self) -> bool:
         return self.environment.strip().lower() == "production"
@@ -145,6 +192,11 @@ class ForgeConfig:
             "observability_enabled": self.observability_enabled,
             "observability_event_capacity": self.observability_event_capacity,
             "observability_log_sinks": self.observability_log_sinks,
+            # GAP-05: durable audit presence/booleans only, never the URL.
+            "audit_durable_enabled": self.audit_durable.enabled,
+            "audit_durable_configured": bool(self.audit_durable.database_url),
+            "audit_durable_capacity": self.audit_durable.capacity,
+            "audit_durable_write_policy": self.audit_durable.write_policy,
         }
 
 
@@ -193,14 +245,27 @@ def forge_config_from_environment() -> ForgeConfig:
         ),
         # Credential presence only; values are never read by FORGE at II.5.
         openrouter_api_key=_env("FORGE_OPENROUTER_API_KEY", ""),
-        whop_api_key=_env("FORGE_WHOP_API_KEY", ""),
-        # II.6 observability substrate (in-process, vendor-free).
+        whop_api_key=_env("FORGE_WHOP_API_KEY", ""),        # II.6 observability substrate (in-process, vendor-free).
         observability_enabled=_bool_env("FORGE_OBSERVABILITY_ENABLED", True),
         observability_event_capacity=_int_env(
             "FORGE_OBSERVABILITY_EVENT_CAPACITY", 512
         ),
-        observability_log_sinks=_bool_env(
-            "FORGE_OBSERVABILITY_LOG_SINKS", True
+        observability_log_sinks=_bool_env("FORGE_OBSERVABILITY_LOG_SINKS", True),
+        # GAP-05 durable audit/event ledger (opt-in, fail-closed): the URL
+        # falls back to FORGE_DATABASE_URL so one configured database serves
+        # both seams; enabling without any URL raises in __post_init__.
+        audit_durable=AuditDurableConfig(
+            enabled=_bool_env("FORGE_AUDIT_DURABLE_ENABLED", False),
+            database_url=(
+                _env("FORGE_AUDIT_DURABLE_URL", "")
+                or _env("FORGE_DATABASE_URL", "")
+            ),
+            capacity=_int_env("FORGE_AUDIT_DURABLE_CAPACITY", 10_000),
+            write_policy=_env(
+                "FORGE_AUDIT_DURABLE_WRITE_POLICY", "best_effort"
+            )
+            .strip()
+            .lower(),
         ),
     )
 

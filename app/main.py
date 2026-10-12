@@ -28,6 +28,25 @@ _start_time = time.time()
 app = FastAPI(title="CEREBUS Signal Guard", version="1.0.0")
 
 
+def _build_audit_persistence(forge_config):
+    """GAP-05: build the durable audit/event persistence port when enabled.
+
+    Fail-closed validation happened earlier (AuditDurableConfig requires a
+    URL when enabled). Migrations are NEVER applied here — frozen rule:
+    never as a side effect of import/startup. The operator applies
+    migration 004 explicitly before enabling the ledger; a missing table
+    then surfaces as bounded fallback markers + NOT_OK ledger status under
+    `best_effort` (visible, never a serving crash).
+    """
+
+    from sqlalchemy import create_engine
+
+    from app.forge.persistence.sql.gateway import SqlAlchemyPersistenceGateway
+
+    engine = create_engine(forge_config.audit_durable.database_url, future=True)
+    return SqlAlchemyPersistenceGateway(engine.connect())
+
+
 def _build_forge_container() -> ForgeServiceContainer:
     """FORGE composition root for the existing application.
 
@@ -41,13 +60,26 @@ def _build_forge_container() -> ForgeServiceContainer:
     II.6: the observability seam is wired from config when enabled
     (in-process sinks only, no vendor); disabled leaves it unwired and
     readiness discloses NOT_CONFIGURED honestly.
+
+    GAP-05 (Ch II.2.6): when audit_durable is enabled, a persistence port is
+    built for the durable audit/event ledger and handed to the observability
+    factory — which raises if it is missing (never in-memory-only). The
+    container's own `persistence` seam stays untouched here: wiring whole-
+    app persistence/readiness is a separate, operator-scoped decision.
     """
     forge_config = forge_config_from_environment()
+    audit_persistence = (
+        _build_audit_persistence(forge_config)
+        if forge_config.audit_durable.enabled
+        else None
+    )
     return ForgeServiceContainer(
         config=forge_config,
         providers=providers_from_config(forge_config),
         observability=(
-            observability_from_config(forge_config)
+            observability_from_config(
+                forge_config, persistence=audit_persistence
+            )
             if forge_config.observability_enabled
             else None
         ),

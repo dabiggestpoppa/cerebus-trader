@@ -181,3 +181,64 @@ untouched.
 - **Postgres suite locally skipped** without an engine — CI's PG job is the
   authority; env-gated tests are written to the frozen skip pattern so they run
   there, and the report will state plainly which PG tests ran where.
+
+## Amendments (rung 2, recorded before test/verification rungs)
+
+Four pre-implementation assumptions were corrected against the code as found;
+nothing below changes the acceptance bar, and every change is reflected in
+ACCEPTANCE.md's amended criteria:
+
+1. **Migration mechanism** — the runner discovers ONE file per version number
+   (`^(\d{3})_…\.sql`, collision = RuntimeError) with a `-- FORGE dialect:
+   postgresql` header as the dialect switch; there is no multi-file-per-version
+   mechanism (the plan's separate `004_postgres_specific.sql` would collide).
+   Decision: **one portable `004_audit_ledger.sql`** — table + `CREATE INDEX IF
+   NOT EXISTS` indexes, all valid on SQLite and PostgreSQL — so SQLite (the
+   local dialect-truth harness) exercises the full ledger schema. No PG-only
+   DDL is needed; the advisory-lock idea was dropped (no frozen requirement,
+   and the runner has no cross-dialect lock primitive). Note: 003 is PG-only,
+   so applicable sets are `[1,2,4]` (SQLite) / `[1,2,3,4]` (PostgreSQL), both
+   satisfying `check_compatibility() == OK`.
+2. **Container seam** — `ForgeServiceContainer` already accepts `persistence`,
+   and the frozen test `test_migration_runner_not_invoked_by_import` pins
+   `_build_forge_container().persistence is None`. No container change: the
+   composition root builds a **dedicated gateway for the ledger** only when
+   `audit_durable.enabled`, without touching the container's persistence/readiness
+   seam (wiring whole-app persistence remains a separate operator decision).
+3. **Config gate** — enabled via `FORGE_AUDIT_DURABLE_ENABLED` (default OFF),
+   URL from `FORGE_AUDIT_DURABLE_URL` falling back to `FORGE_DATABASE_URL`;
+   enabled-without-URL raises at config build (fail closed). The invented
+   `unsafe_no_failover_postgres` flag and the configurable `table` field were
+   dropped: write policy is exactly `best_effort` (default) or
+   `require_durable`, and the table name is the migration's constant
+   `forge_audit_events`. Enabling with `observability_enabled=False` also
+   raises (the ledger lives behind the observability seam).
+4. **Schema vocabulary** — the plan's `is_authoritative/is_evidence/is_view`
+   columns were dropped: those are Book I evidence-authority semantics and
+   putting them in an operational audit table would blur the GOVERNANCE §2
+   separation this packet exists to preserve. Added instead: `stream`
+   (restricted to the frozen `STREAMS` vocabulary — `security_audit`,
+   `usage_ledger`, `entitlement_audit`) + `environment`. Durable stream labels
+   never invent tokens outside the frozen vocabulary; the Ch II.2.6 record
+   classes are named by `event_type` (`policy.allow/deny`, `retrieval.access`,
+   `entitlement.*`, `provider.usage`, authentication/security vocabulary
+   `AUTHENTICATION_EVENT_TYPES`).
+5. **Write sites** — deeper recon showed authentication, policy enforcement and
+   routes hold NO observability wiring at all at Book II (audit bridging is
+   test-driven today; serving paths arrive with later Books). Rather than
+   injecting observability into the ratified II.3/II.4 modules, the durable
+   mirrors live on the **II.6 service facade** (`record_policy_decision`,
+   `record_retrieval_access`, `record_entitlement_event`, `record_usage`, plus
+   a new vocabulary-validated `record_authentication_event`) — every stream's
+   single existing observation seam. This keeps the ratified II.3/II.4 modules
+   byte-identical and honors "the ledger mirrors, never decides".
+6. **Version pins** — six existing tests pin the exact migration list
+   `[1, 2, 3]` (policy/qa/retrieval/vector/postgres/backup); they advance to
+   `[1, 2, 3, 4]`, exactly as closure-repair rung 4 advanced them from `[1, 2]`
+   when 003 was added (precedent commit `6a426de`). Pins stay exact; none is
+   weakened or removed.
+7. **seq allocation** — no auto-increment idiom is portable across both
+   dialects (001/002 use natural keys only), so `seq` is allocated as
+   `MAX(seq)+1` by the gateway inside a bounded unique-violation retry, and
+   each append commits its own durable unit (unless an explicit gateway
+   transaction is open) — giving record-before-read and restart survival.

@@ -211,9 +211,12 @@ class TestPostgresIdentitySession:
         from app.forge.persistence.sql.migrations import discover_migrations
 
         versions = [m.version for m in discover_migrations()]
-        assert versions == [1, 2, 3]
+        # 004 = GAP-05 durable audit/event ledger (Build Agent #14 packet).
+        assert versions == [1, 2, 3, 4]
         migrations = {m.version: m for m in discover_migrations()}
         assert migrations[3].identity == "003_vector_projection"
+        assert migrations[4].identity == "004_audit_ledger"
+        assert migrations[4].postgresql_only is False
         assert gateway.check_compatibility() == "OK"
         assert gateway.apply_migrations() == "CURRENT"
 

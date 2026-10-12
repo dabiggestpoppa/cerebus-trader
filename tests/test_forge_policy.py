@@ -670,7 +670,9 @@ class TestScopeGuards:
         # (Book II closure repair, operator-authorized — see
         # implementation/forge/book_ii/closure_repair/PLAN.md). Still a pin:
         # any further migration fails here without its own authorization.
-        assert [m.version for m in discover_migrations()] == [1, 2, 3]
+        # 004 authorized by the Build Agent #14 GAP-05 packet (plan+acceptance
+        # committed first: closure_repair_gap05/).
+        assert [m.version for m in discover_migrations()] == [1, 2, 3, 4]
 
     def test_001_and_002_unchanged(self) -> None:
         import hashlib
@@ -689,6 +691,9 @@ class TestScopeGuards:
             1: "001_initial_schema",
             2: "002_identity_session",
             3: "003_vector_projection",
+            # 004 authorized by the Build Agent #14 GAP-05 packet
+            # (plan+acceptance committed first: closure_repair_gap05/).
+            4: "004_audit_ledger",
         }
 
     def test_no_policy_or_audit_tables(self) -> None:
