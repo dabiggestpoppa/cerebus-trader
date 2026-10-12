@@ -242,8 +242,8 @@ def seeded_gateway():
         version="v1",
         locator="tests/test_forge_backup_restore.py",
         content_identity="sha256:" + hashlib.sha256(b"backup-smoke").hexdigest(),
-        source_state="OBSERVED",
-        metadata_json="{}",
+        source_state="LOCATED",
+        metadata={},
     )
     gateway.create_artifact(artifact)
     gateway.add_provenance_edge(

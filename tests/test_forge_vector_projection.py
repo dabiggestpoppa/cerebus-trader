@@ -424,50 +424,54 @@ class TestVectorProjectionContract:
 # ---------------------------------------------------------------------------
 
 
+@pytest.fixture(scope="module")
+def pg_gateway():
+    from sqlalchemy import create_engine, text
+
+    from app.forge.persistence.sql.gateway import SqlAlchemyPersistenceGateway
+
+    engine = create_engine(DATABASE_URL)
+    connection = engine.connect()
+    gw = SqlAlchemyPersistenceGateway(connection)
+    gw.apply_migrations()
+    connection.commit()  # DDL durability (same pattern as II.2 integration)
+    tables = connection.execute(
+        text(
+            "SELECT tablename FROM pg_tables WHERE schemaname = 'public' "
+            "AND tablename <> 'forge_schema_migrations'"
+        )
+    ).fetchall()
+    if tables:
+        connection.execute(
+            text(
+                "TRUNCATE "
+                + ", ".join(f'"{row[0]}"' for row in tables)
+                + " RESTART IDENTITY CASCADE"
+            )
+        )
+    connection.commit()
+    yield gw
+    connection.close()
+
+
+@pytest.fixture(scope="module")
+def pg_connection(pg_gateway):
+    return pg_gateway._connection
+
+
 @pytest.mark.skipif(
     not DATABASE_URL,
     reason="FORGE_TEST_DATABASE_URL not set — pgvector acceptance executes on CI Postgres+pgvector only (local pgvector infra gap recorded, never substituted)",
 )
 class TestPostgresVectorProjection:
-    @pytest.fixture(scope="class")
-    def gateway(self):
-        from sqlalchemy import create_engine, text
-
-        from app.forge.persistence.sql.gateway import SqlAlchemyPersistenceGateway
-
-        engine = create_engine(DATABASE_URL)
-        connection = engine.connect()
-        gw = SqlAlchemyPersistenceGateway(connection)
-        gw.apply_migrations()
-        connection.commit()  # DDL durability (same pattern as II.2 integration)
-        tables = connection.execute(
-            text(
-                "SELECT tablename FROM pg_tables WHERE schemaname = 'public' "
-                "AND tablename <> 'forge_schema_migrations'"
-            )
-        ).fetchall()
-        if tables:
-            connection.execute(
-                text(
-                    "TRUNCATE "
-                    + ", ".join(f'"{row[0]}"' for row in tables)
-                    + " RESTART IDENTITY CASCADE"
-                )
-            )
-        connection.commit()
-        yield gw
-        connection.close()
-
-    @pytest.fixture(scope="class")
-    def connection(self, gateway):
-        return gateway._connection
-
     def _seed(self, gateway, canonical) -> None:
         gateway.create_object(canonical)
 
     # -- A2/A3 schema ----------------------------------------------------------
-    def test_empty_database_applies_pgvector_schema(self, gateway, connection) -> None:
+    def test_empty_database_applies_pgvector_schema(self, pg_gateway, pg_connection) -> None:
         from sqlalchemy import text
+
+        gateway, connection = pg_gateway, pg_connection
 
         extension = connection.execute(
             text("SELECT extname FROM pg_extension WHERE extname = 'vector'")
@@ -493,7 +497,8 @@ class TestPostgresVectorProjection:
         assert gateway.apply_migrations() == "CURRENT"
 
     # -- B1/B3 round trip + cross-checks ---------------------------------------
-    def test_roundtrip_and_canonical_cross_checks(self, gateway) -> None:
+    def test_roundtrip_and_canonical_cross_checks(self, pg_gateway) -> None:
+        gateway = pg_gateway
         canonical = _canonical("MOD.TEST.VEC.PG_ROUND.V1")
         self._seed(gateway, canonical)
         record = _projection(canonical)
@@ -522,16 +527,18 @@ class TestPostgresVectorProjection:
 
     # -- A3 database-enforced constraints (raw SQL, bypassing the gateway) -----
     def test_database_enforces_dimension_and_foreign_key(
-        self, gateway, connection
+        self, pg_gateway, pg_connection
     ) -> None:
         from sqlalchemy import text
 
+        gateway, connection = pg_gateway, pg_connection
         canonical = _canonical("MOD.TEST.VEC.PG_CONST.V1")
         canonical2 = _canonical("MOD.TEST.VEC.PG_CONST2.V1")
         self._seed(gateway, canonical)
         self._seed(gateway, canonical2)  # FK-valid target for the CHECK test
         record = _projection(canonical)
         gateway.put_vector_projection(record)
+        connection.commit()  # persist before the expected-failure probes below
 
         with pytest.raises(Exception) as dim_error:
             connection.execute(
@@ -546,6 +553,7 @@ class TestPostgresVectorProjection:
                 {"oid": "MOD.TEST.VEC.PG_CONST2.V1", "emb": "[1,0,0,0]", "chash": "0" * 64},
             )
         assert "retrieval_vectors_dim_check" in str(dim_error.value)
+        connection.rollback()  # a failed statement aborts the transaction
 
         with pytest.raises(Exception) as fk_error:
             connection.execute(
@@ -561,9 +569,11 @@ class TestPostgresVectorProjection:
                 {"chash": "0" * 64},
             )
         assert "retrieval_vectors_canonical_fkey" in str(fk_error.value)
+        connection.rollback()  # leave the connection clean for later tests
 
     # -- B4 identity stability on PostgreSQL ------------------------------------
-    def test_model_change_keeps_identity_on_postgres(self, gateway) -> None:
+    def test_model_change_keeps_identity_on_postgres(self, pg_gateway) -> None:
+        gateway = pg_gateway
         canonical = _canonical("MOD.TEST.VEC.PG_MODEL.V1")
         self._seed(gateway, canonical)
         gateway.put_vector_projection(_projection(canonical, model="model-a"))
@@ -587,9 +597,11 @@ class TestPostgresVectorProjection:
 
     # -- G-D4 rebuild proofs ------------------------------------------------------
     def test_rebuild_deterministic_stale_and_corruption_recovery(
-        self, gateway, connection
+        self, pg_gateway, pg_connection
     ) -> None:
         from sqlalchemy import text
+
+        gateway, connection = pg_gateway, pg_connection
 
         keep_a = _canonical("MOD.TEST.VEC.PG_KEEP_A.V1")
         keep_b = _canonical("MOD.TEST.VEC.PG_KEEP_B.V1")
@@ -648,8 +660,10 @@ class TestPostgresVectorProjection:
         assert gateway.get_object(stale.canonical_id) is not None
 
     # -- G-P3 vector leakage: isolation proven on real PostgreSQL ---------------
-    def test_isolation_matrix_on_postgres(self, gateway, connection) -> None:
+    def test_isolation_matrix_on_postgres(self, pg_gateway, pg_connection) -> None:
         from sqlalchemy import text
+
+        gateway, connection = pg_gateway, pg_connection
 
         # isolation starts from a clean projection so the id sets are exact
         connection.execute(text("TRUNCATE retrieval_vectors"))
@@ -711,9 +725,11 @@ class TestPostgresVectorProjection:
 
     # -- Ch II.2.4 identity stability across provider/model change ---------------
     def test_projection_deletion_leaves_canonical_truth_intact(
-        self, gateway, connection
+        self, pg_gateway, pg_connection
     ) -> None:
         from sqlalchemy import text
+
+        gateway, connection = pg_gateway, pg_connection
 
         canonical = _canonical("MOD.TEST.VEC.PG_WIPE.V1")
         self._seed(gateway, canonical)

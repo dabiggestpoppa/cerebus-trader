@@ -891,6 +891,8 @@ class SqlAlchemyPersistenceGateway:
 
     @staticmethod
     def _vector_row(row: Any) -> VectorProjectionRecord:
+        # `row` is a SQLAlchemy RowMapping (execute(...).mappings()): string
+        # keys are the stable interface — plain Row objects reject str keys.
         raw = str(row["embedding"]).strip()
         if raw.startswith("[") and raw.endswith("]"):
             raw = raw[1:-1]
@@ -988,7 +990,7 @@ class SqlAlchemyPersistenceGateway:
                 + " LIMIT 1"
             ),
             params,
-        ).first()
+        ).mappings().first()
         if row is None:
             return None  # denied is indistinguishable from missing
         return self._vector_row(row)
@@ -1028,7 +1030,7 @@ class SqlAlchemyPersistenceGateway:
                 + " LIMIT :lim"
             ),
             params,
-        ).fetchall()
+        ).mappings().fetchall()
         # Exposure/tenant filtering happened in the WHERE clause: denied rows
         # were never selected, so their content columns never leave the DB.
         return tuple(self._vector_row(row) for row in rows)
