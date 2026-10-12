@@ -14,6 +14,11 @@ rung's own commit).
 |---|---|---|---|---|
 | 38189164583 | `603a2e4` | ✅ `975 passed, 27 skipped` | ✅ full suite **1002 passed, 0 skipped**; integration evidence **19 passed**; identity/session evidence **7 passed** | **PASS — both jobs green** |
 
+Post-push confirmation (recorded append-only after this rung's push, same
+pattern as evidence-pack rung 4): run **38189415471** on `d20a3d9` (this
+VERIFICATION commit) — `test` ✅, `postgres` ✅, conclusion **success**. The
+final CI of the packet is green on its own commit.
+
 Preceding ladder runs (never claimed as passes when red) are recorded in
 `../evidence_pack/CI_POSTGRESQL_LEDGER.md` rows L-15…L-17 and in
 `EVIDENCE.md` §CI history: rung 4 → FAIL(app), rung 5 → FAIL(app), rung 6 →
