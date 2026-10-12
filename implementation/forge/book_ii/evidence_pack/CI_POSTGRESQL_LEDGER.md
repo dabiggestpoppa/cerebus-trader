@@ -42,6 +42,10 @@ be Postgres WITH pgvector; same jobs, same env vars, same tests (see
 | L-15 | 38187591174 | `6a426de` (closure repair rung 4) | `test` ✅ `postgres` ❌ | `test` 975/27 executed; `postgres` **995 passed, 6 failed, 1 error** | **FAIL(app)** — closure-repair test/gateway defects (RowMapping access, txn-abort cascade, backup fixture field); repaired append-only → L-16. Never claimed as a pass |
 | L-16 | 38187953980 | `9f44d81` (closure repair rung 5) | `test` ✅ `postgres` ❌ | `test` 975/27 executed; `postgres` **1000 passed, 2 failed** | **FAIL(app)** — tenant projection referenced an unseeded user (003 owner FK working as designed) + one swallowed `def`; repaired append-only → L-17 |
 | L-17 | 38188302328 | **`914cc04` (closure-repair evidence head)** | `test` ✅ `postgres` ✅ | `test` **975 passed, 27 skipped**; PG full **1002 passed, 0 skipped**; integration **19**; identity/session **7** | PASS — closure-repair acceptance executed: pgvector schema + rebuild + isolation + backup/restore smoke all green on the changed service image `pgvector/pgvector:pg16` (required by frozen G-D1; jobs/env unchanged) |
+| L-18 | 38261712088 | **`3529a0d` (GAP-05 code rung)** | `test` ✅ `postgres` ✅ | `test` **1016 passed, 29 skipped**; PG full **1045 passed, 0 skipped**; integration **19**; identity/session **7** | PASS — GAP-05 durable audit/event ledger acceptance executed (BA-14 EVIDENCE §8; +43 over L-17 = this packet's new tests) |
+| L-19 | 38262811797 | `7ae6dba` (GAP-05 evidence/registers rung) | `test` ✅ `postgres` ✅ | doc/registers rung; suite identical to L-18 | PASS |
+| L-20 | 38263059238 | `0d9cd85` (GAP-05 VERIFICATION rung) | `test` ✅ `postgres` ✅ | doc rung; suite identical to L-18 | PASS |
+| L-21 | 38263395142 | **`1041787` (BA-14 final head = BA-15 re-audit start head)** | `test` ✅ `postgres` ✅ | `test` **1016 passed, 29 skipped**; PG full **1045 passed, 0 skipped**; integration **19**; identity/session **7** | PASS — re-queried live by the BA-15 re-audit; CI green on the exact re-audit head |
 
 Book I-era green runs for context only (not Book II coverage):
 `37861618933` (`017fc96`), `37861865244` (`b61a29c`), `37872174840`

@@ -6,6 +6,10 @@ Evidence head: `ae352762a0ef6b9a277b3e112e8826cd8feb96f1` (= `origin/forge` at p
 Closure-repair update (2026-10-12): `origin/forge` advanced through the
 authorized closure-repair ladder (GAP-01/02/05, GAP_ADR_001) — rows updated
 below cite their own heads/runs; see `../closure_repair/EVIDENCE.md` §1.
+GAP-05 packet (2026-10-12): BA-14 ladder implemented + executed the durable
+audit/event ledger (`../closure_repair_gap05/`).
+Final evidence re-audit (2026-10-12): BA-15 re-audited this pack at head
+`1041787` (`../evidence_reaudit/RE_AUDIT.md`) — verdict below updated.
 Planning freeze head: `60e067547b9d9165d94e4f074e0db0ba58e59e24` (ancestor, verified)
 
 **This packet does NOT ratify or freeze Book II, does NOT authorize Book III,
@@ -53,18 +57,30 @@ freeze commits at the evidence head (Phase 8 validation, recorded in
 
 ## Verdict headline
 
-**BOOK II RATIFICATION BLOCKED — REPAIR REQUIRED**
+**BOOK II READY FOR RATIFICATION AUTHORIZATION**
 
-Basis updated 2026-10-12 after the Book II closure-repair packet
-(`implementation/forge/book_ii/closure_repair/`): **GAP-01 and GAP-02 are
-CLOSED by executed repair** (CI run 38188302328 on `914cc04`, postgres job
-1002 passed — vector substrate + backup/restore smoke) and **GAP_ADR_001 is
-DISPOSED** (interpretation recorded, frozen plans unchanged). The remaining
-ratification blocker is **GAP-05**: its ownership was RULED (Book II owns
-durable operational/security audit infrastructure) and the durable
-audit/event ledger is still unimplemented. The repaired pack now awaits
-**evidence re-audit** before any readiness verdict can change — see
-`CONTRACT_FREEZE_READINESS.md` §10 and `OPEN_GAP_REGISTER.md`.
+Updated 2026-10-12 by the authorized **Book II final evidence re-audit**
+(Build Agent #15, packet `../evidence_reaudit/`, head `1041787`):
+independently recounted matrix = **116 rows, 106 D / 9 Q / 1 ND** (zero
+baseline drift); every Q/ND row re-derived against its frozen clause and
+classified non-blocking; the GAP-05 durable audit/event ledger independently
+re-validated (incl. an out-of-suite probe: redaction-before-storage,
+idempotency, restart survival, `best_effort`/`require_durable` behavior,
+no HTTP exposure, import laws); full local regression **1016 passed / 29
+skipped**; CI green on the exact head (run 38263395142, postgres job
+1045/0). No B-class blocker remains. Ratification itself is still the
+operator's separate act, and five operator decisions (D1–D5, incl. the
+frozen G-P4 confirmation) must be recorded with it — see
+`../evidence_reaudit/RE_AUDIT.md` §5/§8.
+
+Historical verdict trail (append-only, preserved): the original pack
+verdict was **BOOK II RATIFICATION BLOCKED — REPAIR REQUIRED**, based
+2026-10-12 after the closure-repair packet: **GAP-01 and GAP-02 CLOSED by
+executed repair** (CI run 38188302328 on `914cc04`, postgres job 1002
+passed) and **GAP_ADR_001 DISPOSED**; the remaining blocker was **GAP-05**
+(ownership ruled; implementation then absent), which the BA-14 packet
+subsequently implemented and executed (CI run 38261712088 on `3529a0d`,
+postgres job 1045), leaving only this re-audit — now performed.
 
 ## Phase 8 validation record (executed at `ae35276`, this packet)
 

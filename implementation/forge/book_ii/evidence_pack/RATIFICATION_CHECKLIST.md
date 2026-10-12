@@ -7,6 +7,14 @@ and no contract freeze is created by this file.
 
 Evidence head when drafted: `ae35276`.
 
+Re-audit update (2026-10-12, BA-15, head `1041787`): all pre-conditions
+below re-verified at the current head (clean tree, freeze ancestry, 23/23
+frozen files, six ratification ancestries, cross-bloc PASS VERIFICATION,
+CI both jobs green on the exact head via run 38263395142, PG executed
+1045/0 recorded in ledger L-18…L-21). Remaining open items are exactly the
+operator acts: the G-P4 confirmation, the ratification act itself (G-F7),
+and recording decisions D1–D5 (`../evidence_reaudit/RE_AUDIT.md` §5/§8).
+
 ## Pre-conditions (must hold at the time of ratification)
 
 - [ ] Evidence head is `origin/forge`, working tree clean, planning freeze
@@ -43,11 +51,18 @@ Evidence head when drafted: `ae35276`.
       `3529a0d`, test 1016/29, postgres 1045/0; evidence + operator decisions
       in that packet’s EVIDENCE.md and G-P4_GAP-03_RECONCILIATION.md).
       Re-verify at ratification; pack re-audit still pending.
-- [ ] G-P4 reading confirmed by operator (seam-level demonstration accepted
-      as satisfying “entitlement revocation observed promptly” within frozen
-      Book II ownership) — GAP-03.
-- [ ] All remaining gate rows still D at the ratification head (no regression
-      since `ae35276`).
+- [x] G-P4 analysis + operator decision prepared (seam-level demonstration,
+      now durable-ledger-backed, re-derived against the frozen clause by the
+      BA-15 re-audit; GAP-03 stays D/Book VI; recommendation D5). **The
+      confirmation act itself remains open below** — GAP-03.
+- [ ] **OPEN (operator act):** G-P4 reading confirmed by operator at
+      ratification (seam-level demonstration accepted as satisfying
+      "entitlement revocation observed promptly" within frozen Book II
+      ownership) — GAP-03; recommendation D5 in
+      `../evidence_reaudit/RE_AUDIT.md` §3.
+- [x] All remaining gate rows still D at the ratification head (no regression
+      since `ae35276`). Re-counted at `1041787`: 116 rows, 106 D / 9 Q / 1 ND
+      — zero drift from the post-GAP-05 baseline.
 
 ## Evidence-pack completeness (gate §Evidence pack)
 

@@ -6,6 +6,11 @@ commits). Dispositions: **D** = demonstrated by committed test/evidence;
 not demonstrated at this head. A test count never substitutes for a
 requirement row: every frozen requirement appears exactly once.
 
+*Re-audit 2026-10-12 (BA-15): all rows re-verified at head `1041787`; two
+stale book-level record values corrected on executed evidence (G-F2
+migration head 2 → 4; G-F3 counts → 1016/29 and 1045/0 — prior values
+preserved in ledger L-10…L-14). Totals unchanged: 106 D / 9 Q / 1 ND.*
+
 Suites referenced: `S1=test_forge_service_composition.py (36)`,
 `S2=test_forge_persistence.py (56)`, `S3=test_forge_identity.py (66)`,
 `S4=test_forge_policy.py (86)`, `S5=test_forge_providers.py (74, +
@@ -90,8 +95,8 @@ tests/provider_contract.py harness)`, `S6=test_forge_observability.py (104)`,
 | ID | Required record | Value at evidence head | Disp. | Qualification |
 |---|---|---|---|---|
 | G-F1 | schema version | domain `FORGE_DOMAIN_V1`; event schema `FORGE_EVENT_V1` | D | — |
-| G-F2 | migration head | SQL chain `001_initial_schema.sql` + `002_identity_session.sql` → head **2** (compatibility OK in CI) | D | — |
-| G-F3 | test counts | local 946 passed/19 skipped; PG-attached 965/0 (ledger) | D | — |
+| G-F2 | migration head | SQL chain `001` + `002` + `003_vector_projection.sql` (PG-only) + `004_audit_ledger.sql` (portable) → head **4** (compatibility OK under `FORGE_MIGRATION_COMPATIBILITY_REQUIRED=1` in CI) | D | Head 2 was the value at the original pack head; corrected here on executed evidence (closure repair added 003, GAP-05 packet added 004) |
+| G-F3 | test counts | local **1016 passed / 29 skipped**; CI `test` 1016/29; CI `postgres` **1045 passed / 0 skipped** (runs 38261712088 on `3529a0d`, re-verified 38263395142 on `1041787`) | D | 946/19 + 965/0 were the values at the original pack head, preserved in ledger rows L-10…L-14; corrected here on re-query |
 | G-F4 | provider contract versions | `providers/doctrine.py` `ProviderContractSpec` (8 Ch II.5.1 elements) × 4 ports; implementations = `fake` only | D | Concrete adapters (IV/VI) intentionally absent → GAP-06 |
 | G-F5 | policy version/hash | `POLICY_MODULE_SHA256 = f10751e6ba6144d807abc151dbcbd7a06320a3d1ab82279fe1cac26b8a228fcc`, asserted green in `test_forge_retrieval.py:1585` | D | Policy byte-identical since the I.4 pin |
 | G-F6 | known exclusions | `EVIDENCE_SUMMARY.md` §6 | D | — |
@@ -216,8 +221,12 @@ rows (Section C) = **116 frozen requirement rows: 106 D, 9 Q, 1 ND**
 programmatically after the Book II closure-repair update (ledger L-15…L-17;
 GAP-01 and GAP-02 rows moved to D on executed CI evidence; G-D4/CH-II.2.4
 were ND before that repair) and again after the GAP-05 packet (CH-II.2.6
-Q → D on executed CI evidence, run 38261712088). Row-level detail above is
-authoritative; the only ND row is **G-F7**. Residual Q rows (9): G-P3
-(vector sub-clause now D; GAP-07 minor remains), G-P4 (GAP-03), CH-II.1.7
-(GAP-04), CH-II.3.2, CH-II.3.7, CH-II.4.3, CH-II.4.6, CH-II.4.9
-(Book-VI-owned or deferred scope), C-C10 (GAP-03).
+Q → D on executed CI evidence, run 38261712088). **Independently re-counted
+again by the Book II final evidence re-audit (BA-15, `1041787`): 116 rows,
+106 D / 9 Q / 1 ND — baseline confirmed with zero drift; each of the 9 Q
+rows and the 1 ND row re-derived against its frozen clause and classified
+non-blocking (re-audit packet `../evidence_reaudit/RE_AUDIT.md` §2).**
+Row-level detail above is authoritative; the only ND row is **G-F7**.
+Residual Q rows (9): G-P3 (vector sub-clause now D; GAP-07 minor remains),
+G-P4 (GAP-03), CH-II.1.7 (GAP-04), CH-II.3.2, CH-II.3.7, CH-II.4.3,
+CH-II.4.6, CH-II.4.9 (Book-VI-owned or deferred scope), C-C10 (GAP-03).

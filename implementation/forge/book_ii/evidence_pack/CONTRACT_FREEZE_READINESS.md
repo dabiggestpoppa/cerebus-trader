@@ -181,7 +181,8 @@ programmatic recount matches the matrix Totals line).
   II.3 `ea1ca46`, II.4 `ebda556`, II.5 `1496c16`, II.6 `fec9be0`, all
   ancestors of the evidence head; cross-bloc VERIFICATION PASS (no commit
   by design).
-- **READY FOR BOOK-LEVEL RATIFICATION:** **no** — see §10.
+- **READY FOR BOOK-LEVEL RATIFICATION:** **no** — see §10 (superseded by
+  §11: re-audit verdict READY, pending the operator's ratification act).
 - **PRODUCTION-READY:** **no** — see §8.
 
 ## 5. What a future contract freeze would cover
@@ -247,6 +248,9 @@ Re-executed programmatically in this assignment against
 
 **BOOK II RATIFICATION BLOCKED — REPAIR REQUIRED**
 
+*(Superseded 2026-10-12 by the BA-15 final evidence re-audit — see §11.
+The historical basis is preserved verbatim below.)*
+
 Basis (updated 2026-10-12 after the authorized closure-repair packet):
 
 1. **GAP-01 — CLOSED by executed repair** (re-audit pending): frozen
@@ -275,3 +279,39 @@ remaining ratification blocker is the GAP-05 durable audit/event ledger.**
 The six Bloc ratifications and the cross-bloc PASS VERIFICATION stand as
 committed; this verdict is about the frozen **Book-level** gate only, and
 this document is not a ratification.
+
+## 11. Re-audit verdict (2026-10-12, BA-15, head `1041787`)
+
+**BOOK II READY FOR RATIFICATION AUTHORIZATION** — superseding §10.
+
+Basis (full record: `../evidence_reaudit/RE_AUDIT.md`):
+
+1. **GAP-05 re-verified closed** — the durable audit/event ledger
+   (migration 004 + `DurableAuditLedger` + all six Ch II.2.6 record-class
+   mirrors) was independently re-validated by the re-audit, including an
+   out-of-suite probe on a file-backed database: redaction-before-storage
+   (planted secret never reaches the store), idempotency on the real
+   UNIQUE constraint, record-before-read, restart survival with monotonic
+   seq continuation, `best_effort` containment markers, `require_durable`
+   typed redacted failure, observable recovery, no HTTP exposure of audit
+   rows, and both import-law directions clean (AST-verified).
+2. **Matrix baseline confirmed with zero drift** — programmatic recount at
+   `1041787`: 116 rows = 106 D / 9 Q / 1 ND; each Q/ND row re-derived
+   against its frozen clause and classified non-blocking (downstream
+   delegation or accepted nonblocking limitation).
+3. **Repository truth re-verified** — HEAD == `origin/forge`, clean tree,
+   freeze ancestry, 23/23 pinned frozen files identical, six Bloc
+   ratifications CLOSED — PASS on ancestry, cross-bloc PASS VERIFICATION.
+4. **CI/PostgreSQL on the exact head** — run 38263395142: `test` 1016/29,
+   `postgres` 1045/0 (ledger L-21); every count difference from the
+   local run is the explicit `FORGE_TEST_DATABASE_URL` gate (29 skips =
+   19 PG integration + 7 pgvector + 1 backup smoke + 2 audit-ledger PG).
+5. **No B-class blocker remains** — the B list is empty; GAP-05 was the
+   last one and is C on executed evidence.
+
+Ratification remains a separate operator act. It must record the five
+operator decisions D1–D5 (retention stance, durable write-policy default +
+promotion rule, migration-before-enable runbook, container-persistence
+boundary ruling, G-P4 seam confirmation) enumerated in
+`../evidence_reaudit/RE_AUDIT.md` §5/§8. This document is still not a
+ratification, not a contract freeze, and not production readiness.
