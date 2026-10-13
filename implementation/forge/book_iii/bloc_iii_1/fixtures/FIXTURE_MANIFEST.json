@@ -2,12 +2,12 @@
   "algorithm": "sha256",
   "description": "Deterministic committed fixtures for Bloc III.1. Hashes cover every JSON fixture in this directory except this manifest.",
   "files": {
-    "btcusd_m5_slice.json": "218ab1f10ba3ebcfd3389b81ed4df5ebaf10479c6d13bb560a0236147ad84031",
-    "eurusd_m5_slice.json": "ce4fda2ed37251ed376f07bebcc624de4020c13b441dde3252c1456899a77c5b",
-    "raw_feed_btcusd_fake_alpha.json": "32e52f4dca9b848f5ea2f39a0fe477b70a594198703aae5a639785997661a1ad",
-    "raw_feed_fake_alpha.json": "c4c1fb5f99bf3525f89373d96888c85ee91588800131116270111dae0c4c5035",
-    "raw_feed_fake_beta.json": "cbddf9fae74b35b8584caf031dc4a6e21be0680bf37ae9c2a249de20342d453d",
-    "sessions_canonical.json": "96e4ed2e34544676c96eb200dfa82f61df5322738c58fc209b08e1a0f113f4b2"
+    "btcusd_m5_slice.json": "08d5779127c5ee6f37887dde0822de2e3694a1014648f7ceb688eda4e8ad8d34",
+    "eurusd_m5_slice.json": "9fb16675b6e836cd49bebdbfb5c224f17018695e84e1ae4fa1ebc2c7606f0650",
+    "raw_feed_btcusd_fake_alpha.json": "daf734e214cc5189f6db34a58b5e6fa4d88353b9caa59616aea9e454177bb77e",
+    "raw_feed_fake_alpha.json": "b57607355cd40e446ea2e13b3da926cfc39c42c581ab05b07182e93da015204a",
+    "raw_feed_fake_beta.json": "0a85d8db9c6d80608bb35dae8d268e5bb41b487bf19fb5c3310243352b4d2ebb",
+    "sessions_canonical.json": "334470cf7a5cb138ca835dd9b71d6e8dc1b26c12f7368f4c80416d65cf69f9b2"
   },
   "generator": "generate_fixtures.py",
   "provenance": {

@@ -418,7 +418,11 @@ def main() -> None:
     for path in sorted(HERE.glob("*.json")):
         if path.name == "FIXTURE_MANIFEST.json":
             continue
-        hashes[path.name] = hashlib.sha256(path.read_bytes()).hexdigest()
+        # EOL-independent hash: the record is always the LF-normalized
+        # content, so the manifest verifies identically on Windows (CRLF
+        # worktrees) and Linux CI (LF checkouts).
+        content = path.read_bytes().replace(b"\r\n", b"\n")
+        hashes[path.name] = hashlib.sha256(content).hexdigest()
     _write("FIXTURE_MANIFEST.json", _manifest(hashes))
     print("wrote fixtures:", ", ".join(sorted(hashes)))
 
