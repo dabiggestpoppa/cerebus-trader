@@ -227,6 +227,13 @@ deviation is reported, not silently absorbed.
 - M4 Core law "downstream may consume, never silently redefine" —
   test: `T10 test_market_data_records_immutable` (frozen dataclasses;
   mutation raises; redefinition requires a new version field).
+- M5 Book III final-record fields owned by this Bloc — market-data
+  schema version + session/clock registry version — test:
+  `T10 test_market_data_schema_version_recorded` (every serialized
+  normalized object/set carries `market_data_schema_version`; the
+  clock-registry version travels with `ClockIdentity`, complementing
+  E3's `session_registry_version`; both feed the frozen Book III final
+  record).
 
 ## N. CEREBUS authority-model preservation (Phase 3)
 
@@ -296,10 +303,14 @@ deviation is reported, not silently absorbed.
 Every frozen acceptance clause is mapped: Ch III.1.1–III.1.9 → §A–§I;
 Acceptance III.1 (a–e) → §J; Book gate §Data/clock → §K; applicable
 §FAILURE BEHAVIOR → §L; applicable cross-model invariants → §M;
-authority-model and boundary/security clauses → §N–§O. Zero unmapped
+authority-model and boundary/security clauses → §N–§O; the Book-gate
+final-record fields III.1 owns (market-data schema version +
+session/clock registry version) → §M M5 + §E E3. Zero unmapped
 clauses. Out-of-scope gate sections (Measurements, Models, State/path,
-Setups, API, Final record) belong to III.2–III.6 and are not claimed
-here.
+Setups, API) and the remaining final-record fields (measurement engine
+version, model runtime versions/hashes, setup registry version, golden
+fixture program hashes, test counts, unresolved research gates) belong
+to III.2–III.6/Book-level close and are not claimed here.
 
 ## Known gaps (carried from PLAN §10, where they are labelled G1–G5;
 re-keyed here as GAP-1…GAP-5 to avoid collision with clause IDs)
