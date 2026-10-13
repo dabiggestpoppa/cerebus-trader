@@ -91,5 +91,14 @@ each `FORGE_TEST_DATABASE_URL`-gated with an explicit skip reason;
 
 | Rung | Commit | Content | CI |
 |---|---|---|---|
-| 1 | _recorded by rung 2_ (**is G-F7**) | `RATIFICATION.md`, `CONTRACT_FREEZE_MANIFEST_V1.md`, `ACCEPTANCE_COMPLETION.md`, `EVIDENCE.md` | _recorded by rung 2_ |
-| 2 | _recorded post-push_ | this §7 filled in + final-head verification | _recorded post-push_ |
+| 1 | **`e45d23371b14cca6b6dc1085dc56d8b9f2fe03aa`** (**is G-F7**) | `RATIFICATION.md`, `CONTRACT_FREEZE_MANIFEST_V1.md`, `ACCEPTANCE_COMPLETION.md`, `EVIDENCE.md` | run **38329326792** on `e45d233` — `test` ✅ success, `postgres` ✅ success (0 failed steps) |
+| 2 | _recorded after final push below_ | this §7 filled in; final-head verification | _recorded after final push below_ |
+
+Post-push verification of rung 1: `git push origin forge` was a fast-forward
+(`b44857b..e45d233`, no force); `origin/forge` == `e45d233`; CI run 38329326792
+queried live — both jobs success. G-F7 is satisfied by this ladder. The
+frozen implementation head `b44857ba` (the pre-ratification tree) is the
+head at which every hash in `CONTRACT_FREEZE_MANIFEST_V1.md` was computed;
+rungs 1–2 add documentation only under `implementation/forge/book_ii/ratification/`
+and touch no frozen surface (re-checkable by re-running the manifest
+hashes — they still match at the final head).
