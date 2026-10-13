@@ -1,0 +1,62 @@
+{
+  "data_classification": "SYNTHETIC_FIXTURE scripted offline encoding",
+  "fixture_id": "BLOC_III_1.RAW_FEED.FAKE_ALPHA_BTC.V1",
+  "historical": false,
+  "observation_cutoff": "2026-03-03T17:00:30Z",
+  "provenance": "SYNTHETIC_FIXTURE",
+  "provider": "fake_alpha",
+  "records": [
+    {
+      "c": "68441.00",
+      "epoch_close": 1772496300,
+      "epoch_open": 1772496000,
+      "feed_ts": 1772496003,
+      "h": "68455.00",
+      "l": "68402.00",
+      "o": "68410.00",
+      "pair": "BTC/USD",
+      "tf": "M5",
+      "vol": "18.4",
+      "zone": "America/New_York"
+    },
+    {
+      "c": "68512.00",
+      "epoch_close": 1772556900,
+      "epoch_open": 1772556600,
+      "feed_ts": 1772556603,
+      "h": "68520.00",
+      "l": "68490.00",
+      "o": "68500.00",
+      "pair": "BTC/USD",
+      "tf": "M5",
+      "vol": "9.7",
+      "zone": "America/New_York"
+    },
+    {
+      "c": "68524.00",
+      "epoch_close": 1772557200,
+      "epoch_open": 1772556900,
+      "feed_ts": 1772557203,
+      "h": "68531.00",
+      "l": "68505.00",
+      "o": "68512.00",
+      "pair": "BTC/USD",
+      "tf": "M5",
+      "vol": "11.2",
+      "zone": "America/New_York"
+    },
+    {
+      "c": "68533.00",
+      "epoch_close": 1772557500,
+      "epoch_open": 1772557200,
+      "feed_ts": 1772557220,
+      "h": "68540.00",
+      "l": "68518.00",
+      "o": "68524.00",
+      "pair": "BTC/USD",
+      "tf": "M5",
+      "vol": "8.8",
+      "zone": "America/New_York"
+    }
+  ]
+}

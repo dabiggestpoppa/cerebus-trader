@@ -1,0 +1,18 @@
+{
+  "algorithm": "sha256",
+  "description": "Deterministic committed fixtures for Bloc III.1. Hashes cover every JSON fixture in this directory except this manifest.",
+  "files": {
+    "btcusd_m5_slice.json": "218ab1f10ba3ebcfd3389b81ed4df5ebaf10479c6d13bb560a0236147ad84031",
+    "eurusd_m5_slice.json": "ce4fda2ed37251ed376f07bebcc624de4020c13b441dde3252c1456899a77c5b",
+    "raw_feed_btcusd_fake_alpha.json": "32e52f4dca9b848f5ea2f39a0fe477b70a594198703aae5a639785997661a1ad",
+    "raw_feed_fake_alpha.json": "c4c1fb5f99bf3525f89373d96888c85ee91588800131116270111dae0c4c5035",
+    "raw_feed_fake_beta.json": "cbddf9fae74b35b8584caf031dc4a6e21be0680bf37ae9c2a249de20342d453d",
+    "sessions_canonical.json": "96e4ed2e34544676c96eb200dfa82f61df5322738c58fc209b08e1a0f113f4b2"
+  },
+  "generator": "generate_fixtures.py",
+  "provenance": {
+    "bar_slices": "SYNTHETIC_FIXTURE",
+    "raw_feeds": "SYNTHETIC_FIXTURE (scripted provider encodings)",
+    "sessions_slice": "CANONICAL_SOURCE_SLICE"
+  }
+}

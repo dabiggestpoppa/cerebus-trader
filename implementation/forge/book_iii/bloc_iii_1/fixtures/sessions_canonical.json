@@ -1,0 +1,89 @@
+{
+  "cited_evidence_ids": [
+    "EV.EUR.DAILY.PHASE1_TIERS.V1"
+  ],
+  "definitions": [
+    {
+      "clock": "America/New_York",
+      "end_inclusive": false,
+      "end_local": "03:00:00",
+      "family": "ASIAN_RANGE",
+      "instant_local": null,
+      "kind": "WINDOW",
+      "model_id": "EUR.DAILY.NEWS_REKEY.V1",
+      "model_version": "PHASE1",
+      "session_id": "EUR_DAILY.ASIAN_RANGE",
+      "source_ref": "corpus/canonical/evidence/EUR_DAILY_PHASE1_CALIBRATION_EVIDENCE_V1.md (Session 19:00-03:00 NY/research-day ownership and final-bar convention are part of this claim); corpus/canonical/models/EUR_DAILY_NEWS_REKEY_MODEL_CARD_V1.md; final-bar convention: implementation/forge/book_iii/bloc_iii_1/PLAN.md Ch III.1.6",
+      "start_local": "19:00:00"
+    },
+    {
+      "clock": "America/New_York",
+      "end_inclusive": false,
+      "end_local": "03:00:00",
+      "family": "ASIAN_RANGE",
+      "instant_local": null,
+      "kind": "WINDOW",
+      "model_id": "BTC.TRACKER.DWM.V1",
+      "model_version": "V1",
+      "session_id": "BTC_TRACKER.ASIAN_WINDOW",
+      "source_ref": "corpus/canonical/models/BTC_DAILY_WEEKLY_MONTHLY_TRACKER_MODEL_CARD_V1.md (Asian window 19:00-03:00 NY research frame)",
+      "start_local": "19:00:00"
+    },
+    {
+      "clock": "America/New_York",
+      "end_inclusive": false,
+      "end_local": null,
+      "family": "DAILY_CHECKPOINT",
+      "instant_local": "12:00:00",
+      "kind": "CHECKPOINT",
+      "model_id": "BTC.TRACKER.DWM.V1",
+      "model_version": "V1",
+      "session_id": "BTC_TRACKER.DAILY_CHECKPOINT_12PM",
+      "source_ref": "corpus/canonical/models/BTC_DAILY_WEEKLY_MONTHLY_TRACKER_MODEL_CARD_V1.md (daily checkpoint 12PM NY)",
+      "start_local": null
+    }
+  ],
+  "description": "Session definitions, documented family gaps and research-day lineage rules quoted from frozen canonical corpus sources. No timing definition exists here that a canonical source does not establish.",
+  "documented_gaps": {
+    "DT_WINDOW": "a JPY DT research window (12-4PM) is named in JPY_CARRY_GAME_MODEL_CARD_V1.md but that card forbids automatic DT->Carry binding without a crosswalk ruling; binding unresolved - GAP-2 / stop condition 3",
+    "LONDON_MLR": "no canonical London/MLR session bounds exist in the frozen corpus; disclosed as GAP-2, never invented",
+    "MONTH_BOUNDARY": "EUR.HIGHER_ORDER month hierarchy is canonical but no boundary clock/frame is stated in the corpus - GAP-2",
+    "QUARTER_BOUNDARY": "quarter hierarchy is canonical but the boundary clock/frame is unspecified in the corpus - GAP-2",
+    "WEEKLY_SEED": "weekly seed windows are defined at day granularity only (Monday anchor); no canonical intraday window exists to register - GAP-2"
+  },
+  "fixture_id": "BLOC_III_1.SESSIONS_CANONICAL.V1",
+  "historical": true,
+  "model_bindings": [
+    {
+      "instrument_id": "EURUSD",
+      "lineage_id": "EUR_DAILY_LINEAGE",
+      "model_id": "EUR.DAILY.NEWS_REKEY.V1",
+      "model_version": "PHASE1"
+    },
+    {
+      "instrument_id": "BTCUSD",
+      "lineage_id": "BTC_TRACKER_LINEAGE",
+      "model_id": "BTC.TRACKER.DWM.V1",
+      "model_version": "V1"
+    }
+  ],
+  "provenance": "CANONICAL_SOURCE_SLICE",
+  "research_day_lineages": [
+    {
+      "clock": "America/New_York",
+      "evening_shift_boundary": "19:00:00",
+      "lineage_id": "EUR_DAILY_LINEAGE",
+      "model_id": "EUR.DAILY.NEWS_REKEY.V1",
+      "model_version": "PHASE1",
+      "source_ref": "corpus/canonical/evidence/EUR_DAILY_PHASE1_CALIBRATION_EVIDENCE_V1.md (Session 19:00-03:00 NY/research-day ownership ... part of this claim)"
+    },
+    {
+      "clock": "America/New_York",
+      "evening_shift_boundary": "19:00:00",
+      "lineage_id": "BTC_TRACKER_LINEAGE",
+      "model_id": "BTC.TRACKER.DWM.V1",
+      "model_version": "V1",
+      "source_ref": "corpus/canonical/models/BTC_DAILY_WEEKLY_MONTHLY_TRACKER_MODEL_CARD_V1.md (Asian window 19:00-03:00 NY; weekend/weekly transition definitions require exact research-day ownership)"
+    }
+  ]
+}

@@ -1,0 +1,52 @@
+{
+  "clock": "America/New_York",
+  "data_classification": "SYNTHETIC_FIXTURE - deterministic generated values; not empirical market evidence and never citable for performance claims",
+  "fixture_id": "BLOC_III_1.BTCUSD_M5_CHECKPOINT_SLICE.V1",
+  "historical": false,
+  "instrument_id": "BTCUSD",
+  "observation_cutoff": "2026-03-03T17:00:30Z",
+  "provenance": "SYNTHETIC_FIXTURE",
+  "rows": [
+    {
+      "c": "68441.00",
+      "close_time": "2026-03-03T00:05:00Z",
+      "h": "68455.00",
+      "l": "68402.00",
+      "o": "68410.00",
+      "open_time": "2026-03-03T00:00:00Z",
+      "source_timestamp": "2026-03-03T00:00:03Z",
+      "volume": "18.4"
+    },
+    {
+      "c": "68512.00",
+      "close_time": "2026-03-03T16:55:00Z",
+      "h": "68520.00",
+      "l": "68490.00",
+      "o": "68500.00",
+      "open_time": "2026-03-03T16:50:00Z",
+      "source_timestamp": "2026-03-03T16:50:03Z",
+      "volume": "9.7"
+    },
+    {
+      "c": "68524.00",
+      "close_time": "2026-03-03T17:00:00Z",
+      "h": "68531.00",
+      "l": "68505.00",
+      "o": "68512.00",
+      "open_time": "2026-03-03T16:55:00Z",
+      "source_timestamp": "2026-03-03T17:00:03Z",
+      "volume": "11.2"
+    },
+    {
+      "c": "68533.00",
+      "close_time": "2026-03-03T17:05:00Z",
+      "h": "68540.00",
+      "l": "68518.00",
+      "o": "68524.00",
+      "open_time": "2026-03-03T17:00:00Z",
+      "source_timestamp": "2026-03-03T17:00:20Z",
+      "volume": "8.8"
+    }
+  ],
+  "timeframe": "M5"
+}
