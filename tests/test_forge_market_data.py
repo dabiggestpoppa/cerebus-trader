@@ -1370,7 +1370,10 @@ class TestT9Parity:
         } - {"FIXTURE_MANIFEST.json"}
         assert set(recorded) == json_files
         for name, expected in recorded.items():
-            actual = hashlib.sha256((FIXTURE_DIR / name).read_bytes()).hexdigest()
+            # EOL-normalized comparison (same reading as the frozen-surface
+            # checks): the generator writes LF; checkouts may render CRLF.
+            content = (FIXTURE_DIR / name).read_bytes().replace(b"\r\n", b"\n")
+            actual = hashlib.sha256(content).hexdigest()
             assert actual == expected, name
         # Real-slice fixture cites canonical sources; every cited path exists.
         sessions_fx = _load_fixture("sessions_canonical.json")
