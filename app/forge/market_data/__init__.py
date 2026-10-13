@@ -1,0 +1,232 @@
+"""Bloc III.1 — Market Data & Clock Contracts (Book III).
+
+Deterministic, offline market-data foundation: canonical instrument
+identity with asset-native units, named-timezone clock identities,
+explicit research-day ownership, a versioned session registry, the
+frozen quality vocabulary, provider normalization over scripted feeds
+and historical/streaming parity over committed fixtures.
+
+This package emits *normalized data facts* only: instruments, bars,
+clocks, sessions, quality states and their versions.  No claims, no
+evidence, no model outputs, no serving surface — see the frozen
+``PLAN.md`` / ``ACCEPTANCE.md`` for the binding contract.
+"""
+
+from __future__ import annotations
+
+from .bars import (
+    Bar,
+    Finality,
+    FinalStateSelection,
+    GapMarker,
+    ProvenanceKind,
+    assess_finality,
+    canonical_key,
+    content_digest,
+    dedupe,
+    finalize_for_cutoff,
+    final_state_input,
+    gap_markers,
+    missing_opens,
+    reconcile,
+)
+from .clocks import (
+    CLOCK_REGISTRY_VERSION,
+    ClockIdentity,
+    ClockKind,
+    DstPolicy,
+    fixed_clock,
+    local_wall,
+    named_clock,
+    session_bounds_utc,
+    to_utc,
+)
+from .errors import (
+    AmbiguousAliasError,
+    ConventionViolationError,
+    DuplicateRegistrationError,
+    MarketDataError,
+    NonFinalError,
+    PrecisionViolationError,
+    ProvenanceViolationError,
+    QualityVocabularyError,
+    RevisionViolationError,
+    UnknownAliasError,
+    UnitMismatchError,
+    UnsupportedClockError,
+    UnsupportedConversionError,
+    UnsupportedProviderError,
+    UnsupportedTimeframeError,
+)
+from .instruments import (
+    AssetClass,
+    Instrument,
+    InstrumentRegistry,
+    NativePrice,
+    NativeUnit,
+    add_native,
+    build_default_registry,
+    convert_native,
+    validate_quote_base,
+)
+from .normalize import (
+    FeedResult,
+    NormalizedRecord,
+    NormalizeStatus,
+    PROVIDER_SCHEMAS,
+    ProviderFieldMap,
+    RefusalReason,
+    TimestampStyle,
+    normalize_feed,
+    normalize_record,
+    provider_schema,
+)
+from .parity import (
+    ModelBinding,
+    OwnershipResult,
+    OwnershipStatus,
+    ParityReport,
+    PipelineContext,
+    PipelinePath,
+    PipelineResult,
+    bar_ownership,
+    compare_parity,
+    replay_historical,
+    stream_live,
+)
+from .quality import (
+    FROZEN_QUALITY_FLAGS,
+    DataOutcome,
+    QualityFlag,
+    QualityPolicy,
+    coerce_flags,
+    normalize_flags,
+    parse_quality_flag,
+    with_flag,
+)
+from .research_day import (
+    ResearchDayAssignment,
+    ResearchDayLineage,
+    ResearchDayRegistry,
+    ResearchDayStatus,
+    assign_research_day,
+)
+from .sessions import (
+    SESSION_REGISTRY_VERSION,
+    SessionDefinition,
+    SessionFamily,
+    SessionKind,
+    SessionRegistry,
+    SessionResolution,
+    SessionStatus,
+    close_matches_checkpoint,
+    definitions_from_records,
+    final_bar_open_utc,
+    local_open_in_session,
+)
+from .versions import MARKET_DATA_SCHEMA_VERSION
+
+__all__ = [
+    "MARKET_DATA_SCHEMA_VERSION",
+    "CLOCK_REGISTRY_VERSION",
+    "SESSION_REGISTRY_VERSION",
+    # instruments
+    "AssetClass",
+    "Instrument",
+    "InstrumentRegistry",
+    "NativePrice",
+    "NativeUnit",
+    "add_native",
+    "build_default_registry",
+    "convert_native",
+    "validate_quote_base",
+    # bars
+    "Bar",
+    "Finality",
+    "FinalStateSelection",
+    "GapMarker",
+    "ProvenanceKind",
+    "assess_finality",
+    "canonical_key",
+    "content_digest",
+    "dedupe",
+    "finalize_for_cutoff",
+    "final_state_input",
+    "gap_markers",
+    "missing_opens",
+    "reconcile",
+    # clocks
+    "ClockIdentity",
+    "ClockKind",
+    "DstPolicy",
+    "fixed_clock",
+    "local_wall",
+    "named_clock",
+    "session_bounds_utc",
+    "to_utc",
+    # research day
+    "ResearchDayAssignment",
+    "ResearchDayLineage",
+    "ResearchDayRegistry",
+    "ResearchDayStatus",
+    "assign_research_day",
+    # sessions
+    "SessionDefinition",
+    "SessionFamily",
+    "SessionKind",
+    "SessionRegistry",
+    "SessionResolution",
+    "SessionStatus",
+    "close_matches_checkpoint",
+    "definitions_from_records",
+    "final_bar_open_utc",
+    "local_open_in_session",
+    # quality
+    "FROZEN_QUALITY_FLAGS",
+    "DataOutcome",
+    "QualityFlag",
+    "QualityPolicy",
+    "coerce_flags",
+    "normalize_flags",
+    "parse_quality_flag",
+    "with_flag",
+    # normalize
+    "FeedResult",
+    "NormalizedRecord",
+    "NormalizeStatus",
+    "PROVIDER_SCHEMAS",
+    "ProviderFieldMap",
+    "RefusalReason",
+    "TimestampStyle",
+    "normalize_feed",
+    "normalize_record",
+    "provider_schema",
+    # parity
+    "ModelBinding",
+    "OwnershipResult",
+    "OwnershipStatus",
+    "ParityReport",
+    "PipelineContext",
+    "PipelinePath",
+    "PipelineResult",
+    "bar_ownership",
+    "compare_parity",
+    "replay_historical",
+    "stream_live",
+    # errors
+    "MarketDataError",
+    "AmbiguousAliasError",
+    "ConventionViolationError",
+    "DuplicateRegistrationError",
+    "NonFinalError",
+    "PrecisionViolationError",
+    "ProvenanceViolationError",
+    "QualityVocabularyError",
+    "RevisionViolationError",
+    "UnknownAliasError",
+    "UnitMismatchError",
+    "UnsupportedClockError",
+    "UnsupportedConversionError",
+    "UnsupportedProviderError",
+    "UnsupportedTimeframeError",
+]
