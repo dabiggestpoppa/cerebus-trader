@@ -1,0 +1,21 @@
+{
+  "algorithm": "sha256",
+  "description": "Deterministic committed golden fixtures for Bloc III.2. Hashes cover every JSON fixture in this directory except this manifest.  Hashes are recorded over the LF-normalized content, so the manifest verifies identically on Windows (CRLF worktrees) and Linux CI (LF checkouts).",
+  "files": {
+    "btc_tier_seeds.json": "fa2cd7d3c4205ddbd0410103b6890f9aed8410baadc348ebba8c0fd9f8469783",
+    "eur_daily_tier_seeds.json": "7aae0e549cb7290a3d47de44ccf6366b89073a436122e2ef0ae3898d6f241a64",
+    "eur_event_budget.json": "b714e65cc0a829abbd8a46016c4a6d51bedfb3cd8c6b2cbab73524d8f953ab2f",
+    "eur_higher_order.json": "6e6b3db167f12e4a3b5449c2f5c04d83ac987a9b22e6e8416b30b178d2cfbb70",
+    "eur_rekey_ladder.json": "3c6cf6ceb62cf9a5f17b607cb7144390985c0dca55dbf5a3a09e26c107f85739",
+    "eur_weekly_outer_nodes.json": "dcda56eb76bb19996f4af9bd678cca2dad99961b8098b83adcf1832910916f03",
+    "fib_anchor_cases.json": "9e4f7e4c4609d8baff133be65d5a399eae6a8308d9ddf7d5fd00ca12f92326cf",
+    "jpy_dt_structures.json": "487a69c6150a65c64668272404a9d2606f835a026bea9d06dd76f26d822b344b",
+    "xau_spatial_bands.json": "40ffc0331210f220b2ead5c5e45b65e6e8d75d7e94da3266365a5ec5b22fa670"
+  },
+  "generator": "generate_fixtures.py",
+  "provenance": {
+    "bar_slices": "SYNTHETIC_FIXTURE",
+    "calibration_and_doctrine_slices": "CANONICAL_SOURCE_SLICE",
+    "event_records": "SYNTHETIC_FIXTURE"
+  }
+}

@@ -1,0 +1,45 @@
+{
+  "clock": "America/New_York",
+  "data_classification": "SYNTHETIC_FIXTURE - deterministic generated values; not empirical market evidence and never citable for performance claims",
+  "earned_range_case_id": "EUR_SEED_T2",
+  "earned_range_high": "1.08150",
+  "earned_range_low": "1.07900",
+  "fixture_id": "BLOC_III_2.EUR_REKEY_LADDER.V1",
+  "historical": true,
+  "instrument_id": "EURUSD",
+  "ladder": [
+    {
+      "expected_projected_price": "1.08150",
+      "family_id": "EUR_DAILY_100",
+      "level": "100"
+    },
+    {
+      "expected_projected_price": "1.082125",
+      "family_id": "EUR_DAILY_125",
+      "level": "125"
+    },
+    {
+      "expected_projected_price": "1.08230",
+      "family_id": "EUR_DAILY_132",
+      "level": "132"
+    },
+    {
+      "expected_projected_price": "1.08320",
+      "family_id": "EUR_DAILY_168",
+      "level": "168"
+    },
+    {
+      "expected_projected_price": "1.083625",
+      "family_id": "EUR_DAILY_185",
+      "level": "185"
+    }
+  ],
+  "model_id": "EUR.DAILY.NEWS_REKEY.V1",
+  "model_version": "PHASE1",
+  "note": "The coordinate family is a level projection over the earned range.  A projected coordinate carries no acceptance, rekey, promotion or setup meaning (invariant: a coordinate touch implies nothing).",
+  "observation_cutoff": "2026-03-03T00:30:00Z",
+  "provenance": "SYNTHETIC_FIXTURE",
+  "session_id": "EUR_DAILY.ASIAN_RANGE",
+  "source_quote": "100 /125 /132 /168 /185 appear in the modern Daily lineage.",
+  "source_ref": "corpus/canonical/models/EUR_DAILY_NEWS_REKEY_MODEL_CARD_V1.md"
+}

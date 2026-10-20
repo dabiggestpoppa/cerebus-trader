@@ -1,0 +1,340 @@
+{
+  "calibration_evidence_id": "EV.EUR.DAILY.PHASE1_TIERS.V1",
+  "calibration_key": {
+    "calibration_id": "EUR_DAILY_PHASE1_TIERS",
+    "calibration_version": "V1",
+    "model_id": "EUR.DAILY.NEWS_REKEY.V1",
+    "model_version": "PHASE1"
+  },
+  "calibration_quote": "T1 <20p T2 20-30p T3 30-45p >45p excluded/no-go.",
+  "calibration_source_ref": "corpus/canonical/evidence/EUR_DAILY_PHASE1_CALIBRATION_EVIDENCE_V1.md",
+  "clock": "America/New_York",
+  "data_classification": "SYNTHETIC_FIXTURE - deterministic generated values; not empirical market evidence and never citable for performance claims",
+  "fixture_id": "BLOC_III_2.EUR_DAILY_TIER_SEEDS.V1",
+  "historical": true,
+  "instrument_id": "EURUSD",
+  "model_id": "EUR.DAILY.NEWS_REKEY.V1",
+  "model_version": "PHASE1",
+  "observation_cutoff": "2026-03-03T00:30:00Z",
+  "provenance": "SYNTHETIC_FIXTURE",
+  "seeds": [
+    {
+      "case_id": "EUR_SEED_T1",
+      "expected": {
+        "close_location": "0.5833333333",
+        "consumed_fraction": "0.4166666667",
+        "direction": "UP",
+        "expected_no_go": false,
+        "expected_tier_id": "T1",
+        "high": "1.08060",
+        "low": "1.07940",
+        "midpoint": "1.08000",
+        "range_left_native": "7.0",
+        "size_native": "12.0"
+      },
+      "expected_no_go": false,
+      "rows": [
+        {
+          "c": "1.07960",
+          "close_time": "2026-03-03T00:05:00Z",
+          "h": "1.07970",
+          "l": "1.07940",
+          "o": "1.07960",
+          "open_time": "2026-03-03T00:00:00Z",
+          "source_timestamp": "2026-03-03T00:05:03Z",
+          "volume": "100"
+        },
+        {
+          "c": "1.07970",
+          "close_time": "2026-03-03T00:10:00Z",
+          "h": "1.07980",
+          "l": "1.07950",
+          "o": "1.07960",
+          "open_time": "2026-03-03T00:05:00Z",
+          "source_timestamp": "2026-03-03T00:10:03Z",
+          "volume": "101"
+        },
+        {
+          "c": "1.07980",
+          "close_time": "2026-03-03T00:15:00Z",
+          "h": "1.07990",
+          "l": "1.07960",
+          "o": "1.07970",
+          "open_time": "2026-03-03T00:10:00Z",
+          "source_timestamp": "2026-03-03T00:15:03Z",
+          "volume": "102"
+        },
+        {
+          "c": "1.07990",
+          "close_time": "2026-03-03T00:20:00Z",
+          "h": "1.08000",
+          "l": "1.07970",
+          "o": "1.07980",
+          "open_time": "2026-03-03T00:15:00Z",
+          "source_timestamp": "2026-03-03T00:20:03Z",
+          "volume": "103"
+        },
+        {
+          "c": "1.08000",
+          "close_time": "2026-03-03T00:25:00Z",
+          "h": "1.08010",
+          "l": "1.07980",
+          "o": "1.07990",
+          "open_time": "2026-03-03T00:20:00Z",
+          "source_timestamp": "2026-03-03T00:25:03Z",
+          "volume": "104"
+        },
+        {
+          "c": "1.08010",
+          "close_time": "2026-03-03T00:30:00Z",
+          "h": "1.08060",
+          "l": "1.07990",
+          "o": "1.08000",
+          "open_time": "2026-03-03T00:25:00Z",
+          "source_timestamp": "2026-03-03T00:30:03Z",
+          "volume": "105"
+        }
+      ],
+      "tier_id": "T1"
+    },
+    {
+      "case_id": "EUR_SEED_T2",
+      "expected": {
+        "close_location": "0.7200000000",
+        "consumed_fraction": "0.6000000000",
+        "direction": "UP",
+        "expected_no_go": false,
+        "expected_tier_id": "T2",
+        "high": "1.08150",
+        "low": "1.07900",
+        "midpoint": "1.08025",
+        "range_left_native": "10.0",
+        "size_native": "25.0"
+      },
+      "expected_no_go": false,
+      "rows": [
+        {
+          "c": "1.07930",
+          "close_time": "2026-03-03T00:05:00Z",
+          "h": "1.07940",
+          "l": "1.07900",
+          "o": "1.07930",
+          "open_time": "2026-03-03T00:00:00Z",
+          "source_timestamp": "2026-03-03T00:05:03Z",
+          "volume": "100"
+        },
+        {
+          "c": "1.07960",
+          "close_time": "2026-03-03T00:10:00Z",
+          "h": "1.07970",
+          "l": "1.07920",
+          "o": "1.07930",
+          "open_time": "2026-03-03T00:05:00Z",
+          "source_timestamp": "2026-03-03T00:10:03Z",
+          "volume": "101"
+        },
+        {
+          "c": "1.07990",
+          "close_time": "2026-03-03T00:15:00Z",
+          "h": "1.08000",
+          "l": "1.07950",
+          "o": "1.07960",
+          "open_time": "2026-03-03T00:10:00Z",
+          "source_timestamp": "2026-03-03T00:15:03Z",
+          "volume": "102"
+        },
+        {
+          "c": "1.08020",
+          "close_time": "2026-03-03T00:20:00Z",
+          "h": "1.08030",
+          "l": "1.07980",
+          "o": "1.07990",
+          "open_time": "2026-03-03T00:15:00Z",
+          "source_timestamp": "2026-03-03T00:20:03Z",
+          "volume": "103"
+        },
+        {
+          "c": "1.08050",
+          "close_time": "2026-03-03T00:25:00Z",
+          "h": "1.08060",
+          "l": "1.08010",
+          "o": "1.08020",
+          "open_time": "2026-03-03T00:20:00Z",
+          "source_timestamp": "2026-03-03T00:25:03Z",
+          "volume": "104"
+        },
+        {
+          "c": "1.08080",
+          "close_time": "2026-03-03T00:30:00Z",
+          "h": "1.08150",
+          "l": "1.08040",
+          "o": "1.08050",
+          "open_time": "2026-03-03T00:25:00Z",
+          "source_timestamp": "2026-03-03T00:30:03Z",
+          "volume": "105"
+        }
+      ],
+      "tier_id": "T2"
+    },
+    {
+      "case_id": "EUR_SEED_T3",
+      "expected": {
+        "close_location": "0.7368421053",
+        "consumed_fraction": "0.6578947368",
+        "direction": "UP",
+        "expected_no_go": false,
+        "expected_tier_id": "T3",
+        "high": "1.08280",
+        "low": "1.07900",
+        "midpoint": "1.08090",
+        "range_left_native": "13.0",
+        "size_native": "38.0"
+      },
+      "expected_no_go": false,
+      "rows": [
+        {
+          "c": "1.07930",
+          "close_time": "2026-03-03T00:05:00Z",
+          "h": "1.07940",
+          "l": "1.07900",
+          "o": "1.07930",
+          "open_time": "2026-03-03T00:00:00Z",
+          "source_timestamp": "2026-03-03T00:05:03Z",
+          "volume": "100"
+        },
+        {
+          "c": "1.07980",
+          "close_time": "2026-03-03T00:10:00Z",
+          "h": "1.07990",
+          "l": "1.07920",
+          "o": "1.07930",
+          "open_time": "2026-03-03T00:05:00Z",
+          "source_timestamp": "2026-03-03T00:10:03Z",
+          "volume": "101"
+        },
+        {
+          "c": "1.08030",
+          "close_time": "2026-03-03T00:15:00Z",
+          "h": "1.08040",
+          "l": "1.07970",
+          "o": "1.07980",
+          "open_time": "2026-03-03T00:10:00Z",
+          "source_timestamp": "2026-03-03T00:15:03Z",
+          "volume": "102"
+        },
+        {
+          "c": "1.08080",
+          "close_time": "2026-03-03T00:20:00Z",
+          "h": "1.08090",
+          "l": "1.08020",
+          "o": "1.08030",
+          "open_time": "2026-03-03T00:15:00Z",
+          "source_timestamp": "2026-03-03T00:20:03Z",
+          "volume": "103"
+        },
+        {
+          "c": "1.08130",
+          "close_time": "2026-03-03T00:25:00Z",
+          "h": "1.08140",
+          "l": "1.08070",
+          "o": "1.08080",
+          "open_time": "2026-03-03T00:20:00Z",
+          "source_timestamp": "2026-03-03T00:25:03Z",
+          "volume": "104"
+        },
+        {
+          "c": "1.08180",
+          "close_time": "2026-03-03T00:30:00Z",
+          "h": "1.08280",
+          "l": "1.08120",
+          "o": "1.08130",
+          "open_time": "2026-03-03T00:25:00Z",
+          "source_timestamp": "2026-03-03T00:30:03Z",
+          "volume": "105"
+        }
+      ],
+      "tier_id": "T3"
+    },
+    {
+      "case_id": "EUR_SEED_NO_GO",
+      "expected": {
+        "close_location": "0.7307692308",
+        "consumed_fraction": "0.6730769231",
+        "direction": "UP",
+        "expected_no_go": true,
+        "expected_tier_id": "NO_GO",
+        "high": "1.08420",
+        "low": "1.07900",
+        "midpoint": "1.08160",
+        "range_left_native": "17.0",
+        "size_native": "52.0"
+      },
+      "expected_no_go": true,
+      "rows": [
+        {
+          "c": "1.07930",
+          "close_time": "2026-03-03T00:05:00Z",
+          "h": "1.07940",
+          "l": "1.07900",
+          "o": "1.07930",
+          "open_time": "2026-03-03T00:00:00Z",
+          "source_timestamp": "2026-03-03T00:05:03Z",
+          "volume": "100"
+        },
+        {
+          "c": "1.08000",
+          "close_time": "2026-03-03T00:10:00Z",
+          "h": "1.08010",
+          "l": "1.07920",
+          "o": "1.07930",
+          "open_time": "2026-03-03T00:05:00Z",
+          "source_timestamp": "2026-03-03T00:10:03Z",
+          "volume": "101"
+        },
+        {
+          "c": "1.08070",
+          "close_time": "2026-03-03T00:15:00Z",
+          "h": "1.08080",
+          "l": "1.07990",
+          "o": "1.08000",
+          "open_time": "2026-03-03T00:10:00Z",
+          "source_timestamp": "2026-03-03T00:15:03Z",
+          "volume": "102"
+        },
+        {
+          "c": "1.08140",
+          "close_time": "2026-03-03T00:20:00Z",
+          "h": "1.08150",
+          "l": "1.08060",
+          "o": "1.08070",
+          "open_time": "2026-03-03T00:15:00Z",
+          "source_timestamp": "2026-03-03T00:20:03Z",
+          "volume": "103"
+        },
+        {
+          "c": "1.08210",
+          "close_time": "2026-03-03T00:25:00Z",
+          "h": "1.08220",
+          "l": "1.08130",
+          "o": "1.08140",
+          "open_time": "2026-03-03T00:20:00Z",
+          "source_timestamp": "2026-03-03T00:25:03Z",
+          "volume": "104"
+        },
+        {
+          "c": "1.08280",
+          "close_time": "2026-03-03T00:30:00Z",
+          "h": "1.08420",
+          "l": "1.08200",
+          "o": "1.08210",
+          "open_time": "2026-03-03T00:25:00Z",
+          "source_timestamp": "2026-03-03T00:30:03Z",
+          "volume": "105"
+        }
+      ],
+      "tier_id": "NO_GO"
+    }
+  ],
+  "session_id": "EUR_DAILY.ASIAN_RANGE",
+  "timeframe": "M5"
+}

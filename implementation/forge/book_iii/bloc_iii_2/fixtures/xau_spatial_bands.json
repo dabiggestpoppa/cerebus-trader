@@ -1,0 +1,312 @@
+{
+  "band_probes": [
+    {
+      "expected_band_id": "XAU_NORMAL",
+      "expected_state": "NORMAL",
+      "magnitude": "30"
+    },
+    {
+      "expected_band_id": "XAU_FAILURE",
+      "expected_state": "FAILURE",
+      "magnitude": "50"
+    },
+    {
+      "expected_band_id": "XAU_REPAIR",
+      "expected_state": "REPAIR",
+      "magnitude": "68"
+    },
+    {
+      "expected_band_id": "XAU_SNAP",
+      "expected_state": "SNAP",
+      "magnitude": "105"
+    }
+  ],
+  "bands": [
+    {
+      "band_id": "XAU_NORMAL",
+      "lower": "25",
+      "state": "NORMAL",
+      "upper": "50"
+    },
+    {
+      "band_id": "XAU_FAILURE",
+      "lower": "50",
+      "state": "FAILURE",
+      "upper": "68"
+    },
+    {
+      "band_id": "XAU_REPAIR",
+      "lower": "68",
+      "state": "REPAIR",
+      "upper": null
+    },
+    {
+      "band_id": "XAU_SNAP",
+      "lower": "100",
+      "state": "SNAP",
+      "upper": "110"
+    }
+  ],
+  "calibration_key": {
+    "calibration_id": "XAU_SPATIAL_BANDS",
+    "calibration_version": "V1",
+    "model_id": "XAU.GAME.L1_L2_L3.V1",
+    "model_version": "V1"
+  },
+  "calibration_status": "RESEARCH",
+  "clock": "America/New_York",
+  "coordinate_ladder": [
+    {
+      "expected_projected_price": "2357.50",
+      "family_id": "XAU_50",
+      "level": "50"
+    },
+    {
+      "expected_projected_price": "2359.506",
+      "family_id": "XAU_61_8",
+      "level": "61.8"
+    },
+    {
+      "expected_projected_price": "2360.56",
+      "family_id": "XAU_68",
+      "level": "68"
+    },
+    {
+      "expected_projected_price": "2361.24",
+      "family_id": "XAU_72",
+      "level": "72"
+    },
+    {
+      "expected_projected_price": "2362.60",
+      "family_id": "XAU_80",
+      "level": "80"
+    },
+    {
+      "expected_projected_price": "2362.94",
+      "family_id": "XAU_82",
+      "level": "82"
+    },
+    {
+      "expected_projected_price": "2371.44",
+      "family_id": "XAU_132",
+      "level": "132"
+    },
+    {
+      "expected_projected_price": "2340.50",
+      "family_id": "XAU_NEG_50",
+      "level": "-50"
+    }
+  ],
+  "coordinate_source_quote": "Quarter zones; -50 decision node;132 rekey;80 invalidation family;50-72 Asian-range entry family.",
+  "coordinate_source_ref": "corpus/canonical/models/XAU_GAME_L1_L2_L3_MODEL_CARD_V1.md",
+  "data_classification": "CANONICAL_SOURCE_SLICE for the band table and the promotion examples (quoted from frozen corpus sources); the two quarter-zone price paths are SYNTHETIC_FIXTURE",
+  "fixture_id": "BLOC_III_2.XAU_SPATIAL_BANDS.V1",
+  "historical": true,
+  "instrument_id": "XAUUSD",
+  "model_id": "XAU.GAME.L1_L2_L3.V1",
+  "model_version": "V1",
+  "not_declared_families": [
+    {
+      "expected_refusal": "COORDINATE_FAMILY_NOT_EARNED",
+      "family_id": "XAU_168",
+      "reason": "The XAU card names 132 rekey and 168/185 belong to the deeper Fib rekey sequence; the 132 state does not promote to 168 automatically."
+    }
+  ],
+  "observation_cutoff": "2026-03-03T00:30:00Z",
+  "promotion_examples": [
+    {
+      "age_condition_hours": "8",
+      "completed": 42,
+      "disclosure": "42/48 is a conditional path-completion rate in the source sample.  It is not a trade win rate, not an entry probability and not an executable expectancy.",
+      "evidence_id": "EV.XAU.PROMOTION.68_80.V1",
+      "example_id": "XAU_68_8H_TO_80",
+      "from_state": "68",
+      "observed_rate": "0.875",
+      "routing": "L2 path, not L1 entry",
+      "sample_n": 48,
+      "source_ref": "corpus/canonical/evidence/XAU_PROMOTION_68_TO_80_EVIDENCE_V1.md",
+      "standing": "VALIDATED_SMALL_N",
+      "to_coordinate": "80"
+    },
+    {
+      "age_condition_hours": "8",
+      "completed": 24,
+      "disclosure": "24/25 is a conditional path-completion rate in the source sample.  It is not a trade win rate and does not license a 132 -> 168 continuation.",
+      "evidence_id": "EV.XAU.PROMOTION.120_132.V1",
+      "example_id": "XAU_120_8H_TO_132",
+      "from_state": "120",
+      "governance": "N=25 remains a small-N research flag; the frozen model explicitly does NOT promote 132 -> 168 automatically.",
+      "observed_rate": "0.96",
+      "routing": "L2 path, not L1 entry",
+      "sample_n": 25,
+      "source_ref": "corpus/canonical/evidence/XAU_PROMOTION_120_TO_132_EVIDENCE_V1.md",
+      "standing": "RESEARCH_FLAG_SMALL_N",
+      "to_coordinate": "132"
+    }
+  ],
+  "provenance": "CANONICAL_SOURCE_SLICE",
+  "quarter_zone": {
+    "blind_touch_case": {
+      "case_id": "XAU_QUARTER.BLIND_TOUCH",
+      "expected_acceptance_state": "NOT_ACCEPTED",
+      "expected_close_beyond_state": "NOT_BEYOND",
+      "expected_mae_native": "1",
+      "expected_mfe_native": "12",
+      "expected_re_entry_state": "NOT_REENTERED",
+      "expected_rejection_state": "REJECTED",
+      "expected_touch_state": "TOUCHED",
+      "provenance": "SYNTHETIC_FIXTURE",
+      "rows": [
+        {
+          "c": "2351.0",
+          "close_time": "2026-03-03T00:05:00Z",
+          "h": "2352.0",
+          "l": "2349.0",
+          "o": "2350.0",
+          "open_time": "2026-03-03T00:00:00Z",
+          "source_timestamp": "2026-03-03T00:05:03Z",
+          "volume": "200"
+        },
+        {
+          "c": "2354.0",
+          "close_time": "2026-03-03T00:10:00Z",
+          "h": "2355.0",
+          "l": "2350.5",
+          "o": "2351.0",
+          "open_time": "2026-03-03T00:05:00Z",
+          "source_timestamp": "2026-03-03T00:10:03Z",
+          "volume": "201"
+        },
+        {
+          "c": "2360.0",
+          "close_time": "2026-03-03T00:15:00Z",
+          "h": "2362.0",
+          "l": "2353.0",
+          "o": "2354.0",
+          "open_time": "2026-03-03T00:10:00Z",
+          "source_timestamp": "2026-03-03T00:15:03Z",
+          "volume": "202"
+        },
+        {
+          "c": "2358.0",
+          "close_time": "2026-03-03T00:20:00Z",
+          "h": "2361.0",
+          "l": "2357.0",
+          "o": "2360.0",
+          "open_time": "2026-03-03T00:15:00Z",
+          "source_timestamp": "2026-03-03T00:20:03Z",
+          "volume": "203"
+        },
+        {
+          "c": "2357.5",
+          "close_time": "2026-03-03T00:25:00Z",
+          "h": "2359.0",
+          "l": "2356.0",
+          "o": "2358.0",
+          "open_time": "2026-03-03T00:20:00Z",
+          "source_timestamp": "2026-03-03T00:25:03Z",
+          "volume": "204"
+        },
+        {
+          "c": "2356.0",
+          "close_time": "2026-03-03T00:30:00Z",
+          "h": "2358.5",
+          "l": "2355.0",
+          "o": "2357.5",
+          "open_time": "2026-03-03T00:25:00Z",
+          "source_timestamp": "2026-03-03T00:30:03Z",
+          "volume": "205"
+        }
+      ]
+    },
+    "earned_range": {
+      "case_id": "XAU_QUARTER.ELIGIBLE",
+      "high": "2366.00",
+      "low": "2349.00",
+      "size_native": "17"
+    },
+    "eligible_case": {
+      "case_id": "XAU_QUARTER.ELIGIBLE",
+      "expected_acceptance_state": "ACCEPTED",
+      "expected_close_beyond_state": "BEYOND",
+      "expected_first_delivery_bar_index": 2,
+      "expected_mae_native": "1",
+      "expected_mfe_native": "16",
+      "expected_re_entry_state": "NOT_REENTERED",
+      "expected_rejection_state": "NOT_REJECTED",
+      "expected_touch_state": "TOUCHED",
+      "provenance": "SYNTHETIC_FIXTURE",
+      "rows": [
+        {
+          "c": "2351.0",
+          "close_time": "2026-03-03T00:05:00Z",
+          "h": "2352.0",
+          "l": "2349.0",
+          "o": "2350.0",
+          "open_time": "2026-03-03T00:00:00Z",
+          "source_timestamp": "2026-03-03T00:05:03Z",
+          "volume": "200"
+        },
+        {
+          "c": "2356.0",
+          "close_time": "2026-03-03T00:10:00Z",
+          "h": "2357.0",
+          "l": "2350.5",
+          "o": "2351.0",
+          "open_time": "2026-03-03T00:05:00Z",
+          "source_timestamp": "2026-03-03T00:10:03Z",
+          "volume": "201"
+        },
+        {
+          "c": "2362.0",
+          "close_time": "2026-03-03T00:15:00Z",
+          "h": "2363.0",
+          "l": "2355.0",
+          "o": "2356.0",
+          "open_time": "2026-03-03T00:10:00Z",
+          "source_timestamp": "2026-03-03T00:15:03Z",
+          "volume": "202"
+        },
+        {
+          "c": "2363.0",
+          "close_time": "2026-03-03T00:20:00Z",
+          "h": "2364.0",
+          "l": "2361.0",
+          "o": "2362.0",
+          "open_time": "2026-03-03T00:15:00Z",
+          "source_timestamp": "2026-03-03T00:20:03Z",
+          "volume": "203"
+        },
+        {
+          "c": "2364.5",
+          "close_time": "2026-03-03T00:25:00Z",
+          "h": "2365.0",
+          "l": "2362.0",
+          "o": "2363.0",
+          "open_time": "2026-03-03T00:20:00Z",
+          "source_timestamp": "2026-03-03T00:25:03Z",
+          "volume": "204"
+        },
+        {
+          "c": "2365.5",
+          "close_time": "2026-03-03T00:30:00Z",
+          "h": "2366.0",
+          "l": "2364.0",
+          "o": "2364.5",
+          "open_time": "2026-03-03T00:25:00Z",
+          "source_timestamp": "2026-03-03T00:30:03Z",
+          "volume": "205"
+        }
+      ]
+    },
+    "source_quote": "No blind touch entry.",
+    "source_ref": "corpus/canonical/setups/XAU_QUARTER_ZONE_OPERATOR_CARD_V1.md",
+    "zone_level": "2360.50",
+    "zone_side": "ABOVE"
+  },
+  "session_id": "XAU_GAME.ASIAN_RANGE",
+  "source_quote": "25-50 normal 50-68 failure 68+ repair 100-110 snap.",
+  "source_ref": "corpus/canonical/models/XAU_GAME_L1_L2_L3_MODEL_CARD_V1.md",
+  "timeframe": "M5",
+  "unit": "POINT"
+}

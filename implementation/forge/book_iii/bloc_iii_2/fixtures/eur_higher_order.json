@@ -1,0 +1,258 @@
+{
+  "clock": "America/New_York",
+  "data_classification": "SYNTHETIC_FIXTURE - deterministic generated values; not empirical market evidence and never citable for performance claims",
+  "evidence_refs": [
+    "EV.EUR.HO.D3_DIRECTION.V1",
+    "EV.EUR.HO.M1_RANGE_CORR.V1",
+    "EV.EUR.HO.UNFINISHED_M3.V1"
+  ],
+  "fixture_id": "BLOC_III_2.EUR_HIGHER_ORDER_HANDOFF.V1",
+  "hierarchy": [
+    "QUARTER_SEED",
+    "M1_RANGE_SEED",
+    "M2_SHAPING",
+    "M3_RESOLUTION",
+    "WEEKLY_LOCAL_PATH",
+    "DAILY_EXECUTION"
+  ],
+  "historical": true,
+  "instrument_id": "EURUSD",
+  "model_id": "EUR.HIGHER_ORDER.V1",
+  "model_version": "V1",
+  "note": "The D3 directional prior, the M1 range correlation and the unfinished-side completion rate are statistical parameters of their evidence cards.  They are referenced by evidence id and are deliberately absent from the measured output.",
+  "provenance": "SYNTHETIC_FIXTURE",
+  "seeds": [
+    {
+      "expected_size_native": "50.0",
+      "observation_cutoff": "2026-01-05T00:15:00Z",
+      "rows": [
+        {
+          "c": "1.07200",
+          "close_time": "2026-01-05T00:05:00Z",
+          "h": "1.07400",
+          "l": "1.07000",
+          "o": "1.07100",
+          "open_time": "2026-01-05T00:00:00Z",
+          "source_timestamp": "2026-01-05T00:05:03Z",
+          "volume": "200"
+        },
+        {
+          "c": "1.07300",
+          "close_time": "2026-01-05T00:10:00Z",
+          "h": "1.07450",
+          "l": "1.07050",
+          "o": "1.07200",
+          "open_time": "2026-01-05T00:05:00Z",
+          "source_timestamp": "2026-01-05T00:10:03Z",
+          "volume": "201"
+        },
+        {
+          "c": "1.07350",
+          "close_time": "2026-01-05T00:15:00Z",
+          "h": "1.07500",
+          "l": "1.07100",
+          "o": "1.07300",
+          "open_time": "2026-01-05T00:10:00Z",
+          "source_timestamp": "2026-01-05T00:15:03Z",
+          "volume": "202"
+        }
+      ],
+      "seed_id": "QUARTER",
+      "seed_kind": "QUARTER"
+    },
+    {
+      "expected_size_native": "15.0",
+      "observation_cutoff": "2026-01-05T00:30:00Z",
+      "rows": [
+        {
+          "c": "1.07080",
+          "close_time": "2026-01-05T00:20:00Z",
+          "h": "1.07120",
+          "l": "1.07000",
+          "o": "1.07000",
+          "open_time": "2026-01-05T00:15:00Z",
+          "source_timestamp": "2026-01-05T00:20:03Z",
+          "volume": "200"
+        },
+        {
+          "c": "1.07100",
+          "close_time": "2026-01-05T00:25:00Z",
+          "h": "1.07140",
+          "l": "1.07040",
+          "o": "1.07080",
+          "open_time": "2026-01-05T00:20:00Z",
+          "source_timestamp": "2026-01-05T00:25:03Z",
+          "volume": "201"
+        },
+        {
+          "c": "1.07120",
+          "close_time": "2026-01-05T00:30:00Z",
+          "h": "1.07150",
+          "l": "1.07060",
+          "o": "1.07100",
+          "open_time": "2026-01-05T00:25:00Z",
+          "source_timestamp": "2026-01-05T00:30:03Z",
+          "volume": "202"
+        }
+      ],
+      "seed_id": "D1",
+      "seed_kind": "QUARTER_DAY"
+    },
+    {
+      "expected_size_native": "14.0",
+      "observation_cutoff": "2026-01-06T00:15:00Z",
+      "rows": [
+        {
+          "c": "1.07060",
+          "close_time": "2026-01-06T00:05:00Z",
+          "h": "1.07100",
+          "l": "1.07000",
+          "o": "1.07000",
+          "open_time": "2026-01-06T00:00:00Z",
+          "source_timestamp": "2026-01-06T00:05:03Z",
+          "volume": "200"
+        },
+        {
+          "c": "1.07090",
+          "close_time": "2026-01-06T00:10:00Z",
+          "h": "1.07130",
+          "l": "1.07020",
+          "o": "1.07060",
+          "open_time": "2026-01-06T00:05:00Z",
+          "source_timestamp": "2026-01-06T00:10:03Z",
+          "volume": "201"
+        },
+        {
+          "c": "1.07110",
+          "close_time": "2026-01-06T00:15:00Z",
+          "h": "1.07140",
+          "l": "1.07050",
+          "o": "1.07090",
+          "open_time": "2026-01-06T00:10:00Z",
+          "source_timestamp": "2026-01-06T00:15:03Z",
+          "volume": "202"
+        }
+      ],
+      "seed_id": "D2",
+      "seed_kind": "QUARTER_DAY"
+    },
+    {
+      "expected_size_native": "13.0",
+      "observation_cutoff": "2026-01-07T00:15:00Z",
+      "rows": [
+        {
+          "c": "1.07070",
+          "close_time": "2026-01-07T00:05:00Z",
+          "h": "1.07110",
+          "l": "1.07000",
+          "o": "1.07000",
+          "open_time": "2026-01-07T00:00:00Z",
+          "source_timestamp": "2026-01-07T00:05:03Z",
+          "volume": "200"
+        },
+        {
+          "c": "1.07090",
+          "close_time": "2026-01-07T00:10:00Z",
+          "h": "1.07120",
+          "l": "1.07030",
+          "o": "1.07070",
+          "open_time": "2026-01-07T00:05:00Z",
+          "source_timestamp": "2026-01-07T00:10:03Z",
+          "volume": "201"
+        },
+        {
+          "c": "1.07100",
+          "close_time": "2026-01-07T00:15:00Z",
+          "h": "1.07130",
+          "l": "1.07050",
+          "o": "1.07090",
+          "open_time": "2026-01-07T00:10:00Z",
+          "source_timestamp": "2026-01-07T00:15:03Z",
+          "volume": "202"
+        }
+      ],
+      "seed_id": "D3",
+      "seed_kind": "QUARTER_DAY"
+    },
+    {
+      "expected_size_native": "120.0",
+      "observation_cutoff": "2026-01-08T00:15:00Z",
+      "rows": [
+        {
+          "c": "1.06600",
+          "close_time": "2026-01-08T00:05:00Z",
+          "h": "1.06950",
+          "l": "1.06000",
+          "o": "1.06000",
+          "open_time": "2026-01-08T00:00:00Z",
+          "source_timestamp": "2026-01-08T00:05:03Z",
+          "volume": "200"
+        },
+        {
+          "c": "1.06850",
+          "close_time": "2026-01-08T00:10:00Z",
+          "h": "1.07100",
+          "l": "1.06400",
+          "o": "1.06600",
+          "open_time": "2026-01-08T00:05:00Z",
+          "source_timestamp": "2026-01-08T00:10:03Z",
+          "volume": "201"
+        },
+        {
+          "c": "1.07000",
+          "close_time": "2026-01-08T00:15:00Z",
+          "h": "1.07200",
+          "l": "1.06700",
+          "o": "1.06850",
+          "open_time": "2026-01-08T00:10:00Z",
+          "source_timestamp": "2026-01-08T00:15:03Z",
+          "volume": "202"
+        }
+      ],
+      "seed_id": "M1",
+      "seed_kind": "MONTH"
+    },
+    {
+      "expected_size_native": "100.0",
+      "observation_cutoff": "2026-02-05T00:15:00Z",
+      "rows": [
+        {
+          "c": "1.05500",
+          "close_time": "2026-02-05T00:05:00Z",
+          "h": "1.05800",
+          "l": "1.05000",
+          "o": "1.05000",
+          "open_time": "2026-02-05T00:00:00Z",
+          "source_timestamp": "2026-02-05T00:05:03Z",
+          "volume": "200"
+        },
+        {
+          "c": "1.05700",
+          "close_time": "2026-02-05T00:10:00Z",
+          "h": "1.05950",
+          "l": "1.05300",
+          "o": "1.05500",
+          "open_time": "2026-02-05T00:05:00Z",
+          "source_timestamp": "2026-02-05T00:10:03Z",
+          "volume": "201"
+        },
+        {
+          "c": "1.05850",
+          "close_time": "2026-02-05T00:15:00Z",
+          "h": "1.06000",
+          "l": "1.05450",
+          "o": "1.05700",
+          "open_time": "2026-02-05T00:10:00Z",
+          "source_timestamp": "2026-02-05T00:15:03Z",
+          "volume": "202"
+        }
+      ],
+      "seed_id": "M2",
+      "seed_kind": "MONTH"
+    }
+  ],
+  "session_id": "EUR_HIGHER_ORDER.QUARTER",
+  "source_quote": "Quarter seed -> M1 range seed -> M2 shaping -> M3 resolution -> Weekly local path -> Daily execution.",
+  "source_ref": "corpus/canonical/models/EUR_HIGHER_ORDER_MODEL_CARD_V1.md",
+  "unfinished_side": "UPPER"
+}

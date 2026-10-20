@@ -1,0 +1,57 @@
+{
+  "clock": "America/New_York",
+  "data_classification": "SYNTHETIC_FIXTURE - deterministic generated values; not empirical market evidence and never citable for performance claims",
+  "events": [
+    {
+      "actual_time": "2026-03-03T13:30:02Z",
+      "consumed": "6",
+      "event_id": "EVT.SYNTH.EUR.EMPLOYMENT_01",
+      "expected_band_declared": true,
+      "expected_residual": "11",
+      "expected_size_declared": true,
+      "family": "EMPLOYMENT_RELEASE",
+      "historical_band_lower": "8",
+      "historical_band_upper": "25",
+      "historical_size": "17",
+      "provenance_label": "SYNTHETIC_FIXTURE",
+      "relevance_assets": [
+        "EURUSD"
+      ],
+      "relevance_currencies": [
+        "EUR"
+      ],
+      "scheduled_time": "2026-03-03T13:30:00Z",
+      "source_ref": "corpus/canonical/models/EUR_DAILY_NEWS_REKEY_MODEL_CARD_V1.md"
+    },
+    {
+      "actual_time": null,
+      "consumed": null,
+      "event_id": "EVT.SYNTH.EUR.NO_HISTORY_01",
+      "expected_band_declared": false,
+      "expected_budget": "REFUSED",
+      "expected_residual": null,
+      "expected_size_declared": false,
+      "family": "MACRO_RELEASE",
+      "historical_band_lower": null,
+      "historical_band_upper": null,
+      "historical_size": null,
+      "provenance_label": "SYNTHETIC_FIXTURE",
+      "relevance_assets": [
+        "EURUSD"
+      ],
+      "relevance_currencies": [
+        "EUR"
+      ],
+      "scheduled_time": "2026-03-04T13:30:00Z",
+      "source_ref": "corpus/canonical/models/EUR_DAILY_NEWS_REKEY_MODEL_CARD_V1.md"
+    }
+  ],
+  "fixture_id": "BLOC_III_2.EUR_EVENT_BUDGET.V1",
+  "historical": true,
+  "instrument_id": "EURUSD",
+  "provenance": "SYNTHETIC_FIXTURE",
+  "session_id": "EUR_DAILY.ASIAN_RANGE",
+  "source_quote": "Residual event budget is subtractive: already-consumed movement changes what remains available.",
+  "source_ref": "corpus/canonical/models/EUR_DAILY_NEWS_REKEY_MODEL_CARD_V1.md",
+  "unit": "PIP"
+}

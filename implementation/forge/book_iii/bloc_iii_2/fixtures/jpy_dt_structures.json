@@ -1,0 +1,63 @@
+{
+  "asset_roles": [
+    {
+      "instrument_id": "USDJPY",
+      "role": "CARRY_MASTER"
+    },
+    {
+      "instrument_id": "AUDJPY",
+      "role": "RISK_EXPRESSION"
+    },
+    {
+      "instrument_id": "EURJPY",
+      "role": "CONFIRMATION_VETO"
+    }
+  ],
+  "clock": "America/New_York",
+  "data_classification": "CANONICAL_SOURCE_SLICE - DT structure levels, the research window and the asset role map quoted from the frozen JPY model card; no JPY price history exists in this repository",
+  "declared_families": [
+    {
+      "declared_extension": false,
+      "family_id": "JPY_132",
+      "level": "132"
+    },
+    {
+      "declared_extension": false,
+      "family_id": "JPY_168",
+      "level": "168"
+    },
+    {
+      "declared_extension": true,
+      "family_id": "JPY_187_5",
+      "level": "187.5"
+    }
+  ],
+  "deferred_cases": [
+    {
+      "case_id": "JPY_BASKET.AGREE_AND_CONFIRM",
+      "reason": "Basket-role aggregation is a model-runtime concern (III.3); the measurement layer measures single-asset facts only."
+    },
+    {
+      "case_id": "JPY_BASKET.CONFIRM_ABSENT",
+      "reason": "Basket-role aggregation is a model-runtime concern (III.3); the measurement layer measures single-asset facts only."
+    },
+    {
+      "case_id": "JPY_BASKET.NO_EQUAL_VOTE",
+      "reason": "The no-equal-vote rule is a role-map property of the model runtime; the measurement layer carries the role map as a declaration and no aggregation."
+    }
+  ],
+  "fixture_id": "BLOC_III_2.JPY_DT_STRUCTURES.V1",
+  "historical": true,
+  "model_id": "JPY.CARRY_GAME.L1_L3.V1",
+  "model_version": "DT_12_4PM",
+  "native_tier_note": "The JPY card publishes no complete per-pair tier/AU table.  A JPY tier lookup therefore refuses with MODEL_VERSION_UNAVAILABLE; no table is invented here.",
+  "native_tier_tables": "NOT_CANONICAL",
+  "provenance": "CANONICAL_SOURCE_SLICE",
+  "research_window_local": {
+    "end": "16:00:00",
+    "start": "12:00:00"
+  },
+  "role_quote": "USDJPY = carry master / primary structural driver. AUDJPY = risk/execution expression. EURJPY = confirmation/veto. EURJPY is not an equal third vote unless a later validated model explicitly changes the role map.",
+  "source_quote": "JPY12-4PM DT research includes132/168/187.5 structures,no-132-touch continuation and132-touch+OCC recovery.",
+  "source_ref": "corpus/canonical/models/JPY_CARRY_GAME_MODEL_CARD_V1.md"
+}

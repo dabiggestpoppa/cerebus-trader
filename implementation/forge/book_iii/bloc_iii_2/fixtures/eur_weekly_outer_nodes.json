@@ -1,0 +1,37 @@
+{
+  "calibration_key": {
+    "calibration_id": "EUR_WEEKLY_TIER_RANGE",
+    "calibration_version": "V1",
+    "model_id": "EUR.WEEKLY.V1_1",
+    "model_version": "V1_1"
+  },
+  "calibration_status": "RESEARCH",
+  "data_classification": "CANONICAL_SOURCE_SLICE - weekly tier median ranges and sample sizes quoted from a frozen evidence card; research claims, not guaranteed ranges and not entry levels",
+  "evidence_id": "EV.EUR.WEEKLY.TIER_RANGE.V1",
+  "fixture_id": "BLOC_III_2.EUR_WEEKLY_OUTER_NODES.V1",
+  "historical": true,
+  "model_id": "EUR.WEEKLY.V1_1",
+  "model_version": "V1_1",
+  "note": "The weekly tier is an input to this table, never a classification produced by it: the evidence card publishes median ranges and sample sizes, not the tier boundaries.",
+  "outer_nodes": [
+    {
+      "median_range": "126.8",
+      "sample_n": 45,
+      "tier_id": "T1"
+    },
+    {
+      "median_range": "133.5",
+      "sample_n": 69,
+      "tier_id": "T2"
+    },
+    {
+      "median_range": "168.95",
+      "sample_n": 60,
+      "tier_id": "T3"
+    }
+  ],
+  "provenance": "CANONICAL_SOURCE_SLICE",
+  "source_quote": "T1 N45 median126.8p. T2 N69 median133.5p. T3 N60 median168.95p.",
+  "source_ref": "corpus/canonical/evidence/EUR_WEEKLY_TIER_RANGE_EVIDENCE_V1.md",
+  "unit": "PIP"
+}

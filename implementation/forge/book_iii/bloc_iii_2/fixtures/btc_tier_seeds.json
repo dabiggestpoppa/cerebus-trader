@@ -1,0 +1,389 @@
+{
+  "au_values": [
+    {
+      "au": "205",
+      "tier_id": "T1"
+    },
+    {
+      "au": "545",
+      "tier_id": "T2"
+    },
+    {
+      "au": "1160",
+      "tier_id": "T3"
+    }
+  ],
+  "calibration_evidence_id": "BTC.TRACKER.DWM.V1",
+  "calibration_key": {
+    "calibration_id": "BTC_TRACKER_DWM_TIERS",
+    "calibration_version": "V1",
+    "model_id": "BTC.TRACKER.DWM.V1",
+    "model_version": "V1"
+  },
+  "calibration_quote": "T1 < $750 T2 $750-$1,700 T3 $1,700-$3,000 > $3,000 NO-GO. AU205/545/1160. Triggers246/654/1392. Density zones164-246 /436-654 /928-1392.",
+  "calibration_source_ref": "corpus/canonical/models/BTC_DAILY_WEEKLY_MONTHLY_TRACKER_MODEL_CARD_V1.md",
+  "clock": "America/New_York",
+  "data_classification": "SYNTHETIC_FIXTURE - deterministic generated values; not empirical market evidence and never citable for performance claims",
+  "density_zones": [
+    {
+      "lower": "164",
+      "upper": "246",
+      "zone_id": "T1"
+    },
+    {
+      "lower": "436",
+      "upper": "654",
+      "zone_id": "T2"
+    },
+    {
+      "lower": "928",
+      "upper": "1392",
+      "zone_id": "T3"
+    }
+  ],
+  "fixture_id": "BLOC_III_2.BTC_TIER_SEEDS.V1",
+  "historical": true,
+  "instrument_id": "BTCUSD",
+  "model_id": "BTC.TRACKER.DWM.V1",
+  "model_version": "V1",
+  "observation_cutoff": "2026-03-03T00:30:00Z",
+  "provenance": "SYNTHETIC_FIXTURE",
+  "seeds": [
+    {
+      "case_id": "BTC_SEED_T1",
+      "expected": {
+        "close_location": "0.8333333333",
+        "consumed_fraction": "0.6666666667",
+        "direction": "UP",
+        "expected_no_go": false,
+        "expected_tier_id": "T1",
+        "high": "68600.00",
+        "low": "68000.00",
+        "midpoint": "68300.00",
+        "range_left_native": "200",
+        "size_native": "600"
+      },
+      "expected_no_go": false,
+      "rows": [
+        {
+          "c": "68100.00",
+          "close_time": "2026-03-03T00:05:00Z",
+          "h": "68101.00",
+          "l": "68000.00",
+          "o": "68100.00",
+          "open_time": "2026-03-03T00:00:00Z",
+          "source_timestamp": "2026-03-03T00:05:03Z",
+          "volume": "100"
+        },
+        {
+          "c": "68180.00",
+          "close_time": "2026-03-03T00:10:00Z",
+          "h": "68181.00",
+          "l": "68099.00",
+          "o": "68100.00",
+          "open_time": "2026-03-03T00:05:00Z",
+          "source_timestamp": "2026-03-03T00:10:03Z",
+          "volume": "101"
+        },
+        {
+          "c": "68260.00",
+          "close_time": "2026-03-03T00:15:00Z",
+          "h": "68261.00",
+          "l": "68179.00",
+          "o": "68180.00",
+          "open_time": "2026-03-03T00:10:00Z",
+          "source_timestamp": "2026-03-03T00:15:03Z",
+          "volume": "102"
+        },
+        {
+          "c": "68340.00",
+          "close_time": "2026-03-03T00:20:00Z",
+          "h": "68341.00",
+          "l": "68259.00",
+          "o": "68260.00",
+          "open_time": "2026-03-03T00:15:00Z",
+          "source_timestamp": "2026-03-03T00:20:03Z",
+          "volume": "103"
+        },
+        {
+          "c": "68420.00",
+          "close_time": "2026-03-03T00:25:00Z",
+          "h": "68421.00",
+          "l": "68339.00",
+          "o": "68340.00",
+          "open_time": "2026-03-03T00:20:00Z",
+          "source_timestamp": "2026-03-03T00:25:03Z",
+          "volume": "104"
+        },
+        {
+          "c": "68500.00",
+          "close_time": "2026-03-03T00:30:00Z",
+          "h": "68600.00",
+          "l": "68419.00",
+          "o": "68420.00",
+          "open_time": "2026-03-03T00:25:00Z",
+          "source_timestamp": "2026-03-03T00:30:03Z",
+          "volume": "105"
+        }
+      ],
+      "tier_id": "T1"
+    },
+    {
+      "case_id": "BTC_SEED_T2",
+      "expected": {
+        "close_location": "0.8333333333",
+        "consumed_fraction": "0.6666666667",
+        "direction": "UP",
+        "expected_no_go": false,
+        "expected_tier_id": "T2",
+        "high": "69200.00",
+        "low": "68000.00",
+        "midpoint": "68600.00",
+        "range_left_native": "400",
+        "size_native": "1200"
+      },
+      "expected_no_go": false,
+      "rows": [
+        {
+          "c": "68200.00",
+          "close_time": "2026-03-03T00:05:00Z",
+          "h": "68201.00",
+          "l": "68000.00",
+          "o": "68200.00",
+          "open_time": "2026-03-03T00:00:00Z",
+          "source_timestamp": "2026-03-03T00:05:03Z",
+          "volume": "100"
+        },
+        {
+          "c": "68360.00",
+          "close_time": "2026-03-03T00:10:00Z",
+          "h": "68361.00",
+          "l": "68199.00",
+          "o": "68200.00",
+          "open_time": "2026-03-03T00:05:00Z",
+          "source_timestamp": "2026-03-03T00:10:03Z",
+          "volume": "101"
+        },
+        {
+          "c": "68520.00",
+          "close_time": "2026-03-03T00:15:00Z",
+          "h": "68521.00",
+          "l": "68359.00",
+          "o": "68360.00",
+          "open_time": "2026-03-03T00:10:00Z",
+          "source_timestamp": "2026-03-03T00:15:03Z",
+          "volume": "102"
+        },
+        {
+          "c": "68680.00",
+          "close_time": "2026-03-03T00:20:00Z",
+          "h": "68681.00",
+          "l": "68519.00",
+          "o": "68520.00",
+          "open_time": "2026-03-03T00:15:00Z",
+          "source_timestamp": "2026-03-03T00:20:03Z",
+          "volume": "103"
+        },
+        {
+          "c": "68840.00",
+          "close_time": "2026-03-03T00:25:00Z",
+          "h": "68841.00",
+          "l": "68679.00",
+          "o": "68680.00",
+          "open_time": "2026-03-03T00:20:00Z",
+          "source_timestamp": "2026-03-03T00:25:03Z",
+          "volume": "104"
+        },
+        {
+          "c": "69000.00",
+          "close_time": "2026-03-03T00:30:00Z",
+          "h": "69200.00",
+          "l": "68839.00",
+          "o": "68840.00",
+          "open_time": "2026-03-03T00:25:00Z",
+          "source_timestamp": "2026-03-03T00:30:03Z",
+          "volume": "105"
+        }
+      ],
+      "tier_id": "T2"
+    },
+    {
+      "case_id": "BTC_SEED_T3",
+      "expected": {
+        "close_location": "0.7500000000",
+        "consumed_fraction": "0.6250000000",
+        "direction": "UP",
+        "expected_no_go": false,
+        "expected_tier_id": "T3",
+        "high": "70400.00",
+        "low": "68000.00",
+        "midpoint": "69200.00",
+        "range_left_native": "900",
+        "size_native": "2400"
+      },
+      "expected_no_go": false,
+      "rows": [
+        {
+          "c": "68300.00",
+          "close_time": "2026-03-03T00:05:00Z",
+          "h": "68301.00",
+          "l": "68000.00",
+          "o": "68300.00",
+          "open_time": "2026-03-03T00:00:00Z",
+          "source_timestamp": "2026-03-03T00:05:03Z",
+          "volume": "100"
+        },
+        {
+          "c": "68600.00",
+          "close_time": "2026-03-03T00:10:00Z",
+          "h": "68601.00",
+          "l": "68299.00",
+          "o": "68300.00",
+          "open_time": "2026-03-03T00:05:00Z",
+          "source_timestamp": "2026-03-03T00:10:03Z",
+          "volume": "101"
+        },
+        {
+          "c": "68900.00",
+          "close_time": "2026-03-03T00:15:00Z",
+          "h": "68901.00",
+          "l": "68599.00",
+          "o": "68600.00",
+          "open_time": "2026-03-03T00:10:00Z",
+          "source_timestamp": "2026-03-03T00:15:03Z",
+          "volume": "102"
+        },
+        {
+          "c": "69200.00",
+          "close_time": "2026-03-03T00:20:00Z",
+          "h": "69201.00",
+          "l": "68899.00",
+          "o": "68900.00",
+          "open_time": "2026-03-03T00:15:00Z",
+          "source_timestamp": "2026-03-03T00:20:03Z",
+          "volume": "103"
+        },
+        {
+          "c": "69500.00",
+          "close_time": "2026-03-03T00:25:00Z",
+          "h": "69501.00",
+          "l": "69199.00",
+          "o": "69200.00",
+          "open_time": "2026-03-03T00:20:00Z",
+          "source_timestamp": "2026-03-03T00:25:03Z",
+          "volume": "104"
+        },
+        {
+          "c": "69800.00",
+          "close_time": "2026-03-03T00:30:00Z",
+          "h": "70400.00",
+          "l": "69499.00",
+          "o": "69500.00",
+          "open_time": "2026-03-03T00:25:00Z",
+          "source_timestamp": "2026-03-03T00:30:03Z",
+          "volume": "105"
+        }
+      ],
+      "tier_id": "T3"
+    },
+    {
+      "case_id": "BTC_SEED_NO_GO",
+      "expected": {
+        "close_location": "0.7571428571",
+        "consumed_fraction": "0.6428571429",
+        "direction": "UP",
+        "expected_no_go": true,
+        "expected_tier_id": "NO_GO",
+        "high": "71500.00",
+        "low": "68000.00",
+        "midpoint": "69750.00",
+        "range_left_native": "1250",
+        "size_native": "3500"
+      },
+      "expected_no_go": true,
+      "rows": [
+        {
+          "c": "68400.00",
+          "close_time": "2026-03-03T00:05:00Z",
+          "h": "68401.00",
+          "l": "68000.00",
+          "o": "68400.00",
+          "open_time": "2026-03-03T00:00:00Z",
+          "source_timestamp": "2026-03-03T00:05:03Z",
+          "volume": "100"
+        },
+        {
+          "c": "68850.00",
+          "close_time": "2026-03-03T00:10:00Z",
+          "h": "68851.00",
+          "l": "68399.00",
+          "o": "68400.00",
+          "open_time": "2026-03-03T00:05:00Z",
+          "source_timestamp": "2026-03-03T00:10:03Z",
+          "volume": "101"
+        },
+        {
+          "c": "69300.00",
+          "close_time": "2026-03-03T00:15:00Z",
+          "h": "69301.00",
+          "l": "68849.00",
+          "o": "68850.00",
+          "open_time": "2026-03-03T00:10:00Z",
+          "source_timestamp": "2026-03-03T00:15:03Z",
+          "volume": "102"
+        },
+        {
+          "c": "69750.00",
+          "close_time": "2026-03-03T00:20:00Z",
+          "h": "69751.00",
+          "l": "69299.00",
+          "o": "69300.00",
+          "open_time": "2026-03-03T00:15:00Z",
+          "source_timestamp": "2026-03-03T00:20:03Z",
+          "volume": "103"
+        },
+        {
+          "c": "70200.00",
+          "close_time": "2026-03-03T00:25:00Z",
+          "h": "70201.00",
+          "l": "69749.00",
+          "o": "69750.00",
+          "open_time": "2026-03-03T00:20:00Z",
+          "source_timestamp": "2026-03-03T00:25:03Z",
+          "volume": "104"
+        },
+        {
+          "c": "70650.00",
+          "close_time": "2026-03-03T00:30:00Z",
+          "h": "71500.00",
+          "l": "70199.00",
+          "o": "70200.00",
+          "open_time": "2026-03-03T00:25:00Z",
+          "source_timestamp": "2026-03-03T00:30:03Z",
+          "volume": "105"
+        }
+      ],
+      "tier_id": "NO_GO"
+    }
+  ],
+  "separation_note": "The BTC Daily Tracker and the BTC Game are distinct branches.  Tracker-side measurement output carries no Game or setup object.",
+  "session_id": "BTC_TRACKER.ASIAN_WINDOW",
+  "slot_surface": {
+    "clock": "America/New_York",
+    "expected_range_left_native": {
+      "T1": "200",
+      "T2": "400",
+      "T3": "900"
+    },
+    "slot_local_end": "19:00:00",
+    "slot_local_start": "03:00:00",
+    "source_quote": "Modern research extends slot x tier / range-left context from03:00 through19:00 NY.",
+    "source_ref": "corpus/canonical/models/BTC_DAILY_WEEKLY_MONTHLY_TRACKER_MODEL_CARD_V1.md"
+  },
+  "threshold_levels": [
+    "246",
+    "654",
+    "1392"
+  ],
+  "timeframe": "M5"
+}

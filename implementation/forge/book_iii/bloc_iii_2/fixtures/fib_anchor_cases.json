@@ -1,0 +1,131 @@
+{
+  "cases": [
+    {
+      "anchor_id": "FIB.ANCHOR.ACTIVE.01",
+      "case_id": "FIB.VALID_BORN_RANGE",
+      "expected_automation_ready": false,
+      "expected_projection_allowed": true,
+      "expected_refusal_code": "NONE",
+      "status": "ACTIVE"
+    },
+    {
+      "anchor_id": "FIB.ANCHOR.UNRESOLVED.01",
+      "case_id": "FIB.UNRESOLVED_ANCHOR",
+      "expected_automation_ready": false,
+      "expected_projection_allowed": false,
+      "expected_refusal_code": "ANCHOR_UNRESOLVED",
+      "status": "UNRESOLVED"
+    },
+    {
+      "anchor_id": "FIB.ANCHOR.INVALIDATED.01",
+      "case_id": "FIB.INVALIDATED_ANCHOR",
+      "expected_automation_ready": false,
+      "expected_projection_allowed": false,
+      "expected_refusal_code": "ANCHOR_INVALIDATED",
+      "invalidation_reason": "synthetic invalidation for the golden case",
+      "status": "INVALIDATED"
+    },
+    {
+      "anchor_id": "FIB.ANCHOR.ACTIVE.01",
+      "case_id": "FIB.REKEY_TRANSITION",
+      "expected_automation_ready": false,
+      "expected_projection_allowed": true,
+      "expected_refusal_code": "NONE",
+      "mapping": {
+        "FIB_132": "EUR_DAILY_132"
+      },
+      "status": "ACTIVE",
+      "successor_anchor_id": "FIB.ANCHOR.REKEYED.02"
+    }
+  ],
+  "clock": "America/New_York",
+  "coordinate_ladder": [
+    {
+      "expected_projected_price": "1.08025",
+      "family_id": "FIB_50",
+      "level": "50"
+    },
+    {
+      "expected_projected_price": "1.080545",
+      "family_id": "FIB_61_8",
+      "level": "61.8"
+    },
+    {
+      "expected_projected_price": "1.08070",
+      "family_id": "FIB_68",
+      "level": "68"
+    },
+    {
+      "expected_projected_price": "1.08080",
+      "family_id": "FIB_72",
+      "level": "72"
+    },
+    {
+      "expected_projected_price": "1.08100",
+      "family_id": "FIB_80",
+      "level": "80"
+    },
+    {
+      "expected_projected_price": "1.08105",
+      "family_id": "FIB_82",
+      "level": "82"
+    },
+    {
+      "expected_projected_price": "1.08230",
+      "family_id": "FIB_132",
+      "level": "132"
+    },
+    {
+      "expected_projected_price": "1.08320",
+      "family_id": "FIB_168",
+      "level": "168"
+    },
+    {
+      "expected_projected_price": "1.083625",
+      "family_id": "FIB_185",
+      "level": "185"
+    },
+    {
+      "expected_projected_price": "1.078375",
+      "family_id": "FIB_NEG_25",
+      "level": "-25"
+    },
+    {
+      "expected_projected_price": "1.07775",
+      "family_id": "FIB_NEG_50",
+      "level": "-50"
+    }
+  ],
+  "data_classification": "SYNTHETIC_FIXTURE - deterministic generated values; not empirical market evidence and never citable for performance claims",
+  "deferred_cases": [
+    {
+      "case_id": "FIB.R15.AUTOMATION_APPROVAL",
+      "reason": "The canonical R15 Range Birth eligibility rule is not materialized in the corpus (III.2-GAP-1).  Automation approval is a III.5 governed concern."
+    }
+  ],
+  "earned_range_case_id": "EUR_SEED_T2",
+  "earned_range_high": "1.08150",
+  "earned_range_low": "1.07900",
+  "fixture_id": "BLOC_III_2.FIB_ANCHOR_CASES.V1",
+  "historical": true,
+  "instrument_id": "EURUSD",
+  "model_id": "CROSSASSET.FIB.RANGE_BIRTH.V1",
+  "model_version": "R15",
+  "provenance": "SYNTHETIC_FIXTURE",
+  "rejected_cases": [
+    {
+      "case_id": "FIB.ARBITRARY_LOCAL_PIVOT",
+      "expected_refusal": "ANCHOR_NOT_EARNED",
+      "reason": "The R11 generic local-pivot generator is absent from the package by construction: no API turns bars or pivots into an anchor, so an arbitrary pivot can never reach a coordinate projection."
+    }
+  ],
+  "rule": {
+    "materialization": "DECLARED",
+    "rule_id": "R15.RANGE_BIRTH",
+    "rule_version": "DECLARED",
+    "source_ref": "corpus/canonical/models/FIB_RANGE_BIRTH_MODEL_CARD_V1.md"
+  },
+  "session_id": "EUR_DAILY.ASIAN_RANGE",
+  "source_quote": "Current canonical Range Birth eligibility must be materialized from R15 before autonomous signal generation.",
+  "source_ref": "corpus/canonical/models/FIB_RANGE_BIRTH_MODEL_CARD_V1.md"
+}
