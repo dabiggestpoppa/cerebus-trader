@@ -432,9 +432,13 @@ make anything pass; every fix is at the cause.
   persistence, so the Postgres jobs exercise unchanged code paths; the
   migration-baseline assertion (`[1, 2, 3, 4]`) is enforced locally and
   in the `test` job.
-- CI runs on push to `forge` (`.github/workflows/forge-tests.yml`:
-  `test` job and pgvector `postgres` job).  Final-head CI status is
-  recorded in §12 after the ladder push.
+- **CI (final head `a49426e`, run `39452067887`):** both jobs green —
+  `test` ✓ (26s) and `postgres` ✓ (53s, full suite against live
+  pgvector Postgres).  The Linux LF checkout also re-verifies the
+  fixture manifest's EOL-independent hashes (the BA-17 lesson
+  validated across platforms).  Only pre-existing action-runner
+  deprecation annotations (Node 20 / ubuntu-latest migration), no
+  test failures.
 
 ## 11. Known gaps and dispositions
 

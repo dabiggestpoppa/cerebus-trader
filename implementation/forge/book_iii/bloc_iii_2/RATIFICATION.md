@@ -7,9 +7,10 @@ ONLY). Date: 2026-10-20. Branch: `forge`.
 Ladder (append-only from the authorized planning head `9b7def3`):
 `9b7def3` → `d372a8e` (golden fixtures + generator + LF-normalized
 manifest) → `ae08cb1` (measurement engine package) → `065a91d` (focused
-suite, 86 binding tests) → this evidence/ratification rung.  No amend,
-squash, rebase, reset or force-push; remote ancestry verified
-fast-forward.
+suite, 86 binding tests) → `a49426e` (evidence/ratification rung; CI
+run `39452067887` success, jobs `test` + `postgres`) → this CI-record
+rung.  No amend, squash, rebase, reset or force-push; remote ancestry
+verified fast-forward.
 
 **Verdict: PASS — CLOSED (with carried gaps III.2-GAP-1…6 + III.1
 GAP-1…5)**
