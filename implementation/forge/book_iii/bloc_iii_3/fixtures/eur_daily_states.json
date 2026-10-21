@@ -1,0 +1,2742 @@
+{
+  "calculation_timestamp": "2026-03-03T09:00:00Z",
+  "cases": [
+    {
+      "calculation_timestamp": "2026-03-03T09:00:00Z",
+      "calibration_key": {
+        "calibration_id": "EUR_DAILY_PHASE1_TIERS",
+        "calibration_version": "V1",
+        "model_id": "EUR.DAILY.NEWS_REKEY.V1",
+        "model_version": "PHASE1"
+      },
+      "case_id": "EUR_DAILY_SEED_T1",
+      "clock_id": "America/New_York",
+      "expected": {
+        "direction_bias": "NONE_DECLARED",
+        "evidence_refs": [
+          "EV.EUR.DAILY.PHASE1_TIERS.V1"
+        ],
+        "fact_ids": [
+          "EUR_DAILY.SEED",
+          "EUR_DAILY.TIER",
+          "EUR_DAILY.DISTANCE_ASYMMETRY",
+          "EUR_DAILY.DISTRIBUTION",
+          "PRIOR_STATE.ABSENT"
+        ],
+        "layer": "L1",
+        "levels": [],
+        "model_state": "SEED_T1",
+        "no_go": [],
+        "production_authorization": "RESEARCH_ONLY",
+        "quality_state": "OK",
+        "range_left_state": "UNRESOLVED",
+        "range_left_value": null,
+        "sub_states": [],
+        "warnings": []
+      },
+      "expected_refusal": null,
+      "inputs": {
+        "seed": {
+          "breakout_return_state": "INSIDE_RANGE",
+          "calculation_timestamp": "2026-03-03T09:00:00Z",
+          "clock_id": "America/New_York",
+          "clock_registry_version": "CLOCK_REGISTRY_V1",
+          "close_location": "0.5833333333",
+          "consumed_fraction": "0.4166666667",
+          "definition_id": "RANGE_MEASUREMENT",
+          "definition_version": "V1",
+          "direction": "UP",
+          "evidence_refs": [],
+          "high": {
+            "instrument_id": "EURUSD",
+            "unit": "PIP",
+            "value": "1.08060"
+          },
+          "instrument_id": "EURUSD",
+          "low": {
+            "instrument_id": "EURUSD",
+            "unit": "PIP",
+            "value": "1.07940"
+          },
+          "market_data_schema_version": "MARKET_DATA_SCHEMA_V1",
+          "measurement_engine_version": "MEASUREMENT_ENGINE_V1",
+          "midpoint": {
+            "instrument_id": "EURUSD",
+            "unit": "PIP",
+            "value": "1.08000"
+          },
+          "native_unit": "PIP",
+          "quality_state": "OK",
+          "range_left": {
+            "instrument_id": "EURUSD",
+            "unit": "PIP",
+            "value": "7.0"
+          },
+          "session_id": "EUR_DAILY.ASIAN_RANGE",
+          "session_registry_version": "SESSION_REGISTRY_V1",
+          "size": {
+            "instrument_id": "EURUSD",
+            "unit": "PIP",
+            "value": "12.0"
+          },
+          "source_window": {
+            "bar_count": 6,
+            "input_digest": "a02b4e64823e9c504241d5db05d0da491d0bdfea16d8d2441817733059492a78",
+            "window_close_utc": "2026-03-03T00:30:00Z",
+            "window_open_utc": "2026-03-03T00:00:00Z"
+          }
+        },
+        "tier": {
+          "calculation_timestamp": "2026-03-03T09:00:00Z",
+          "calibration_key": {
+            "calibration_id": "EUR_DAILY_PHASE1_TIERS",
+            "calibration_version": "V1",
+            "model_id": "EUR.DAILY.NEWS_REKEY.V1",
+            "model_version": "PHASE1"
+          },
+          "calibration_status": "FROZEN_LAUNCH",
+          "clock_id": "America/New_York",
+          "clock_registry_version": "CLOCK_REGISTRY_V1",
+          "definition_id": "TIER_CLASSIFICATION",
+          "definition_version": "V1",
+          "evidence_refs": [
+            "EV.EUR.DAILY.PHASE1_TIERS.V1"
+          ],
+          "instrument_id": "EURUSD",
+          "magnitude": {
+            "instrument_id": "EURUSD",
+            "unit": "PIP",
+            "value": "12.0"
+          },
+          "market_data_schema_version": "MARKET_DATA_SCHEMA_V1",
+          "measurement_engine_version": "MEASUREMENT_ENGINE_V1",
+          "native_unit": "PIP",
+          "no_go": false,
+          "quality_state": "OK",
+          "session_id": "NONE",
+          "session_registry_version": "SESSION_REGISTRY_V1",
+          "source_ref": "corpus/canonical/evidence/EUR_DAILY_PHASE1_CALIBRATION_EVIDENCE_V1.md",
+          "source_window": {
+            "bar_count": 6,
+            "input_digest": "a02b4e64823e9c504241d5db05d0da491d0bdfea16d8d2441817733059492a78",
+            "window_close_utc": "2026-03-03T00:30:00Z",
+            "window_open_utc": "2026-03-03T00:00:00Z"
+          },
+          "tier_id": "T1"
+        }
+      },
+      "instrument_id": "EURUSD",
+      "model_id": "EUR.DAILY.NEWS_REKEY.V1",
+      "model_version": "PHASE1",
+      "prior_case": null,
+      "session_id": "EUR_DAILY.ASIAN_RANGE"
+    },
+    {
+      "calculation_timestamp": "2026-03-03T09:00:00Z",
+      "calibration_key": {
+        "calibration_id": "EUR_DAILY_PHASE1_TIERS",
+        "calibration_version": "V1",
+        "model_id": "EUR.DAILY.NEWS_REKEY.V1",
+        "model_version": "PHASE1"
+      },
+      "case_id": "EUR_DAILY_SEED_T2_SLOT_PATH",
+      "clock_id": "America/New_York",
+      "expected": {
+        "direction_bias": "NONE_DECLARED",
+        "evidence_refs": [
+          "EV.EUR.DAILY.PHASE1_TIERS.V1"
+        ],
+        "fact_ids": [
+          "EUR_DAILY.SEED",
+          "EUR_DAILY.TIER",
+          "EUR_DAILY.DISTANCE_ASYMMETRY",
+          "EUR_DAILY.CONSUMED_STATES",
+          "EUR_DAILY.SLOT",
+          "EUR_DAILY.DISTRIBUTION",
+          "PRIOR_STATE.ABSENT"
+        ],
+        "layer": "L1",
+        "levels": [],
+        "model_state": "SEED_T2",
+        "no_go": [],
+        "production_authorization": "RESEARCH_ONLY",
+        "quality_state": "OK",
+        "range_left_state": "MEASURED",
+        "range_left_value": "10.0",
+        "sub_states": [],
+        "warnings": []
+      },
+      "expected_refusal": null,
+      "inputs": {
+        "path": {
+          "bar_count": 6,
+          "calculation_timestamp": "2026-03-03T09:00:00Z",
+          "clock_id": "America/New_York",
+          "clock_registry_version": "CLOCK_REGISTRY_V1",
+          "definition_id": "PATH_MEASUREMENT",
+          "definition_version": "V1",
+          "delivery_order": [],
+          "evidence_refs": [],
+          "first_delivery": null,
+          "instrument_id": "EURUSD",
+          "levels": [
+            {
+              "acceptance_state": "NOT_ACCEPTED",
+              "close_beyond_state": "NOT_BEYOND",
+              "first_delivery": null,
+              "level_id": "EUR_DAILY_10810",
+              "max_excursion": {
+                "instrument_id": "EURUSD",
+                "unit": "PIP",
+                "value": "5.0"
+              },
+              "re_entry_state": "NOT_REENTERED",
+              "rejection_state": "REJECTED",
+              "touch_state": "TOUCHED"
+            }
+          ],
+          "mae": {
+            "instrument_id": "EURUSD",
+            "unit": "PIP",
+            "value": "3.0"
+          },
+          "market_data_schema_version": "MARKET_DATA_SCHEMA_V1",
+          "measurement_engine_version": "MEASUREMENT_ENGINE_V1",
+          "mfe": {
+            "instrument_id": "EURUSD",
+            "unit": "PIP",
+            "value": "22.0"
+          },
+          "native_unit": "PIP",
+          "quality_state": "OK",
+          "reference_price": {
+            "instrument_id": "EURUSD",
+            "unit": "PIP",
+            "value": "1.07930"
+          },
+          "remaining_distribution": {
+            "instrument_id": "EURUSD",
+            "unit": "PIP",
+            "value": "10.0"
+          },
+          "remaining_state": "MEASURED",
+          "session_id": "NONE",
+          "session_registry_version": "SESSION_REGISTRY_V1",
+          "source_window": {
+            "bar_count": 6,
+            "input_digest": "3acce141884c400f9fe13d9d10123c95b6718d73832a60762a5f8f5f6d6d6338",
+            "window_close_utc": "2026-03-03T00:30:00Z",
+            "window_open_utc": "2026-03-03T00:00:00Z"
+          }
+        },
+        "seed": {
+          "breakout_return_state": "INSIDE_RANGE",
+          "calculation_timestamp": "2026-03-03T09:00:00Z",
+          "clock_id": "America/New_York",
+          "clock_registry_version": "CLOCK_REGISTRY_V1",
+          "close_location": "0.7200000000",
+          "consumed_fraction": "0.6000000000",
+          "definition_id": "RANGE_MEASUREMENT",
+          "definition_version": "V1",
+          "direction": "UP",
+          "evidence_refs": [],
+          "high": {
+            "instrument_id": "EURUSD",
+            "unit": "PIP",
+            "value": "1.08150"
+          },
+          "instrument_id": "EURUSD",
+          "low": {
+            "instrument_id": "EURUSD",
+            "unit": "PIP",
+            "value": "1.07900"
+          },
+          "market_data_schema_version": "MARKET_DATA_SCHEMA_V1",
+          "measurement_engine_version": "MEASUREMENT_ENGINE_V1",
+          "midpoint": {
+            "instrument_id": "EURUSD",
+            "unit": "PIP",
+            "value": "1.08025"
+          },
+          "native_unit": "PIP",
+          "quality_state": "OK",
+          "range_left": {
+            "instrument_id": "EURUSD",
+            "unit": "PIP",
+            "value": "10.0"
+          },
+          "session_id": "EUR_DAILY.ASIAN_RANGE",
+          "session_registry_version": "SESSION_REGISTRY_V1",
+          "size": {
+            "instrument_id": "EURUSD",
+            "unit": "PIP",
+            "value": "25.0"
+          },
+          "source_window": {
+            "bar_count": 6,
+            "input_digest": "3acce141884c400f9fe13d9d10123c95b6718d73832a60762a5f8f5f6d6d6338",
+            "window_close_utc": "2026-03-03T00:30:00Z",
+            "window_open_utc": "2026-03-03T00:00:00Z"
+          }
+        },
+        "session_phase": {
+          "calculation_timestamp": "2026-03-03T09:00:00Z",
+          "clock_id": "America/New_York",
+          "clock_registry_version": "CLOCK_REGISTRY_V1",
+          "definition_id": "SESSION_PHASE",
+          "definition_version": "V1",
+          "evidence_refs": [],
+          "instrument_id": "EURUSD",
+          "market_data_schema_version": "MARKET_DATA_SCHEMA_V1",
+          "measurement_engine_version": "MEASUREMENT_ENGINE_V1",
+          "model_id": "EUR.DAILY.NEWS_REKEY.V1",
+          "model_version": "PHASE1",
+          "native_unit": null,
+          "observed_instant": "2026-03-03T02:00:00Z",
+          "quality_state": "OK",
+          "session_id": "EUR_DAILY.ASIAN_RANGE",
+          "session_registry_version": "SESSION_REGISTRY_V1",
+          "source_window": {
+            "bar_count": 0,
+            "input_digest": "9e78010809aaebff578aec42e47501bbb378b6904613d78e7abba9dccdbd5e64",
+            "window_close_utc": "2026-03-03T02:00:00Z",
+            "window_open_utc": "2026-03-03T02:00:00Z"
+          },
+          "state": "INSIDE_WINDOW"
+        },
+        "tier": {
+          "calculation_timestamp": "2026-03-03T09:00:00Z",
+          "calibration_key": {
+            "calibration_id": "EUR_DAILY_PHASE1_TIERS",
+            "calibration_version": "V1",
+            "model_id": "EUR.DAILY.NEWS_REKEY.V1",
+            "model_version": "PHASE1"
+          },
+          "calibration_status": "FROZEN_LAUNCH",
+          "clock_id": "America/New_York",
+          "clock_registry_version": "CLOCK_REGISTRY_V1",
+          "definition_id": "TIER_CLASSIFICATION",
+          "definition_version": "V1",
+          "evidence_refs": [
+            "EV.EUR.DAILY.PHASE1_TIERS.V1"
+          ],
+          "instrument_id": "EURUSD",
+          "magnitude": {
+            "instrument_id": "EURUSD",
+            "unit": "PIP",
+            "value": "25.0"
+          },
+          "market_data_schema_version": "MARKET_DATA_SCHEMA_V1",
+          "measurement_engine_version": "MEASUREMENT_ENGINE_V1",
+          "native_unit": "PIP",
+          "no_go": false,
+          "quality_state": "OK",
+          "session_id": "NONE",
+          "session_registry_version": "SESSION_REGISTRY_V1",
+          "source_ref": "corpus/canonical/evidence/EUR_DAILY_PHASE1_CALIBRATION_EVIDENCE_V1.md",
+          "source_window": {
+            "bar_count": 6,
+            "input_digest": "3acce141884c400f9fe13d9d10123c95b6718d73832a60762a5f8f5f6d6d6338",
+            "window_close_utc": "2026-03-03T00:30:00Z",
+            "window_open_utc": "2026-03-03T00:00:00Z"
+          },
+          "tier_id": "T2"
+        }
+      },
+      "instrument_id": "EURUSD",
+      "model_id": "EUR.DAILY.NEWS_REKEY.V1",
+      "model_version": "PHASE1",
+      "prior_case": null,
+      "session_id": "EUR_DAILY.ASIAN_RANGE"
+    },
+    {
+      "calculation_timestamp": "2026-03-03T09:00:00Z",
+      "calibration_key": {
+        "calibration_id": "EUR_DAILY_PHASE1_TIERS",
+        "calibration_version": "V1",
+        "model_id": "EUR.DAILY.NEWS_REKEY.V1",
+        "model_version": "PHASE1"
+      },
+      "case_id": "EUR_DAILY_SEED_T3",
+      "clock_id": "America/New_York",
+      "expected": {
+        "direction_bias": "NONE_DECLARED",
+        "evidence_refs": [
+          "EV.EUR.DAILY.PHASE1_TIERS.V1"
+        ],
+        "fact_ids": [
+          "EUR_DAILY.SEED",
+          "EUR_DAILY.TIER",
+          "EUR_DAILY.DISTANCE_ASYMMETRY",
+          "EUR_DAILY.DISTRIBUTION",
+          "PRIOR_STATE.ABSENT"
+        ],
+        "layer": "L1",
+        "levels": [],
+        "model_state": "SEED_T3",
+        "no_go": [],
+        "production_authorization": "RESEARCH_ONLY",
+        "quality_state": "OK",
+        "range_left_state": "UNRESOLVED",
+        "range_left_value": null,
+        "sub_states": [],
+        "warnings": []
+      },
+      "expected_refusal": null,
+      "inputs": {
+        "seed": {
+          "breakout_return_state": "INSIDE_RANGE",
+          "calculation_timestamp": "2026-03-03T09:00:00Z",
+          "clock_id": "America/New_York",
+          "clock_registry_version": "CLOCK_REGISTRY_V1",
+          "close_location": "0.7368421053",
+          "consumed_fraction": "0.6578947368",
+          "definition_id": "RANGE_MEASUREMENT",
+          "definition_version": "V1",
+          "direction": "UP",
+          "evidence_refs": [],
+          "high": {
+            "instrument_id": "EURUSD",
+            "unit": "PIP",
+            "value": "1.08280"
+          },
+          "instrument_id": "EURUSD",
+          "low": {
+            "instrument_id": "EURUSD",
+            "unit": "PIP",
+            "value": "1.07900"
+          },
+          "market_data_schema_version": "MARKET_DATA_SCHEMA_V1",
+          "measurement_engine_version": "MEASUREMENT_ENGINE_V1",
+          "midpoint": {
+            "instrument_id": "EURUSD",
+            "unit": "PIP",
+            "value": "1.08090"
+          },
+          "native_unit": "PIP",
+          "quality_state": "OK",
+          "range_left": {
+            "instrument_id": "EURUSD",
+            "unit": "PIP",
+            "value": "13.0"
+          },
+          "session_id": "EUR_DAILY.ASIAN_RANGE",
+          "session_registry_version": "SESSION_REGISTRY_V1",
+          "size": {
+            "instrument_id": "EURUSD",
+            "unit": "PIP",
+            "value": "38.0"
+          },
+          "source_window": {
+            "bar_count": 6,
+            "input_digest": "4863a83a870dd5a3a4461e79ac9fff68b6678658e19ec54637a0681978d47c74",
+            "window_close_utc": "2026-03-03T00:30:00Z",
+            "window_open_utc": "2026-03-03T00:00:00Z"
+          }
+        },
+        "tier": {
+          "calculation_timestamp": "2026-03-03T09:00:00Z",
+          "calibration_key": {
+            "calibration_id": "EUR_DAILY_PHASE1_TIERS",
+            "calibration_version": "V1",
+            "model_id": "EUR.DAILY.NEWS_REKEY.V1",
+            "model_version": "PHASE1"
+          },
+          "calibration_status": "FROZEN_LAUNCH",
+          "clock_id": "America/New_York",
+          "clock_registry_version": "CLOCK_REGISTRY_V1",
+          "definition_id": "TIER_CLASSIFICATION",
+          "definition_version": "V1",
+          "evidence_refs": [
+            "EV.EUR.DAILY.PHASE1_TIERS.V1"
+          ],
+          "instrument_id": "EURUSD",
+          "magnitude": {
+            "instrument_id": "EURUSD",
+            "unit": "PIP",
+            "value": "38.0"
+          },
+          "market_data_schema_version": "MARKET_DATA_SCHEMA_V1",
+          "measurement_engine_version": "MEASUREMENT_ENGINE_V1",
+          "native_unit": "PIP",
+          "no_go": false,
+          "quality_state": "OK",
+          "session_id": "NONE",
+          "session_registry_version": "SESSION_REGISTRY_V1",
+          "source_ref": "corpus/canonical/evidence/EUR_DAILY_PHASE1_CALIBRATION_EVIDENCE_V1.md",
+          "source_window": {
+            "bar_count": 6,
+            "input_digest": "4863a83a870dd5a3a4461e79ac9fff68b6678658e19ec54637a0681978d47c74",
+            "window_close_utc": "2026-03-03T00:30:00Z",
+            "window_open_utc": "2026-03-03T00:00:00Z"
+          },
+          "tier_id": "T3"
+        }
+      },
+      "instrument_id": "EURUSD",
+      "model_id": "EUR.DAILY.NEWS_REKEY.V1",
+      "model_version": "PHASE1",
+      "prior_case": null,
+      "session_id": "EUR_DAILY.ASIAN_RANGE"
+    },
+    {
+      "calculation_timestamp": "2026-03-03T09:00:00Z",
+      "calibration_key": {
+        "calibration_id": "EUR_DAILY_PHASE1_TIERS",
+        "calibration_version": "V1",
+        "model_id": "EUR.DAILY.NEWS_REKEY.V1",
+        "model_version": "PHASE1"
+      },
+      "case_id": "EUR_DAILY_TIER_45_BOUNDARY",
+      "clock_id": "America/New_York",
+      "expected": {
+        "direction_bias": "NONE_DECLARED",
+        "evidence_refs": [
+          "EV.EUR.DAILY.PHASE1_TIERS.V1"
+        ],
+        "fact_ids": [
+          "EUR_DAILY.SEED",
+          "EUR_DAILY.TIER",
+          "EUR_DAILY.DISTANCE_ASYMMETRY",
+          "EUR_DAILY.DISTRIBUTION",
+          "PRIOR_STATE.ABSENT"
+        ],
+        "layer": "L1",
+        "levels": [],
+        "model_state": "SEED_T3",
+        "no_go": [],
+        "production_authorization": "RESEARCH_ONLY",
+        "quality_state": "OK",
+        "range_left_state": "UNRESOLVED",
+        "range_left_value": null,
+        "sub_states": [],
+        "warnings": []
+      },
+      "expected_refusal": null,
+      "inputs": {
+        "seed": {
+          "breakout_return_state": "INSIDE_RANGE",
+          "calculation_timestamp": "2026-03-03T09:00:00Z",
+          "clock_id": "America/New_York",
+          "clock_registry_version": "CLOCK_REGISTRY_V1",
+          "close_location": "0.9777777778",
+          "consumed_fraction": "0.9777777778",
+          "definition_id": "RANGE_MEASUREMENT",
+          "definition_version": "V1",
+          "direction": "UP",
+          "evidence_refs": [],
+          "high": {
+            "instrument_id": "EURUSD",
+            "unit": "PIP",
+            "value": "1.08350"
+          },
+          "instrument_id": "EURUSD",
+          "low": {
+            "instrument_id": "EURUSD",
+            "unit": "PIP",
+            "value": "1.07900"
+          },
+          "market_data_schema_version": "MARKET_DATA_SCHEMA_V1",
+          "measurement_engine_version": "MEASUREMENT_ENGINE_V1",
+          "midpoint": {
+            "instrument_id": "EURUSD",
+            "unit": "PIP",
+            "value": "1.08125"
+          },
+          "native_unit": "PIP",
+          "quality_state": "OK",
+          "range_left": {
+            "instrument_id": "EURUSD",
+            "unit": "PIP",
+            "value": "1.0"
+          },
+          "session_id": "NONE",
+          "session_registry_version": "SESSION_REGISTRY_V1",
+          "size": {
+            "instrument_id": "EURUSD",
+            "unit": "PIP",
+            "value": "45.0"
+          },
+          "source_window": {
+            "bar_count": 6,
+            "input_digest": "bf6e054d5a16e6b2e7ad36ae112df9828238ac0a8c504fcbbac230d1c94e668b",
+            "window_close_utc": "2026-03-03T00:25:00Z",
+            "window_open_utc": "2026-03-02T23:55:00Z"
+          }
+        },
+        "tier": {
+          "calculation_timestamp": "2026-03-03T09:00:00Z",
+          "calibration_key": {
+            "calibration_id": "EUR_DAILY_PHASE1_TIERS",
+            "calibration_version": "V1",
+            "model_id": "EUR.DAILY.NEWS_REKEY.V1",
+            "model_version": "PHASE1"
+          },
+          "calibration_status": "FROZEN_LAUNCH",
+          "clock_id": "America/New_York",
+          "clock_registry_version": "CLOCK_REGISTRY_V1",
+          "definition_id": "TIER_CLASSIFICATION",
+          "definition_version": "V1",
+          "evidence_refs": [
+            "EV.EUR.DAILY.PHASE1_TIERS.V1"
+          ],
+          "instrument_id": "EURUSD",
+          "magnitude": {
+            "instrument_id": "EURUSD",
+            "unit": "PIP",
+            "value": "45.0"
+          },
+          "market_data_schema_version": "MARKET_DATA_SCHEMA_V1",
+          "measurement_engine_version": "MEASUREMENT_ENGINE_V1",
+          "native_unit": "PIP",
+          "no_go": false,
+          "quality_state": "OK",
+          "session_id": "NONE",
+          "session_registry_version": "SESSION_REGISTRY_V1",
+          "source_ref": "corpus/canonical/evidence/EUR_DAILY_PHASE1_CALIBRATION_EVIDENCE_V1.md",
+          "source_window": {
+            "bar_count": 6,
+            "input_digest": "bf6e054d5a16e6b2e7ad36ae112df9828238ac0a8c504fcbbac230d1c94e668b",
+            "window_close_utc": "2026-03-03T00:25:00Z",
+            "window_open_utc": "2026-03-02T23:55:00Z"
+          },
+          "tier_id": "T3"
+        }
+      },
+      "instrument_id": "EURUSD",
+      "model_id": "EUR.DAILY.NEWS_REKEY.V1",
+      "model_version": "PHASE1",
+      "prior_case": null,
+      "session_id": "EUR_DAILY.ASIAN_RANGE"
+    },
+    {
+      "calculation_timestamp": "2026-03-03T09:00:00Z",
+      "calibration_key": {
+        "calibration_id": "EUR_DAILY_PHASE1_TIERS",
+        "calibration_version": "V1",
+        "model_id": "EUR.DAILY.NEWS_REKEY.V1",
+        "model_version": "PHASE1"
+      },
+      "case_id": "EUR_DAILY_NO_GO_46",
+      "clock_id": "America/New_York",
+      "expected": {
+        "direction_bias": "NONE_DECLARED",
+        "evidence_refs": [
+          "EV.EUR.DAILY.PHASE1_TIERS.V1"
+        ],
+        "fact_ids": [
+          "EUR_DAILY.SEED",
+          "EUR_DAILY.TIER",
+          "EUR_DAILY.DISTANCE_ASYMMETRY",
+          "EUR_DAILY.DISTRIBUTION",
+          "PRIOR_STATE.ABSENT"
+        ],
+        "layer": "L1",
+        "levels": [],
+        "model_state": "SOURCE_NO_GO",
+        "no_go": [
+          "AR_SOURCE_NO_GO"
+        ],
+        "production_authorization": "RESEARCH_ONLY",
+        "quality_state": "OK",
+        "range_left_state": "UNRESOLVED",
+        "range_left_value": null,
+        "sub_states": [],
+        "warnings": []
+      },
+      "expected_refusal": null,
+      "inputs": {
+        "seed": {
+          "breakout_return_state": "INSIDE_RANGE",
+          "calculation_timestamp": "2026-03-03T09:00:00Z",
+          "clock_id": "America/New_York",
+          "clock_registry_version": "CLOCK_REGISTRY_V1",
+          "close_location": "0.9782608696",
+          "consumed_fraction": "0.9782608696",
+          "definition_id": "RANGE_MEASUREMENT",
+          "definition_version": "V1",
+          "direction": "UP",
+          "evidence_refs": [],
+          "high": {
+            "instrument_id": "EURUSD",
+            "unit": "PIP",
+            "value": "1.08360"
+          },
+          "instrument_id": "EURUSD",
+          "low": {
+            "instrument_id": "EURUSD",
+            "unit": "PIP",
+            "value": "1.07900"
+          },
+          "market_data_schema_version": "MARKET_DATA_SCHEMA_V1",
+          "measurement_engine_version": "MEASUREMENT_ENGINE_V1",
+          "midpoint": {
+            "instrument_id": "EURUSD",
+            "unit": "PIP",
+            "value": "1.08130"
+          },
+          "native_unit": "PIP",
+          "quality_state": "OK",
+          "range_left": {
+            "instrument_id": "EURUSD",
+            "unit": "PIP",
+            "value": "1.0"
+          },
+          "session_id": "NONE",
+          "session_registry_version": "SESSION_REGISTRY_V1",
+          "size": {
+            "instrument_id": "EURUSD",
+            "unit": "PIP",
+            "value": "46.0"
+          },
+          "source_window": {
+            "bar_count": 6,
+            "input_digest": "419f69516bd1310f2e9b0284f61410b566ffc30e026a2665ce9bdcce7586f2c6",
+            "window_close_utc": "2026-03-03T00:25:00Z",
+            "window_open_utc": "2026-03-02T23:55:00Z"
+          }
+        },
+        "tier": {
+          "calculation_timestamp": "2026-03-03T09:00:00Z",
+          "calibration_key": {
+            "calibration_id": "EUR_DAILY_PHASE1_TIERS",
+            "calibration_version": "V1",
+            "model_id": "EUR.DAILY.NEWS_REKEY.V1",
+            "model_version": "PHASE1"
+          },
+          "calibration_status": "FROZEN_LAUNCH",
+          "clock_id": "America/New_York",
+          "clock_registry_version": "CLOCK_REGISTRY_V1",
+          "definition_id": "TIER_CLASSIFICATION",
+          "definition_version": "V1",
+          "evidence_refs": [
+            "EV.EUR.DAILY.PHASE1_TIERS.V1"
+          ],
+          "instrument_id": "EURUSD",
+          "magnitude": {
+            "instrument_id": "EURUSD",
+            "unit": "PIP",
+            "value": "46.0"
+          },
+          "market_data_schema_version": "MARKET_DATA_SCHEMA_V1",
+          "measurement_engine_version": "MEASUREMENT_ENGINE_V1",
+          "native_unit": "PIP",
+          "no_go": true,
+          "quality_state": "OK",
+          "session_id": "NONE",
+          "session_registry_version": "SESSION_REGISTRY_V1",
+          "source_ref": "corpus/canonical/evidence/EUR_DAILY_PHASE1_CALIBRATION_EVIDENCE_V1.md",
+          "source_window": {
+            "bar_count": 6,
+            "input_digest": "419f69516bd1310f2e9b0284f61410b566ffc30e026a2665ce9bdcce7586f2c6",
+            "window_close_utc": "2026-03-03T00:25:00Z",
+            "window_open_utc": "2026-03-02T23:55:00Z"
+          },
+          "tier_id": "NO_GO"
+        }
+      },
+      "instrument_id": "EURUSD",
+      "model_id": "EUR.DAILY.NEWS_REKEY.V1",
+      "model_version": "PHASE1",
+      "prior_case": null,
+      "session_id": "EUR_DAILY.ASIAN_RANGE"
+    },
+    {
+      "calculation_timestamp": "2026-03-03T09:00:00Z",
+      "calibration_key": {
+        "calibration_id": "EUR_DAILY_PHASE1_TIERS",
+        "calibration_version": "V1",
+        "model_id": "EUR.DAILY.NEWS_REKEY.V1",
+        "model_version": "PHASE1"
+      },
+      "case_id": "EUR_DAILY_NO_GO_52",
+      "clock_id": "America/New_York",
+      "expected": {
+        "direction_bias": "NONE_DECLARED",
+        "evidence_refs": [
+          "EV.EUR.DAILY.PHASE1_TIERS.V1"
+        ],
+        "fact_ids": [
+          "EUR_DAILY.SEED",
+          "EUR_DAILY.TIER",
+          "EUR_DAILY.DISTANCE_ASYMMETRY",
+          "EUR_DAILY.DISTRIBUTION",
+          "PRIOR_STATE.ABSENT"
+        ],
+        "layer": "L1",
+        "levels": [],
+        "model_state": "SOURCE_NO_GO",
+        "no_go": [
+          "AR_SOURCE_NO_GO"
+        ],
+        "production_authorization": "RESEARCH_ONLY",
+        "quality_state": "OK",
+        "range_left_state": "UNRESOLVED",
+        "range_left_value": null,
+        "sub_states": [],
+        "warnings": []
+      },
+      "expected_refusal": null,
+      "inputs": {
+        "seed": {
+          "breakout_return_state": "INSIDE_RANGE",
+          "calculation_timestamp": "2026-03-03T09:00:00Z",
+          "clock_id": "America/New_York",
+          "clock_registry_version": "CLOCK_REGISTRY_V1",
+          "close_location": "0.7307692308",
+          "consumed_fraction": "0.6730769231",
+          "definition_id": "RANGE_MEASUREMENT",
+          "definition_version": "V1",
+          "direction": "UP",
+          "evidence_refs": [],
+          "high": {
+            "instrument_id": "EURUSD",
+            "unit": "PIP",
+            "value": "1.08420"
+          },
+          "instrument_id": "EURUSD",
+          "low": {
+            "instrument_id": "EURUSD",
+            "unit": "PIP",
+            "value": "1.07900"
+          },
+          "market_data_schema_version": "MARKET_DATA_SCHEMA_V1",
+          "measurement_engine_version": "MEASUREMENT_ENGINE_V1",
+          "midpoint": {
+            "instrument_id": "EURUSD",
+            "unit": "PIP",
+            "value": "1.08160"
+          },
+          "native_unit": "PIP",
+          "quality_state": "OK",
+          "range_left": {
+            "instrument_id": "EURUSD",
+            "unit": "PIP",
+            "value": "17.0"
+          },
+          "session_id": "EUR_DAILY.ASIAN_RANGE",
+          "session_registry_version": "SESSION_REGISTRY_V1",
+          "size": {
+            "instrument_id": "EURUSD",
+            "unit": "PIP",
+            "value": "52.0"
+          },
+          "source_window": {
+            "bar_count": 6,
+            "input_digest": "56ed0e650a2260de9fff104c92a9f8e1ac4eb11860b0f5f6030ca09a28a7e9df",
+            "window_close_utc": "2026-03-03T00:30:00Z",
+            "window_open_utc": "2026-03-03T00:00:00Z"
+          }
+        },
+        "tier": {
+          "calculation_timestamp": "2026-03-03T09:00:00Z",
+          "calibration_key": {
+            "calibration_id": "EUR_DAILY_PHASE1_TIERS",
+            "calibration_version": "V1",
+            "model_id": "EUR.DAILY.NEWS_REKEY.V1",
+            "model_version": "PHASE1"
+          },
+          "calibration_status": "FROZEN_LAUNCH",
+          "clock_id": "America/New_York",
+          "clock_registry_version": "CLOCK_REGISTRY_V1",
+          "definition_id": "TIER_CLASSIFICATION",
+          "definition_version": "V1",
+          "evidence_refs": [
+            "EV.EUR.DAILY.PHASE1_TIERS.V1"
+          ],
+          "instrument_id": "EURUSD",
+          "magnitude": {
+            "instrument_id": "EURUSD",
+            "unit": "PIP",
+            "value": "52.0"
+          },
+          "market_data_schema_version": "MARKET_DATA_SCHEMA_V1",
+          "measurement_engine_version": "MEASUREMENT_ENGINE_V1",
+          "native_unit": "PIP",
+          "no_go": true,
+          "quality_state": "OK",
+          "session_id": "NONE",
+          "session_registry_version": "SESSION_REGISTRY_V1",
+          "source_ref": "corpus/canonical/evidence/EUR_DAILY_PHASE1_CALIBRATION_EVIDENCE_V1.md",
+          "source_window": {
+            "bar_count": 6,
+            "input_digest": "56ed0e650a2260de9fff104c92a9f8e1ac4eb11860b0f5f6030ca09a28a7e9df",
+            "window_close_utc": "2026-03-03T00:30:00Z",
+            "window_open_utc": "2026-03-03T00:00:00Z"
+          },
+          "tier_id": "NO_GO"
+        }
+      },
+      "instrument_id": "EURUSD",
+      "model_id": "EUR.DAILY.NEWS_REKEY.V1",
+      "model_version": "PHASE1",
+      "prior_case": null,
+      "session_id": "EUR_DAILY.ASIAN_RANGE"
+    },
+    {
+      "calculation_timestamp": "2026-03-03T09:00:00Z",
+      "calibration_key": {
+        "calibration_id": "EUR_DAILY_PHASE1_TIERS",
+        "calibration_version": "V1",
+        "model_id": "EUR.DAILY.NEWS_REKEY.V1",
+        "model_version": "PHASE1"
+      },
+      "case_id": "EUR_DAILY_REKEY_100",
+      "clock_id": "America/New_York",
+      "expected": {
+        "direction_bias": "NONE_DECLARED",
+        "evidence_refs": [
+          "EV.EUR.DAILY.PHASE1_TIERS.V1"
+        ],
+        "fact_ids": [
+          "EUR_DAILY.SEED",
+          "EUR_DAILY.TIER",
+          "EUR_DAILY.DISTANCE_ASYMMETRY",
+          "EUR_DAILY.REKEY_ANCHOR",
+          "EUR_DAILY.DISTRIBUTION",
+          "PRIOR_STATE.ABSENT"
+        ],
+        "layer": "L1",
+        "levels": [],
+        "model_state": "REKEY_100",
+        "no_go": [],
+        "production_authorization": "RESEARCH_ONLY",
+        "quality_state": "OK",
+        "range_left_state": "UNRESOLVED",
+        "range_left_value": null,
+        "sub_states": [],
+        "warnings": []
+      },
+      "expected_refusal": null,
+      "inputs": {
+        "anchor": {
+          "anchor_id": "EUR_DAILY.ANCHOR.REKEYED.01",
+          "automation_ready": false,
+          "calculation_timestamp": "2026-03-03T09:00:00Z",
+          "clock_id": "America/New_York",
+          "clock_registry_version": "CLOCK_REGISTRY_V1",
+          "definition_id": "ANCHOR_ELIGIBILITY",
+          "definition_version": "V1",
+          "earned_range_reference": "3acce141884c400f9fe13d9d10123c95b6718d73832a60762a5f8f5f6d6d6338",
+          "evidence_refs": [],
+          "instrument_id": "EURUSD",
+          "market_data_schema_version": "MARKET_DATA_SCHEMA_V1",
+          "measurement_engine_version": "MEASUREMENT_ENGINE_V1",
+          "model_id": "EUR.DAILY.NEWS_REKEY.V1",
+          "model_version": "PHASE1",
+          "native_unit": "PIP",
+          "quality_state": "OK",
+          "refusal_code": "ANCHOR_REKEYED",
+          "rekey_source_anchor_id": "EUR_DAILY.ANCHOR.PRIOR.01",
+          "rule_id": "R15.RANGE_BIRTH",
+          "rule_materialization": "DECLARED",
+          "rule_version": "R15",
+          "session_id": "NONE",
+          "session_registry_version": "SESSION_REGISTRY_V1",
+          "source_window": {
+            "bar_count": 6,
+            "input_digest": "3acce141884c400f9fe13d9d10123c95b6718d73832a60762a5f8f5f6d6d6338",
+            "window_close_utc": "2026-03-03T00:30:00Z",
+            "window_open_utc": "2026-03-03T00:00:00Z"
+          },
+          "status": "REKEYED"
+        },
+        "ladder_state": "100",
+        "seed": {
+          "breakout_return_state": "INSIDE_RANGE",
+          "calculation_timestamp": "2026-03-03T09:00:00Z",
+          "clock_id": "America/New_York",
+          "clock_registry_version": "CLOCK_REGISTRY_V1",
+          "close_location": "0.7200000000",
+          "consumed_fraction": "0.6000000000",
+          "definition_id": "RANGE_MEASUREMENT",
+          "definition_version": "V1",
+          "direction": "UP",
+          "evidence_refs": [],
+          "high": {
+            "instrument_id": "EURUSD",
+            "unit": "PIP",
+            "value": "1.08150"
+          },
+          "instrument_id": "EURUSD",
+          "low": {
+            "instrument_id": "EURUSD",
+            "unit": "PIP",
+            "value": "1.07900"
+          },
+          "market_data_schema_version": "MARKET_DATA_SCHEMA_V1",
+          "measurement_engine_version": "MEASUREMENT_ENGINE_V1",
+          "midpoint": {
+            "instrument_id": "EURUSD",
+            "unit": "PIP",
+            "value": "1.08025"
+          },
+          "native_unit": "PIP",
+          "quality_state": "OK",
+          "range_left": {
+            "instrument_id": "EURUSD",
+            "unit": "PIP",
+            "value": "10.0"
+          },
+          "session_id": "EUR_DAILY.ASIAN_RANGE",
+          "session_registry_version": "SESSION_REGISTRY_V1",
+          "size": {
+            "instrument_id": "EURUSD",
+            "unit": "PIP",
+            "value": "25.0"
+          },
+          "source_window": {
+            "bar_count": 6,
+            "input_digest": "3acce141884c400f9fe13d9d10123c95b6718d73832a60762a5f8f5f6d6d6338",
+            "window_close_utc": "2026-03-03T00:30:00Z",
+            "window_open_utc": "2026-03-03T00:00:00Z"
+          }
+        },
+        "tier": {
+          "calculation_timestamp": "2026-03-03T09:00:00Z",
+          "calibration_key": {
+            "calibration_id": "EUR_DAILY_PHASE1_TIERS",
+            "calibration_version": "V1",
+            "model_id": "EUR.DAILY.NEWS_REKEY.V1",
+            "model_version": "PHASE1"
+          },
+          "calibration_status": "FROZEN_LAUNCH",
+          "clock_id": "America/New_York",
+          "clock_registry_version": "CLOCK_REGISTRY_V1",
+          "definition_id": "TIER_CLASSIFICATION",
+          "definition_version": "V1",
+          "evidence_refs": [
+            "EV.EUR.DAILY.PHASE1_TIERS.V1"
+          ],
+          "instrument_id": "EURUSD",
+          "magnitude": {
+            "instrument_id": "EURUSD",
+            "unit": "PIP",
+            "value": "25.0"
+          },
+          "market_data_schema_version": "MARKET_DATA_SCHEMA_V1",
+          "measurement_engine_version": "MEASUREMENT_ENGINE_V1",
+          "native_unit": "PIP",
+          "no_go": false,
+          "quality_state": "OK",
+          "session_id": "NONE",
+          "session_registry_version": "SESSION_REGISTRY_V1",
+          "source_ref": "corpus/canonical/evidence/EUR_DAILY_PHASE1_CALIBRATION_EVIDENCE_V1.md",
+          "source_window": {
+            "bar_count": 6,
+            "input_digest": "3acce141884c400f9fe13d9d10123c95b6718d73832a60762a5f8f5f6d6d6338",
+            "window_close_utc": "2026-03-03T00:30:00Z",
+            "window_open_utc": "2026-03-03T00:00:00Z"
+          },
+          "tier_id": "T2"
+        }
+      },
+      "instrument_id": "EURUSD",
+      "model_id": "EUR.DAILY.NEWS_REKEY.V1",
+      "model_version": "PHASE1",
+      "prior_case": null,
+      "session_id": "EUR_DAILY.ASIAN_RANGE"
+    },
+    {
+      "calculation_timestamp": "2026-03-03T09:00:00Z",
+      "calibration_key": {
+        "calibration_id": "EUR_DAILY_PHASE1_TIERS",
+        "calibration_version": "V1",
+        "model_id": "EUR.DAILY.NEWS_REKEY.V1",
+        "model_version": "PHASE1"
+      },
+      "case_id": "EUR_DAILY_REKEY_125",
+      "clock_id": "America/New_York",
+      "expected": {
+        "direction_bias": "NONE_DECLARED",
+        "evidence_refs": [
+          "EV.EUR.DAILY.PHASE1_TIERS.V1"
+        ],
+        "fact_ids": [
+          "EUR_DAILY.SEED",
+          "EUR_DAILY.TIER",
+          "EUR_DAILY.DISTANCE_ASYMMETRY",
+          "EUR_DAILY.REKEY_ANCHOR",
+          "EUR_DAILY.DISTRIBUTION",
+          "PRIOR_STATE.ABSENT"
+        ],
+        "layer": "L1",
+        "levels": [],
+        "model_state": "REKEY_125",
+        "no_go": [],
+        "production_authorization": "RESEARCH_ONLY",
+        "quality_state": "OK",
+        "range_left_state": "UNRESOLVED",
+        "range_left_value": null,
+        "sub_states": [],
+        "warnings": []
+      },
+      "expected_refusal": null,
+      "inputs": {
+        "anchor": {
+          "anchor_id": "EUR_DAILY.ANCHOR.REKEYED.01",
+          "automation_ready": false,
+          "calculation_timestamp": "2026-03-03T09:00:00Z",
+          "clock_id": "America/New_York",
+          "clock_registry_version": "CLOCK_REGISTRY_V1",
+          "definition_id": "ANCHOR_ELIGIBILITY",
+          "definition_version": "V1",
+          "earned_range_reference": "3acce141884c400f9fe13d9d10123c95b6718d73832a60762a5f8f5f6d6d6338",
+          "evidence_refs": [],
+          "instrument_id": "EURUSD",
+          "market_data_schema_version": "MARKET_DATA_SCHEMA_V1",
+          "measurement_engine_version": "MEASUREMENT_ENGINE_V1",
+          "model_id": "EUR.DAILY.NEWS_REKEY.V1",
+          "model_version": "PHASE1",
+          "native_unit": "PIP",
+          "quality_state": "OK",
+          "refusal_code": "ANCHOR_REKEYED",
+          "rekey_source_anchor_id": "EUR_DAILY.ANCHOR.PRIOR.01",
+          "rule_id": "R15.RANGE_BIRTH",
+          "rule_materialization": "DECLARED",
+          "rule_version": "R15",
+          "session_id": "NONE",
+          "session_registry_version": "SESSION_REGISTRY_V1",
+          "source_window": {
+            "bar_count": 6,
+            "input_digest": "3acce141884c400f9fe13d9d10123c95b6718d73832a60762a5f8f5f6d6d6338",
+            "window_close_utc": "2026-03-03T00:30:00Z",
+            "window_open_utc": "2026-03-03T00:00:00Z"
+          },
+          "status": "REKEYED"
+        },
+        "ladder_state": "125",
+        "seed": {
+          "breakout_return_state": "INSIDE_RANGE",
+          "calculation_timestamp": "2026-03-03T09:00:00Z",
+          "clock_id": "America/New_York",
+          "clock_registry_version": "CLOCK_REGISTRY_V1",
+          "close_location": "0.7200000000",
+          "consumed_fraction": "0.6000000000",
+          "definition_id": "RANGE_MEASUREMENT",
+          "definition_version": "V1",
+          "direction": "UP",
+          "evidence_refs": [],
+          "high": {
+            "instrument_id": "EURUSD",
+            "unit": "PIP",
+            "value": "1.08150"
+          },
+          "instrument_id": "EURUSD",
+          "low": {
+            "instrument_id": "EURUSD",
+            "unit": "PIP",
+            "value": "1.07900"
+          },
+          "market_data_schema_version": "MARKET_DATA_SCHEMA_V1",
+          "measurement_engine_version": "MEASUREMENT_ENGINE_V1",
+          "midpoint": {
+            "instrument_id": "EURUSD",
+            "unit": "PIP",
+            "value": "1.08025"
+          },
+          "native_unit": "PIP",
+          "quality_state": "OK",
+          "range_left": {
+            "instrument_id": "EURUSD",
+            "unit": "PIP",
+            "value": "10.0"
+          },
+          "session_id": "EUR_DAILY.ASIAN_RANGE",
+          "session_registry_version": "SESSION_REGISTRY_V1",
+          "size": {
+            "instrument_id": "EURUSD",
+            "unit": "PIP",
+            "value": "25.0"
+          },
+          "source_window": {
+            "bar_count": 6,
+            "input_digest": "3acce141884c400f9fe13d9d10123c95b6718d73832a60762a5f8f5f6d6d6338",
+            "window_close_utc": "2026-03-03T00:30:00Z",
+            "window_open_utc": "2026-03-03T00:00:00Z"
+          }
+        },
+        "tier": {
+          "calculation_timestamp": "2026-03-03T09:00:00Z",
+          "calibration_key": {
+            "calibration_id": "EUR_DAILY_PHASE1_TIERS",
+            "calibration_version": "V1",
+            "model_id": "EUR.DAILY.NEWS_REKEY.V1",
+            "model_version": "PHASE1"
+          },
+          "calibration_status": "FROZEN_LAUNCH",
+          "clock_id": "America/New_York",
+          "clock_registry_version": "CLOCK_REGISTRY_V1",
+          "definition_id": "TIER_CLASSIFICATION",
+          "definition_version": "V1",
+          "evidence_refs": [
+            "EV.EUR.DAILY.PHASE1_TIERS.V1"
+          ],
+          "instrument_id": "EURUSD",
+          "magnitude": {
+            "instrument_id": "EURUSD",
+            "unit": "PIP",
+            "value": "25.0"
+          },
+          "market_data_schema_version": "MARKET_DATA_SCHEMA_V1",
+          "measurement_engine_version": "MEASUREMENT_ENGINE_V1",
+          "native_unit": "PIP",
+          "no_go": false,
+          "quality_state": "OK",
+          "session_id": "NONE",
+          "session_registry_version": "SESSION_REGISTRY_V1",
+          "source_ref": "corpus/canonical/evidence/EUR_DAILY_PHASE1_CALIBRATION_EVIDENCE_V1.md",
+          "source_window": {
+            "bar_count": 6,
+            "input_digest": "3acce141884c400f9fe13d9d10123c95b6718d73832a60762a5f8f5f6d6d6338",
+            "window_close_utc": "2026-03-03T00:30:00Z",
+            "window_open_utc": "2026-03-03T00:00:00Z"
+          },
+          "tier_id": "T2"
+        }
+      },
+      "instrument_id": "EURUSD",
+      "model_id": "EUR.DAILY.NEWS_REKEY.V1",
+      "model_version": "PHASE1",
+      "prior_case": null,
+      "session_id": "EUR_DAILY.ASIAN_RANGE"
+    },
+    {
+      "calculation_timestamp": "2026-03-03T09:00:00Z",
+      "calibration_key": {
+        "calibration_id": "EUR_DAILY_PHASE1_TIERS",
+        "calibration_version": "V1",
+        "model_id": "EUR.DAILY.NEWS_REKEY.V1",
+        "model_version": "PHASE1"
+      },
+      "case_id": "EUR_DAILY_REKEY_132",
+      "clock_id": "America/New_York",
+      "expected": {
+        "direction_bias": "NONE_DECLARED",
+        "evidence_refs": [
+          "EV.EUR.DAILY.PHASE1_TIERS.V1"
+        ],
+        "fact_ids": [
+          "EUR_DAILY.SEED",
+          "EUR_DAILY.TIER",
+          "EUR_DAILY.DISTANCE_ASYMMETRY",
+          "EUR_DAILY.REKEY_ANCHOR",
+          "EUR_DAILY.DISTRIBUTION",
+          "PRIOR_STATE.ABSENT"
+        ],
+        "layer": "L1",
+        "levels": [],
+        "model_state": "REKEY_132",
+        "no_go": [],
+        "production_authorization": "RESEARCH_ONLY",
+        "quality_state": "OK",
+        "range_left_state": "UNRESOLVED",
+        "range_left_value": null,
+        "sub_states": [],
+        "warnings": []
+      },
+      "expected_refusal": null,
+      "inputs": {
+        "anchor": {
+          "anchor_id": "EUR_DAILY.ANCHOR.REKEYED.01",
+          "automation_ready": false,
+          "calculation_timestamp": "2026-03-03T09:00:00Z",
+          "clock_id": "America/New_York",
+          "clock_registry_version": "CLOCK_REGISTRY_V1",
+          "definition_id": "ANCHOR_ELIGIBILITY",
+          "definition_version": "V1",
+          "earned_range_reference": "3acce141884c400f9fe13d9d10123c95b6718d73832a60762a5f8f5f6d6d6338",
+          "evidence_refs": [],
+          "instrument_id": "EURUSD",
+          "market_data_schema_version": "MARKET_DATA_SCHEMA_V1",
+          "measurement_engine_version": "MEASUREMENT_ENGINE_V1",
+          "model_id": "EUR.DAILY.NEWS_REKEY.V1",
+          "model_version": "PHASE1",
+          "native_unit": "PIP",
+          "quality_state": "OK",
+          "refusal_code": "ANCHOR_REKEYED",
+          "rekey_source_anchor_id": "EUR_DAILY.ANCHOR.PRIOR.01",
+          "rule_id": "R15.RANGE_BIRTH",
+          "rule_materialization": "DECLARED",
+          "rule_version": "R15",
+          "session_id": "NONE",
+          "session_registry_version": "SESSION_REGISTRY_V1",
+          "source_window": {
+            "bar_count": 6,
+            "input_digest": "3acce141884c400f9fe13d9d10123c95b6718d73832a60762a5f8f5f6d6d6338",
+            "window_close_utc": "2026-03-03T00:30:00Z",
+            "window_open_utc": "2026-03-03T00:00:00Z"
+          },
+          "status": "REKEYED"
+        },
+        "ladder_state": "132",
+        "seed": {
+          "breakout_return_state": "INSIDE_RANGE",
+          "calculation_timestamp": "2026-03-03T09:00:00Z",
+          "clock_id": "America/New_York",
+          "clock_registry_version": "CLOCK_REGISTRY_V1",
+          "close_location": "0.7200000000",
+          "consumed_fraction": "0.6000000000",
+          "definition_id": "RANGE_MEASUREMENT",
+          "definition_version": "V1",
+          "direction": "UP",
+          "evidence_refs": [],
+          "high": {
+            "instrument_id": "EURUSD",
+            "unit": "PIP",
+            "value": "1.08150"
+          },
+          "instrument_id": "EURUSD",
+          "low": {
+            "instrument_id": "EURUSD",
+            "unit": "PIP",
+            "value": "1.07900"
+          },
+          "market_data_schema_version": "MARKET_DATA_SCHEMA_V1",
+          "measurement_engine_version": "MEASUREMENT_ENGINE_V1",
+          "midpoint": {
+            "instrument_id": "EURUSD",
+            "unit": "PIP",
+            "value": "1.08025"
+          },
+          "native_unit": "PIP",
+          "quality_state": "OK",
+          "range_left": {
+            "instrument_id": "EURUSD",
+            "unit": "PIP",
+            "value": "10.0"
+          },
+          "session_id": "EUR_DAILY.ASIAN_RANGE",
+          "session_registry_version": "SESSION_REGISTRY_V1",
+          "size": {
+            "instrument_id": "EURUSD",
+            "unit": "PIP",
+            "value": "25.0"
+          },
+          "source_window": {
+            "bar_count": 6,
+            "input_digest": "3acce141884c400f9fe13d9d10123c95b6718d73832a60762a5f8f5f6d6d6338",
+            "window_close_utc": "2026-03-03T00:30:00Z",
+            "window_open_utc": "2026-03-03T00:00:00Z"
+          }
+        },
+        "tier": {
+          "calculation_timestamp": "2026-03-03T09:00:00Z",
+          "calibration_key": {
+            "calibration_id": "EUR_DAILY_PHASE1_TIERS",
+            "calibration_version": "V1",
+            "model_id": "EUR.DAILY.NEWS_REKEY.V1",
+            "model_version": "PHASE1"
+          },
+          "calibration_status": "FROZEN_LAUNCH",
+          "clock_id": "America/New_York",
+          "clock_registry_version": "CLOCK_REGISTRY_V1",
+          "definition_id": "TIER_CLASSIFICATION",
+          "definition_version": "V1",
+          "evidence_refs": [
+            "EV.EUR.DAILY.PHASE1_TIERS.V1"
+          ],
+          "instrument_id": "EURUSD",
+          "magnitude": {
+            "instrument_id": "EURUSD",
+            "unit": "PIP",
+            "value": "25.0"
+          },
+          "market_data_schema_version": "MARKET_DATA_SCHEMA_V1",
+          "measurement_engine_version": "MEASUREMENT_ENGINE_V1",
+          "native_unit": "PIP",
+          "no_go": false,
+          "quality_state": "OK",
+          "session_id": "NONE",
+          "session_registry_version": "SESSION_REGISTRY_V1",
+          "source_ref": "corpus/canonical/evidence/EUR_DAILY_PHASE1_CALIBRATION_EVIDENCE_V1.md",
+          "source_window": {
+            "bar_count": 6,
+            "input_digest": "3acce141884c400f9fe13d9d10123c95b6718d73832a60762a5f8f5f6d6d6338",
+            "window_close_utc": "2026-03-03T00:30:00Z",
+            "window_open_utc": "2026-03-03T00:00:00Z"
+          },
+          "tier_id": "T2"
+        }
+      },
+      "instrument_id": "EURUSD",
+      "model_id": "EUR.DAILY.NEWS_REKEY.V1",
+      "model_version": "PHASE1",
+      "prior_case": null,
+      "session_id": "EUR_DAILY.ASIAN_RANGE"
+    },
+    {
+      "calculation_timestamp": "2026-03-03T09:00:00Z",
+      "calibration_key": {
+        "calibration_id": "EUR_DAILY_PHASE1_TIERS",
+        "calibration_version": "V1",
+        "model_id": "EUR.DAILY.NEWS_REKEY.V1",
+        "model_version": "PHASE1"
+      },
+      "case_id": "EUR_DAILY_REKEY_168",
+      "clock_id": "America/New_York",
+      "expected": {
+        "direction_bias": "NONE_DECLARED",
+        "evidence_refs": [
+          "EV.EUR.DAILY.PHASE1_TIERS.V1"
+        ],
+        "fact_ids": [
+          "EUR_DAILY.SEED",
+          "EUR_DAILY.TIER",
+          "EUR_DAILY.DISTANCE_ASYMMETRY",
+          "EUR_DAILY.REKEY_ANCHOR",
+          "EUR_DAILY.DISTRIBUTION",
+          "PRIOR_STATE.ABSENT"
+        ],
+        "layer": "L1",
+        "levels": [],
+        "model_state": "REKEY_168",
+        "no_go": [],
+        "production_authorization": "RESEARCH_ONLY",
+        "quality_state": "OK",
+        "range_left_state": "UNRESOLVED",
+        "range_left_value": null,
+        "sub_states": [],
+        "warnings": []
+      },
+      "expected_refusal": null,
+      "inputs": {
+        "anchor": {
+          "anchor_id": "EUR_DAILY.ANCHOR.REKEYED.01",
+          "automation_ready": false,
+          "calculation_timestamp": "2026-03-03T09:00:00Z",
+          "clock_id": "America/New_York",
+          "clock_registry_version": "CLOCK_REGISTRY_V1",
+          "definition_id": "ANCHOR_ELIGIBILITY",
+          "definition_version": "V1",
+          "earned_range_reference": "3acce141884c400f9fe13d9d10123c95b6718d73832a60762a5f8f5f6d6d6338",
+          "evidence_refs": [],
+          "instrument_id": "EURUSD",
+          "market_data_schema_version": "MARKET_DATA_SCHEMA_V1",
+          "measurement_engine_version": "MEASUREMENT_ENGINE_V1",
+          "model_id": "EUR.DAILY.NEWS_REKEY.V1",
+          "model_version": "PHASE1",
+          "native_unit": "PIP",
+          "quality_state": "OK",
+          "refusal_code": "ANCHOR_REKEYED",
+          "rekey_source_anchor_id": "EUR_DAILY.ANCHOR.PRIOR.01",
+          "rule_id": "R15.RANGE_BIRTH",
+          "rule_materialization": "DECLARED",
+          "rule_version": "R15",
+          "session_id": "NONE",
+          "session_registry_version": "SESSION_REGISTRY_V1",
+          "source_window": {
+            "bar_count": 6,
+            "input_digest": "3acce141884c400f9fe13d9d10123c95b6718d73832a60762a5f8f5f6d6d6338",
+            "window_close_utc": "2026-03-03T00:30:00Z",
+            "window_open_utc": "2026-03-03T00:00:00Z"
+          },
+          "status": "REKEYED"
+        },
+        "ladder_state": "168",
+        "seed": {
+          "breakout_return_state": "INSIDE_RANGE",
+          "calculation_timestamp": "2026-03-03T09:00:00Z",
+          "clock_id": "America/New_York",
+          "clock_registry_version": "CLOCK_REGISTRY_V1",
+          "close_location": "0.7200000000",
+          "consumed_fraction": "0.6000000000",
+          "definition_id": "RANGE_MEASUREMENT",
+          "definition_version": "V1",
+          "direction": "UP",
+          "evidence_refs": [],
+          "high": {
+            "instrument_id": "EURUSD",
+            "unit": "PIP",
+            "value": "1.08150"
+          },
+          "instrument_id": "EURUSD",
+          "low": {
+            "instrument_id": "EURUSD",
+            "unit": "PIP",
+            "value": "1.07900"
+          },
+          "market_data_schema_version": "MARKET_DATA_SCHEMA_V1",
+          "measurement_engine_version": "MEASUREMENT_ENGINE_V1",
+          "midpoint": {
+            "instrument_id": "EURUSD",
+            "unit": "PIP",
+            "value": "1.08025"
+          },
+          "native_unit": "PIP",
+          "quality_state": "OK",
+          "range_left": {
+            "instrument_id": "EURUSD",
+            "unit": "PIP",
+            "value": "10.0"
+          },
+          "session_id": "EUR_DAILY.ASIAN_RANGE",
+          "session_registry_version": "SESSION_REGISTRY_V1",
+          "size": {
+            "instrument_id": "EURUSD",
+            "unit": "PIP",
+            "value": "25.0"
+          },
+          "source_window": {
+            "bar_count": 6,
+            "input_digest": "3acce141884c400f9fe13d9d10123c95b6718d73832a60762a5f8f5f6d6d6338",
+            "window_close_utc": "2026-03-03T00:30:00Z",
+            "window_open_utc": "2026-03-03T00:00:00Z"
+          }
+        },
+        "tier": {
+          "calculation_timestamp": "2026-03-03T09:00:00Z",
+          "calibration_key": {
+            "calibration_id": "EUR_DAILY_PHASE1_TIERS",
+            "calibration_version": "V1",
+            "model_id": "EUR.DAILY.NEWS_REKEY.V1",
+            "model_version": "PHASE1"
+          },
+          "calibration_status": "FROZEN_LAUNCH",
+          "clock_id": "America/New_York",
+          "clock_registry_version": "CLOCK_REGISTRY_V1",
+          "definition_id": "TIER_CLASSIFICATION",
+          "definition_version": "V1",
+          "evidence_refs": [
+            "EV.EUR.DAILY.PHASE1_TIERS.V1"
+          ],
+          "instrument_id": "EURUSD",
+          "magnitude": {
+            "instrument_id": "EURUSD",
+            "unit": "PIP",
+            "value": "25.0"
+          },
+          "market_data_schema_version": "MARKET_DATA_SCHEMA_V1",
+          "measurement_engine_version": "MEASUREMENT_ENGINE_V1",
+          "native_unit": "PIP",
+          "no_go": false,
+          "quality_state": "OK",
+          "session_id": "NONE",
+          "session_registry_version": "SESSION_REGISTRY_V1",
+          "source_ref": "corpus/canonical/evidence/EUR_DAILY_PHASE1_CALIBRATION_EVIDENCE_V1.md",
+          "source_window": {
+            "bar_count": 6,
+            "input_digest": "3acce141884c400f9fe13d9d10123c95b6718d73832a60762a5f8f5f6d6d6338",
+            "window_close_utc": "2026-03-03T00:30:00Z",
+            "window_open_utc": "2026-03-03T00:00:00Z"
+          },
+          "tier_id": "T2"
+        }
+      },
+      "instrument_id": "EURUSD",
+      "model_id": "EUR.DAILY.NEWS_REKEY.V1",
+      "model_version": "PHASE1",
+      "prior_case": null,
+      "session_id": "EUR_DAILY.ASIAN_RANGE"
+    },
+    {
+      "calculation_timestamp": "2026-03-03T09:00:00Z",
+      "calibration_key": {
+        "calibration_id": "EUR_DAILY_PHASE1_TIERS",
+        "calibration_version": "V1",
+        "model_id": "EUR.DAILY.NEWS_REKEY.V1",
+        "model_version": "PHASE1"
+      },
+      "case_id": "EUR_DAILY_REKEY_185",
+      "clock_id": "America/New_York",
+      "expected": {
+        "direction_bias": "NONE_DECLARED",
+        "evidence_refs": [
+          "EV.EUR.DAILY.PHASE1_TIERS.V1"
+        ],
+        "fact_ids": [
+          "EUR_DAILY.SEED",
+          "EUR_DAILY.TIER",
+          "EUR_DAILY.DISTANCE_ASYMMETRY",
+          "EUR_DAILY.REKEY_ANCHOR",
+          "EUR_DAILY.DISTRIBUTION",
+          "PRIOR_STATE.ABSENT"
+        ],
+        "layer": "L1",
+        "levels": [],
+        "model_state": "REKEY_185",
+        "no_go": [],
+        "production_authorization": "RESEARCH_ONLY",
+        "quality_state": "OK",
+        "range_left_state": "UNRESOLVED",
+        "range_left_value": null,
+        "sub_states": [],
+        "warnings": []
+      },
+      "expected_refusal": null,
+      "inputs": {
+        "anchor": {
+          "anchor_id": "EUR_DAILY.ANCHOR.REKEYED.01",
+          "automation_ready": false,
+          "calculation_timestamp": "2026-03-03T09:00:00Z",
+          "clock_id": "America/New_York",
+          "clock_registry_version": "CLOCK_REGISTRY_V1",
+          "definition_id": "ANCHOR_ELIGIBILITY",
+          "definition_version": "V1",
+          "earned_range_reference": "3acce141884c400f9fe13d9d10123c95b6718d73832a60762a5f8f5f6d6d6338",
+          "evidence_refs": [],
+          "instrument_id": "EURUSD",
+          "market_data_schema_version": "MARKET_DATA_SCHEMA_V1",
+          "measurement_engine_version": "MEASUREMENT_ENGINE_V1",
+          "model_id": "EUR.DAILY.NEWS_REKEY.V1",
+          "model_version": "PHASE1",
+          "native_unit": "PIP",
+          "quality_state": "OK",
+          "refusal_code": "ANCHOR_REKEYED",
+          "rekey_source_anchor_id": "EUR_DAILY.ANCHOR.PRIOR.01",
+          "rule_id": "R15.RANGE_BIRTH",
+          "rule_materialization": "DECLARED",
+          "rule_version": "R15",
+          "session_id": "NONE",
+          "session_registry_version": "SESSION_REGISTRY_V1",
+          "source_window": {
+            "bar_count": 6,
+            "input_digest": "3acce141884c400f9fe13d9d10123c95b6718d73832a60762a5f8f5f6d6d6338",
+            "window_close_utc": "2026-03-03T00:30:00Z",
+            "window_open_utc": "2026-03-03T00:00:00Z"
+          },
+          "status": "REKEYED"
+        },
+        "ladder_state": "185",
+        "seed": {
+          "breakout_return_state": "INSIDE_RANGE",
+          "calculation_timestamp": "2026-03-03T09:00:00Z",
+          "clock_id": "America/New_York",
+          "clock_registry_version": "CLOCK_REGISTRY_V1",
+          "close_location": "0.7200000000",
+          "consumed_fraction": "0.6000000000",
+          "definition_id": "RANGE_MEASUREMENT",
+          "definition_version": "V1",
+          "direction": "UP",
+          "evidence_refs": [],
+          "high": {
+            "instrument_id": "EURUSD",
+            "unit": "PIP",
+            "value": "1.08150"
+          },
+          "instrument_id": "EURUSD",
+          "low": {
+            "instrument_id": "EURUSD",
+            "unit": "PIP",
+            "value": "1.07900"
+          },
+          "market_data_schema_version": "MARKET_DATA_SCHEMA_V1",
+          "measurement_engine_version": "MEASUREMENT_ENGINE_V1",
+          "midpoint": {
+            "instrument_id": "EURUSD",
+            "unit": "PIP",
+            "value": "1.08025"
+          },
+          "native_unit": "PIP",
+          "quality_state": "OK",
+          "range_left": {
+            "instrument_id": "EURUSD",
+            "unit": "PIP",
+            "value": "10.0"
+          },
+          "session_id": "EUR_DAILY.ASIAN_RANGE",
+          "session_registry_version": "SESSION_REGISTRY_V1",
+          "size": {
+            "instrument_id": "EURUSD",
+            "unit": "PIP",
+            "value": "25.0"
+          },
+          "source_window": {
+            "bar_count": 6,
+            "input_digest": "3acce141884c400f9fe13d9d10123c95b6718d73832a60762a5f8f5f6d6d6338",
+            "window_close_utc": "2026-03-03T00:30:00Z",
+            "window_open_utc": "2026-03-03T00:00:00Z"
+          }
+        },
+        "tier": {
+          "calculation_timestamp": "2026-03-03T09:00:00Z",
+          "calibration_key": {
+            "calibration_id": "EUR_DAILY_PHASE1_TIERS",
+            "calibration_version": "V1",
+            "model_id": "EUR.DAILY.NEWS_REKEY.V1",
+            "model_version": "PHASE1"
+          },
+          "calibration_status": "FROZEN_LAUNCH",
+          "clock_id": "America/New_York",
+          "clock_registry_version": "CLOCK_REGISTRY_V1",
+          "definition_id": "TIER_CLASSIFICATION",
+          "definition_version": "V1",
+          "evidence_refs": [
+            "EV.EUR.DAILY.PHASE1_TIERS.V1"
+          ],
+          "instrument_id": "EURUSD",
+          "magnitude": {
+            "instrument_id": "EURUSD",
+            "unit": "PIP",
+            "value": "25.0"
+          },
+          "market_data_schema_version": "MARKET_DATA_SCHEMA_V1",
+          "measurement_engine_version": "MEASUREMENT_ENGINE_V1",
+          "native_unit": "PIP",
+          "no_go": false,
+          "quality_state": "OK",
+          "session_id": "NONE",
+          "session_registry_version": "SESSION_REGISTRY_V1",
+          "source_ref": "corpus/canonical/evidence/EUR_DAILY_PHASE1_CALIBRATION_EVIDENCE_V1.md",
+          "source_window": {
+            "bar_count": 6,
+            "input_digest": "3acce141884c400f9fe13d9d10123c95b6718d73832a60762a5f8f5f6d6d6338",
+            "window_close_utc": "2026-03-03T00:30:00Z",
+            "window_open_utc": "2026-03-03T00:00:00Z"
+          },
+          "tier_id": "T2"
+        }
+      },
+      "instrument_id": "EURUSD",
+      "model_id": "EUR.DAILY.NEWS_REKEY.V1",
+      "model_version": "PHASE1",
+      "prior_case": null,
+      "session_id": "EUR_DAILY.ASIAN_RANGE"
+    },
+    {
+      "calculation_timestamp": "2026-03-03T09:00:00Z",
+      "calibration_key": {
+        "calibration_id": "EUR_DAILY_PHASE1_TIERS",
+        "calibration_version": "V1",
+        "model_id": "EUR.DAILY.NEWS_REKEY.V1",
+        "model_version": "PHASE1"
+      },
+      "case_id": "EUR_DAILY_REKEY_UNMAPPED",
+      "clock_id": "America/New_York",
+      "expected": {
+        "direction_bias": "NONE_DECLARED",
+        "evidence_refs": [
+          "EV.EUR.DAILY.PHASE1_TIERS.V1"
+        ],
+        "fact_ids": [
+          "EUR_DAILY.SEED",
+          "EUR_DAILY.TIER",
+          "EUR_DAILY.DISTANCE_ASYMMETRY",
+          "EUR_DAILY.REKEY_ANCHOR",
+          "EUR_DAILY.DISTRIBUTION",
+          "PRIOR_STATE.ABSENT"
+        ],
+        "layer": "L1",
+        "levels": [],
+        "model_state": "REKEYED",
+        "no_go": [],
+        "production_authorization": "RESEARCH_ONLY",
+        "quality_state": "OK",
+        "range_left_state": "UNRESOLVED",
+        "range_left_value": null,
+        "sub_states": [],
+        "warnings": []
+      },
+      "expected_refusal": null,
+      "inputs": {
+        "anchor": {
+          "anchor_id": "EUR_DAILY.ANCHOR.REKEYED.01",
+          "automation_ready": false,
+          "calculation_timestamp": "2026-03-03T09:00:00Z",
+          "clock_id": "America/New_York",
+          "clock_registry_version": "CLOCK_REGISTRY_V1",
+          "definition_id": "ANCHOR_ELIGIBILITY",
+          "definition_version": "V1",
+          "earned_range_reference": "3acce141884c400f9fe13d9d10123c95b6718d73832a60762a5f8f5f6d6d6338",
+          "evidence_refs": [],
+          "instrument_id": "EURUSD",
+          "market_data_schema_version": "MARKET_DATA_SCHEMA_V1",
+          "measurement_engine_version": "MEASUREMENT_ENGINE_V1",
+          "model_id": "EUR.DAILY.NEWS_REKEY.V1",
+          "model_version": "PHASE1",
+          "native_unit": "PIP",
+          "quality_state": "OK",
+          "refusal_code": "ANCHOR_REKEYED",
+          "rekey_source_anchor_id": "EUR_DAILY.ANCHOR.PRIOR.01",
+          "rule_id": "R15.RANGE_BIRTH",
+          "rule_materialization": "DECLARED",
+          "rule_version": "R15",
+          "session_id": "NONE",
+          "session_registry_version": "SESSION_REGISTRY_V1",
+          "source_window": {
+            "bar_count": 6,
+            "input_digest": "3acce141884c400f9fe13d9d10123c95b6718d73832a60762a5f8f5f6d6d6338",
+            "window_close_utc": "2026-03-03T00:30:00Z",
+            "window_open_utc": "2026-03-03T00:00:00Z"
+          },
+          "status": "REKEYED"
+        },
+        "seed": {
+          "breakout_return_state": "INSIDE_RANGE",
+          "calculation_timestamp": "2026-03-03T09:00:00Z",
+          "clock_id": "America/New_York",
+          "clock_registry_version": "CLOCK_REGISTRY_V1",
+          "close_location": "0.7200000000",
+          "consumed_fraction": "0.6000000000",
+          "definition_id": "RANGE_MEASUREMENT",
+          "definition_version": "V1",
+          "direction": "UP",
+          "evidence_refs": [],
+          "high": {
+            "instrument_id": "EURUSD",
+            "unit": "PIP",
+            "value": "1.08150"
+          },
+          "instrument_id": "EURUSD",
+          "low": {
+            "instrument_id": "EURUSD",
+            "unit": "PIP",
+            "value": "1.07900"
+          },
+          "market_data_schema_version": "MARKET_DATA_SCHEMA_V1",
+          "measurement_engine_version": "MEASUREMENT_ENGINE_V1",
+          "midpoint": {
+            "instrument_id": "EURUSD",
+            "unit": "PIP",
+            "value": "1.08025"
+          },
+          "native_unit": "PIP",
+          "quality_state": "OK",
+          "range_left": {
+            "instrument_id": "EURUSD",
+            "unit": "PIP",
+            "value": "10.0"
+          },
+          "session_id": "EUR_DAILY.ASIAN_RANGE",
+          "session_registry_version": "SESSION_REGISTRY_V1",
+          "size": {
+            "instrument_id": "EURUSD",
+            "unit": "PIP",
+            "value": "25.0"
+          },
+          "source_window": {
+            "bar_count": 6,
+            "input_digest": "3acce141884c400f9fe13d9d10123c95b6718d73832a60762a5f8f5f6d6d6338",
+            "window_close_utc": "2026-03-03T00:30:00Z",
+            "window_open_utc": "2026-03-03T00:00:00Z"
+          }
+        },
+        "tier": {
+          "calculation_timestamp": "2026-03-03T09:00:00Z",
+          "calibration_key": {
+            "calibration_id": "EUR_DAILY_PHASE1_TIERS",
+            "calibration_version": "V1",
+            "model_id": "EUR.DAILY.NEWS_REKEY.V1",
+            "model_version": "PHASE1"
+          },
+          "calibration_status": "FROZEN_LAUNCH",
+          "clock_id": "America/New_York",
+          "clock_registry_version": "CLOCK_REGISTRY_V1",
+          "definition_id": "TIER_CLASSIFICATION",
+          "definition_version": "V1",
+          "evidence_refs": [
+            "EV.EUR.DAILY.PHASE1_TIERS.V1"
+          ],
+          "instrument_id": "EURUSD",
+          "magnitude": {
+            "instrument_id": "EURUSD",
+            "unit": "PIP",
+            "value": "25.0"
+          },
+          "market_data_schema_version": "MARKET_DATA_SCHEMA_V1",
+          "measurement_engine_version": "MEASUREMENT_ENGINE_V1",
+          "native_unit": "PIP",
+          "no_go": false,
+          "quality_state": "OK",
+          "session_id": "NONE",
+          "session_registry_version": "SESSION_REGISTRY_V1",
+          "source_ref": "corpus/canonical/evidence/EUR_DAILY_PHASE1_CALIBRATION_EVIDENCE_V1.md",
+          "source_window": {
+            "bar_count": 6,
+            "input_digest": "3acce141884c400f9fe13d9d10123c95b6718d73832a60762a5f8f5f6d6d6338",
+            "window_close_utc": "2026-03-03T00:30:00Z",
+            "window_open_utc": "2026-03-03T00:00:00Z"
+          },
+          "tier_id": "T2"
+        }
+      },
+      "instrument_id": "EURUSD",
+      "model_id": "EUR.DAILY.NEWS_REKEY.V1",
+      "model_version": "PHASE1",
+      "prior_case": null,
+      "session_id": "EUR_DAILY.ASIAN_RANGE"
+    },
+    {
+      "calculation_timestamp": "2026-03-03T09:00:00Z",
+      "calibration_key": {
+        "calibration_id": "EUR_DAILY_PHASE1_TIERS",
+        "calibration_version": "V1",
+        "model_id": "EUR.DAILY.NEWS_REKEY.V1",
+        "model_version": "PHASE1"
+      },
+      "case_id": "EUR_DAILY_TOUCH_NO_REKEY",
+      "clock_id": "America/New_York",
+      "expected": null,
+      "expected_refusal": "MODEL_CONTRACT",
+      "inputs": {
+        "anchor": {
+          "anchor_id": "EUR_DAILY.ANCHOR.ELIGIBLE.01",
+          "automation_ready": false,
+          "calculation_timestamp": "2026-03-03T09:00:00Z",
+          "clock_id": "America/New_York",
+          "clock_registry_version": "CLOCK_REGISTRY_V1",
+          "definition_id": "ANCHOR_ELIGIBILITY",
+          "definition_version": "V1",
+          "earned_range_reference": "3acce141884c400f9fe13d9d10123c95b6718d73832a60762a5f8f5f6d6d6338",
+          "evidence_refs": [],
+          "instrument_id": "EURUSD",
+          "market_data_schema_version": "MARKET_DATA_SCHEMA_V1",
+          "measurement_engine_version": "MEASUREMENT_ENGINE_V1",
+          "model_id": "EUR.DAILY.NEWS_REKEY.V1",
+          "model_version": "PHASE1",
+          "native_unit": "PIP",
+          "quality_state": "OK",
+          "refusal_code": "NONE",
+          "rekey_source_anchor_id": null,
+          "rule_id": "R15.RANGE_BIRTH",
+          "rule_materialization": "DECLARED",
+          "rule_version": "R15",
+          "session_id": "NONE",
+          "session_registry_version": "SESSION_REGISTRY_V1",
+          "source_window": {
+            "bar_count": 6,
+            "input_digest": "3acce141884c400f9fe13d9d10123c95b6718d73832a60762a5f8f5f6d6d6338",
+            "window_close_utc": "2026-03-03T00:30:00Z",
+            "window_open_utc": "2026-03-03T00:00:00Z"
+          },
+          "status": "ELIGIBLE"
+        },
+        "ladder_state": "132",
+        "seed": {
+          "breakout_return_state": "INSIDE_RANGE",
+          "calculation_timestamp": "2026-03-03T09:00:00Z",
+          "clock_id": "America/New_York",
+          "clock_registry_version": "CLOCK_REGISTRY_V1",
+          "close_location": "0.7200000000",
+          "consumed_fraction": "0.6000000000",
+          "definition_id": "RANGE_MEASUREMENT",
+          "definition_version": "V1",
+          "direction": "UP",
+          "evidence_refs": [],
+          "high": {
+            "instrument_id": "EURUSD",
+            "unit": "PIP",
+            "value": "1.08150"
+          },
+          "instrument_id": "EURUSD",
+          "low": {
+            "instrument_id": "EURUSD",
+            "unit": "PIP",
+            "value": "1.07900"
+          },
+          "market_data_schema_version": "MARKET_DATA_SCHEMA_V1",
+          "measurement_engine_version": "MEASUREMENT_ENGINE_V1",
+          "midpoint": {
+            "instrument_id": "EURUSD",
+            "unit": "PIP",
+            "value": "1.08025"
+          },
+          "native_unit": "PIP",
+          "quality_state": "OK",
+          "range_left": {
+            "instrument_id": "EURUSD",
+            "unit": "PIP",
+            "value": "10.0"
+          },
+          "session_id": "EUR_DAILY.ASIAN_RANGE",
+          "session_registry_version": "SESSION_REGISTRY_V1",
+          "size": {
+            "instrument_id": "EURUSD",
+            "unit": "PIP",
+            "value": "25.0"
+          },
+          "source_window": {
+            "bar_count": 6,
+            "input_digest": "3acce141884c400f9fe13d9d10123c95b6718d73832a60762a5f8f5f6d6d6338",
+            "window_close_utc": "2026-03-03T00:30:00Z",
+            "window_open_utc": "2026-03-03T00:00:00Z"
+          }
+        },
+        "tier": {
+          "calculation_timestamp": "2026-03-03T09:00:00Z",
+          "calibration_key": {
+            "calibration_id": "EUR_DAILY_PHASE1_TIERS",
+            "calibration_version": "V1",
+            "model_id": "EUR.DAILY.NEWS_REKEY.V1",
+            "model_version": "PHASE1"
+          },
+          "calibration_status": "FROZEN_LAUNCH",
+          "clock_id": "America/New_York",
+          "clock_registry_version": "CLOCK_REGISTRY_V1",
+          "definition_id": "TIER_CLASSIFICATION",
+          "definition_version": "V1",
+          "evidence_refs": [
+            "EV.EUR.DAILY.PHASE1_TIERS.V1"
+          ],
+          "instrument_id": "EURUSD",
+          "magnitude": {
+            "instrument_id": "EURUSD",
+            "unit": "PIP",
+            "value": "25.0"
+          },
+          "market_data_schema_version": "MARKET_DATA_SCHEMA_V1",
+          "measurement_engine_version": "MEASUREMENT_ENGINE_V1",
+          "native_unit": "PIP",
+          "no_go": false,
+          "quality_state": "OK",
+          "session_id": "NONE",
+          "session_registry_version": "SESSION_REGISTRY_V1",
+          "source_ref": "corpus/canonical/evidence/EUR_DAILY_PHASE1_CALIBRATION_EVIDENCE_V1.md",
+          "source_window": {
+            "bar_count": 6,
+            "input_digest": "3acce141884c400f9fe13d9d10123c95b6718d73832a60762a5f8f5f6d6d6338",
+            "window_close_utc": "2026-03-03T00:30:00Z",
+            "window_open_utc": "2026-03-03T00:00:00Z"
+          },
+          "tier_id": "T2"
+        }
+      },
+      "instrument_id": "EURUSD",
+      "model_id": "EUR.DAILY.NEWS_REKEY.V1",
+      "model_version": "PHASE1",
+      "prior_case": null,
+      "session_id": "EUR_DAILY.ASIAN_RANGE"
+    },
+    {
+      "calculation_timestamp": "2026-03-03T09:00:00Z",
+      "calibration_key": {
+        "calibration_id": "EUR_DAILY_PHASE1_TIERS",
+        "calibration_version": "V1",
+        "model_id": "EUR.DAILY.NEWS_REKEY.V1",
+        "model_version": "PHASE1"
+      },
+      "case_id": "EUR_DAILY_EVENT_CONDITIONED",
+      "clock_id": "America/New_York",
+      "expected": {
+        "direction_bias": "NONE_DECLARED",
+        "evidence_refs": [
+          "EV.EUR.DAILY.PHASE1_TIERS.V1"
+        ],
+        "fact_ids": [
+          "EUR_DAILY.SEED",
+          "EUR_DAILY.TIER",
+          "EUR_DAILY.DISTANCE_ASYMMETRY",
+          "EUR_DAILY.EVENT_CONDITIONING",
+          "EUR_DAILY.EVENT_BUDGET",
+          "EUR_DAILY.DISTRIBUTION",
+          "PRIOR_STATE.ABSENT"
+        ],
+        "layer": "L1",
+        "levels": [],
+        "model_state": "SEED_T2",
+        "no_go": [],
+        "production_authorization": "RESEARCH_ONLY",
+        "quality_state": "OK",
+        "range_left_state": "UNRESOLVED",
+        "range_left_value": null,
+        "sub_states": [],
+        "warnings": []
+      },
+      "expected_refusal": null,
+      "inputs": {
+        "event_budget": {
+          "calculation_timestamp": "2026-03-03T09:00:00Z",
+          "clock_id": "America/New_York",
+          "clock_registry_version": "CLOCK_REGISTRY_V1",
+          "consumed": {
+            "instrument_id": "EURUSD",
+            "unit": "PIP",
+            "value": "10"
+          },
+          "definition_id": "EVENT_BUDGET",
+          "definition_version": "V1",
+          "event_id": "EUR_EVENT.FIXTURE_01",
+          "evidence_refs": [],
+          "instrument_id": "EURUSD",
+          "market_data_schema_version": "MARKET_DATA_SCHEMA_V1",
+          "measurement_engine_version": "MEASUREMENT_ENGINE_V1",
+          "native_unit": null,
+          "quality_state": "OK",
+          "residual": {
+            "instrument_id": "EURUSD",
+            "unit": "PIP",
+            "value": "12"
+          },
+          "session_id": "EUR_DAILY.ASIAN_RANGE",
+          "session_registry_version": "SESSION_REGISTRY_V1",
+          "source_ref": "corpus/canonical/models/EUR_DAILY_NEWS_REKEY_MODEL_CARD_V1.md",
+          "source_window": {
+            "bar_count": 6,
+            "input_digest": "3acce141884c400f9fe13d9d10123c95b6718d73832a60762a5f8f5f6d6d6338",
+            "window_close_utc": "2026-03-03T00:30:00Z",
+            "window_open_utc": "2026-03-03T00:00:00Z"
+          },
+          "total_size": {
+            "instrument_id": "EURUSD",
+            "unit": "PIP",
+            "value": "22"
+          }
+        },
+        "event_features": {
+          "actual_declared": true,
+          "actual_time": "2026-03-03T13:30:00Z",
+          "band_declared": true,
+          "calculation_timestamp": "2026-03-03T09:00:00Z",
+          "clock_id": "America/New_York",
+          "clock_registry_version": "CLOCK_REGISTRY_V1",
+          "definition_id": "EVENT_RELEVANCE",
+          "definition_version": "V1",
+          "event_id": "EUR_EVENT.FIXTURE_01",
+          "evidence_refs": [],
+          "family": "MACRO_RELEASE",
+          "instrument_id": "EURUSD",
+          "market_data_schema_version": "MARKET_DATA_SCHEMA_V1",
+          "measurement_engine_version": "MEASUREMENT_ENGINE_V1",
+          "native_unit": null,
+          "provenance_label": "SYNTHETIC_FIXTURE",
+          "quality_state": "OK",
+          "relevance_assets": [
+            "EURUSD"
+          ],
+          "relevance_currencies": [
+            "EUR"
+          ],
+          "scheduled_time": "2026-03-03T13:30:00Z",
+          "session_id": "EUR_DAILY.ASIAN_RANGE",
+          "session_registry_version": "SESSION_REGISTRY_V1",
+          "size_declared": true,
+          "source_ref": "implementation/forge/book_iii/bloc_iii_3/fixtures/generate_fixtures.py",
+          "source_window": {
+            "bar_count": 6,
+            "input_digest": "3acce141884c400f9fe13d9d10123c95b6718d73832a60762a5f8f5f6d6d6338",
+            "window_close_utc": "2026-03-03T00:30:00Z",
+            "window_open_utc": "2026-03-03T00:00:00Z"
+          }
+        },
+        "seed": {
+          "breakout_return_state": "INSIDE_RANGE",
+          "calculation_timestamp": "2026-03-03T09:00:00Z",
+          "clock_id": "America/New_York",
+          "clock_registry_version": "CLOCK_REGISTRY_V1",
+          "close_location": "0.7200000000",
+          "consumed_fraction": "0.6000000000",
+          "definition_id": "RANGE_MEASUREMENT",
+          "definition_version": "V1",
+          "direction": "UP",
+          "evidence_refs": [],
+          "high": {
+            "instrument_id": "EURUSD",
+            "unit": "PIP",
+            "value": "1.08150"
+          },
+          "instrument_id": "EURUSD",
+          "low": {
+            "instrument_id": "EURUSD",
+            "unit": "PIP",
+            "value": "1.07900"
+          },
+          "market_data_schema_version": "MARKET_DATA_SCHEMA_V1",
+          "measurement_engine_version": "MEASUREMENT_ENGINE_V1",
+          "midpoint": {
+            "instrument_id": "EURUSD",
+            "unit": "PIP",
+            "value": "1.08025"
+          },
+          "native_unit": "PIP",
+          "quality_state": "OK",
+          "range_left": {
+            "instrument_id": "EURUSD",
+            "unit": "PIP",
+            "value": "10.0"
+          },
+          "session_id": "EUR_DAILY.ASIAN_RANGE",
+          "session_registry_version": "SESSION_REGISTRY_V1",
+          "size": {
+            "instrument_id": "EURUSD",
+            "unit": "PIP",
+            "value": "25.0"
+          },
+          "source_window": {
+            "bar_count": 6,
+            "input_digest": "3acce141884c400f9fe13d9d10123c95b6718d73832a60762a5f8f5f6d6d6338",
+            "window_close_utc": "2026-03-03T00:30:00Z",
+            "window_open_utc": "2026-03-03T00:00:00Z"
+          }
+        },
+        "tier": {
+          "calculation_timestamp": "2026-03-03T09:00:00Z",
+          "calibration_key": {
+            "calibration_id": "EUR_DAILY_PHASE1_TIERS",
+            "calibration_version": "V1",
+            "model_id": "EUR.DAILY.NEWS_REKEY.V1",
+            "model_version": "PHASE1"
+          },
+          "calibration_status": "FROZEN_LAUNCH",
+          "clock_id": "America/New_York",
+          "clock_registry_version": "CLOCK_REGISTRY_V1",
+          "definition_id": "TIER_CLASSIFICATION",
+          "definition_version": "V1",
+          "evidence_refs": [
+            "EV.EUR.DAILY.PHASE1_TIERS.V1"
+          ],
+          "instrument_id": "EURUSD",
+          "magnitude": {
+            "instrument_id": "EURUSD",
+            "unit": "PIP",
+            "value": "25.0"
+          },
+          "market_data_schema_version": "MARKET_DATA_SCHEMA_V1",
+          "measurement_engine_version": "MEASUREMENT_ENGINE_V1",
+          "native_unit": "PIP",
+          "no_go": false,
+          "quality_state": "OK",
+          "session_id": "NONE",
+          "session_registry_version": "SESSION_REGISTRY_V1",
+          "source_ref": "corpus/canonical/evidence/EUR_DAILY_PHASE1_CALIBRATION_EVIDENCE_V1.md",
+          "source_window": {
+            "bar_count": 6,
+            "input_digest": "3acce141884c400f9fe13d9d10123c95b6718d73832a60762a5f8f5f6d6d6338",
+            "window_close_utc": "2026-03-03T00:30:00Z",
+            "window_open_utc": "2026-03-03T00:00:00Z"
+          },
+          "tier_id": "T2"
+        }
+      },
+      "instrument_id": "EURUSD",
+      "model_id": "EUR.DAILY.NEWS_REKEY.V1",
+      "model_version": "PHASE1",
+      "prior_case": null,
+      "session_id": "EUR_DAILY.ASIAN_RANGE"
+    },
+    {
+      "calculation_timestamp": "2026-03-03T09:00:00Z",
+      "calibration_key": {
+        "calibration_id": "EUR_DAILY_PHASE1_TIERS",
+        "calibration_version": "V1",
+        "model_id": "EUR.DAILY.NEWS_REKEY.V1",
+        "model_version": "PHASE1"
+      },
+      "case_id": "EUR_DAILY_NO_EVENT",
+      "clock_id": "America/New_York",
+      "expected": {
+        "direction_bias": "NONE_DECLARED",
+        "evidence_refs": [
+          "EV.EUR.DAILY.PHASE1_TIERS.V1"
+        ],
+        "fact_ids": [
+          "EUR_DAILY.SEED",
+          "EUR_DAILY.TIER",
+          "EUR_DAILY.DISTANCE_ASYMMETRY",
+          "EUR_DAILY.DISTRIBUTION",
+          "PRIOR_STATE.ABSENT"
+        ],
+        "layer": "L1",
+        "levels": [],
+        "model_state": "SEED_T2",
+        "no_go": [],
+        "production_authorization": "RESEARCH_ONLY",
+        "quality_state": "OK",
+        "range_left_state": "UNRESOLVED",
+        "range_left_value": null,
+        "sub_states": [],
+        "warnings": []
+      },
+      "expected_refusal": null,
+      "inputs": {
+        "seed": {
+          "breakout_return_state": "INSIDE_RANGE",
+          "calculation_timestamp": "2026-03-03T09:00:00Z",
+          "clock_id": "America/New_York",
+          "clock_registry_version": "CLOCK_REGISTRY_V1",
+          "close_location": "0.7200000000",
+          "consumed_fraction": "0.6000000000",
+          "definition_id": "RANGE_MEASUREMENT",
+          "definition_version": "V1",
+          "direction": "UP",
+          "evidence_refs": [],
+          "high": {
+            "instrument_id": "EURUSD",
+            "unit": "PIP",
+            "value": "1.08150"
+          },
+          "instrument_id": "EURUSD",
+          "low": {
+            "instrument_id": "EURUSD",
+            "unit": "PIP",
+            "value": "1.07900"
+          },
+          "market_data_schema_version": "MARKET_DATA_SCHEMA_V1",
+          "measurement_engine_version": "MEASUREMENT_ENGINE_V1",
+          "midpoint": {
+            "instrument_id": "EURUSD",
+            "unit": "PIP",
+            "value": "1.08025"
+          },
+          "native_unit": "PIP",
+          "quality_state": "OK",
+          "range_left": {
+            "instrument_id": "EURUSD",
+            "unit": "PIP",
+            "value": "10.0"
+          },
+          "session_id": "EUR_DAILY.ASIAN_RANGE",
+          "session_registry_version": "SESSION_REGISTRY_V1",
+          "size": {
+            "instrument_id": "EURUSD",
+            "unit": "PIP",
+            "value": "25.0"
+          },
+          "source_window": {
+            "bar_count": 6,
+            "input_digest": "3acce141884c400f9fe13d9d10123c95b6718d73832a60762a5f8f5f6d6d6338",
+            "window_close_utc": "2026-03-03T00:30:00Z",
+            "window_open_utc": "2026-03-03T00:00:00Z"
+          }
+        },
+        "tier": {
+          "calculation_timestamp": "2026-03-03T09:00:00Z",
+          "calibration_key": {
+            "calibration_id": "EUR_DAILY_PHASE1_TIERS",
+            "calibration_version": "V1",
+            "model_id": "EUR.DAILY.NEWS_REKEY.V1",
+            "model_version": "PHASE1"
+          },
+          "calibration_status": "FROZEN_LAUNCH",
+          "clock_id": "America/New_York",
+          "clock_registry_version": "CLOCK_REGISTRY_V1",
+          "definition_id": "TIER_CLASSIFICATION",
+          "definition_version": "V1",
+          "evidence_refs": [
+            "EV.EUR.DAILY.PHASE1_TIERS.V1"
+          ],
+          "instrument_id": "EURUSD",
+          "magnitude": {
+            "instrument_id": "EURUSD",
+            "unit": "PIP",
+            "value": "25.0"
+          },
+          "market_data_schema_version": "MARKET_DATA_SCHEMA_V1",
+          "measurement_engine_version": "MEASUREMENT_ENGINE_V1",
+          "native_unit": "PIP",
+          "no_go": false,
+          "quality_state": "OK",
+          "session_id": "NONE",
+          "session_registry_version": "SESSION_REGISTRY_V1",
+          "source_ref": "corpus/canonical/evidence/EUR_DAILY_PHASE1_CALIBRATION_EVIDENCE_V1.md",
+          "source_window": {
+            "bar_count": 6,
+            "input_digest": "3acce141884c400f9fe13d9d10123c95b6718d73832a60762a5f8f5f6d6d6338",
+            "window_close_utc": "2026-03-03T00:30:00Z",
+            "window_open_utc": "2026-03-03T00:00:00Z"
+          },
+          "tier_id": "T2"
+        }
+      },
+      "instrument_id": "EURUSD",
+      "model_id": "EUR.DAILY.NEWS_REKEY.V1",
+      "model_version": "PHASE1",
+      "prior_case": null,
+      "session_id": "EUR_DAILY.ASIAN_RANGE"
+    },
+    {
+      "calculation_timestamp": "2026-03-03T09:00:00Z",
+      "calibration_key": {
+        "calibration_id": "EUR_DAILY_PHASE1_TIERS",
+        "calibration_version": "V1",
+        "model_id": "EUR.DAILY.NEWS_REKEY.V1",
+        "model_version": "PHASE1"
+      },
+      "case_id": "EUR_DAILY_SLOT_OUTSIDE",
+      "clock_id": "America/New_York",
+      "expected": {
+        "direction_bias": "NONE_DECLARED",
+        "evidence_refs": [
+          "EV.EUR.DAILY.PHASE1_TIERS.V1"
+        ],
+        "fact_ids": [
+          "EUR_DAILY.SEED",
+          "EUR_DAILY.TIER",
+          "EUR_DAILY.DISTANCE_ASYMMETRY",
+          "EUR_DAILY.CONSUMED_STATES",
+          "EUR_DAILY.SLOT",
+          "EUR_DAILY.DISTRIBUTION",
+          "PRIOR_STATE.ABSENT"
+        ],
+        "layer": "L1",
+        "levels": [],
+        "model_state": "SEED_T2",
+        "no_go": [],
+        "production_authorization": "RESEARCH_ONLY",
+        "quality_state": "OK",
+        "range_left_state": "UNRESOLVED",
+        "range_left_value": null,
+        "sub_states": [],
+        "warnings": []
+      },
+      "expected_refusal": null,
+      "inputs": {
+        "path": {
+          "bar_count": 6,
+          "calculation_timestamp": "2026-03-03T09:00:00Z",
+          "clock_id": "America/New_York",
+          "clock_registry_version": "CLOCK_REGISTRY_V1",
+          "definition_id": "PATH_MEASUREMENT",
+          "definition_version": "V1",
+          "delivery_order": [],
+          "evidence_refs": [],
+          "first_delivery": null,
+          "instrument_id": "EURUSD",
+          "levels": [
+            {
+              "acceptance_state": "NOT_ACCEPTED",
+              "close_beyond_state": "NOT_BEYOND",
+              "first_delivery": null,
+              "level_id": "EUR_DAILY_10810",
+              "max_excursion": {
+                "instrument_id": "EURUSD",
+                "unit": "PIP",
+                "value": "5.0"
+              },
+              "re_entry_state": "NOT_REENTERED",
+              "rejection_state": "REJECTED",
+              "touch_state": "TOUCHED"
+            }
+          ],
+          "mae": {
+            "instrument_id": "EURUSD",
+            "unit": "PIP",
+            "value": "3.0"
+          },
+          "market_data_schema_version": "MARKET_DATA_SCHEMA_V1",
+          "measurement_engine_version": "MEASUREMENT_ENGINE_V1",
+          "mfe": {
+            "instrument_id": "EURUSD",
+            "unit": "PIP",
+            "value": "22.0"
+          },
+          "native_unit": "PIP",
+          "quality_state": "OK",
+          "reference_price": {
+            "instrument_id": "EURUSD",
+            "unit": "PIP",
+            "value": "1.07930"
+          },
+          "remaining_distribution": {
+            "instrument_id": "EURUSD",
+            "unit": "PIP",
+            "value": "10.0"
+          },
+          "remaining_state": "MEASURED",
+          "session_id": "NONE",
+          "session_registry_version": "SESSION_REGISTRY_V1",
+          "source_window": {
+            "bar_count": 6,
+            "input_digest": "3acce141884c400f9fe13d9d10123c95b6718d73832a60762a5f8f5f6d6d6338",
+            "window_close_utc": "2026-03-03T00:30:00Z",
+            "window_open_utc": "2026-03-03T00:00:00Z"
+          }
+        },
+        "seed": {
+          "breakout_return_state": "INSIDE_RANGE",
+          "calculation_timestamp": "2026-03-03T09:00:00Z",
+          "clock_id": "America/New_York",
+          "clock_registry_version": "CLOCK_REGISTRY_V1",
+          "close_location": "0.7200000000",
+          "consumed_fraction": "0.6000000000",
+          "definition_id": "RANGE_MEASUREMENT",
+          "definition_version": "V1",
+          "direction": "UP",
+          "evidence_refs": [],
+          "high": {
+            "instrument_id": "EURUSD",
+            "unit": "PIP",
+            "value": "1.08150"
+          },
+          "instrument_id": "EURUSD",
+          "low": {
+            "instrument_id": "EURUSD",
+            "unit": "PIP",
+            "value": "1.07900"
+          },
+          "market_data_schema_version": "MARKET_DATA_SCHEMA_V1",
+          "measurement_engine_version": "MEASUREMENT_ENGINE_V1",
+          "midpoint": {
+            "instrument_id": "EURUSD",
+            "unit": "PIP",
+            "value": "1.08025"
+          },
+          "native_unit": "PIP",
+          "quality_state": "OK",
+          "range_left": {
+            "instrument_id": "EURUSD",
+            "unit": "PIP",
+            "value": "10.0"
+          },
+          "session_id": "EUR_DAILY.ASIAN_RANGE",
+          "session_registry_version": "SESSION_REGISTRY_V1",
+          "size": {
+            "instrument_id": "EURUSD",
+            "unit": "PIP",
+            "value": "25.0"
+          },
+          "source_window": {
+            "bar_count": 6,
+            "input_digest": "3acce141884c400f9fe13d9d10123c95b6718d73832a60762a5f8f5f6d6d6338",
+            "window_close_utc": "2026-03-03T00:30:00Z",
+            "window_open_utc": "2026-03-03T00:00:00Z"
+          }
+        },
+        "session_phase": {
+          "calculation_timestamp": "2026-03-03T09:00:00Z",
+          "clock_id": "America/New_York",
+          "clock_registry_version": "CLOCK_REGISTRY_V1",
+          "definition_id": "SESSION_PHASE",
+          "definition_version": "V1",
+          "evidence_refs": [],
+          "instrument_id": "EURUSD",
+          "market_data_schema_version": "MARKET_DATA_SCHEMA_V1",
+          "measurement_engine_version": "MEASUREMENT_ENGINE_V1",
+          "model_id": "EUR.DAILY.NEWS_REKEY.V1",
+          "model_version": "PHASE1",
+          "native_unit": null,
+          "observed_instant": "2026-03-03T12:00:00Z",
+          "quality_state": "OK",
+          "session_id": "EUR_DAILY.ASIAN_RANGE",
+          "session_registry_version": "SESSION_REGISTRY_V1",
+          "source_window": {
+            "bar_count": 0,
+            "input_digest": "5714edf5e51b9857779ffdb07db61cf1b8b1c5583109b6452327e175e1c461c9",
+            "window_close_utc": "2026-03-03T12:00:00Z",
+            "window_open_utc": "2026-03-03T12:00:00Z"
+          },
+          "state": "OUTSIDE_WINDOW"
+        },
+        "tier": {
+          "calculation_timestamp": "2026-03-03T09:00:00Z",
+          "calibration_key": {
+            "calibration_id": "EUR_DAILY_PHASE1_TIERS",
+            "calibration_version": "V1",
+            "model_id": "EUR.DAILY.NEWS_REKEY.V1",
+            "model_version": "PHASE1"
+          },
+          "calibration_status": "FROZEN_LAUNCH",
+          "clock_id": "America/New_York",
+          "clock_registry_version": "CLOCK_REGISTRY_V1",
+          "definition_id": "TIER_CLASSIFICATION",
+          "definition_version": "V1",
+          "evidence_refs": [
+            "EV.EUR.DAILY.PHASE1_TIERS.V1"
+          ],
+          "instrument_id": "EURUSD",
+          "magnitude": {
+            "instrument_id": "EURUSD",
+            "unit": "PIP",
+            "value": "25.0"
+          },
+          "market_data_schema_version": "MARKET_DATA_SCHEMA_V1",
+          "measurement_engine_version": "MEASUREMENT_ENGINE_V1",
+          "native_unit": "PIP",
+          "no_go": false,
+          "quality_state": "OK",
+          "session_id": "NONE",
+          "session_registry_version": "SESSION_REGISTRY_V1",
+          "source_ref": "corpus/canonical/evidence/EUR_DAILY_PHASE1_CALIBRATION_EVIDENCE_V1.md",
+          "source_window": {
+            "bar_count": 6,
+            "input_digest": "3acce141884c400f9fe13d9d10123c95b6718d73832a60762a5f8f5f6d6d6338",
+            "window_close_utc": "2026-03-03T00:30:00Z",
+            "window_open_utc": "2026-03-03T00:00:00Z"
+          },
+          "tier_id": "T2"
+        }
+      },
+      "instrument_id": "EURUSD",
+      "model_id": "EUR.DAILY.NEWS_REKEY.V1",
+      "model_version": "PHASE1",
+      "prior_case": null,
+      "session_id": "EUR_DAILY.ASIAN_RANGE"
+    },
+    {
+      "calculation_timestamp": "2026-03-03T09:00:00Z",
+      "calibration_key": {
+        "calibration_id": "EUR_DAILY_PHASE1_TIERS",
+        "calibration_version": "V1",
+        "model_id": "EUR.DAILY.NEWS_REKEY.V1",
+        "model_version": "PHASE1"
+      },
+      "case_id": "EUR_DAILY_CLOCK_MISSING",
+      "clock_id": null,
+      "expected": null,
+      "expected_refusal": "NO_CALCULATION",
+      "inputs": {
+        "seed": {
+          "breakout_return_state": "INSIDE_RANGE",
+          "calculation_timestamp": "2026-03-03T09:00:00Z",
+          "clock_id": "America/New_York",
+          "clock_registry_version": "CLOCK_REGISTRY_V1",
+          "close_location": "0.7200000000",
+          "consumed_fraction": "0.6000000000",
+          "definition_id": "RANGE_MEASUREMENT",
+          "definition_version": "V1",
+          "direction": "UP",
+          "evidence_refs": [],
+          "high": {
+            "instrument_id": "EURUSD",
+            "unit": "PIP",
+            "value": "1.08150"
+          },
+          "instrument_id": "EURUSD",
+          "low": {
+            "instrument_id": "EURUSD",
+            "unit": "PIP",
+            "value": "1.07900"
+          },
+          "market_data_schema_version": "MARKET_DATA_SCHEMA_V1",
+          "measurement_engine_version": "MEASUREMENT_ENGINE_V1",
+          "midpoint": {
+            "instrument_id": "EURUSD",
+            "unit": "PIP",
+            "value": "1.08025"
+          },
+          "native_unit": "PIP",
+          "quality_state": "OK",
+          "range_left": {
+            "instrument_id": "EURUSD",
+            "unit": "PIP",
+            "value": "10.0"
+          },
+          "session_id": "EUR_DAILY.ASIAN_RANGE",
+          "session_registry_version": "SESSION_REGISTRY_V1",
+          "size": {
+            "instrument_id": "EURUSD",
+            "unit": "PIP",
+            "value": "25.0"
+          },
+          "source_window": {
+            "bar_count": 6,
+            "input_digest": "3acce141884c400f9fe13d9d10123c95b6718d73832a60762a5f8f5f6d6d6338",
+            "window_close_utc": "2026-03-03T00:30:00Z",
+            "window_open_utc": "2026-03-03T00:00:00Z"
+          }
+        },
+        "tier": {
+          "calculation_timestamp": "2026-03-03T09:00:00Z",
+          "calibration_key": {
+            "calibration_id": "EUR_DAILY_PHASE1_TIERS",
+            "calibration_version": "V1",
+            "model_id": "EUR.DAILY.NEWS_REKEY.V1",
+            "model_version": "PHASE1"
+          },
+          "calibration_status": "FROZEN_LAUNCH",
+          "clock_id": "America/New_York",
+          "clock_registry_version": "CLOCK_REGISTRY_V1",
+          "definition_id": "TIER_CLASSIFICATION",
+          "definition_version": "V1",
+          "evidence_refs": [
+            "EV.EUR.DAILY.PHASE1_TIERS.V1"
+          ],
+          "instrument_id": "EURUSD",
+          "magnitude": {
+            "instrument_id": "EURUSD",
+            "unit": "PIP",
+            "value": "25.0"
+          },
+          "market_data_schema_version": "MARKET_DATA_SCHEMA_V1",
+          "measurement_engine_version": "MEASUREMENT_ENGINE_V1",
+          "native_unit": "PIP",
+          "no_go": false,
+          "quality_state": "OK",
+          "session_id": "NONE",
+          "session_registry_version": "SESSION_REGISTRY_V1",
+          "source_ref": "corpus/canonical/evidence/EUR_DAILY_PHASE1_CALIBRATION_EVIDENCE_V1.md",
+          "source_window": {
+            "bar_count": 6,
+            "input_digest": "3acce141884c400f9fe13d9d10123c95b6718d73832a60762a5f8f5f6d6d6338",
+            "window_close_utc": "2026-03-03T00:30:00Z",
+            "window_open_utc": "2026-03-03T00:00:00Z"
+          },
+          "tier_id": "T2"
+        }
+      },
+      "instrument_id": "EURUSD",
+      "model_id": "EUR.DAILY.NEWS_REKEY.V1",
+      "model_version": "PHASE1",
+      "prior_case": null,
+      "session_id": "EUR_DAILY.ASIAN_RANGE"
+    },
+    {
+      "calculation_timestamp": "2026-03-03T09:00:00Z",
+      "calibration_key": {
+        "calibration_id": "EUR_DAILY_PHASE1_TIERS",
+        "calibration_version": "V1",
+        "model_id": "EUR.DAILY.NEWS_REKEY.V1",
+        "model_version": "PHASE1"
+      },
+      "case_id": "EUR_DAILY_TIER_MISSING",
+      "clock_id": "America/New_York",
+      "expected": null,
+      "expected_refusal": "INPUT_MEASUREMENT_MISSING",
+      "inputs": {
+        "seed": {
+          "breakout_return_state": "INSIDE_RANGE",
+          "calculation_timestamp": "2026-03-03T09:00:00Z",
+          "clock_id": "America/New_York",
+          "clock_registry_version": "CLOCK_REGISTRY_V1",
+          "close_location": "0.7200000000",
+          "consumed_fraction": "0.6000000000",
+          "definition_id": "RANGE_MEASUREMENT",
+          "definition_version": "V1",
+          "direction": "UP",
+          "evidence_refs": [],
+          "high": {
+            "instrument_id": "EURUSD",
+            "unit": "PIP",
+            "value": "1.08150"
+          },
+          "instrument_id": "EURUSD",
+          "low": {
+            "instrument_id": "EURUSD",
+            "unit": "PIP",
+            "value": "1.07900"
+          },
+          "market_data_schema_version": "MARKET_DATA_SCHEMA_V1",
+          "measurement_engine_version": "MEASUREMENT_ENGINE_V1",
+          "midpoint": {
+            "instrument_id": "EURUSD",
+            "unit": "PIP",
+            "value": "1.08025"
+          },
+          "native_unit": "PIP",
+          "quality_state": "OK",
+          "range_left": {
+            "instrument_id": "EURUSD",
+            "unit": "PIP",
+            "value": "10.0"
+          },
+          "session_id": "EUR_DAILY.ASIAN_RANGE",
+          "session_registry_version": "SESSION_REGISTRY_V1",
+          "size": {
+            "instrument_id": "EURUSD",
+            "unit": "PIP",
+            "value": "25.0"
+          },
+          "source_window": {
+            "bar_count": 6,
+            "input_digest": "3acce141884c400f9fe13d9d10123c95b6718d73832a60762a5f8f5f6d6d6338",
+            "window_close_utc": "2026-03-03T00:30:00Z",
+            "window_open_utc": "2026-03-03T00:00:00Z"
+          }
+        }
+      },
+      "instrument_id": "EURUSD",
+      "model_id": "EUR.DAILY.NEWS_REKEY.V1",
+      "model_version": "PHASE1",
+      "prior_case": null,
+      "session_id": "EUR_DAILY.ASIAN_RANGE"
+    }
+  ],
+  "clock": "America/New_York",
+  "data_classification": "SYNTHETIC_FIXTURE - deterministic generated or reused committed slices; contract-test inputs only, never empirical market evidence and never citable for performance claims",
+  "description": "Synthetic golden states for the EUR Daily News + Rekey chain: seed/tier states, the >45p no-go boundary, the 100/125/132/168/185 ladder, event conditioning over a synthetic labeled event and slot-conditioned range-left",
+  "fixture_id": "BLOC_III_3.EUR_DAILY_STATES.V1",
+  "historical": true,
+  "model_id": "EUR.DAILY.NEWS_REKEY.V1",
+  "observation_cutoff": "2026-03-03T00:30:00Z",
+  "provenance": "SYNTHETIC_FIXTURE",
+  "session_id": "EUR_DAILY.ASIAN_RANGE"
+}

@@ -1,0 +1,1656 @@
+{
+  "calculation_timestamp": "2026-03-03T09:00:00Z",
+  "cases": [
+    {
+      "calculation_timestamp": "2026-03-03T09:00:00Z",
+      "calibration_key": {
+        "calibration_id": "XAU_SPATIAL_BANDS",
+        "calibration_version": "V1",
+        "model_id": "XAU.GAME.L1_L2_L3.V1",
+        "model_version": "V1"
+      },
+      "case_id": "XAU_NORMAL_NODE50",
+      "clock_id": "America/New_York",
+      "expected": {
+        "direction_bias": "NONE_DECLARED",
+        "evidence_refs": [
+          "XAU.GAME.L1_L2_L3.V1"
+        ],
+        "fact_ids": [
+          "XAU.SEED",
+          "XAU.BAND",
+          "XAU.L3_DESTINATION",
+          "XAU.CONFIRMATION_CONTEXT",
+          "PRIOR_STATE.ABSENT"
+        ],
+        "layer": "CROSS_LAYER",
+        "levels": [],
+        "model_state": "NODE_DECLARED",
+        "no_go": [],
+        "production_authorization": "MANUAL_OPERATOR",
+        "quality_state": "OK",
+        "range_left_state": "UNRESOLVED",
+        "range_left_value": null,
+        "sub_states": [
+          {
+            "label": "L3",
+            "layer": "L3",
+            "state": "UNRESOLVED"
+          },
+          {
+            "label": "L2",
+            "layer": "L2",
+            "state": "NODE_50"
+          },
+          {
+            "label": "L1",
+            "layer": "L1",
+            "state": "BAND_NORMAL"
+          },
+          {
+            "label": "CONFIRMATION",
+            "layer": "L1",
+            "state": "ABSENT"
+          }
+        ],
+        "warnings": [
+          "RESEARCH_CALIBRATION"
+        ]
+      },
+      "expected_refusal": null,
+      "inputs": {
+        "band": {
+          "band_id": "XAU_NORMAL",
+          "band_state": "NORMAL",
+          "calculation_timestamp": "2026-03-03T09:00:00Z",
+          "calibration_key": {
+            "calibration_id": "XAU_SPATIAL_BANDS",
+            "calibration_version": "V1",
+            "model_id": "XAU.GAME.L1_L2_L3.V1",
+            "model_version": "V1"
+          },
+          "calibration_status": "RESEARCH",
+          "clock_id": "America/New_York",
+          "clock_registry_version": "CLOCK_REGISTRY_V1",
+          "definition_id": "SPATIAL_BAND_CLASSIFICATION",
+          "definition_version": "V1",
+          "evidence_refs": [
+            "XAU.GAME.L1_L2_L3.V1"
+          ],
+          "instrument_id": "XAUUSD",
+          "magnitude": {
+            "instrument_id": "XAUUSD",
+            "unit": "POINT",
+            "value": "30"
+          },
+          "market_data_schema_version": "MARKET_DATA_SCHEMA_V1",
+          "measurement_engine_version": "MEASUREMENT_ENGINE_V1",
+          "native_unit": "POINT",
+          "quality_state": "OK",
+          "session_id": "NONE",
+          "session_registry_version": "SESSION_REGISTRY_V1",
+          "source_ref": "corpus/canonical/models/XAU_GAME_L1_L2_L3_MODEL_CARD_V1.md",
+          "source_window": {
+            "bar_count": 6,
+            "input_digest": "6cdf93d6f5c9c151ab35f20036d71b97bc0edff8e0411e44e72f54066df44b6a",
+            "window_close_utc": "2026-03-03T00:25:00Z",
+            "window_open_utc": "2026-03-02T23:55:00Z"
+          }
+        },
+        "seed": {
+          "breakout_return_state": "INSIDE_RANGE",
+          "calculation_timestamp": "2026-03-03T09:00:00Z",
+          "clock_id": "America/New_York",
+          "clock_registry_version": "CLOCK_REGISTRY_V1",
+          "close_location": "0.9666666667",
+          "consumed_fraction": "0.9666666667",
+          "definition_id": "RANGE_MEASUREMENT",
+          "definition_version": "V1",
+          "direction": "UP",
+          "evidence_refs": [],
+          "high": {
+            "instrument_id": "XAUUSD",
+            "unit": "POINT",
+            "value": "2370.0"
+          },
+          "instrument_id": "XAUUSD",
+          "low": {
+            "instrument_id": "XAUUSD",
+            "unit": "POINT",
+            "value": "2340"
+          },
+          "market_data_schema_version": "MARKET_DATA_SCHEMA_V1",
+          "measurement_engine_version": "MEASUREMENT_ENGINE_V1",
+          "midpoint": {
+            "instrument_id": "XAUUSD",
+            "unit": "POINT",
+            "value": "2355.0"
+          },
+          "native_unit": "POINT",
+          "quality_state": "OK",
+          "range_left": {
+            "instrument_id": "XAUUSD",
+            "unit": "POINT",
+            "value": "1"
+          },
+          "session_id": "NONE",
+          "session_registry_version": "SESSION_REGISTRY_V1",
+          "size": {
+            "instrument_id": "XAUUSD",
+            "unit": "POINT",
+            "value": "3E+1"
+          },
+          "source_window": {
+            "bar_count": 6,
+            "input_digest": "6cdf93d6f5c9c151ab35f20036d71b97bc0edff8e0411e44e72f54066df44b6a",
+            "window_close_utc": "2026-03-03T00:25:00Z",
+            "window_open_utc": "2026-03-02T23:55:00Z"
+          }
+        },
+        "state_node": "50"
+      },
+      "instrument_id": "XAUUSD",
+      "model_id": "XAU.GAME.L1_L2_L3.V1",
+      "model_version": "V1",
+      "prior_case": null,
+      "session_id": null
+    },
+    {
+      "calculation_timestamp": "2026-03-03T09:00:00Z",
+      "calibration_key": {
+        "calibration_id": "XAU_SPATIAL_BANDS",
+        "calibration_version": "V1",
+        "model_id": "XAU.GAME.L1_L2_L3.V1",
+        "model_version": "V1"
+      },
+      "case_id": "XAU_68_8H",
+      "clock_id": "America/New_York",
+      "expected": {
+        "direction_bias": "NONE_DECLARED",
+        "evidence_refs": [
+          "XAU.GAME.L1_L2_L3.V1",
+          "EV.XAU.PROMOTION.68_80.V1"
+        ],
+        "fact_ids": [
+          "XAU.SEED",
+          "XAU.BAND",
+          "XAU.DELIVERY_CLOCKS",
+          "XAU.L3_DESTINATION",
+          "XAU.PROMOTION_68_80",
+          "XAU.CONFIRMATION_CONTEXT",
+          "PRIOR_STATE.ABSENT"
+        ],
+        "layer": "CROSS_LAYER",
+        "levels": [],
+        "model_state": "PROMOTION_ELIGIBLE",
+        "no_go": [],
+        "production_authorization": "MANUAL_OPERATOR",
+        "quality_state": "OK",
+        "range_left_state": "UNRESOLVED",
+        "range_left_value": null,
+        "sub_states": [
+          {
+            "label": "L3",
+            "layer": "L3",
+            "state": "UNRESOLVED"
+          },
+          {
+            "label": "L2",
+            "layer": "L2",
+            "state": "ELIGIBLE_80"
+          },
+          {
+            "label": "L1",
+            "layer": "L1",
+            "state": "BAND_REPAIR"
+          },
+          {
+            "label": "CONFIRMATION",
+            "layer": "L1",
+            "state": "ABSENT"
+          }
+        ],
+        "warnings": [
+          "RESEARCH_CALIBRATION"
+        ]
+      },
+      "expected_refusal": null,
+      "inputs": {
+        "band": {
+          "band_id": "XAU_REPAIR",
+          "band_state": "REPAIR",
+          "calculation_timestamp": "2026-03-03T09:00:00Z",
+          "calibration_key": {
+            "calibration_id": "XAU_SPATIAL_BANDS",
+            "calibration_version": "V1",
+            "model_id": "XAU.GAME.L1_L2_L3.V1",
+            "model_version": "V1"
+          },
+          "calibration_status": "RESEARCH",
+          "clock_id": "America/New_York",
+          "clock_registry_version": "CLOCK_REGISTRY_V1",
+          "definition_id": "SPATIAL_BAND_CLASSIFICATION",
+          "definition_version": "V1",
+          "evidence_refs": [
+            "XAU.GAME.L1_L2_L3.V1"
+          ],
+          "instrument_id": "XAUUSD",
+          "magnitude": {
+            "instrument_id": "XAUUSD",
+            "unit": "POINT",
+            "value": "68"
+          },
+          "market_data_schema_version": "MARKET_DATA_SCHEMA_V1",
+          "measurement_engine_version": "MEASUREMENT_ENGINE_V1",
+          "native_unit": "POINT",
+          "quality_state": "OK",
+          "session_id": "NONE",
+          "session_registry_version": "SESSION_REGISTRY_V1",
+          "source_ref": "corpus/canonical/models/XAU_GAME_L1_L2_L3_MODEL_CARD_V1.md",
+          "source_window": {
+            "bar_count": 6,
+            "input_digest": "7f2da3da7fe1c43b6f6a09df73552274a0bdfd3a6d62b5458b21634cb04ac566",
+            "window_close_utc": "2026-03-03T00:25:00Z",
+            "window_open_utc": "2026-03-02T23:55:00Z"
+          }
+        },
+        "delivery_clocks": [
+          {
+            "calculation_timestamp": "2026-03-03T09:00:00Z",
+            "clock_id": "America/New_York",
+            "clock_registry_version": "CLOCK_REGISTRY_V1",
+            "definition_id": "TIME_TO_DELIVERY",
+            "definition_version": "V1",
+            "evidence_refs": [],
+            "instrument_id": "XAUUSD",
+            "market_data_schema_version": "MARKET_DATA_SCHEMA_V1",
+            "measurement_engine_version": "MEASUREMENT_ENGINE_V1",
+            "native_unit": null,
+            "observed_instant": "2026-03-03T16:00:00Z",
+            "quality_state": "OK",
+            "remaining_seconds": "3600.0",
+            "scheduled_boundary": "2026-03-03T17:00:00Z",
+            "session_id": "NONE",
+            "session_registry_version": "SESSION_REGISTRY_V1",
+            "source_window": {
+              "bar_count": 0,
+              "input_digest": "1de086b377f62f0fec1616819b24075cdf200530fc13dd1d53f7f93c6d01ac7c",
+              "window_close_utc": "2026-03-03T17:00:00Z",
+              "window_open_utc": "2026-03-03T16:00:00Z"
+            },
+            "state": "PENDING"
+          }
+        ],
+        "elapsed": {
+          "calculation_timestamp": "2026-03-03T09:00:00Z",
+          "clock_id": "America/New_York",
+          "clock_registry_version": "CLOCK_REGISTRY_V1",
+          "definition_id": "ELAPSED_SINCE_EVENT",
+          "definition_version": "V1",
+          "elapsed_seconds": "28800.0",
+          "event_instant": "2026-03-03T01:00:00Z",
+          "evidence_refs": [],
+          "instrument_id": "XAUUSD",
+          "market_data_schema_version": "MARKET_DATA_SCHEMA_V1",
+          "measurement_engine_version": "MEASUREMENT_ENGINE_V1",
+          "native_unit": null,
+          "observed_instant": "2026-03-03T09:00:00Z",
+          "quality_state": "OK",
+          "session_id": "NONE",
+          "session_registry_version": "SESSION_REGISTRY_V1",
+          "source_window": {
+            "bar_count": 0,
+            "input_digest": "c76821d99c88a93860bb75e61b6c1f73bf56540242b2b95b7fc5072dccd8db44",
+            "window_close_utc": "2026-03-03T09:00:00Z",
+            "window_open_utc": "2026-03-03T01:00:00Z"
+          }
+        },
+        "seed": {
+          "breakout_return_state": "INSIDE_RANGE",
+          "calculation_timestamp": "2026-03-03T09:00:00Z",
+          "clock_id": "America/New_York",
+          "clock_registry_version": "CLOCK_REGISTRY_V1",
+          "close_location": "0.9852941176",
+          "consumed_fraction": "0.9852941176",
+          "definition_id": "RANGE_MEASUREMENT",
+          "definition_version": "V1",
+          "direction": "UP",
+          "evidence_refs": [],
+          "high": {
+            "instrument_id": "XAUUSD",
+            "unit": "POINT",
+            "value": "2408.0"
+          },
+          "instrument_id": "XAUUSD",
+          "low": {
+            "instrument_id": "XAUUSD",
+            "unit": "POINT",
+            "value": "2340"
+          },
+          "market_data_schema_version": "MARKET_DATA_SCHEMA_V1",
+          "measurement_engine_version": "MEASUREMENT_ENGINE_V1",
+          "midpoint": {
+            "instrument_id": "XAUUSD",
+            "unit": "POINT",
+            "value": "2374.0"
+          },
+          "native_unit": "POINT",
+          "quality_state": "OK",
+          "range_left": {
+            "instrument_id": "XAUUSD",
+            "unit": "POINT",
+            "value": "1"
+          },
+          "session_id": "NONE",
+          "session_registry_version": "SESSION_REGISTRY_V1",
+          "size": {
+            "instrument_id": "XAUUSD",
+            "unit": "POINT",
+            "value": "68"
+          },
+          "source_window": {
+            "bar_count": 6,
+            "input_digest": "7f2da3da7fe1c43b6f6a09df73552274a0bdfd3a6d62b5458b21634cb04ac566",
+            "window_close_utc": "2026-03-03T00:25:00Z",
+            "window_open_utc": "2026-03-02T23:55:00Z"
+          }
+        },
+        "state_node": "68"
+      },
+      "instrument_id": "XAUUSD",
+      "model_id": "XAU.GAME.L1_L2_L3.V1",
+      "model_version": "V1",
+      "prior_case": null,
+      "session_id": null
+    },
+    {
+      "calculation_timestamp": "2026-03-03T09:00:00Z",
+      "calibration_key": {
+        "calibration_id": "XAU_SPATIAL_BANDS",
+        "calibration_version": "V1",
+        "model_id": "XAU.GAME.L1_L2_L3.V1",
+        "model_version": "V1"
+      },
+      "case_id": "XAU_68_7H",
+      "clock_id": "America/New_York",
+      "expected": {
+        "direction_bias": "NONE_DECLARED",
+        "evidence_refs": [
+          "XAU.GAME.L1_L2_L3.V1"
+        ],
+        "fact_ids": [
+          "XAU.SEED",
+          "XAU.BAND",
+          "XAU.L3_DESTINATION",
+          "XAU.PROMOTION_PENDING",
+          "XAU.CONFIRMATION_CONTEXT",
+          "PRIOR_STATE.ABSENT"
+        ],
+        "layer": "CROSS_LAYER",
+        "levels": [],
+        "model_state": "PROMOTION_PENDING",
+        "no_go": [],
+        "production_authorization": "MANUAL_OPERATOR",
+        "quality_state": "OK",
+        "range_left_state": "UNRESOLVED",
+        "range_left_value": null,
+        "sub_states": [
+          {
+            "label": "L3",
+            "layer": "L3",
+            "state": "UNRESOLVED"
+          },
+          {
+            "label": "L2",
+            "layer": "L2",
+            "state": "PROMOTION_PENDING"
+          },
+          {
+            "label": "L1",
+            "layer": "L1",
+            "state": "BAND_REPAIR"
+          },
+          {
+            "label": "CONFIRMATION",
+            "layer": "L1",
+            "state": "ABSENT"
+          }
+        ],
+        "warnings": [
+          "RESEARCH_CALIBRATION"
+        ]
+      },
+      "expected_refusal": null,
+      "inputs": {
+        "band": {
+          "band_id": "XAU_REPAIR",
+          "band_state": "REPAIR",
+          "calculation_timestamp": "2026-03-03T09:00:00Z",
+          "calibration_key": {
+            "calibration_id": "XAU_SPATIAL_BANDS",
+            "calibration_version": "V1",
+            "model_id": "XAU.GAME.L1_L2_L3.V1",
+            "model_version": "V1"
+          },
+          "calibration_status": "RESEARCH",
+          "clock_id": "America/New_York",
+          "clock_registry_version": "CLOCK_REGISTRY_V1",
+          "definition_id": "SPATIAL_BAND_CLASSIFICATION",
+          "definition_version": "V1",
+          "evidence_refs": [
+            "XAU.GAME.L1_L2_L3.V1"
+          ],
+          "instrument_id": "XAUUSD",
+          "magnitude": {
+            "instrument_id": "XAUUSD",
+            "unit": "POINT",
+            "value": "68"
+          },
+          "market_data_schema_version": "MARKET_DATA_SCHEMA_V1",
+          "measurement_engine_version": "MEASUREMENT_ENGINE_V1",
+          "native_unit": "POINT",
+          "quality_state": "OK",
+          "session_id": "NONE",
+          "session_registry_version": "SESSION_REGISTRY_V1",
+          "source_ref": "corpus/canonical/models/XAU_GAME_L1_L2_L3_MODEL_CARD_V1.md",
+          "source_window": {
+            "bar_count": 6,
+            "input_digest": "7f2da3da7fe1c43b6f6a09df73552274a0bdfd3a6d62b5458b21634cb04ac566",
+            "window_close_utc": "2026-03-03T00:25:00Z",
+            "window_open_utc": "2026-03-02T23:55:00Z"
+          }
+        },
+        "elapsed": {
+          "calculation_timestamp": "2026-03-03T09:00:00Z",
+          "clock_id": "America/New_York",
+          "clock_registry_version": "CLOCK_REGISTRY_V1",
+          "definition_id": "ELAPSED_SINCE_EVENT",
+          "definition_version": "V1",
+          "elapsed_seconds": "25200.0",
+          "event_instant": "2026-03-03T02:00:00Z",
+          "evidence_refs": [],
+          "instrument_id": "XAUUSD",
+          "market_data_schema_version": "MARKET_DATA_SCHEMA_V1",
+          "measurement_engine_version": "MEASUREMENT_ENGINE_V1",
+          "native_unit": null,
+          "observed_instant": "2026-03-03T09:00:00Z",
+          "quality_state": "OK",
+          "session_id": "NONE",
+          "session_registry_version": "SESSION_REGISTRY_V1",
+          "source_window": {
+            "bar_count": 0,
+            "input_digest": "bb41204c5642d70ae9965a0b70e61f8f1abea916f62b22ecb53b0206c8b42672",
+            "window_close_utc": "2026-03-03T09:00:00Z",
+            "window_open_utc": "2026-03-03T02:00:00Z"
+          }
+        },
+        "seed": {
+          "breakout_return_state": "INSIDE_RANGE",
+          "calculation_timestamp": "2026-03-03T09:00:00Z",
+          "clock_id": "America/New_York",
+          "clock_registry_version": "CLOCK_REGISTRY_V1",
+          "close_location": "0.9852941176",
+          "consumed_fraction": "0.9852941176",
+          "definition_id": "RANGE_MEASUREMENT",
+          "definition_version": "V1",
+          "direction": "UP",
+          "evidence_refs": [],
+          "high": {
+            "instrument_id": "XAUUSD",
+            "unit": "POINT",
+            "value": "2408.0"
+          },
+          "instrument_id": "XAUUSD",
+          "low": {
+            "instrument_id": "XAUUSD",
+            "unit": "POINT",
+            "value": "2340"
+          },
+          "market_data_schema_version": "MARKET_DATA_SCHEMA_V1",
+          "measurement_engine_version": "MEASUREMENT_ENGINE_V1",
+          "midpoint": {
+            "instrument_id": "XAUUSD",
+            "unit": "POINT",
+            "value": "2374.0"
+          },
+          "native_unit": "POINT",
+          "quality_state": "OK",
+          "range_left": {
+            "instrument_id": "XAUUSD",
+            "unit": "POINT",
+            "value": "1"
+          },
+          "session_id": "NONE",
+          "session_registry_version": "SESSION_REGISTRY_V1",
+          "size": {
+            "instrument_id": "XAUUSD",
+            "unit": "POINT",
+            "value": "68"
+          },
+          "source_window": {
+            "bar_count": 6,
+            "input_digest": "7f2da3da7fe1c43b6f6a09df73552274a0bdfd3a6d62b5458b21634cb04ac566",
+            "window_close_utc": "2026-03-03T00:25:00Z",
+            "window_open_utc": "2026-03-02T23:55:00Z"
+          }
+        },
+        "state_node": "68"
+      },
+      "instrument_id": "XAUUSD",
+      "model_id": "XAU.GAME.L1_L2_L3.V1",
+      "model_version": "V1",
+      "prior_case": null,
+      "session_id": null
+    },
+    {
+      "calculation_timestamp": "2026-03-03T09:00:00Z",
+      "calibration_key": {
+        "calibration_id": "XAU_SPATIAL_BANDS",
+        "calibration_version": "V1",
+        "model_id": "XAU.GAME.L1_L2_L3.V1",
+        "model_version": "V1"
+      },
+      "case_id": "XAU_120_8H",
+      "clock_id": "America/New_York",
+      "expected": {
+        "direction_bias": "NONE_DECLARED",
+        "evidence_refs": [
+          "EV.XAU.PROMOTION.120_132.V1"
+        ],
+        "fact_ids": [
+          "XAU.SEED",
+          "XAU.L3_DESTINATION",
+          "XAU.PROMOTION_120_132",
+          "XAU.CONFIRMATION_CONTEXT",
+          "PRIOR_STATE.ABSENT"
+        ],
+        "layer": "CROSS_LAYER",
+        "levels": [],
+        "model_state": "PROMOTION_RESEARCH",
+        "no_go": [],
+        "production_authorization": "MANUAL_OPERATOR",
+        "quality_state": "OK",
+        "range_left_state": "UNRESOLVED",
+        "range_left_value": null,
+        "sub_states": [
+          {
+            "label": "L3",
+            "layer": "L3",
+            "state": "UNRESOLVED"
+          },
+          {
+            "label": "L2",
+            "layer": "L2",
+            "state": "RESEARCH_PROMOTED_132"
+          },
+          {
+            "label": "L1",
+            "layer": "L1",
+            "state": "ASIAN_SEED"
+          },
+          {
+            "label": "CONFIRMATION",
+            "layer": "L1",
+            "state": "ABSENT"
+          }
+        ],
+        "warnings": [
+          "SMALL_N_RESEARCH_FLAG"
+        ]
+      },
+      "expected_refusal": null,
+      "inputs": {
+        "elapsed": {
+          "calculation_timestamp": "2026-03-03T09:00:00Z",
+          "clock_id": "America/New_York",
+          "clock_registry_version": "CLOCK_REGISTRY_V1",
+          "definition_id": "ELAPSED_SINCE_EVENT",
+          "definition_version": "V1",
+          "elapsed_seconds": "28800.0",
+          "event_instant": "2026-03-03T01:00:00Z",
+          "evidence_refs": [],
+          "instrument_id": "XAUUSD",
+          "market_data_schema_version": "MARKET_DATA_SCHEMA_V1",
+          "measurement_engine_version": "MEASUREMENT_ENGINE_V1",
+          "native_unit": null,
+          "observed_instant": "2026-03-03T09:00:00Z",
+          "quality_state": "OK",
+          "session_id": "NONE",
+          "session_registry_version": "SESSION_REGISTRY_V1",
+          "source_window": {
+            "bar_count": 0,
+            "input_digest": "c76821d99c88a93860bb75e61b6c1f73bf56540242b2b95b7fc5072dccd8db44",
+            "window_close_utc": "2026-03-03T09:00:00Z",
+            "window_open_utc": "2026-03-03T01:00:00Z"
+          }
+        },
+        "seed": {
+          "breakout_return_state": "INSIDE_RANGE",
+          "calculation_timestamp": "2026-03-03T09:00:00Z",
+          "clock_id": "America/New_York",
+          "clock_registry_version": "CLOCK_REGISTRY_V1",
+          "close_location": "0.9666666667",
+          "consumed_fraction": "0.9666666667",
+          "definition_id": "RANGE_MEASUREMENT",
+          "definition_version": "V1",
+          "direction": "UP",
+          "evidence_refs": [],
+          "high": {
+            "instrument_id": "XAUUSD",
+            "unit": "POINT",
+            "value": "2370.0"
+          },
+          "instrument_id": "XAUUSD",
+          "low": {
+            "instrument_id": "XAUUSD",
+            "unit": "POINT",
+            "value": "2340"
+          },
+          "market_data_schema_version": "MARKET_DATA_SCHEMA_V1",
+          "measurement_engine_version": "MEASUREMENT_ENGINE_V1",
+          "midpoint": {
+            "instrument_id": "XAUUSD",
+            "unit": "POINT",
+            "value": "2355.0"
+          },
+          "native_unit": "POINT",
+          "quality_state": "OK",
+          "range_left": {
+            "instrument_id": "XAUUSD",
+            "unit": "POINT",
+            "value": "1"
+          },
+          "session_id": "NONE",
+          "session_registry_version": "SESSION_REGISTRY_V1",
+          "size": {
+            "instrument_id": "XAUUSD",
+            "unit": "POINT",
+            "value": "3E+1"
+          },
+          "source_window": {
+            "bar_count": 6,
+            "input_digest": "6cdf93d6f5c9c151ab35f20036d71b97bc0edff8e0411e44e72f54066df44b6a",
+            "window_close_utc": "2026-03-03T00:25:00Z",
+            "window_open_utc": "2026-03-02T23:55:00Z"
+          }
+        },
+        "state_node": "120"
+      },
+      "instrument_id": "XAUUSD",
+      "model_id": "XAU.GAME.L1_L2_L3.V1",
+      "model_version": "V1",
+      "prior_case": null,
+      "session_id": null
+    },
+    {
+      "calculation_timestamp": "2026-03-03T09:00:00Z",
+      "calibration_key": {
+        "calibration_id": "XAU_SPATIAL_BANDS",
+        "calibration_version": "V1",
+        "model_id": "XAU.GAME.L1_L2_L3.V1",
+        "model_version": "V1"
+      },
+      "case_id": "XAU_132_NO_168",
+      "clock_id": "America/New_York",
+      "expected": {
+        "direction_bias": "NONE_DECLARED",
+        "evidence_refs": [],
+        "fact_ids": [
+          "XAU.SEED",
+          "XAU.L3_DESTINATION",
+          "XAU.NODE_132_BOUNDARY",
+          "XAU.CONFIRMATION_CONTEXT",
+          "PRIOR_STATE.ABSENT"
+        ],
+        "layer": "CROSS_LAYER",
+        "levels": [],
+        "model_state": "NODE_DECLARED",
+        "no_go": [],
+        "production_authorization": "MANUAL_OPERATOR",
+        "quality_state": "OK",
+        "range_left_state": "UNRESOLVED",
+        "range_left_value": null,
+        "sub_states": [
+          {
+            "label": "L3",
+            "layer": "L3",
+            "state": "UNRESOLVED"
+          },
+          {
+            "label": "L2",
+            "layer": "L2",
+            "state": "NODE_132"
+          },
+          {
+            "label": "L1",
+            "layer": "L1",
+            "state": "ASIAN_SEED"
+          },
+          {
+            "label": "CONFIRMATION",
+            "layer": "L1",
+            "state": "ABSENT"
+          }
+        ],
+        "warnings": []
+      },
+      "expected_refusal": null,
+      "inputs": {
+        "elapsed": {
+          "calculation_timestamp": "2026-03-03T09:00:00Z",
+          "clock_id": "America/New_York",
+          "clock_registry_version": "CLOCK_REGISTRY_V1",
+          "definition_id": "ELAPSED_SINCE_EVENT",
+          "definition_version": "V1",
+          "elapsed_seconds": "360000.0",
+          "event_instant": "2026-02-27T05:00:00Z",
+          "evidence_refs": [],
+          "instrument_id": "XAUUSD",
+          "market_data_schema_version": "MARKET_DATA_SCHEMA_V1",
+          "measurement_engine_version": "MEASUREMENT_ENGINE_V1",
+          "native_unit": null,
+          "observed_instant": "2026-03-03T09:00:00Z",
+          "quality_state": "OK",
+          "session_id": "NONE",
+          "session_registry_version": "SESSION_REGISTRY_V1",
+          "source_window": {
+            "bar_count": 0,
+            "input_digest": "2f347e598ddaffb70d559d3d5dfcdae9b99e9a432077c756168cb8c53e3e3dfc",
+            "window_close_utc": "2026-03-03T09:00:00Z",
+            "window_open_utc": "2026-02-27T05:00:00Z"
+          }
+        },
+        "seed": {
+          "breakout_return_state": "INSIDE_RANGE",
+          "calculation_timestamp": "2026-03-03T09:00:00Z",
+          "clock_id": "America/New_York",
+          "clock_registry_version": "CLOCK_REGISTRY_V1",
+          "close_location": "0.9666666667",
+          "consumed_fraction": "0.9666666667",
+          "definition_id": "RANGE_MEASUREMENT",
+          "definition_version": "V1",
+          "direction": "UP",
+          "evidence_refs": [],
+          "high": {
+            "instrument_id": "XAUUSD",
+            "unit": "POINT",
+            "value": "2370.0"
+          },
+          "instrument_id": "XAUUSD",
+          "low": {
+            "instrument_id": "XAUUSD",
+            "unit": "POINT",
+            "value": "2340"
+          },
+          "market_data_schema_version": "MARKET_DATA_SCHEMA_V1",
+          "measurement_engine_version": "MEASUREMENT_ENGINE_V1",
+          "midpoint": {
+            "instrument_id": "XAUUSD",
+            "unit": "POINT",
+            "value": "2355.0"
+          },
+          "native_unit": "POINT",
+          "quality_state": "OK",
+          "range_left": {
+            "instrument_id": "XAUUSD",
+            "unit": "POINT",
+            "value": "1"
+          },
+          "session_id": "NONE",
+          "session_registry_version": "SESSION_REGISTRY_V1",
+          "size": {
+            "instrument_id": "XAUUSD",
+            "unit": "POINT",
+            "value": "3E+1"
+          },
+          "source_window": {
+            "bar_count": 6,
+            "input_digest": "6cdf93d6f5c9c151ab35f20036d71b97bc0edff8e0411e44e72f54066df44b6a",
+            "window_close_utc": "2026-03-03T00:25:00Z",
+            "window_open_utc": "2026-03-02T23:55:00Z"
+          }
+        },
+        "state_node": "132"
+      },
+      "instrument_id": "XAUUSD",
+      "model_id": "XAU.GAME.L1_L2_L3.V1",
+      "model_version": "V1",
+      "prior_case": null,
+      "session_id": null
+    },
+    {
+      "calculation_timestamp": "2026-03-03T09:00:00Z",
+      "calibration_key": {
+        "calibration_id": "XAU_SPATIAL_BANDS",
+        "calibration_version": "V1",
+        "model_id": "XAU.GAME.L1_L2_L3.V1",
+        "model_version": "V1"
+      },
+      "case_id": "XAU_PARKED_68_8H",
+      "clock_id": "America/New_York",
+      "expected": {
+        "direction_bias": "NONE_DECLARED",
+        "evidence_refs": [
+          "XAU.GAME.L1_L2_L3.V1"
+        ],
+        "fact_ids": [
+          "XAU.SEED",
+          "XAU.BAND",
+          "XAU.L3_DESTINATION",
+          "XAU.PARKED",
+          "XAU.CONFIRMATION_CONTEXT",
+          "PRIOR_STATE.ABSENT"
+        ],
+        "layer": "CROSS_LAYER",
+        "levels": [
+          {
+            "active": false,
+            "level_id": "XAU.ANCHOR.ACTIVE.01:XAU_50"
+          }
+        ],
+        "model_state": "PARKED",
+        "no_go": [
+          "PROMOTION_PARKED"
+        ],
+        "production_authorization": "MANUAL_OPERATOR",
+        "quality_state": "OK",
+        "range_left_state": "UNRESOLVED",
+        "range_left_value": null,
+        "sub_states": [
+          {
+            "label": "L3",
+            "layer": "L3",
+            "state": "UNRESOLVED"
+          },
+          {
+            "label": "L2",
+            "layer": "L2",
+            "state": "PARKED"
+          },
+          {
+            "label": "L1",
+            "layer": "L1",
+            "state": "BAND_REPAIR"
+          },
+          {
+            "label": "CONFIRMATION",
+            "layer": "L1",
+            "state": "CONFIRMED"
+          }
+        ],
+        "warnings": [
+          "RESEARCH_CALIBRATION"
+        ]
+      },
+      "expected_refusal": null,
+      "inputs": {
+        "band": {
+          "band_id": "XAU_REPAIR",
+          "band_state": "REPAIR",
+          "calculation_timestamp": "2026-03-03T09:00:00Z",
+          "calibration_key": {
+            "calibration_id": "XAU_SPATIAL_BANDS",
+            "calibration_version": "V1",
+            "model_id": "XAU.GAME.L1_L2_L3.V1",
+            "model_version": "V1"
+          },
+          "calibration_status": "RESEARCH",
+          "clock_id": "America/New_York",
+          "clock_registry_version": "CLOCK_REGISTRY_V1",
+          "definition_id": "SPATIAL_BAND_CLASSIFICATION",
+          "definition_version": "V1",
+          "evidence_refs": [
+            "XAU.GAME.L1_L2_L3.V1"
+          ],
+          "instrument_id": "XAUUSD",
+          "magnitude": {
+            "instrument_id": "XAUUSD",
+            "unit": "POINT",
+            "value": "68"
+          },
+          "market_data_schema_version": "MARKET_DATA_SCHEMA_V1",
+          "measurement_engine_version": "MEASUREMENT_ENGINE_V1",
+          "native_unit": "POINT",
+          "quality_state": "OK",
+          "session_id": "NONE",
+          "session_registry_version": "SESSION_REGISTRY_V1",
+          "source_ref": "corpus/canonical/models/XAU_GAME_L1_L2_L3_MODEL_CARD_V1.md",
+          "source_window": {
+            "bar_count": 6,
+            "input_digest": "7f2da3da7fe1c43b6f6a09df73552274a0bdfd3a6d62b5458b21634cb04ac566",
+            "window_close_utc": "2026-03-03T00:25:00Z",
+            "window_open_utc": "2026-03-02T23:55:00Z"
+          }
+        },
+        "confirmation_state": "CONFIRMED",
+        "coordinates": [
+          {
+            "anchor_id": "XAU.ANCHOR.ACTIVE.01",
+            "base": "LOW",
+            "calculation_timestamp": "2026-03-03T09:00:00Z",
+            "clock_id": "America/New_York",
+            "clock_registry_version": "CLOCK_REGISTRY_V1",
+            "coordinate_id": "XAU.ANCHOR.ACTIVE.01:XAU_50",
+            "definition_id": "COORDINATE_PROJECTION",
+            "definition_version": "V1",
+            "evidence_refs": [],
+            "family_id": "XAU_50",
+            "family_source_ref": "corpus/canonical/models/XAU_GAME_L1_L2_L3_MODEL_CARD_V1.md",
+            "instrument_id": "XAUUSD",
+            "level": "50",
+            "market_data_schema_version": "MARKET_DATA_SCHEMA_V1",
+            "measurement_engine_version": "MEASUREMENT_ENGINE_V1",
+            "model_id": "XAU.GAME.L1_L2_L3.V1",
+            "model_version": "V1",
+            "native_unit": "POINT",
+            "orientation": "UP_FROM_LOW",
+            "projected_price": {
+              "instrument_id": "XAUUSD",
+              "unit": "POINT",
+              "value": "2374.0"
+            },
+            "quality_state": "OK",
+            "range_size": {
+              "instrument_id": "XAUUSD",
+              "unit": "POINT",
+              "value": "68"
+            },
+            "reference_price": {
+              "instrument_id": "XAUUSD",
+              "unit": "POINT",
+              "value": "2340"
+            },
+            "session_id": "NONE",
+            "session_registry_version": "SESSION_REGISTRY_V1",
+            "source_window": {
+              "bar_count": 6,
+              "input_digest": "7f2da3da7fe1c43b6f6a09df73552274a0bdfd3a6d62b5458b21634cb04ac566",
+              "window_close_utc": "2026-03-03T00:25:00Z",
+              "window_open_utc": "2026-03-02T23:55:00Z"
+            }
+          }
+        ],
+        "elapsed": {
+          "calculation_timestamp": "2026-03-03T09:00:00Z",
+          "clock_id": "America/New_York",
+          "clock_registry_version": "CLOCK_REGISTRY_V1",
+          "definition_id": "ELAPSED_SINCE_EVENT",
+          "definition_version": "V1",
+          "elapsed_seconds": "28800.0",
+          "event_instant": "2026-03-03T01:00:00Z",
+          "evidence_refs": [],
+          "instrument_id": "XAUUSD",
+          "market_data_schema_version": "MARKET_DATA_SCHEMA_V1",
+          "measurement_engine_version": "MEASUREMENT_ENGINE_V1",
+          "native_unit": null,
+          "observed_instant": "2026-03-03T09:00:00Z",
+          "quality_state": "OK",
+          "session_id": "NONE",
+          "session_registry_version": "SESSION_REGISTRY_V1",
+          "source_window": {
+            "bar_count": 0,
+            "input_digest": "c76821d99c88a93860bb75e61b6c1f73bf56540242b2b95b7fc5072dccd8db44",
+            "window_close_utc": "2026-03-03T09:00:00Z",
+            "window_open_utc": "2026-03-03T01:00:00Z"
+          }
+        },
+        "parked": true,
+        "seed": {
+          "breakout_return_state": "INSIDE_RANGE",
+          "calculation_timestamp": "2026-03-03T09:00:00Z",
+          "clock_id": "America/New_York",
+          "clock_registry_version": "CLOCK_REGISTRY_V1",
+          "close_location": "0.9852941176",
+          "consumed_fraction": "0.9852941176",
+          "definition_id": "RANGE_MEASUREMENT",
+          "definition_version": "V1",
+          "direction": "UP",
+          "evidence_refs": [],
+          "high": {
+            "instrument_id": "XAUUSD",
+            "unit": "POINT",
+            "value": "2408.0"
+          },
+          "instrument_id": "XAUUSD",
+          "low": {
+            "instrument_id": "XAUUSD",
+            "unit": "POINT",
+            "value": "2340"
+          },
+          "market_data_schema_version": "MARKET_DATA_SCHEMA_V1",
+          "measurement_engine_version": "MEASUREMENT_ENGINE_V1",
+          "midpoint": {
+            "instrument_id": "XAUUSD",
+            "unit": "POINT",
+            "value": "2374.0"
+          },
+          "native_unit": "POINT",
+          "quality_state": "OK",
+          "range_left": {
+            "instrument_id": "XAUUSD",
+            "unit": "POINT",
+            "value": "1"
+          },
+          "session_id": "NONE",
+          "session_registry_version": "SESSION_REGISTRY_V1",
+          "size": {
+            "instrument_id": "XAUUSD",
+            "unit": "POINT",
+            "value": "68"
+          },
+          "source_window": {
+            "bar_count": 6,
+            "input_digest": "7f2da3da7fe1c43b6f6a09df73552274a0bdfd3a6d62b5458b21634cb04ac566",
+            "window_close_utc": "2026-03-03T00:25:00Z",
+            "window_open_utc": "2026-03-02T23:55:00Z"
+          }
+        },
+        "state_node": "68"
+      },
+      "instrument_id": "XAUUSD",
+      "model_id": "XAU.GAME.L1_L2_L3.V1",
+      "model_version": "V1",
+      "prior_case": null,
+      "session_id": null
+    },
+    {
+      "calculation_timestamp": "2026-03-03T09:00:00Z",
+      "calibration_key": {
+        "calibration_id": "XAU_SPATIAL_BANDS",
+        "calibration_version": "V1",
+        "model_id": "XAU.GAME.L1_L2_L3.V1",
+        "model_version": "V1"
+      },
+      "case_id": "XAU_BLIND_TOUCH",
+      "clock_id": "America/New_York",
+      "expected": {
+        "direction_bias": "NONE_DECLARED",
+        "evidence_refs": [],
+        "fact_ids": [
+          "XAU.SEED",
+          "XAU.ROUTE",
+          "XAU.L3_DESTINATION",
+          "XAU.CONFIRMATION_CONTEXT",
+          "PRIOR_STATE.ABSENT"
+        ],
+        "layer": "CROSS_LAYER",
+        "levels": [],
+        "model_state": "ROUTE_OPEN",
+        "no_go": [],
+        "production_authorization": "MANUAL_OPERATOR",
+        "quality_state": "OK",
+        "range_left_state": "UNRESOLVED",
+        "range_left_value": null,
+        "sub_states": [
+          {
+            "label": "L3",
+            "layer": "L3",
+            "state": "UNRESOLVED"
+          },
+          {
+            "label": "L2",
+            "layer": "L2",
+            "state": "ROUTE_OPEN"
+          },
+          {
+            "label": "L1",
+            "layer": "L1",
+            "state": "ASIAN_SEED"
+          },
+          {
+            "label": "CONFIRMATION",
+            "layer": "L1",
+            "state": "ABSENT"
+          }
+        ],
+        "warnings": []
+      },
+      "expected_refusal": null,
+      "inputs": {
+        "route": {
+          "bar_count": 6,
+          "calculation_timestamp": "2026-03-03T09:00:00Z",
+          "clock_id": "America/New_York",
+          "clock_registry_version": "CLOCK_REGISTRY_V1",
+          "definition_id": "PATH_MEASUREMENT",
+          "definition_version": "V1",
+          "delivery_order": [],
+          "evidence_refs": [],
+          "first_delivery": null,
+          "instrument_id": "XAUUSD",
+          "levels": [
+            {
+              "acceptance_state": "NOT_ACCEPTED",
+              "close_beyond_state": "NOT_BEYOND",
+              "first_delivery": null,
+              "level_id": "XAU_QUARTER_ZONE",
+              "max_excursion": {
+                "instrument_id": "XAUUSD",
+                "unit": "POINT",
+                "value": "1.5"
+              },
+              "re_entry_state": "NOT_REENTERED",
+              "rejection_state": "REJECTED",
+              "touch_state": "TOUCHED"
+            }
+          ],
+          "mae": {
+            "instrument_id": "XAUUSD",
+            "unit": "POINT",
+            "value": "1"
+          },
+          "market_data_schema_version": "MARKET_DATA_SCHEMA_V1",
+          "measurement_engine_version": "MEASUREMENT_ENGINE_V1",
+          "mfe": {
+            "instrument_id": "XAUUSD",
+            "unit": "POINT",
+            "value": "12"
+          },
+          "native_unit": "POINT",
+          "quality_state": "OK",
+          "reference_price": {
+            "instrument_id": "XAUUSD",
+            "unit": "POINT",
+            "value": "2350.0"
+          },
+          "remaining_distribution": null,
+          "remaining_state": "UNRESOLVED",
+          "session_id": "NONE",
+          "session_registry_version": "SESSION_REGISTRY_V1",
+          "source_window": {
+            "bar_count": 6,
+            "input_digest": "170a1d27e32bf580076021c5479eea3620ad2af221d0c7bc548f6c5955745410",
+            "window_close_utc": "2026-03-03T00:30:00Z",
+            "window_open_utc": "2026-03-03T00:00:00Z"
+          }
+        },
+        "seed": {
+          "breakout_return_state": "INSIDE_RANGE",
+          "calculation_timestamp": "2026-03-03T09:00:00Z",
+          "clock_id": "America/New_York",
+          "clock_registry_version": "CLOCK_REGISTRY_V1",
+          "close_location": "0.9666666667",
+          "consumed_fraction": "0.9666666667",
+          "definition_id": "RANGE_MEASUREMENT",
+          "definition_version": "V1",
+          "direction": "UP",
+          "evidence_refs": [],
+          "high": {
+            "instrument_id": "XAUUSD",
+            "unit": "POINT",
+            "value": "2370.0"
+          },
+          "instrument_id": "XAUUSD",
+          "low": {
+            "instrument_id": "XAUUSD",
+            "unit": "POINT",
+            "value": "2340"
+          },
+          "market_data_schema_version": "MARKET_DATA_SCHEMA_V1",
+          "measurement_engine_version": "MEASUREMENT_ENGINE_V1",
+          "midpoint": {
+            "instrument_id": "XAUUSD",
+            "unit": "POINT",
+            "value": "2355.0"
+          },
+          "native_unit": "POINT",
+          "quality_state": "OK",
+          "range_left": {
+            "instrument_id": "XAUUSD",
+            "unit": "POINT",
+            "value": "1"
+          },
+          "session_id": "NONE",
+          "session_registry_version": "SESSION_REGISTRY_V1",
+          "size": {
+            "instrument_id": "XAUUSD",
+            "unit": "POINT",
+            "value": "3E+1"
+          },
+          "source_window": {
+            "bar_count": 6,
+            "input_digest": "6cdf93d6f5c9c151ab35f20036d71b97bc0edff8e0411e44e72f54066df44b6a",
+            "window_close_utc": "2026-03-03T00:25:00Z",
+            "window_open_utc": "2026-03-02T23:55:00Z"
+          }
+        }
+      },
+      "instrument_id": "XAUUSD",
+      "model_id": "XAU.GAME.L1_L2_L3.V1",
+      "model_version": "V1",
+      "prior_case": null,
+      "session_id": null
+    },
+    {
+      "calculation_timestamp": "2026-03-03T09:00:00Z",
+      "calibration_key": {
+        "calibration_id": "XAU_SPATIAL_BANDS",
+        "calibration_version": "V1",
+        "model_id": "XAU.GAME.L1_L2_L3.V1",
+        "model_version": "V1"
+      },
+      "case_id": "XAU_L3_UNRESOLVED_WITH_RICH_L1",
+      "clock_id": "America/New_York",
+      "expected": {
+        "direction_bias": "NONE_DECLARED",
+        "evidence_refs": [
+          "XAU.GAME.L1_L2_L3.V1"
+        ],
+        "fact_ids": [
+          "XAU.SEED",
+          "XAU.BAND",
+          "XAU.ROUTE",
+          "XAU.L3_DESTINATION",
+          "XAU.CONFIRMATION_CONTEXT",
+          "PRIOR_STATE.ABSENT"
+        ],
+        "layer": "CROSS_LAYER",
+        "levels": [],
+        "model_state": "ROUTE_OPEN",
+        "no_go": [],
+        "production_authorization": "MANUAL_OPERATOR",
+        "quality_state": "OK",
+        "range_left_state": "UNRESOLVED",
+        "range_left_value": null,
+        "sub_states": [
+          {
+            "label": "L3",
+            "layer": "L3",
+            "state": "UNRESOLVED"
+          },
+          {
+            "label": "L2",
+            "layer": "L2",
+            "state": "ROUTE_OPEN"
+          },
+          {
+            "label": "L1",
+            "layer": "L1",
+            "state": "BAND_REPAIR"
+          },
+          {
+            "label": "CONFIRMATION",
+            "layer": "L1",
+            "state": "ABSENT"
+          }
+        ],
+        "warnings": [
+          "RESEARCH_CALIBRATION"
+        ]
+      },
+      "expected_refusal": null,
+      "inputs": {
+        "band": {
+          "band_id": "XAU_REPAIR",
+          "band_state": "REPAIR",
+          "calculation_timestamp": "2026-03-03T09:00:00Z",
+          "calibration_key": {
+            "calibration_id": "XAU_SPATIAL_BANDS",
+            "calibration_version": "V1",
+            "model_id": "XAU.GAME.L1_L2_L3.V1",
+            "model_version": "V1"
+          },
+          "calibration_status": "RESEARCH",
+          "clock_id": "America/New_York",
+          "clock_registry_version": "CLOCK_REGISTRY_V1",
+          "definition_id": "SPATIAL_BAND_CLASSIFICATION",
+          "definition_version": "V1",
+          "evidence_refs": [
+            "XAU.GAME.L1_L2_L3.V1"
+          ],
+          "instrument_id": "XAUUSD",
+          "magnitude": {
+            "instrument_id": "XAUUSD",
+            "unit": "POINT",
+            "value": "68"
+          },
+          "market_data_schema_version": "MARKET_DATA_SCHEMA_V1",
+          "measurement_engine_version": "MEASUREMENT_ENGINE_V1",
+          "native_unit": "POINT",
+          "quality_state": "OK",
+          "session_id": "NONE",
+          "session_registry_version": "SESSION_REGISTRY_V1",
+          "source_ref": "corpus/canonical/models/XAU_GAME_L1_L2_L3_MODEL_CARD_V1.md",
+          "source_window": {
+            "bar_count": 6,
+            "input_digest": "7f2da3da7fe1c43b6f6a09df73552274a0bdfd3a6d62b5458b21634cb04ac566",
+            "window_close_utc": "2026-03-03T00:25:00Z",
+            "window_open_utc": "2026-03-02T23:55:00Z"
+          }
+        },
+        "route": {
+          "bar_count": 6,
+          "calculation_timestamp": "2026-03-03T09:00:00Z",
+          "clock_id": "America/New_York",
+          "clock_registry_version": "CLOCK_REGISTRY_V1",
+          "definition_id": "PATH_MEASUREMENT",
+          "definition_version": "V1",
+          "delivery_order": [],
+          "evidence_refs": [],
+          "first_delivery": null,
+          "instrument_id": "XAUUSD",
+          "levels": [
+            {
+              "acceptance_state": "NOT_ACCEPTED",
+              "close_beyond_state": "NOT_BEYOND",
+              "first_delivery": null,
+              "level_id": "XAU_QUARTER_ZONE",
+              "max_excursion": {
+                "instrument_id": "XAUUSD",
+                "unit": "POINT",
+                "value": "1.5"
+              },
+              "re_entry_state": "NOT_REENTERED",
+              "rejection_state": "REJECTED",
+              "touch_state": "TOUCHED"
+            }
+          ],
+          "mae": {
+            "instrument_id": "XAUUSD",
+            "unit": "POINT",
+            "value": "1"
+          },
+          "market_data_schema_version": "MARKET_DATA_SCHEMA_V1",
+          "measurement_engine_version": "MEASUREMENT_ENGINE_V1",
+          "mfe": {
+            "instrument_id": "XAUUSD",
+            "unit": "POINT",
+            "value": "12"
+          },
+          "native_unit": "POINT",
+          "quality_state": "OK",
+          "reference_price": {
+            "instrument_id": "XAUUSD",
+            "unit": "POINT",
+            "value": "2350.0"
+          },
+          "remaining_distribution": null,
+          "remaining_state": "UNRESOLVED",
+          "session_id": "NONE",
+          "session_registry_version": "SESSION_REGISTRY_V1",
+          "source_window": {
+            "bar_count": 6,
+            "input_digest": "170a1d27e32bf580076021c5479eea3620ad2af221d0c7bc548f6c5955745410",
+            "window_close_utc": "2026-03-03T00:30:00Z",
+            "window_open_utc": "2026-03-03T00:00:00Z"
+          }
+        },
+        "seed": {
+          "breakout_return_state": "INSIDE_RANGE",
+          "calculation_timestamp": "2026-03-03T09:00:00Z",
+          "clock_id": "America/New_York",
+          "clock_registry_version": "CLOCK_REGISTRY_V1",
+          "close_location": "0.9852941176",
+          "consumed_fraction": "0.9852941176",
+          "definition_id": "RANGE_MEASUREMENT",
+          "definition_version": "V1",
+          "direction": "UP",
+          "evidence_refs": [],
+          "high": {
+            "instrument_id": "XAUUSD",
+            "unit": "POINT",
+            "value": "2408.0"
+          },
+          "instrument_id": "XAUUSD",
+          "low": {
+            "instrument_id": "XAUUSD",
+            "unit": "POINT",
+            "value": "2340"
+          },
+          "market_data_schema_version": "MARKET_DATA_SCHEMA_V1",
+          "measurement_engine_version": "MEASUREMENT_ENGINE_V1",
+          "midpoint": {
+            "instrument_id": "XAUUSD",
+            "unit": "POINT",
+            "value": "2374.0"
+          },
+          "native_unit": "POINT",
+          "quality_state": "OK",
+          "range_left": {
+            "instrument_id": "XAUUSD",
+            "unit": "POINT",
+            "value": "1"
+          },
+          "session_id": "NONE",
+          "session_registry_version": "SESSION_REGISTRY_V1",
+          "size": {
+            "instrument_id": "XAUUSD",
+            "unit": "POINT",
+            "value": "68"
+          },
+          "source_window": {
+            "bar_count": 6,
+            "input_digest": "7f2da3da7fe1c43b6f6a09df73552274a0bdfd3a6d62b5458b21634cb04ac566",
+            "window_close_utc": "2026-03-03T00:25:00Z",
+            "window_open_utc": "2026-03-02T23:55:00Z"
+          }
+        }
+      },
+      "instrument_id": "XAUUSD",
+      "model_id": "XAU.GAME.L1_L2_L3.V1",
+      "model_version": "V1",
+      "prior_case": null,
+      "session_id": null
+    },
+    {
+      "calculation_timestamp": "2026-03-03T09:00:00Z",
+      "calibration_key": {
+        "calibration_id": "XAU_SPATIAL_BANDS",
+        "calibration_version": "V1",
+        "model_id": "XAU.GAME.L1_L2_L3.V1",
+        "model_version": "V1"
+      },
+      "case_id": "XAU_COORDINATES_ACTIVE",
+      "clock_id": "America/New_York",
+      "expected": {
+        "direction_bias": "NONE_DECLARED",
+        "evidence_refs": [],
+        "fact_ids": [
+          "XAU.SEED",
+          "XAU.L3_DESTINATION",
+          "XAU.CONFIRMATION_CONTEXT",
+          "PRIOR_STATE.ABSENT"
+        ],
+        "layer": "CROSS_LAYER",
+        "levels": [
+          {
+            "active": true,
+            "level_id": "XAU.ANCHOR.ACTIVE.01:XAU_50"
+          },
+          {
+            "active": true,
+            "level_id": "XAU.ANCHOR.ACTIVE.01:XAU_68"
+          }
+        ],
+        "model_state": "UNRESOLVED",
+        "no_go": [],
+        "production_authorization": "MANUAL_OPERATOR",
+        "quality_state": "OK",
+        "range_left_state": "UNRESOLVED",
+        "range_left_value": null,
+        "sub_states": [
+          {
+            "label": "L3",
+            "layer": "L3",
+            "state": "UNRESOLVED"
+          },
+          {
+            "label": "L2",
+            "layer": "L2",
+            "state": "UNRESOLVED"
+          },
+          {
+            "label": "L1",
+            "layer": "L1",
+            "state": "ASIAN_SEED"
+          },
+          {
+            "label": "CONFIRMATION",
+            "layer": "L1",
+            "state": "ABSENT"
+          }
+        ],
+        "warnings": []
+      },
+      "expected_refusal": null,
+      "inputs": {
+        "coordinates": [
+          {
+            "anchor_id": "XAU.ANCHOR.ACTIVE.01",
+            "base": "LOW",
+            "calculation_timestamp": "2026-03-03T09:00:00Z",
+            "clock_id": "America/New_York",
+            "clock_registry_version": "CLOCK_REGISTRY_V1",
+            "coordinate_id": "XAU.ANCHOR.ACTIVE.01:XAU_50",
+            "definition_id": "COORDINATE_PROJECTION",
+            "definition_version": "V1",
+            "evidence_refs": [],
+            "family_id": "XAU_50",
+            "family_source_ref": "corpus/canonical/models/XAU_GAME_L1_L2_L3_MODEL_CARD_V1.md",
+            "instrument_id": "XAUUSD",
+            "level": "50",
+            "market_data_schema_version": "MARKET_DATA_SCHEMA_V1",
+            "measurement_engine_version": "MEASUREMENT_ENGINE_V1",
+            "model_id": "XAU.GAME.L1_L2_L3.V1",
+            "model_version": "V1",
+            "native_unit": "POINT",
+            "orientation": "UP_FROM_LOW",
+            "projected_price": {
+              "instrument_id": "XAUUSD",
+              "unit": "POINT",
+              "value": "2355.0"
+            },
+            "quality_state": "OK",
+            "range_size": {
+              "instrument_id": "XAUUSD",
+              "unit": "POINT",
+              "value": "3E+1"
+            },
+            "reference_price": {
+              "instrument_id": "XAUUSD",
+              "unit": "POINT",
+              "value": "2340"
+            },
+            "session_id": "NONE",
+            "session_registry_version": "SESSION_REGISTRY_V1",
+            "source_window": {
+              "bar_count": 6,
+              "input_digest": "6cdf93d6f5c9c151ab35f20036d71b97bc0edff8e0411e44e72f54066df44b6a",
+              "window_close_utc": "2026-03-03T00:25:00Z",
+              "window_open_utc": "2026-03-02T23:55:00Z"
+            }
+          },
+          {
+            "anchor_id": "XAU.ANCHOR.ACTIVE.01",
+            "base": "LOW",
+            "calculation_timestamp": "2026-03-03T09:00:00Z",
+            "clock_id": "America/New_York",
+            "clock_registry_version": "CLOCK_REGISTRY_V1",
+            "coordinate_id": "XAU.ANCHOR.ACTIVE.01:XAU_68",
+            "definition_id": "COORDINATE_PROJECTION",
+            "definition_version": "V1",
+            "evidence_refs": [],
+            "family_id": "XAU_68",
+            "family_source_ref": "corpus/canonical/models/XAU_GAME_L1_L2_L3_MODEL_CARD_V1.md",
+            "instrument_id": "XAUUSD",
+            "level": "68",
+            "market_data_schema_version": "MARKET_DATA_SCHEMA_V1",
+            "measurement_engine_version": "MEASUREMENT_ENGINE_V1",
+            "model_id": "XAU.GAME.L1_L2_L3.V1",
+            "model_version": "V1",
+            "native_unit": "POINT",
+            "orientation": "UP_FROM_LOW",
+            "projected_price": {
+              "instrument_id": "XAUUSD",
+              "unit": "POINT",
+              "value": "2360.4"
+            },
+            "quality_state": "OK",
+            "range_size": {
+              "instrument_id": "XAUUSD",
+              "unit": "POINT",
+              "value": "3E+1"
+            },
+            "reference_price": {
+              "instrument_id": "XAUUSD",
+              "unit": "POINT",
+              "value": "2340"
+            },
+            "session_id": "NONE",
+            "session_registry_version": "SESSION_REGISTRY_V1",
+            "source_window": {
+              "bar_count": 6,
+              "input_digest": "6cdf93d6f5c9c151ab35f20036d71b97bc0edff8e0411e44e72f54066df44b6a",
+              "window_close_utc": "2026-03-03T00:25:00Z",
+              "window_open_utc": "2026-03-02T23:55:00Z"
+            }
+          }
+        ],
+        "seed": {
+          "breakout_return_state": "INSIDE_RANGE",
+          "calculation_timestamp": "2026-03-03T09:00:00Z",
+          "clock_id": "America/New_York",
+          "clock_registry_version": "CLOCK_REGISTRY_V1",
+          "close_location": "0.9666666667",
+          "consumed_fraction": "0.9666666667",
+          "definition_id": "RANGE_MEASUREMENT",
+          "definition_version": "V1",
+          "direction": "UP",
+          "evidence_refs": [],
+          "high": {
+            "instrument_id": "XAUUSD",
+            "unit": "POINT",
+            "value": "2370.0"
+          },
+          "instrument_id": "XAUUSD",
+          "low": {
+            "instrument_id": "XAUUSD",
+            "unit": "POINT",
+            "value": "2340"
+          },
+          "market_data_schema_version": "MARKET_DATA_SCHEMA_V1",
+          "measurement_engine_version": "MEASUREMENT_ENGINE_V1",
+          "midpoint": {
+            "instrument_id": "XAUUSD",
+            "unit": "POINT",
+            "value": "2355.0"
+          },
+          "native_unit": "POINT",
+          "quality_state": "OK",
+          "range_left": {
+            "instrument_id": "XAUUSD",
+            "unit": "POINT",
+            "value": "1"
+          },
+          "session_id": "NONE",
+          "session_registry_version": "SESSION_REGISTRY_V1",
+          "size": {
+            "instrument_id": "XAUUSD",
+            "unit": "POINT",
+            "value": "3E+1"
+          },
+          "source_window": {
+            "bar_count": 6,
+            "input_digest": "6cdf93d6f5c9c151ab35f20036d71b97bc0edff8e0411e44e72f54066df44b6a",
+            "window_close_utc": "2026-03-03T00:25:00Z",
+            "window_open_utc": "2026-03-02T23:55:00Z"
+          }
+        }
+      },
+      "instrument_id": "XAUUSD",
+      "model_id": "XAU.GAME.L1_L2_L3.V1",
+      "model_version": "V1",
+      "prior_case": null,
+      "session_id": null
+    }
+  ],
+  "clock": "America/New_York",
+  "data_classification": "SYNTHETIC_FIXTURE - deterministic generated or reused committed slices; contract-test inputs only, never empirical market evidence and never citable for performance claims",
+  "description": "Synthetic golden states for the XAU three-layer runtime: promotion rules 68+8h->80 (VALIDATED_SMALL_N) and 120+8h->132 (RESEARCH_FLAG_SMALL_N), the 132 boundary with no automatic 168, parked-stays-parked, blind-touch never confirming and L3 authority isolation",
+  "fixture_id": "BLOC_III_3.XAU_PROMOTION_STATES.V1",
+  "historical": true,
+  "model_id": "XAU.GAME.L1_L2_L3.V1",
+  "observation_cutoff": "2026-03-03T00:30:00Z",
+  "provenance": "SYNTHETIC_FIXTURE",
+  "session_id": null
+}

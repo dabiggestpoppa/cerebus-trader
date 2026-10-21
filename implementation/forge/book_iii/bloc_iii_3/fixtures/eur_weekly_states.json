@@ -1,0 +1,1488 @@
+{
+  "calculation_timestamp": "2026-03-03T09:00:00Z",
+  "cases": [
+    {
+      "calculation_timestamp": "2026-03-03T09:00:00Z",
+      "calibration_key": {
+        "calibration_id": "EUR_WEEKLY_TIER_RANGE",
+        "calibration_version": "V1",
+        "model_id": "EUR.WEEKLY.V1_1",
+        "model_version": "V1_1"
+      },
+      "case_id": "EUR_WEEKLY_ROUTE",
+      "clock_id": null,
+      "expected": {
+        "direction_bias": "NONE_DECLARED",
+        "evidence_refs": [
+          "EV.EUR.WEEKLY.TIER_RANGE.V1"
+        ],
+        "fact_ids": [
+          "EUR_WEEKLY.SEED",
+          "EUR_WEEKLY.TIER",
+          "EUR_WEEKLY.ROUTE",
+          "EUR_WEEKLY.HOUR_TIER_TIMING",
+          "EUR_WEEKLY.CALIBRATION_STATUS",
+          "EUR_WEEKLY.DESTINATION_BOUNDARY",
+          "EUR_WEEKLY.DISTRIBUTION",
+          "PRIOR_STATE.ABSENT"
+        ],
+        "layer": "L2",
+        "levels": [],
+        "model_state": "ROUTE_OPEN",
+        "no_go": [],
+        "production_authorization": "RESEARCH_ONLY",
+        "quality_state": "OK",
+        "range_left_state": "UNRESOLVED",
+        "range_left_value": null,
+        "sub_states": [],
+        "warnings": [
+          "RESEARCH_CALIBRATION"
+        ]
+      },
+      "expected_refusal": null,
+      "inputs": {
+        "path": {
+          "calculation_timestamp": "2026-03-03T09:00:00Z",
+          "calibration_status": "RESEARCH",
+          "clock_id": "America/New_York",
+          "clock_registry_version": "CLOCK_REGISTRY_V1",
+          "definition_id": "HO_WEEKLY_PATH",
+          "definition_version": "V1",
+          "evidence_refs": [],
+          "instrument_id": "EURUSD",
+          "market_data_schema_version": "MARKET_DATA_SCHEMA_V1",
+          "measurement_engine_version": "MEASUREMENT_ENGINE_V1",
+          "native_unit": null,
+          "nodes": [
+            {
+              "calibration_status": "RESEARCH",
+              "magnitude": {
+                "instrument_id": "EURUSD",
+                "unit": "PIP",
+                "value": "126.8"
+              },
+              "node_id": "EUR_WEEKLY_T1",
+              "order_index": 0,
+              "sample_n": 45,
+              "source_ref": "corpus/canonical/evidence/EUR_WEEKLY_TIER_RANGE_EVIDENCE_V1.md"
+            },
+            {
+              "calibration_status": "RESEARCH",
+              "magnitude": {
+                "instrument_id": "EURUSD",
+                "unit": "PIP",
+                "value": "133.5"
+              },
+              "node_id": "EUR_WEEKLY_T2",
+              "order_index": 1,
+              "sample_n": 69,
+              "source_ref": "corpus/canonical/evidence/EUR_WEEKLY_TIER_RANGE_EVIDENCE_V1.md"
+            },
+            {
+              "calibration_status": "RESEARCH",
+              "magnitude": {
+                "instrument_id": "EURUSD",
+                "unit": "PIP",
+                "value": "168.95"
+              },
+              "node_id": "EUR_WEEKLY_T3",
+              "order_index": 2,
+              "sample_n": 60,
+              "source_ref": "corpus/canonical/evidence/EUR_WEEKLY_TIER_RANGE_EVIDENCE_V1.md"
+            }
+          ],
+          "quality_state": "OK",
+          "session_id": "NONE",
+          "session_registry_version": "SESSION_REGISTRY_V1",
+          "source_window": {
+            "bar_count": 6,
+            "input_digest": "3acce141884c400f9fe13d9d10123c95b6718d73832a60762a5f8f5f6d6d6338",
+            "window_close_utc": "2026-03-03T00:30:00Z",
+            "window_open_utc": "2026-03-03T00:00:00Z"
+          },
+          "state": "MEASURED",
+          "weekly_seed": {
+            "bar_count": 6,
+            "calculation_timestamp": "2026-03-03T09:00:00Z",
+            "clock_id": "America/New_York",
+            "clock_registry_version": "CLOCK_REGISTRY_V1",
+            "definition_id": "HO_WEEKLY_SEED",
+            "definition_version": "V1",
+            "evidence_refs": [],
+            "high": {
+              "instrument_id": "EURUSD",
+              "unit": "PIP",
+              "value": "1.08150"
+            },
+            "instrument_id": "EURUSD",
+            "low": {
+              "instrument_id": "EURUSD",
+              "unit": "PIP",
+              "value": "1.07900"
+            },
+            "market_data_schema_version": "MARKET_DATA_SCHEMA_V1",
+            "measurement_engine_version": "MEASUREMENT_ENGINE_V1",
+            "native_unit": "PIP",
+            "quality_state": "OK",
+            "seed_kind": "WEEK",
+            "session_id": "NONE",
+            "session_registry_version": "SESSION_REGISTRY_V1",
+            "size": {
+              "instrument_id": "EURUSD",
+              "unit": "PIP",
+              "value": "25.0"
+            },
+            "source_window": {
+              "bar_count": 6,
+              "input_digest": "3acce141884c400f9fe13d9d10123c95b6718d73832a60762a5f8f5f6d6d6338",
+              "window_close_utc": "2026-03-03T00:30:00Z",
+              "window_open_utc": "2026-03-03T00:00:00Z"
+            }
+          }
+        },
+        "period_phase": {
+          "calculation_timestamp": "2026-03-03T09:00:00Z",
+          "clock_id": "America/New_York",
+          "clock_registry_version": "CLOCK_REGISTRY_V1",
+          "definition_id": "PERIOD_PHASE",
+          "definition_version": "V1",
+          "evidence_refs": [],
+          "instrument_id": "EURUSD",
+          "lineage_id": "EUR_DAILY_LINEAGE",
+          "market_data_schema_version": "MARKET_DATA_SCHEMA_V1",
+          "measurement_engine_version": "MEASUREMENT_ENGINE_V1",
+          "native_unit": null,
+          "period_index": 10,
+          "period_kind": "WEEK",
+          "period_label": "2026-W10",
+          "quality_state": "OK",
+          "research_day": "2026-03-02",
+          "session_id": "NONE",
+          "session_registry_version": "SESSION_REGISTRY_V1",
+          "source_window": {
+            "bar_count": 0,
+            "input_digest": "6514fbe05a15c70097b6f5e5b99a1ab247a7cb1b67f830adb73fbff9817c5373",
+            "window_close_utc": "2026-03-02T21:00:00Z",
+            "window_open_utc": "2026-03-02T21:00:00Z"
+          }
+        },
+        "seed": {
+          "bar_count": 6,
+          "calculation_timestamp": "2026-03-03T09:00:00Z",
+          "clock_id": "America/New_York",
+          "clock_registry_version": "CLOCK_REGISTRY_V1",
+          "definition_id": "HO_WEEKLY_SEED",
+          "definition_version": "V1",
+          "evidence_refs": [],
+          "high": {
+            "instrument_id": "EURUSD",
+            "unit": "PIP",
+            "value": "1.08150"
+          },
+          "instrument_id": "EURUSD",
+          "low": {
+            "instrument_id": "EURUSD",
+            "unit": "PIP",
+            "value": "1.07900"
+          },
+          "market_data_schema_version": "MARKET_DATA_SCHEMA_V1",
+          "measurement_engine_version": "MEASUREMENT_ENGINE_V1",
+          "native_unit": "PIP",
+          "quality_state": "OK",
+          "seed_kind": "WEEK",
+          "session_id": "NONE",
+          "session_registry_version": "SESSION_REGISTRY_V1",
+          "size": {
+            "instrument_id": "EURUSD",
+            "unit": "PIP",
+            "value": "25.0"
+          },
+          "source_window": {
+            "bar_count": 6,
+            "input_digest": "3acce141884c400f9fe13d9d10123c95b6718d73832a60762a5f8f5f6d6d6338",
+            "window_close_utc": "2026-03-03T00:30:00Z",
+            "window_open_utc": "2026-03-03T00:00:00Z"
+          }
+        },
+        "tier": {
+          "calculation_timestamp": "2026-03-03T09:00:00Z",
+          "calibration_key": {
+            "calibration_id": "EUR_WEEKLY_TIER_RANGE",
+            "calibration_version": "V1",
+            "model_id": "EUR.WEEKLY.V1_1",
+            "model_version": "V1_1"
+          },
+          "calibration_status": "RESEARCH",
+          "clock_id": "America/New_York",
+          "clock_registry_version": "CLOCK_REGISTRY_V1",
+          "definition_id": "TIER_CLASSIFICATION",
+          "definition_version": "V1",
+          "evidence_refs": [
+            "EV.EUR.WEEKLY.TIER_RANGE.V1"
+          ],
+          "instrument_id": "EURUSD",
+          "magnitude": {
+            "instrument_id": "EURUSD",
+            "unit": "PIP",
+            "value": "133.5"
+          },
+          "market_data_schema_version": "MARKET_DATA_SCHEMA_V1",
+          "measurement_engine_version": "MEASUREMENT_ENGINE_V1",
+          "native_unit": null,
+          "no_go": false,
+          "quality_state": "OK",
+          "session_id": "NONE",
+          "session_registry_version": "SESSION_REGISTRY_V1",
+          "source_ref": "corpus/canonical/evidence/EUR_WEEKLY_TIER_RANGE_EVIDENCE_V1.md",
+          "source_window": {
+            "bar_count": 6,
+            "input_digest": "3acce141884c400f9fe13d9d10123c95b6718d73832a60762a5f8f5f6d6d6338",
+            "window_close_utc": "2026-03-03T00:30:00Z",
+            "window_open_utc": "2026-03-03T00:00:00Z"
+          },
+          "tier_id": "T2"
+        }
+      },
+      "instrument_id": "EURUSD",
+      "model_id": "EUR.WEEKLY.V1_1",
+      "model_version": "V1_1",
+      "prior_case": null,
+      "session_id": null
+    },
+    {
+      "calculation_timestamp": "2026-03-03T09:00:00Z",
+      "calibration_key": {
+        "calibration_id": "EUR_WEEKLY_TIER_RANGE",
+        "calibration_version": "V1",
+        "model_id": "EUR.WEEKLY.V1_1",
+        "model_version": "V1_1"
+      },
+      "case_id": "EUR_WEEKLY_PROMOTED",
+      "clock_id": null,
+      "expected": {
+        "direction_bias": "NONE_DECLARED",
+        "evidence_refs": [
+          "EV.EUR.WEEKLY.TIER_RANGE.V1"
+        ],
+        "fact_ids": [
+          "EUR_WEEKLY.SEED",
+          "EUR_WEEKLY.TIER",
+          "EUR_WEEKLY.ROUTE",
+          "EUR_WEEKLY.NODE",
+          "EUR_WEEKLY.HOUR_TIER_TIMING",
+          "EUR_WEEKLY.CALIBRATION_STATUS",
+          "EUR_WEEKLY.DESTINATION_BOUNDARY",
+          "EUR_WEEKLY.DISTRIBUTION",
+          "PRIOR_STATE.ABSENT"
+        ],
+        "layer": "L2",
+        "levels": [],
+        "model_state": "NODE_PROMOTED",
+        "no_go": [],
+        "production_authorization": "RESEARCH_ONLY",
+        "quality_state": "OK",
+        "range_left_state": "UNRESOLVED",
+        "range_left_value": null,
+        "sub_states": [],
+        "warnings": [
+          "RESEARCH_CALIBRATION"
+        ]
+      },
+      "expected_refusal": null,
+      "inputs": {
+        "path": {
+          "calculation_timestamp": "2026-03-03T09:00:00Z",
+          "calibration_status": "RESEARCH",
+          "clock_id": "America/New_York",
+          "clock_registry_version": "CLOCK_REGISTRY_V1",
+          "definition_id": "HO_WEEKLY_PATH",
+          "definition_version": "V1",
+          "evidence_refs": [],
+          "instrument_id": "EURUSD",
+          "market_data_schema_version": "MARKET_DATA_SCHEMA_V1",
+          "measurement_engine_version": "MEASUREMENT_ENGINE_V1",
+          "native_unit": null,
+          "nodes": [
+            {
+              "calibration_status": "RESEARCH",
+              "magnitude": {
+                "instrument_id": "EURUSD",
+                "unit": "PIP",
+                "value": "126.8"
+              },
+              "node_id": "EUR_WEEKLY_T1",
+              "order_index": 0,
+              "sample_n": 45,
+              "source_ref": "corpus/canonical/evidence/EUR_WEEKLY_TIER_RANGE_EVIDENCE_V1.md"
+            },
+            {
+              "calibration_status": "RESEARCH",
+              "magnitude": {
+                "instrument_id": "EURUSD",
+                "unit": "PIP",
+                "value": "133.5"
+              },
+              "node_id": "EUR_WEEKLY_T2",
+              "order_index": 1,
+              "sample_n": 69,
+              "source_ref": "corpus/canonical/evidence/EUR_WEEKLY_TIER_RANGE_EVIDENCE_V1.md"
+            },
+            {
+              "calibration_status": "RESEARCH",
+              "magnitude": {
+                "instrument_id": "EURUSD",
+                "unit": "PIP",
+                "value": "168.95"
+              },
+              "node_id": "EUR_WEEKLY_T3",
+              "order_index": 2,
+              "sample_n": 60,
+              "source_ref": "corpus/canonical/evidence/EUR_WEEKLY_TIER_RANGE_EVIDENCE_V1.md"
+            }
+          ],
+          "quality_state": "OK",
+          "session_id": "NONE",
+          "session_registry_version": "SESSION_REGISTRY_V1",
+          "source_window": {
+            "bar_count": 6,
+            "input_digest": "3acce141884c400f9fe13d9d10123c95b6718d73832a60762a5f8f5f6d6d6338",
+            "window_close_utc": "2026-03-03T00:30:00Z",
+            "window_open_utc": "2026-03-03T00:00:00Z"
+          },
+          "state": "MEASURED",
+          "weekly_seed": {
+            "bar_count": 6,
+            "calculation_timestamp": "2026-03-03T09:00:00Z",
+            "clock_id": "America/New_York",
+            "clock_registry_version": "CLOCK_REGISTRY_V1",
+            "definition_id": "HO_WEEKLY_SEED",
+            "definition_version": "V1",
+            "evidence_refs": [],
+            "high": {
+              "instrument_id": "EURUSD",
+              "unit": "PIP",
+              "value": "1.08150"
+            },
+            "instrument_id": "EURUSD",
+            "low": {
+              "instrument_id": "EURUSD",
+              "unit": "PIP",
+              "value": "1.07900"
+            },
+            "market_data_schema_version": "MARKET_DATA_SCHEMA_V1",
+            "measurement_engine_version": "MEASUREMENT_ENGINE_V1",
+            "native_unit": "PIP",
+            "quality_state": "OK",
+            "seed_kind": "WEEK",
+            "session_id": "NONE",
+            "session_registry_version": "SESSION_REGISTRY_V1",
+            "size": {
+              "instrument_id": "EURUSD",
+              "unit": "PIP",
+              "value": "25.0"
+            },
+            "source_window": {
+              "bar_count": 6,
+              "input_digest": "3acce141884c400f9fe13d9d10123c95b6718d73832a60762a5f8f5f6d6d6338",
+              "window_close_utc": "2026-03-03T00:30:00Z",
+              "window_open_utc": "2026-03-03T00:00:00Z"
+            }
+          }
+        },
+        "period_phase": {
+          "calculation_timestamp": "2026-03-03T09:00:00Z",
+          "clock_id": "America/New_York",
+          "clock_registry_version": "CLOCK_REGISTRY_V1",
+          "definition_id": "PERIOD_PHASE",
+          "definition_version": "V1",
+          "evidence_refs": [],
+          "instrument_id": "EURUSD",
+          "lineage_id": "EUR_DAILY_LINEAGE",
+          "market_data_schema_version": "MARKET_DATA_SCHEMA_V1",
+          "measurement_engine_version": "MEASUREMENT_ENGINE_V1",
+          "native_unit": null,
+          "period_index": 10,
+          "period_kind": "WEEK",
+          "period_label": "2026-W10",
+          "quality_state": "OK",
+          "research_day": "2026-03-02",
+          "session_id": "NONE",
+          "session_registry_version": "SESSION_REGISTRY_V1",
+          "source_window": {
+            "bar_count": 0,
+            "input_digest": "6514fbe05a15c70097b6f5e5b99a1ab247a7cb1b67f830adb73fbff9817c5373",
+            "window_close_utc": "2026-03-02T21:00:00Z",
+            "window_open_utc": "2026-03-02T21:00:00Z"
+          }
+        },
+        "reached_node_id": "EUR_WEEKLY_T2",
+        "seed": {
+          "bar_count": 6,
+          "calculation_timestamp": "2026-03-03T09:00:00Z",
+          "clock_id": "America/New_York",
+          "clock_registry_version": "CLOCK_REGISTRY_V1",
+          "definition_id": "HO_WEEKLY_SEED",
+          "definition_version": "V1",
+          "evidence_refs": [],
+          "high": {
+            "instrument_id": "EURUSD",
+            "unit": "PIP",
+            "value": "1.08150"
+          },
+          "instrument_id": "EURUSD",
+          "low": {
+            "instrument_id": "EURUSD",
+            "unit": "PIP",
+            "value": "1.07900"
+          },
+          "market_data_schema_version": "MARKET_DATA_SCHEMA_V1",
+          "measurement_engine_version": "MEASUREMENT_ENGINE_V1",
+          "native_unit": "PIP",
+          "quality_state": "OK",
+          "seed_kind": "WEEK",
+          "session_id": "NONE",
+          "session_registry_version": "SESSION_REGISTRY_V1",
+          "size": {
+            "instrument_id": "EURUSD",
+            "unit": "PIP",
+            "value": "25.0"
+          },
+          "source_window": {
+            "bar_count": 6,
+            "input_digest": "3acce141884c400f9fe13d9d10123c95b6718d73832a60762a5f8f5f6d6d6338",
+            "window_close_utc": "2026-03-03T00:30:00Z",
+            "window_open_utc": "2026-03-03T00:00:00Z"
+          }
+        },
+        "tier": {
+          "calculation_timestamp": "2026-03-03T09:00:00Z",
+          "calibration_key": {
+            "calibration_id": "EUR_WEEKLY_TIER_RANGE",
+            "calibration_version": "V1",
+            "model_id": "EUR.WEEKLY.V1_1",
+            "model_version": "V1_1"
+          },
+          "calibration_status": "RESEARCH",
+          "clock_id": "America/New_York",
+          "clock_registry_version": "CLOCK_REGISTRY_V1",
+          "definition_id": "TIER_CLASSIFICATION",
+          "definition_version": "V1",
+          "evidence_refs": [
+            "EV.EUR.WEEKLY.TIER_RANGE.V1"
+          ],
+          "instrument_id": "EURUSD",
+          "magnitude": {
+            "instrument_id": "EURUSD",
+            "unit": "PIP",
+            "value": "133.5"
+          },
+          "market_data_schema_version": "MARKET_DATA_SCHEMA_V1",
+          "measurement_engine_version": "MEASUREMENT_ENGINE_V1",
+          "native_unit": null,
+          "no_go": false,
+          "quality_state": "OK",
+          "session_id": "NONE",
+          "session_registry_version": "SESSION_REGISTRY_V1",
+          "source_ref": "corpus/canonical/evidence/EUR_WEEKLY_TIER_RANGE_EVIDENCE_V1.md",
+          "source_window": {
+            "bar_count": 6,
+            "input_digest": "3acce141884c400f9fe13d9d10123c95b6718d73832a60762a5f8f5f6d6d6338",
+            "window_close_utc": "2026-03-03T00:30:00Z",
+            "window_open_utc": "2026-03-03T00:00:00Z"
+          },
+          "tier_id": "T2"
+        }
+      },
+      "instrument_id": "EURUSD",
+      "model_id": "EUR.WEEKLY.V1_1",
+      "model_version": "V1_1",
+      "prior_case": null,
+      "session_id": null
+    },
+    {
+      "calculation_timestamp": "2026-03-03T09:00:00Z",
+      "calibration_key": {
+        "calibration_id": "EUR_WEEKLY_TIER_RANGE",
+        "calibration_version": "V1",
+        "model_id": "EUR.WEEKLY.V1_1",
+        "model_version": "V1_1"
+      },
+      "case_id": "EUR_WEEKLY_INNER_NODE",
+      "clock_id": null,
+      "expected": {
+        "direction_bias": "NONE_DECLARED",
+        "evidence_refs": [
+          "EV.EUR.WEEKLY.TIER_RANGE.V1"
+        ],
+        "fact_ids": [
+          "EUR_WEEKLY.SEED",
+          "EUR_WEEKLY.TIER",
+          "EUR_WEEKLY.ROUTE",
+          "EUR_WEEKLY.NODE_NOT_OUTER",
+          "EUR_WEEKLY.HOUR_TIER_TIMING",
+          "EUR_WEEKLY.CALIBRATION_STATUS",
+          "EUR_WEEKLY.DESTINATION_BOUNDARY",
+          "EUR_WEEKLY.DISTRIBUTION",
+          "PRIOR_STATE.ABSENT"
+        ],
+        "layer": "L2",
+        "levels": [],
+        "model_state": "ROUTE_OPEN",
+        "no_go": [],
+        "production_authorization": "RESEARCH_ONLY",
+        "quality_state": "OK",
+        "range_left_state": "UNRESOLVED",
+        "range_left_value": null,
+        "sub_states": [],
+        "warnings": [
+          "RESEARCH_CALIBRATION"
+        ]
+      },
+      "expected_refusal": null,
+      "inputs": {
+        "path": {
+          "calculation_timestamp": "2026-03-03T09:00:00Z",
+          "calibration_status": "RESEARCH",
+          "clock_id": "America/New_York",
+          "clock_registry_version": "CLOCK_REGISTRY_V1",
+          "definition_id": "HO_WEEKLY_PATH",
+          "definition_version": "V1",
+          "evidence_refs": [],
+          "instrument_id": "EURUSD",
+          "market_data_schema_version": "MARKET_DATA_SCHEMA_V1",
+          "measurement_engine_version": "MEASUREMENT_ENGINE_V1",
+          "native_unit": null,
+          "nodes": [
+            {
+              "calibration_status": "RESEARCH",
+              "magnitude": {
+                "instrument_id": "EURUSD",
+                "unit": "PIP",
+                "value": "126.8"
+              },
+              "node_id": "EUR_WEEKLY_T1",
+              "order_index": 0,
+              "sample_n": 45,
+              "source_ref": "corpus/canonical/evidence/EUR_WEEKLY_TIER_RANGE_EVIDENCE_V1.md"
+            },
+            {
+              "calibration_status": "RESEARCH",
+              "magnitude": {
+                "instrument_id": "EURUSD",
+                "unit": "PIP",
+                "value": "133.5"
+              },
+              "node_id": "EUR_WEEKLY_T2",
+              "order_index": 1,
+              "sample_n": 69,
+              "source_ref": "corpus/canonical/evidence/EUR_WEEKLY_TIER_RANGE_EVIDENCE_V1.md"
+            },
+            {
+              "calibration_status": "RESEARCH",
+              "magnitude": {
+                "instrument_id": "EURUSD",
+                "unit": "PIP",
+                "value": "168.95"
+              },
+              "node_id": "EUR_WEEKLY_T3",
+              "order_index": 2,
+              "sample_n": 60,
+              "source_ref": "corpus/canonical/evidence/EUR_WEEKLY_TIER_RANGE_EVIDENCE_V1.md"
+            }
+          ],
+          "quality_state": "OK",
+          "session_id": "NONE",
+          "session_registry_version": "SESSION_REGISTRY_V1",
+          "source_window": {
+            "bar_count": 6,
+            "input_digest": "3acce141884c400f9fe13d9d10123c95b6718d73832a60762a5f8f5f6d6d6338",
+            "window_close_utc": "2026-03-03T00:30:00Z",
+            "window_open_utc": "2026-03-03T00:00:00Z"
+          },
+          "state": "MEASURED",
+          "weekly_seed": {
+            "bar_count": 6,
+            "calculation_timestamp": "2026-03-03T09:00:00Z",
+            "clock_id": "America/New_York",
+            "clock_registry_version": "CLOCK_REGISTRY_V1",
+            "definition_id": "HO_WEEKLY_SEED",
+            "definition_version": "V1",
+            "evidence_refs": [],
+            "high": {
+              "instrument_id": "EURUSD",
+              "unit": "PIP",
+              "value": "1.08150"
+            },
+            "instrument_id": "EURUSD",
+            "low": {
+              "instrument_id": "EURUSD",
+              "unit": "PIP",
+              "value": "1.07900"
+            },
+            "market_data_schema_version": "MARKET_DATA_SCHEMA_V1",
+            "measurement_engine_version": "MEASUREMENT_ENGINE_V1",
+            "native_unit": "PIP",
+            "quality_state": "OK",
+            "seed_kind": "WEEK",
+            "session_id": "NONE",
+            "session_registry_version": "SESSION_REGISTRY_V1",
+            "size": {
+              "instrument_id": "EURUSD",
+              "unit": "PIP",
+              "value": "25.0"
+            },
+            "source_window": {
+              "bar_count": 6,
+              "input_digest": "3acce141884c400f9fe13d9d10123c95b6718d73832a60762a5f8f5f6d6d6338",
+              "window_close_utc": "2026-03-03T00:30:00Z",
+              "window_open_utc": "2026-03-03T00:00:00Z"
+            }
+          }
+        },
+        "period_phase": {
+          "calculation_timestamp": "2026-03-03T09:00:00Z",
+          "clock_id": "America/New_York",
+          "clock_registry_version": "CLOCK_REGISTRY_V1",
+          "definition_id": "PERIOD_PHASE",
+          "definition_version": "V1",
+          "evidence_refs": [],
+          "instrument_id": "EURUSD",
+          "lineage_id": "EUR_DAILY_LINEAGE",
+          "market_data_schema_version": "MARKET_DATA_SCHEMA_V1",
+          "measurement_engine_version": "MEASUREMENT_ENGINE_V1",
+          "native_unit": null,
+          "period_index": 10,
+          "period_kind": "WEEK",
+          "period_label": "2026-W10",
+          "quality_state": "OK",
+          "research_day": "2026-03-02",
+          "session_id": "NONE",
+          "session_registry_version": "SESSION_REGISTRY_V1",
+          "source_window": {
+            "bar_count": 0,
+            "input_digest": "6514fbe05a15c70097b6f5e5b99a1ab247a7cb1b67f830adb73fbff9817c5373",
+            "window_close_utc": "2026-03-02T21:00:00Z",
+            "window_open_utc": "2026-03-02T21:00:00Z"
+          }
+        },
+        "reached_node_id": "EUR_WEEKLY_INNER",
+        "seed": {
+          "bar_count": 6,
+          "calculation_timestamp": "2026-03-03T09:00:00Z",
+          "clock_id": "America/New_York",
+          "clock_registry_version": "CLOCK_REGISTRY_V1",
+          "definition_id": "HO_WEEKLY_SEED",
+          "definition_version": "V1",
+          "evidence_refs": [],
+          "high": {
+            "instrument_id": "EURUSD",
+            "unit": "PIP",
+            "value": "1.08150"
+          },
+          "instrument_id": "EURUSD",
+          "low": {
+            "instrument_id": "EURUSD",
+            "unit": "PIP",
+            "value": "1.07900"
+          },
+          "market_data_schema_version": "MARKET_DATA_SCHEMA_V1",
+          "measurement_engine_version": "MEASUREMENT_ENGINE_V1",
+          "native_unit": "PIP",
+          "quality_state": "OK",
+          "seed_kind": "WEEK",
+          "session_id": "NONE",
+          "session_registry_version": "SESSION_REGISTRY_V1",
+          "size": {
+            "instrument_id": "EURUSD",
+            "unit": "PIP",
+            "value": "25.0"
+          },
+          "source_window": {
+            "bar_count": 6,
+            "input_digest": "3acce141884c400f9fe13d9d10123c95b6718d73832a60762a5f8f5f6d6d6338",
+            "window_close_utc": "2026-03-03T00:30:00Z",
+            "window_open_utc": "2026-03-03T00:00:00Z"
+          }
+        },
+        "tier": {
+          "calculation_timestamp": "2026-03-03T09:00:00Z",
+          "calibration_key": {
+            "calibration_id": "EUR_WEEKLY_TIER_RANGE",
+            "calibration_version": "V1",
+            "model_id": "EUR.WEEKLY.V1_1",
+            "model_version": "V1_1"
+          },
+          "calibration_status": "RESEARCH",
+          "clock_id": "America/New_York",
+          "clock_registry_version": "CLOCK_REGISTRY_V1",
+          "definition_id": "TIER_CLASSIFICATION",
+          "definition_version": "V1",
+          "evidence_refs": [
+            "EV.EUR.WEEKLY.TIER_RANGE.V1"
+          ],
+          "instrument_id": "EURUSD",
+          "magnitude": {
+            "instrument_id": "EURUSD",
+            "unit": "PIP",
+            "value": "133.5"
+          },
+          "market_data_schema_version": "MARKET_DATA_SCHEMA_V1",
+          "measurement_engine_version": "MEASUREMENT_ENGINE_V1",
+          "native_unit": null,
+          "no_go": false,
+          "quality_state": "OK",
+          "session_id": "NONE",
+          "session_registry_version": "SESSION_REGISTRY_V1",
+          "source_ref": "corpus/canonical/evidence/EUR_WEEKLY_TIER_RANGE_EVIDENCE_V1.md",
+          "source_window": {
+            "bar_count": 6,
+            "input_digest": "3acce141884c400f9fe13d9d10123c95b6718d73832a60762a5f8f5f6d6d6338",
+            "window_close_utc": "2026-03-03T00:30:00Z",
+            "window_open_utc": "2026-03-03T00:00:00Z"
+          },
+          "tier_id": "T2"
+        }
+      },
+      "instrument_id": "EURUSD",
+      "model_id": "EUR.WEEKLY.V1_1",
+      "model_version": "V1_1",
+      "prior_case": null,
+      "session_id": null
+    },
+    {
+      "calculation_timestamp": "2026-03-03T09:00:00Z",
+      "calibration_key": {
+        "calibration_id": "EUR_WEEKLY_TIER_RANGE",
+        "calibration_version": "V1",
+        "model_id": "EUR.WEEKLY.V1_1",
+        "model_version": "V1_1"
+      },
+      "case_id": "EUR_WEEKLY_FROZEN",
+      "clock_id": null,
+      "expected": {
+        "direction_bias": "NONE_DECLARED",
+        "evidence_refs": [
+          "EV.EUR.WEEKLY.TIER_RANGE.V1"
+        ],
+        "fact_ids": [
+          "EUR_WEEKLY.SEED",
+          "EUR_WEEKLY.TIER",
+          "EUR_WEEKLY.ROUTE",
+          "EUR_WEEKLY.NODE",
+          "EUR_WEEKLY.OCC_FROZEN",
+          "EUR_WEEKLY.HOUR_TIER_TIMING",
+          "EUR_WEEKLY.CALIBRATION_STATUS",
+          "EUR_WEEKLY.DESTINATION_BOUNDARY",
+          "EUR_WEEKLY.DISTRIBUTION",
+          "PRIOR_STATE.ABSENT"
+        ],
+        "layer": "L2",
+        "levels": [],
+        "model_state": "FROZEN",
+        "no_go": [],
+        "production_authorization": "RESEARCH_ONLY",
+        "quality_state": "OK",
+        "range_left_state": "UNRESOLVED",
+        "range_left_value": null,
+        "sub_states": [],
+        "warnings": [
+          "RESEARCH_CALIBRATION"
+        ]
+      },
+      "expected_refusal": null,
+      "inputs": {
+        "occ_frozen": true,
+        "path": {
+          "calculation_timestamp": "2026-03-03T09:00:00Z",
+          "calibration_status": "RESEARCH",
+          "clock_id": "America/New_York",
+          "clock_registry_version": "CLOCK_REGISTRY_V1",
+          "definition_id": "HO_WEEKLY_PATH",
+          "definition_version": "V1",
+          "evidence_refs": [],
+          "instrument_id": "EURUSD",
+          "market_data_schema_version": "MARKET_DATA_SCHEMA_V1",
+          "measurement_engine_version": "MEASUREMENT_ENGINE_V1",
+          "native_unit": null,
+          "nodes": [
+            {
+              "calibration_status": "RESEARCH",
+              "magnitude": {
+                "instrument_id": "EURUSD",
+                "unit": "PIP",
+                "value": "126.8"
+              },
+              "node_id": "EUR_WEEKLY_T1",
+              "order_index": 0,
+              "sample_n": 45,
+              "source_ref": "corpus/canonical/evidence/EUR_WEEKLY_TIER_RANGE_EVIDENCE_V1.md"
+            },
+            {
+              "calibration_status": "RESEARCH",
+              "magnitude": {
+                "instrument_id": "EURUSD",
+                "unit": "PIP",
+                "value": "133.5"
+              },
+              "node_id": "EUR_WEEKLY_T2",
+              "order_index": 1,
+              "sample_n": 69,
+              "source_ref": "corpus/canonical/evidence/EUR_WEEKLY_TIER_RANGE_EVIDENCE_V1.md"
+            },
+            {
+              "calibration_status": "RESEARCH",
+              "magnitude": {
+                "instrument_id": "EURUSD",
+                "unit": "PIP",
+                "value": "168.95"
+              },
+              "node_id": "EUR_WEEKLY_T3",
+              "order_index": 2,
+              "sample_n": 60,
+              "source_ref": "corpus/canonical/evidence/EUR_WEEKLY_TIER_RANGE_EVIDENCE_V1.md"
+            }
+          ],
+          "quality_state": "OK",
+          "session_id": "NONE",
+          "session_registry_version": "SESSION_REGISTRY_V1",
+          "source_window": {
+            "bar_count": 6,
+            "input_digest": "3acce141884c400f9fe13d9d10123c95b6718d73832a60762a5f8f5f6d6d6338",
+            "window_close_utc": "2026-03-03T00:30:00Z",
+            "window_open_utc": "2026-03-03T00:00:00Z"
+          },
+          "state": "MEASURED",
+          "weekly_seed": {
+            "bar_count": 6,
+            "calculation_timestamp": "2026-03-03T09:00:00Z",
+            "clock_id": "America/New_York",
+            "clock_registry_version": "CLOCK_REGISTRY_V1",
+            "definition_id": "HO_WEEKLY_SEED",
+            "definition_version": "V1",
+            "evidence_refs": [],
+            "high": {
+              "instrument_id": "EURUSD",
+              "unit": "PIP",
+              "value": "1.08150"
+            },
+            "instrument_id": "EURUSD",
+            "low": {
+              "instrument_id": "EURUSD",
+              "unit": "PIP",
+              "value": "1.07900"
+            },
+            "market_data_schema_version": "MARKET_DATA_SCHEMA_V1",
+            "measurement_engine_version": "MEASUREMENT_ENGINE_V1",
+            "native_unit": "PIP",
+            "quality_state": "OK",
+            "seed_kind": "WEEK",
+            "session_id": "NONE",
+            "session_registry_version": "SESSION_REGISTRY_V1",
+            "size": {
+              "instrument_id": "EURUSD",
+              "unit": "PIP",
+              "value": "25.0"
+            },
+            "source_window": {
+              "bar_count": 6,
+              "input_digest": "3acce141884c400f9fe13d9d10123c95b6718d73832a60762a5f8f5f6d6d6338",
+              "window_close_utc": "2026-03-03T00:30:00Z",
+              "window_open_utc": "2026-03-03T00:00:00Z"
+            }
+          }
+        },
+        "period_phase": {
+          "calculation_timestamp": "2026-03-03T09:00:00Z",
+          "clock_id": "America/New_York",
+          "clock_registry_version": "CLOCK_REGISTRY_V1",
+          "definition_id": "PERIOD_PHASE",
+          "definition_version": "V1",
+          "evidence_refs": [],
+          "instrument_id": "EURUSD",
+          "lineage_id": "EUR_DAILY_LINEAGE",
+          "market_data_schema_version": "MARKET_DATA_SCHEMA_V1",
+          "measurement_engine_version": "MEASUREMENT_ENGINE_V1",
+          "native_unit": null,
+          "period_index": 10,
+          "period_kind": "WEEK",
+          "period_label": "2026-W10",
+          "quality_state": "OK",
+          "research_day": "2026-03-02",
+          "session_id": "NONE",
+          "session_registry_version": "SESSION_REGISTRY_V1",
+          "source_window": {
+            "bar_count": 0,
+            "input_digest": "6514fbe05a15c70097b6f5e5b99a1ab247a7cb1b67f830adb73fbff9817c5373",
+            "window_close_utc": "2026-03-02T21:00:00Z",
+            "window_open_utc": "2026-03-02T21:00:00Z"
+          }
+        },
+        "reached_node_id": "EUR_WEEKLY_T2",
+        "seed": {
+          "bar_count": 6,
+          "calculation_timestamp": "2026-03-03T09:00:00Z",
+          "clock_id": "America/New_York",
+          "clock_registry_version": "CLOCK_REGISTRY_V1",
+          "definition_id": "HO_WEEKLY_SEED",
+          "definition_version": "V1",
+          "evidence_refs": [],
+          "high": {
+            "instrument_id": "EURUSD",
+            "unit": "PIP",
+            "value": "1.08150"
+          },
+          "instrument_id": "EURUSD",
+          "low": {
+            "instrument_id": "EURUSD",
+            "unit": "PIP",
+            "value": "1.07900"
+          },
+          "market_data_schema_version": "MARKET_DATA_SCHEMA_V1",
+          "measurement_engine_version": "MEASUREMENT_ENGINE_V1",
+          "native_unit": "PIP",
+          "quality_state": "OK",
+          "seed_kind": "WEEK",
+          "session_id": "NONE",
+          "session_registry_version": "SESSION_REGISTRY_V1",
+          "size": {
+            "instrument_id": "EURUSD",
+            "unit": "PIP",
+            "value": "25.0"
+          },
+          "source_window": {
+            "bar_count": 6,
+            "input_digest": "3acce141884c400f9fe13d9d10123c95b6718d73832a60762a5f8f5f6d6d6338",
+            "window_close_utc": "2026-03-03T00:30:00Z",
+            "window_open_utc": "2026-03-03T00:00:00Z"
+          }
+        },
+        "tier": {
+          "calculation_timestamp": "2026-03-03T09:00:00Z",
+          "calibration_key": {
+            "calibration_id": "EUR_WEEKLY_TIER_RANGE",
+            "calibration_version": "V1",
+            "model_id": "EUR.WEEKLY.V1_1",
+            "model_version": "V1_1"
+          },
+          "calibration_status": "RESEARCH",
+          "clock_id": "America/New_York",
+          "clock_registry_version": "CLOCK_REGISTRY_V1",
+          "definition_id": "TIER_CLASSIFICATION",
+          "definition_version": "V1",
+          "evidence_refs": [
+            "EV.EUR.WEEKLY.TIER_RANGE.V1"
+          ],
+          "instrument_id": "EURUSD",
+          "magnitude": {
+            "instrument_id": "EURUSD",
+            "unit": "PIP",
+            "value": "133.5"
+          },
+          "market_data_schema_version": "MARKET_DATA_SCHEMA_V1",
+          "measurement_engine_version": "MEASUREMENT_ENGINE_V1",
+          "native_unit": null,
+          "no_go": false,
+          "quality_state": "OK",
+          "session_id": "NONE",
+          "session_registry_version": "SESSION_REGISTRY_V1",
+          "source_ref": "corpus/canonical/evidence/EUR_WEEKLY_TIER_RANGE_EVIDENCE_V1.md",
+          "source_window": {
+            "bar_count": 6,
+            "input_digest": "3acce141884c400f9fe13d9d10123c95b6718d73832a60762a5f8f5f6d6d6338",
+            "window_close_utc": "2026-03-03T00:30:00Z",
+            "window_open_utc": "2026-03-03T00:00:00Z"
+          },
+          "tier_id": "T2"
+        }
+      },
+      "instrument_id": "EURUSD",
+      "model_id": "EUR.WEEKLY.V1_1",
+      "model_version": "V1_1",
+      "prior_case": null,
+      "session_id": null
+    },
+    {
+      "calculation_timestamp": "2026-03-03T09:00:00Z",
+      "calibration_key": {
+        "calibration_id": "EUR_WEEKLY_TIER_RANGE",
+        "calibration_version": "V1",
+        "model_id": "EUR.WEEKLY.V1_1",
+        "model_version": "V1_1"
+      },
+      "case_id": "EUR_WEEKLY_FROZEN_VIA_PRIOR",
+      "clock_id": null,
+      "expected": {
+        "direction_bias": "NONE_DECLARED",
+        "evidence_refs": [
+          "EV.EUR.WEEKLY.TIER_RANGE.V1"
+        ],
+        "fact_ids": [
+          "EUR_WEEKLY.SEED",
+          "EUR_WEEKLY.TIER",
+          "EUR_WEEKLY.ROUTE",
+          "EUR_WEEKLY.NODE",
+          "EUR_WEEKLY.OCC_FROZEN",
+          "EUR_WEEKLY.HOUR_TIER_TIMING",
+          "EUR_WEEKLY.CALIBRATION_STATUS",
+          "EUR_WEEKLY.DESTINATION_BOUNDARY",
+          "EUR_WEEKLY.DISTRIBUTION",
+          "PRIOR_STATE.LINKED"
+        ],
+        "layer": "L2",
+        "levels": [],
+        "model_state": "FROZEN",
+        "no_go": [],
+        "production_authorization": "RESEARCH_ONLY",
+        "quality_state": "OK",
+        "range_left_state": "UNRESOLVED",
+        "range_left_value": null,
+        "sub_states": [],
+        "warnings": [
+          "RESEARCH_CALIBRATION"
+        ]
+      },
+      "expected_refusal": null,
+      "inputs": {
+        "path": {
+          "calculation_timestamp": "2026-03-03T09:00:00Z",
+          "calibration_status": "RESEARCH",
+          "clock_id": "America/New_York",
+          "clock_registry_version": "CLOCK_REGISTRY_V1",
+          "definition_id": "HO_WEEKLY_PATH",
+          "definition_version": "V1",
+          "evidence_refs": [],
+          "instrument_id": "EURUSD",
+          "market_data_schema_version": "MARKET_DATA_SCHEMA_V1",
+          "measurement_engine_version": "MEASUREMENT_ENGINE_V1",
+          "native_unit": null,
+          "nodes": [
+            {
+              "calibration_status": "RESEARCH",
+              "magnitude": {
+                "instrument_id": "EURUSD",
+                "unit": "PIP",
+                "value": "126.8"
+              },
+              "node_id": "EUR_WEEKLY_T1",
+              "order_index": 0,
+              "sample_n": 45,
+              "source_ref": "corpus/canonical/evidence/EUR_WEEKLY_TIER_RANGE_EVIDENCE_V1.md"
+            },
+            {
+              "calibration_status": "RESEARCH",
+              "magnitude": {
+                "instrument_id": "EURUSD",
+                "unit": "PIP",
+                "value": "133.5"
+              },
+              "node_id": "EUR_WEEKLY_T2",
+              "order_index": 1,
+              "sample_n": 69,
+              "source_ref": "corpus/canonical/evidence/EUR_WEEKLY_TIER_RANGE_EVIDENCE_V1.md"
+            },
+            {
+              "calibration_status": "RESEARCH",
+              "magnitude": {
+                "instrument_id": "EURUSD",
+                "unit": "PIP",
+                "value": "168.95"
+              },
+              "node_id": "EUR_WEEKLY_T3",
+              "order_index": 2,
+              "sample_n": 60,
+              "source_ref": "corpus/canonical/evidence/EUR_WEEKLY_TIER_RANGE_EVIDENCE_V1.md"
+            }
+          ],
+          "quality_state": "OK",
+          "session_id": "NONE",
+          "session_registry_version": "SESSION_REGISTRY_V1",
+          "source_window": {
+            "bar_count": 6,
+            "input_digest": "3acce141884c400f9fe13d9d10123c95b6718d73832a60762a5f8f5f6d6d6338",
+            "window_close_utc": "2026-03-03T00:30:00Z",
+            "window_open_utc": "2026-03-03T00:00:00Z"
+          },
+          "state": "MEASURED",
+          "weekly_seed": {
+            "bar_count": 6,
+            "calculation_timestamp": "2026-03-03T09:00:00Z",
+            "clock_id": "America/New_York",
+            "clock_registry_version": "CLOCK_REGISTRY_V1",
+            "definition_id": "HO_WEEKLY_SEED",
+            "definition_version": "V1",
+            "evidence_refs": [],
+            "high": {
+              "instrument_id": "EURUSD",
+              "unit": "PIP",
+              "value": "1.08150"
+            },
+            "instrument_id": "EURUSD",
+            "low": {
+              "instrument_id": "EURUSD",
+              "unit": "PIP",
+              "value": "1.07900"
+            },
+            "market_data_schema_version": "MARKET_DATA_SCHEMA_V1",
+            "measurement_engine_version": "MEASUREMENT_ENGINE_V1",
+            "native_unit": "PIP",
+            "quality_state": "OK",
+            "seed_kind": "WEEK",
+            "session_id": "NONE",
+            "session_registry_version": "SESSION_REGISTRY_V1",
+            "size": {
+              "instrument_id": "EURUSD",
+              "unit": "PIP",
+              "value": "25.0"
+            },
+            "source_window": {
+              "bar_count": 6,
+              "input_digest": "3acce141884c400f9fe13d9d10123c95b6718d73832a60762a5f8f5f6d6d6338",
+              "window_close_utc": "2026-03-03T00:30:00Z",
+              "window_open_utc": "2026-03-03T00:00:00Z"
+            }
+          }
+        },
+        "period_phase": {
+          "calculation_timestamp": "2026-03-03T09:00:00Z",
+          "clock_id": "America/New_York",
+          "clock_registry_version": "CLOCK_REGISTRY_V1",
+          "definition_id": "PERIOD_PHASE",
+          "definition_version": "V1",
+          "evidence_refs": [],
+          "instrument_id": "EURUSD",
+          "lineage_id": "EUR_DAILY_LINEAGE",
+          "market_data_schema_version": "MARKET_DATA_SCHEMA_V1",
+          "measurement_engine_version": "MEASUREMENT_ENGINE_V1",
+          "native_unit": null,
+          "period_index": 10,
+          "period_kind": "WEEK",
+          "period_label": "2026-W10",
+          "quality_state": "OK",
+          "research_day": "2026-03-02",
+          "session_id": "NONE",
+          "session_registry_version": "SESSION_REGISTRY_V1",
+          "source_window": {
+            "bar_count": 0,
+            "input_digest": "6514fbe05a15c70097b6f5e5b99a1ab247a7cb1b67f830adb73fbff9817c5373",
+            "window_close_utc": "2026-03-02T21:00:00Z",
+            "window_open_utc": "2026-03-02T21:00:00Z"
+          }
+        },
+        "reached_node_id": "EUR_WEEKLY_T2",
+        "seed": {
+          "bar_count": 6,
+          "calculation_timestamp": "2026-03-03T09:00:00Z",
+          "clock_id": "America/New_York",
+          "clock_registry_version": "CLOCK_REGISTRY_V1",
+          "definition_id": "HO_WEEKLY_SEED",
+          "definition_version": "V1",
+          "evidence_refs": [],
+          "high": {
+            "instrument_id": "EURUSD",
+            "unit": "PIP",
+            "value": "1.08150"
+          },
+          "instrument_id": "EURUSD",
+          "low": {
+            "instrument_id": "EURUSD",
+            "unit": "PIP",
+            "value": "1.07900"
+          },
+          "market_data_schema_version": "MARKET_DATA_SCHEMA_V1",
+          "measurement_engine_version": "MEASUREMENT_ENGINE_V1",
+          "native_unit": "PIP",
+          "quality_state": "OK",
+          "seed_kind": "WEEK",
+          "session_id": "NONE",
+          "session_registry_version": "SESSION_REGISTRY_V1",
+          "size": {
+            "instrument_id": "EURUSD",
+            "unit": "PIP",
+            "value": "25.0"
+          },
+          "source_window": {
+            "bar_count": 6,
+            "input_digest": "3acce141884c400f9fe13d9d10123c95b6718d73832a60762a5f8f5f6d6d6338",
+            "window_close_utc": "2026-03-03T00:30:00Z",
+            "window_open_utc": "2026-03-03T00:00:00Z"
+          }
+        },
+        "tier": {
+          "calculation_timestamp": "2026-03-03T09:00:00Z",
+          "calibration_key": {
+            "calibration_id": "EUR_WEEKLY_TIER_RANGE",
+            "calibration_version": "V1",
+            "model_id": "EUR.WEEKLY.V1_1",
+            "model_version": "V1_1"
+          },
+          "calibration_status": "RESEARCH",
+          "clock_id": "America/New_York",
+          "clock_registry_version": "CLOCK_REGISTRY_V1",
+          "definition_id": "TIER_CLASSIFICATION",
+          "definition_version": "V1",
+          "evidence_refs": [
+            "EV.EUR.WEEKLY.TIER_RANGE.V1"
+          ],
+          "instrument_id": "EURUSD",
+          "magnitude": {
+            "instrument_id": "EURUSD",
+            "unit": "PIP",
+            "value": "133.5"
+          },
+          "market_data_schema_version": "MARKET_DATA_SCHEMA_V1",
+          "measurement_engine_version": "MEASUREMENT_ENGINE_V1",
+          "native_unit": null,
+          "no_go": false,
+          "quality_state": "OK",
+          "session_id": "NONE",
+          "session_registry_version": "SESSION_REGISTRY_V1",
+          "source_ref": "corpus/canonical/evidence/EUR_WEEKLY_TIER_RANGE_EVIDENCE_V1.md",
+          "source_window": {
+            "bar_count": 6,
+            "input_digest": "3acce141884c400f9fe13d9d10123c95b6718d73832a60762a5f8f5f6d6d6338",
+            "window_close_utc": "2026-03-03T00:30:00Z",
+            "window_open_utc": "2026-03-03T00:00:00Z"
+          },
+          "tier_id": "T2"
+        }
+      },
+      "instrument_id": "EURUSD",
+      "model_id": "EUR.WEEKLY.V1_1",
+      "model_version": "V1_1",
+      "prior_case": "EUR_WEEKLY_FROZEN",
+      "session_id": null
+    },
+    {
+      "calculation_timestamp": "2026-03-03T09:00:00Z",
+      "calibration_key": {
+        "calibration_id": "EUR_WEEKLY_TIER_RANGE",
+        "calibration_version": "V1",
+        "model_id": "EUR.WEEKLY.V1_1",
+        "model_version": "V1_1"
+      },
+      "case_id": "EUR_WEEKLY_TIMING_UNRESOLVED",
+      "clock_id": null,
+      "expected": {
+        "direction_bias": "NONE_DECLARED",
+        "evidence_refs": [
+          "EV.EUR.WEEKLY.TIER_RANGE.V1"
+        ],
+        "fact_ids": [
+          "EUR_WEEKLY.SEED",
+          "EUR_WEEKLY.TIER",
+          "EUR_WEEKLY.ROUTE",
+          "EUR_WEEKLY.HOUR_TIER_TIMING_UNRESOLVED",
+          "EUR_WEEKLY.CALIBRATION_STATUS",
+          "EUR_WEEKLY.DESTINATION_BOUNDARY",
+          "EUR_WEEKLY.DISTRIBUTION",
+          "PRIOR_STATE.ABSENT"
+        ],
+        "layer": "L2",
+        "levels": [],
+        "model_state": "ROUTE_OPEN",
+        "no_go": [],
+        "production_authorization": "RESEARCH_ONLY",
+        "quality_state": "OK",
+        "range_left_state": "UNRESOLVED",
+        "range_left_value": null,
+        "sub_states": [],
+        "warnings": [
+          "RESEARCH_CALIBRATION",
+          "TIMING_UNRESOLVED"
+        ]
+      },
+      "expected_refusal": null,
+      "inputs": {
+        "path": {
+          "calculation_timestamp": "2026-03-03T09:00:00Z",
+          "calibration_status": "RESEARCH",
+          "clock_id": "America/New_York",
+          "clock_registry_version": "CLOCK_REGISTRY_V1",
+          "definition_id": "HO_WEEKLY_PATH",
+          "definition_version": "V1",
+          "evidence_refs": [],
+          "instrument_id": "EURUSD",
+          "market_data_schema_version": "MARKET_DATA_SCHEMA_V1",
+          "measurement_engine_version": "MEASUREMENT_ENGINE_V1",
+          "native_unit": null,
+          "nodes": [
+            {
+              "calibration_status": "RESEARCH",
+              "magnitude": {
+                "instrument_id": "EURUSD",
+                "unit": "PIP",
+                "value": "126.8"
+              },
+              "node_id": "EUR_WEEKLY_T1",
+              "order_index": 0,
+              "sample_n": 45,
+              "source_ref": "corpus/canonical/evidence/EUR_WEEKLY_TIER_RANGE_EVIDENCE_V1.md"
+            },
+            {
+              "calibration_status": "RESEARCH",
+              "magnitude": {
+                "instrument_id": "EURUSD",
+                "unit": "PIP",
+                "value": "133.5"
+              },
+              "node_id": "EUR_WEEKLY_T2",
+              "order_index": 1,
+              "sample_n": 69,
+              "source_ref": "corpus/canonical/evidence/EUR_WEEKLY_TIER_RANGE_EVIDENCE_V1.md"
+            },
+            {
+              "calibration_status": "RESEARCH",
+              "magnitude": {
+                "instrument_id": "EURUSD",
+                "unit": "PIP",
+                "value": "168.95"
+              },
+              "node_id": "EUR_WEEKLY_T3",
+              "order_index": 2,
+              "sample_n": 60,
+              "source_ref": "corpus/canonical/evidence/EUR_WEEKLY_TIER_RANGE_EVIDENCE_V1.md"
+            }
+          ],
+          "quality_state": "OK",
+          "session_id": "NONE",
+          "session_registry_version": "SESSION_REGISTRY_V1",
+          "source_window": {
+            "bar_count": 6,
+            "input_digest": "3acce141884c400f9fe13d9d10123c95b6718d73832a60762a5f8f5f6d6d6338",
+            "window_close_utc": "2026-03-03T00:30:00Z",
+            "window_open_utc": "2026-03-03T00:00:00Z"
+          },
+          "state": "MEASURED",
+          "weekly_seed": {
+            "bar_count": 6,
+            "calculation_timestamp": "2026-03-03T09:00:00Z",
+            "clock_id": "America/New_York",
+            "clock_registry_version": "CLOCK_REGISTRY_V1",
+            "definition_id": "HO_WEEKLY_SEED",
+            "definition_version": "V1",
+            "evidence_refs": [],
+            "high": {
+              "instrument_id": "EURUSD",
+              "unit": "PIP",
+              "value": "1.08150"
+            },
+            "instrument_id": "EURUSD",
+            "low": {
+              "instrument_id": "EURUSD",
+              "unit": "PIP",
+              "value": "1.07900"
+            },
+            "market_data_schema_version": "MARKET_DATA_SCHEMA_V1",
+            "measurement_engine_version": "MEASUREMENT_ENGINE_V1",
+            "native_unit": "PIP",
+            "quality_state": "OK",
+            "seed_kind": "WEEK",
+            "session_id": "NONE",
+            "session_registry_version": "SESSION_REGISTRY_V1",
+            "size": {
+              "instrument_id": "EURUSD",
+              "unit": "PIP",
+              "value": "25.0"
+            },
+            "source_window": {
+              "bar_count": 6,
+              "input_digest": "3acce141884c400f9fe13d9d10123c95b6718d73832a60762a5f8f5f6d6d6338",
+              "window_close_utc": "2026-03-03T00:30:00Z",
+              "window_open_utc": "2026-03-03T00:00:00Z"
+            }
+          }
+        },
+        "seed": {
+          "bar_count": 6,
+          "calculation_timestamp": "2026-03-03T09:00:00Z",
+          "clock_id": "America/New_York",
+          "clock_registry_version": "CLOCK_REGISTRY_V1",
+          "definition_id": "HO_WEEKLY_SEED",
+          "definition_version": "V1",
+          "evidence_refs": [],
+          "high": {
+            "instrument_id": "EURUSD",
+            "unit": "PIP",
+            "value": "1.08150"
+          },
+          "instrument_id": "EURUSD",
+          "low": {
+            "instrument_id": "EURUSD",
+            "unit": "PIP",
+            "value": "1.07900"
+          },
+          "market_data_schema_version": "MARKET_DATA_SCHEMA_V1",
+          "measurement_engine_version": "MEASUREMENT_ENGINE_V1",
+          "native_unit": "PIP",
+          "quality_state": "OK",
+          "seed_kind": "WEEK",
+          "session_id": "NONE",
+          "session_registry_version": "SESSION_REGISTRY_V1",
+          "size": {
+            "instrument_id": "EURUSD",
+            "unit": "PIP",
+            "value": "25.0"
+          },
+          "source_window": {
+            "bar_count": 6,
+            "input_digest": "3acce141884c400f9fe13d9d10123c95b6718d73832a60762a5f8f5f6d6d6338",
+            "window_close_utc": "2026-03-03T00:30:00Z",
+            "window_open_utc": "2026-03-03T00:00:00Z"
+          }
+        },
+        "tier": {
+          "calculation_timestamp": "2026-03-03T09:00:00Z",
+          "calibration_key": {
+            "calibration_id": "EUR_WEEKLY_TIER_RANGE",
+            "calibration_version": "V1",
+            "model_id": "EUR.WEEKLY.V1_1",
+            "model_version": "V1_1"
+          },
+          "calibration_status": "RESEARCH",
+          "clock_id": "America/New_York",
+          "clock_registry_version": "CLOCK_REGISTRY_V1",
+          "definition_id": "TIER_CLASSIFICATION",
+          "definition_version": "V1",
+          "evidence_refs": [
+            "EV.EUR.WEEKLY.TIER_RANGE.V1"
+          ],
+          "instrument_id": "EURUSD",
+          "magnitude": {
+            "instrument_id": "EURUSD",
+            "unit": "PIP",
+            "value": "133.5"
+          },
+          "market_data_schema_version": "MARKET_DATA_SCHEMA_V1",
+          "measurement_engine_version": "MEASUREMENT_ENGINE_V1",
+          "native_unit": null,
+          "no_go": false,
+          "quality_state": "OK",
+          "session_id": "NONE",
+          "session_registry_version": "SESSION_REGISTRY_V1",
+          "source_ref": "corpus/canonical/evidence/EUR_WEEKLY_TIER_RANGE_EVIDENCE_V1.md",
+          "source_window": {
+            "bar_count": 6,
+            "input_digest": "3acce141884c400f9fe13d9d10123c95b6718d73832a60762a5f8f5f6d6d6338",
+            "window_close_utc": "2026-03-03T00:30:00Z",
+            "window_open_utc": "2026-03-03T00:00:00Z"
+          },
+          "tier_id": "T2"
+        }
+      },
+      "instrument_id": "EURUSD",
+      "model_id": "EUR.WEEKLY.V1_1",
+      "model_version": "V1_1",
+      "prior_case": null,
+      "session_id": null
+    }
+  ],
+  "clock": null,
+  "data_classification": "SYNTHETIC_FIXTURE - deterministic generated or reused committed slices; contract-test inputs only, never empirical market evidence and never citable for performance claims",
+  "description": "Synthetic golden states for the EUR Weekly Engine: outer-node promotion only, frozen-after-completion chaining, NOT_THIS_LAYER destination boundary and explicit unresolved timing",
+  "fixture_id": "BLOC_III_3.EUR_WEEKLY_STATES.V1",
+  "historical": true,
+  "model_id": "EUR.WEEKLY.V1_1",
+  "observation_cutoff": "2026-03-03T00:30:00Z",
+  "provenance": "SYNTHETIC_FIXTURE",
+  "session_id": null
+}

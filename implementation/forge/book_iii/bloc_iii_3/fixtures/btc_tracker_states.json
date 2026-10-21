@@ -1,0 +1,1781 @@
+{
+  "calculation_timestamp": "2026-03-03T09:00:00Z",
+  "cases": [
+    {
+      "calculation_timestamp": "2026-03-03T09:00:00Z",
+      "calibration_key": {
+        "calibration_id": "BTC_TRACKER_DWM_TIERS",
+        "calibration_version": "V1",
+        "model_id": "BTC.TRACKER.DWM.V1",
+        "model_version": "V1"
+      },
+      "case_id": "BTC_TIER_T1_749",
+      "clock_id": "America/New_York",
+      "expected": {
+        "direction_bias": "NONE_DECLARED",
+        "evidence_refs": [
+          "BTC.TRACKER.DWM.V1"
+        ],
+        "fact_ids": [
+          "BTC.SEED",
+          "BTC.TIER",
+          "BTC.SLOT",
+          "BTC.WEEKLY_ANCHOR",
+          "BTC.MONTHLY_ANCHOR",
+          "BTC.DISTRIBUTION",
+          "PRIOR_STATE.ABSENT"
+        ],
+        "layer": "CROSS_LAYER",
+        "levels": [],
+        "model_state": "SEED_T1",
+        "no_go": [],
+        "production_authorization": "RESEARCH_ONLY",
+        "quality_state": "OK",
+        "range_left_state": "UNRESOLVED",
+        "range_left_value": null,
+        "sub_states": [
+          {
+            "label": "DAILY",
+            "layer": "CROSS_LAYER",
+            "state": "SEED_T1"
+          },
+          {
+            "label": "WEEKLY",
+            "layer": "CROSS_LAYER",
+            "state": "UNRESOLVED"
+          },
+          {
+            "label": "MONTHLY",
+            "layer": "CROSS_LAYER",
+            "state": "UNRESOLVED"
+          }
+        ],
+        "warnings": [
+          "GAP_UNRESOLVED"
+        ]
+      },
+      "expected_refusal": null,
+      "inputs": {
+        "seed": {
+          "breakout_return_state": "INSIDE_RANGE",
+          "calculation_timestamp": "2026-03-03T09:00:00Z",
+          "clock_id": "America/New_York",
+          "clock_registry_version": "CLOCK_REGISTRY_V1",
+          "close_location": "0.9986648865",
+          "consumed_fraction": "0.9986648865",
+          "definition_id": "RANGE_MEASUREMENT",
+          "definition_version": "V1",
+          "direction": "UP",
+          "evidence_refs": [],
+          "high": {
+            "instrument_id": "BTCUSD",
+            "unit": "DOLLAR",
+            "value": "60749.0"
+          },
+          "instrument_id": "BTCUSD",
+          "low": {
+            "instrument_id": "BTCUSD",
+            "unit": "DOLLAR",
+            "value": "60000"
+          },
+          "market_data_schema_version": "MARKET_DATA_SCHEMA_V1",
+          "measurement_engine_version": "MEASUREMENT_ENGINE_V1",
+          "midpoint": {
+            "instrument_id": "BTCUSD",
+            "unit": "DOLLAR",
+            "value": "60374.5"
+          },
+          "native_unit": "DOLLAR",
+          "quality_state": "OK",
+          "range_left": {
+            "instrument_id": "BTCUSD",
+            "unit": "DOLLAR",
+            "value": "1.0"
+          },
+          "session_id": "NONE",
+          "session_registry_version": "SESSION_REGISTRY_V1",
+          "size": {
+            "instrument_id": "BTCUSD",
+            "unit": "DOLLAR",
+            "value": "749.0"
+          },
+          "source_window": {
+            "bar_count": 6,
+            "input_digest": "11e982e420afcccce277f9746ac67c51c6f1a5bcfb15fe492f14069fd4828793",
+            "window_close_utc": "2026-03-03T00:25:00Z",
+            "window_open_utc": "2026-03-02T23:55:00Z"
+          }
+        },
+        "tier": {
+          "calculation_timestamp": "2026-03-03T09:00:00Z",
+          "calibration_key": {
+            "calibration_id": "BTC_TRACKER_DWM_TIERS",
+            "calibration_version": "V1",
+            "model_id": "BTC.TRACKER.DWM.V1",
+            "model_version": "V1"
+          },
+          "calibration_status": "FROZEN_LAUNCH",
+          "clock_id": "America/New_York",
+          "clock_registry_version": "CLOCK_REGISTRY_V1",
+          "definition_id": "TIER_CLASSIFICATION",
+          "definition_version": "V1",
+          "evidence_refs": [
+            "BTC.TRACKER.DWM.V1"
+          ],
+          "instrument_id": "BTCUSD",
+          "magnitude": {
+            "instrument_id": "BTCUSD",
+            "unit": "DOLLAR",
+            "value": "749.0"
+          },
+          "market_data_schema_version": "MARKET_DATA_SCHEMA_V1",
+          "measurement_engine_version": "MEASUREMENT_ENGINE_V1",
+          "native_unit": "DOLLAR",
+          "no_go": false,
+          "quality_state": "OK",
+          "session_id": "NONE",
+          "session_registry_version": "SESSION_REGISTRY_V1",
+          "source_ref": "corpus/canonical/models/BTC_DAILY_WEEKLY_MONTHLY_TRACKER_MODEL_CARD_V1.md",
+          "source_window": {
+            "bar_count": 6,
+            "input_digest": "11e982e420afcccce277f9746ac67c51c6f1a5bcfb15fe492f14069fd4828793",
+            "window_close_utc": "2026-03-03T00:25:00Z",
+            "window_open_utc": "2026-03-02T23:55:00Z"
+          },
+          "tier_id": "T1"
+        }
+      },
+      "instrument_id": "BTCUSD",
+      "model_id": "BTC.TRACKER.DWM.V1",
+      "model_version": "V1",
+      "prior_case": null,
+      "session_id": null
+    },
+    {
+      "calculation_timestamp": "2026-03-03T09:00:00Z",
+      "calibration_key": {
+        "calibration_id": "BTC_TRACKER_DWM_TIERS",
+        "calibration_version": "V1",
+        "model_id": "BTC.TRACKER.DWM.V1",
+        "model_version": "V1"
+      },
+      "case_id": "BTC_TIER_T2_750",
+      "clock_id": "America/New_York",
+      "expected": {
+        "direction_bias": "NONE_DECLARED",
+        "evidence_refs": [
+          "BTC.TRACKER.DWM.V1"
+        ],
+        "fact_ids": [
+          "BTC.SEED",
+          "BTC.TIER",
+          "BTC.SLOT",
+          "BTC.WEEKLY_ANCHOR",
+          "BTC.MONTHLY_ANCHOR",
+          "BTC.DISTRIBUTION",
+          "PRIOR_STATE.ABSENT"
+        ],
+        "layer": "CROSS_LAYER",
+        "levels": [],
+        "model_state": "SEED_T2",
+        "no_go": [],
+        "production_authorization": "RESEARCH_ONLY",
+        "quality_state": "OK",
+        "range_left_state": "UNRESOLVED",
+        "range_left_value": null,
+        "sub_states": [
+          {
+            "label": "DAILY",
+            "layer": "CROSS_LAYER",
+            "state": "SEED_T2"
+          },
+          {
+            "label": "WEEKLY",
+            "layer": "CROSS_LAYER",
+            "state": "UNRESOLVED"
+          },
+          {
+            "label": "MONTHLY",
+            "layer": "CROSS_LAYER",
+            "state": "UNRESOLVED"
+          }
+        ],
+        "warnings": [
+          "GAP_UNRESOLVED"
+        ]
+      },
+      "expected_refusal": null,
+      "inputs": {
+        "seed": {
+          "breakout_return_state": "INSIDE_RANGE",
+          "calculation_timestamp": "2026-03-03T09:00:00Z",
+          "clock_id": "America/New_York",
+          "clock_registry_version": "CLOCK_REGISTRY_V1",
+          "close_location": "0.9986666667",
+          "consumed_fraction": "0.9986666667",
+          "definition_id": "RANGE_MEASUREMENT",
+          "definition_version": "V1",
+          "direction": "UP",
+          "evidence_refs": [],
+          "high": {
+            "instrument_id": "BTCUSD",
+            "unit": "DOLLAR",
+            "value": "60750.0"
+          },
+          "instrument_id": "BTCUSD",
+          "low": {
+            "instrument_id": "BTCUSD",
+            "unit": "DOLLAR",
+            "value": "60000"
+          },
+          "market_data_schema_version": "MARKET_DATA_SCHEMA_V1",
+          "measurement_engine_version": "MEASUREMENT_ENGINE_V1",
+          "midpoint": {
+            "instrument_id": "BTCUSD",
+            "unit": "DOLLAR",
+            "value": "60375.0"
+          },
+          "native_unit": "DOLLAR",
+          "quality_state": "OK",
+          "range_left": {
+            "instrument_id": "BTCUSD",
+            "unit": "DOLLAR",
+            "value": "1.0"
+          },
+          "session_id": "NONE",
+          "session_registry_version": "SESSION_REGISTRY_V1",
+          "size": {
+            "instrument_id": "BTCUSD",
+            "unit": "DOLLAR",
+            "value": "750.0"
+          },
+          "source_window": {
+            "bar_count": 6,
+            "input_digest": "1054064a96519accf13382224a78e0c423868cbfb1cbc4f317efecbaeceb72ae",
+            "window_close_utc": "2026-03-03T00:25:00Z",
+            "window_open_utc": "2026-03-02T23:55:00Z"
+          }
+        },
+        "tier": {
+          "calculation_timestamp": "2026-03-03T09:00:00Z",
+          "calibration_key": {
+            "calibration_id": "BTC_TRACKER_DWM_TIERS",
+            "calibration_version": "V1",
+            "model_id": "BTC.TRACKER.DWM.V1",
+            "model_version": "V1"
+          },
+          "calibration_status": "FROZEN_LAUNCH",
+          "clock_id": "America/New_York",
+          "clock_registry_version": "CLOCK_REGISTRY_V1",
+          "definition_id": "TIER_CLASSIFICATION",
+          "definition_version": "V1",
+          "evidence_refs": [
+            "BTC.TRACKER.DWM.V1"
+          ],
+          "instrument_id": "BTCUSD",
+          "magnitude": {
+            "instrument_id": "BTCUSD",
+            "unit": "DOLLAR",
+            "value": "750.0"
+          },
+          "market_data_schema_version": "MARKET_DATA_SCHEMA_V1",
+          "measurement_engine_version": "MEASUREMENT_ENGINE_V1",
+          "native_unit": "DOLLAR",
+          "no_go": false,
+          "quality_state": "OK",
+          "session_id": "NONE",
+          "session_registry_version": "SESSION_REGISTRY_V1",
+          "source_ref": "corpus/canonical/models/BTC_DAILY_WEEKLY_MONTHLY_TRACKER_MODEL_CARD_V1.md",
+          "source_window": {
+            "bar_count": 6,
+            "input_digest": "1054064a96519accf13382224a78e0c423868cbfb1cbc4f317efecbaeceb72ae",
+            "window_close_utc": "2026-03-03T00:25:00Z",
+            "window_open_utc": "2026-03-02T23:55:00Z"
+          },
+          "tier_id": "T2"
+        }
+      },
+      "instrument_id": "BTCUSD",
+      "model_id": "BTC.TRACKER.DWM.V1",
+      "model_version": "V1",
+      "prior_case": null,
+      "session_id": null
+    },
+    {
+      "calculation_timestamp": "2026-03-03T09:00:00Z",
+      "calibration_key": {
+        "calibration_id": "BTC_TRACKER_DWM_TIERS",
+        "calibration_version": "V1",
+        "model_id": "BTC.TRACKER.DWM.V1",
+        "model_version": "V1"
+      },
+      "case_id": "BTC_TIER_T3_3000",
+      "clock_id": "America/New_York",
+      "expected": {
+        "direction_bias": "NONE_DECLARED",
+        "evidence_refs": [
+          "BTC.TRACKER.DWM.V1"
+        ],
+        "fact_ids": [
+          "BTC.SEED",
+          "BTC.TIER",
+          "BTC.SLOT",
+          "BTC.WEEKLY_ANCHOR",
+          "BTC.MONTHLY_ANCHOR",
+          "BTC.DISTRIBUTION",
+          "PRIOR_STATE.ABSENT"
+        ],
+        "layer": "CROSS_LAYER",
+        "levels": [],
+        "model_state": "SEED_T3",
+        "no_go": [],
+        "production_authorization": "RESEARCH_ONLY",
+        "quality_state": "OK",
+        "range_left_state": "UNRESOLVED",
+        "range_left_value": null,
+        "sub_states": [
+          {
+            "label": "DAILY",
+            "layer": "CROSS_LAYER",
+            "state": "SEED_T3"
+          },
+          {
+            "label": "WEEKLY",
+            "layer": "CROSS_LAYER",
+            "state": "UNRESOLVED"
+          },
+          {
+            "label": "MONTHLY",
+            "layer": "CROSS_LAYER",
+            "state": "UNRESOLVED"
+          }
+        ],
+        "warnings": [
+          "GAP_UNRESOLVED"
+        ]
+      },
+      "expected_refusal": null,
+      "inputs": {
+        "seed": {
+          "breakout_return_state": "INSIDE_RANGE",
+          "calculation_timestamp": "2026-03-03T09:00:00Z",
+          "clock_id": "America/New_York",
+          "clock_registry_version": "CLOCK_REGISTRY_V1",
+          "close_location": "0.9996666667",
+          "consumed_fraction": "0.9996666667",
+          "definition_id": "RANGE_MEASUREMENT",
+          "definition_version": "V1",
+          "direction": "UP",
+          "evidence_refs": [],
+          "high": {
+            "instrument_id": "BTCUSD",
+            "unit": "DOLLAR",
+            "value": "63000.0"
+          },
+          "instrument_id": "BTCUSD",
+          "low": {
+            "instrument_id": "BTCUSD",
+            "unit": "DOLLAR",
+            "value": "60000"
+          },
+          "market_data_schema_version": "MARKET_DATA_SCHEMA_V1",
+          "measurement_engine_version": "MEASUREMENT_ENGINE_V1",
+          "midpoint": {
+            "instrument_id": "BTCUSD",
+            "unit": "DOLLAR",
+            "value": "61500.0"
+          },
+          "native_unit": "DOLLAR",
+          "quality_state": "OK",
+          "range_left": {
+            "instrument_id": "BTCUSD",
+            "unit": "DOLLAR",
+            "value": "1.0"
+          },
+          "session_id": "NONE",
+          "session_registry_version": "SESSION_REGISTRY_V1",
+          "size": {
+            "instrument_id": "BTCUSD",
+            "unit": "DOLLAR",
+            "value": "3000.0"
+          },
+          "source_window": {
+            "bar_count": 6,
+            "input_digest": "521861ba33fe5b0c47bafeb8c2a5fbd4abf9ac27726bbdcffe94a6ec0501edb1",
+            "window_close_utc": "2026-03-03T00:25:00Z",
+            "window_open_utc": "2026-03-02T23:55:00Z"
+          }
+        },
+        "tier": {
+          "calculation_timestamp": "2026-03-03T09:00:00Z",
+          "calibration_key": {
+            "calibration_id": "BTC_TRACKER_DWM_TIERS",
+            "calibration_version": "V1",
+            "model_id": "BTC.TRACKER.DWM.V1",
+            "model_version": "V1"
+          },
+          "calibration_status": "FROZEN_LAUNCH",
+          "clock_id": "America/New_York",
+          "clock_registry_version": "CLOCK_REGISTRY_V1",
+          "definition_id": "TIER_CLASSIFICATION",
+          "definition_version": "V1",
+          "evidence_refs": [
+            "BTC.TRACKER.DWM.V1"
+          ],
+          "instrument_id": "BTCUSD",
+          "magnitude": {
+            "instrument_id": "BTCUSD",
+            "unit": "DOLLAR",
+            "value": "3000.0"
+          },
+          "market_data_schema_version": "MARKET_DATA_SCHEMA_V1",
+          "measurement_engine_version": "MEASUREMENT_ENGINE_V1",
+          "native_unit": "DOLLAR",
+          "no_go": false,
+          "quality_state": "OK",
+          "session_id": "NONE",
+          "session_registry_version": "SESSION_REGISTRY_V1",
+          "source_ref": "corpus/canonical/models/BTC_DAILY_WEEKLY_MONTHLY_TRACKER_MODEL_CARD_V1.md",
+          "source_window": {
+            "bar_count": 6,
+            "input_digest": "521861ba33fe5b0c47bafeb8c2a5fbd4abf9ac27726bbdcffe94a6ec0501edb1",
+            "window_close_utc": "2026-03-03T00:25:00Z",
+            "window_open_utc": "2026-03-02T23:55:00Z"
+          },
+          "tier_id": "T3"
+        }
+      },
+      "instrument_id": "BTCUSD",
+      "model_id": "BTC.TRACKER.DWM.V1",
+      "model_version": "V1",
+      "prior_case": null,
+      "session_id": null
+    },
+    {
+      "calculation_timestamp": "2026-03-03T09:00:00Z",
+      "calibration_key": {
+        "calibration_id": "BTC_TRACKER_DWM_TIERS",
+        "calibration_version": "V1",
+        "model_id": "BTC.TRACKER.DWM.V1",
+        "model_version": "V1"
+      },
+      "case_id": "BTC_NO_GO_3001",
+      "clock_id": "America/New_York",
+      "expected": {
+        "direction_bias": "NONE_DECLARED",
+        "evidence_refs": [
+          "BTC.TRACKER.DWM.V1"
+        ],
+        "fact_ids": [
+          "BTC.SEED",
+          "BTC.TIER",
+          "BTC.SLOT",
+          "BTC.WEEKLY_ANCHOR",
+          "BTC.MONTHLY_ANCHOR",
+          "BTC.DISTRIBUTION",
+          "PRIOR_STATE.ABSENT"
+        ],
+        "layer": "CROSS_LAYER",
+        "levels": [],
+        "model_state": "ASIAN_RANGE_NO_GO",
+        "no_go": [
+          "ASIAN_RANGE_NO_GO"
+        ],
+        "production_authorization": "RESEARCH_ONLY",
+        "quality_state": "OK",
+        "range_left_state": "UNRESOLVED",
+        "range_left_value": null,
+        "sub_states": [
+          {
+            "label": "DAILY",
+            "layer": "CROSS_LAYER",
+            "state": "ASIAN_RANGE_NO_GO"
+          },
+          {
+            "label": "WEEKLY",
+            "layer": "CROSS_LAYER",
+            "state": "UNRESOLVED"
+          },
+          {
+            "label": "MONTHLY",
+            "layer": "CROSS_LAYER",
+            "state": "UNRESOLVED"
+          }
+        ],
+        "warnings": [
+          "GAP_UNRESOLVED"
+        ]
+      },
+      "expected_refusal": null,
+      "inputs": {
+        "seed": {
+          "breakout_return_state": "INSIDE_RANGE",
+          "calculation_timestamp": "2026-03-03T09:00:00Z",
+          "clock_id": "America/New_York",
+          "clock_registry_version": "CLOCK_REGISTRY_V1",
+          "close_location": "0.9996667777",
+          "consumed_fraction": "0.9996667777",
+          "definition_id": "RANGE_MEASUREMENT",
+          "definition_version": "V1",
+          "direction": "UP",
+          "evidence_refs": [],
+          "high": {
+            "instrument_id": "BTCUSD",
+            "unit": "DOLLAR",
+            "value": "63001"
+          },
+          "instrument_id": "BTCUSD",
+          "low": {
+            "instrument_id": "BTCUSD",
+            "unit": "DOLLAR",
+            "value": "60000"
+          },
+          "market_data_schema_version": "MARKET_DATA_SCHEMA_V1",
+          "measurement_engine_version": "MEASUREMENT_ENGINE_V1",
+          "midpoint": {
+            "instrument_id": "BTCUSD",
+            "unit": "DOLLAR",
+            "value": "61500.5"
+          },
+          "native_unit": "DOLLAR",
+          "quality_state": "OK",
+          "range_left": {
+            "instrument_id": "BTCUSD",
+            "unit": "DOLLAR",
+            "value": "1"
+          },
+          "session_id": "NONE",
+          "session_registry_version": "SESSION_REGISTRY_V1",
+          "size": {
+            "instrument_id": "BTCUSD",
+            "unit": "DOLLAR",
+            "value": "3001"
+          },
+          "source_window": {
+            "bar_count": 6,
+            "input_digest": "e286ca420726e09d28a9c956f31820f90d1c7f699f59ec28e68963f7968190ae",
+            "window_close_utc": "2026-03-03T00:25:00Z",
+            "window_open_utc": "2026-03-02T23:55:00Z"
+          }
+        },
+        "tier": {
+          "calculation_timestamp": "2026-03-03T09:00:00Z",
+          "calibration_key": {
+            "calibration_id": "BTC_TRACKER_DWM_TIERS",
+            "calibration_version": "V1",
+            "model_id": "BTC.TRACKER.DWM.V1",
+            "model_version": "V1"
+          },
+          "calibration_status": "FROZEN_LAUNCH",
+          "clock_id": "America/New_York",
+          "clock_registry_version": "CLOCK_REGISTRY_V1",
+          "definition_id": "TIER_CLASSIFICATION",
+          "definition_version": "V1",
+          "evidence_refs": [
+            "BTC.TRACKER.DWM.V1"
+          ],
+          "instrument_id": "BTCUSD",
+          "magnitude": {
+            "instrument_id": "BTCUSD",
+            "unit": "DOLLAR",
+            "value": "3001"
+          },
+          "market_data_schema_version": "MARKET_DATA_SCHEMA_V1",
+          "measurement_engine_version": "MEASUREMENT_ENGINE_V1",
+          "native_unit": "DOLLAR",
+          "no_go": true,
+          "quality_state": "OK",
+          "session_id": "NONE",
+          "session_registry_version": "SESSION_REGISTRY_V1",
+          "source_ref": "corpus/canonical/models/BTC_DAILY_WEEKLY_MONTHLY_TRACKER_MODEL_CARD_V1.md",
+          "source_window": {
+            "bar_count": 6,
+            "input_digest": "e286ca420726e09d28a9c956f31820f90d1c7f699f59ec28e68963f7968190ae",
+            "window_close_utc": "2026-03-03T00:25:00Z",
+            "window_open_utc": "2026-03-02T23:55:00Z"
+          },
+          "tier_id": "NO_GO"
+        }
+      },
+      "instrument_id": "BTCUSD",
+      "model_id": "BTC.TRACKER.DWM.V1",
+      "model_version": "V1",
+      "prior_case": null,
+      "session_id": null
+    },
+    {
+      "calculation_timestamp": "2026-03-03T09:00:00Z",
+      "calibration_key": {
+        "calibration_id": "BTC_TRACKER_DWM_TIERS",
+        "calibration_version": "V1",
+        "model_id": "BTC.TRACKER.DWM.V1",
+        "model_version": "V1"
+      },
+      "case_id": "BTC_SLOT_RANGE_LEFT",
+      "clock_id": "America/New_York",
+      "expected": {
+        "direction_bias": "NONE_DECLARED",
+        "evidence_refs": [
+          "BTC.TRACKER.DWM.V1"
+        ],
+        "fact_ids": [
+          "BTC.SEED",
+          "BTC.TIER",
+          "BTC.SLOT",
+          "BTC.PATH",
+          "BTC.WEEKLY_ANCHOR",
+          "BTC.MONTHLY_ANCHOR",
+          "BTC.DISTRIBUTION",
+          "PRIOR_STATE.ABSENT"
+        ],
+        "layer": "CROSS_LAYER",
+        "levels": [],
+        "model_state": "SEED_T2",
+        "no_go": [],
+        "production_authorization": "RESEARCH_ONLY",
+        "quality_state": "OK",
+        "range_left_state": "MEASURED",
+        "range_left_value": "1.0",
+        "sub_states": [
+          {
+            "label": "DAILY",
+            "layer": "CROSS_LAYER",
+            "state": "SEED_T2"
+          },
+          {
+            "label": "WEEKLY",
+            "layer": "CROSS_LAYER",
+            "state": "UNRESOLVED"
+          },
+          {
+            "label": "MONTHLY",
+            "layer": "CROSS_LAYER",
+            "state": "UNRESOLVED"
+          }
+        ],
+        "warnings": [
+          "GAP_UNRESOLVED"
+        ]
+      },
+      "expected_refusal": null,
+      "inputs": {
+        "path": {
+          "bar_count": 6,
+          "calculation_timestamp": "2026-03-03T09:00:00Z",
+          "clock_id": "America/New_York",
+          "clock_registry_version": "CLOCK_REGISTRY_V1",
+          "definition_id": "PATH_MEASUREMENT",
+          "definition_version": "V1",
+          "delivery_order": [],
+          "evidence_refs": [],
+          "first_delivery": null,
+          "instrument_id": "BTCUSD",
+          "levels": [],
+          "mae": {
+            "instrument_id": "BTCUSD",
+            "unit": "DOLLAR",
+            "value": "0"
+          },
+          "market_data_schema_version": "MARKET_DATA_SCHEMA_V1",
+          "measurement_engine_version": "MEASUREMENT_ENGINE_V1",
+          "mfe": {
+            "instrument_id": "BTCUSD",
+            "unit": "DOLLAR",
+            "value": "750.0"
+          },
+          "native_unit": "DOLLAR",
+          "quality_state": "OK",
+          "reference_price": {
+            "instrument_id": "BTCUSD",
+            "unit": "DOLLAR",
+            "value": "60000"
+          },
+          "remaining_distribution": {
+            "instrument_id": "BTCUSD",
+            "unit": "DOLLAR",
+            "value": "1.0"
+          },
+          "remaining_state": "MEASURED",
+          "session_id": "NONE",
+          "session_registry_version": "SESSION_REGISTRY_V1",
+          "source_window": {
+            "bar_count": 6,
+            "input_digest": "1054064a96519accf13382224a78e0c423868cbfb1cbc4f317efecbaeceb72ae",
+            "window_close_utc": "2026-03-03T00:25:00Z",
+            "window_open_utc": "2026-03-02T23:55:00Z"
+          }
+        },
+        "seed": {
+          "breakout_return_state": "INSIDE_RANGE",
+          "calculation_timestamp": "2026-03-03T09:00:00Z",
+          "clock_id": "America/New_York",
+          "clock_registry_version": "CLOCK_REGISTRY_V1",
+          "close_location": "0.9986666667",
+          "consumed_fraction": "0.9986666667",
+          "definition_id": "RANGE_MEASUREMENT",
+          "definition_version": "V1",
+          "direction": "UP",
+          "evidence_refs": [],
+          "high": {
+            "instrument_id": "BTCUSD",
+            "unit": "DOLLAR",
+            "value": "60750.0"
+          },
+          "instrument_id": "BTCUSD",
+          "low": {
+            "instrument_id": "BTCUSD",
+            "unit": "DOLLAR",
+            "value": "60000"
+          },
+          "market_data_schema_version": "MARKET_DATA_SCHEMA_V1",
+          "measurement_engine_version": "MEASUREMENT_ENGINE_V1",
+          "midpoint": {
+            "instrument_id": "BTCUSD",
+            "unit": "DOLLAR",
+            "value": "60375.0"
+          },
+          "native_unit": "DOLLAR",
+          "quality_state": "OK",
+          "range_left": {
+            "instrument_id": "BTCUSD",
+            "unit": "DOLLAR",
+            "value": "1.0"
+          },
+          "session_id": "NONE",
+          "session_registry_version": "SESSION_REGISTRY_V1",
+          "size": {
+            "instrument_id": "BTCUSD",
+            "unit": "DOLLAR",
+            "value": "750.0"
+          },
+          "source_window": {
+            "bar_count": 6,
+            "input_digest": "1054064a96519accf13382224a78e0c423868cbfb1cbc4f317efecbaeceb72ae",
+            "window_close_utc": "2026-03-03T00:25:00Z",
+            "window_open_utc": "2026-03-02T23:55:00Z"
+          }
+        },
+        "slot_phase": {
+          "calculation_timestamp": "2026-03-03T09:00:00Z",
+          "clock_id": "America/New_York",
+          "clock_registry_version": "CLOCK_REGISTRY_V1",
+          "definition_id": "SESSION_PHASE",
+          "definition_version": "V1",
+          "evidence_refs": [],
+          "instrument_id": "BTCUSD",
+          "market_data_schema_version": "MARKET_DATA_SCHEMA_V1",
+          "measurement_engine_version": "MEASUREMENT_ENGINE_V1",
+          "model_id": "BTC.TRACKER.DWM.V1",
+          "model_version": "V1",
+          "native_unit": null,
+          "observed_instant": "2026-03-03T17:00:00Z",
+          "quality_state": "OK",
+          "session_id": "BTC_TRACKER.DAILY_CHECKPOINT_12PM",
+          "session_registry_version": "SESSION_REGISTRY_V1",
+          "source_window": {
+            "bar_count": 0,
+            "input_digest": "ae0834844ca6b82236e76b8c55fb137e81a81ac9378d98304a654ab36861c573",
+            "window_close_utc": "2026-03-03T17:00:00Z",
+            "window_open_utc": "2026-03-03T17:00:00Z"
+          },
+          "state": "CHECKPOINT_MATCHED"
+        },
+        "tier": {
+          "calculation_timestamp": "2026-03-03T09:00:00Z",
+          "calibration_key": {
+            "calibration_id": "BTC_TRACKER_DWM_TIERS",
+            "calibration_version": "V1",
+            "model_id": "BTC.TRACKER.DWM.V1",
+            "model_version": "V1"
+          },
+          "calibration_status": "FROZEN_LAUNCH",
+          "clock_id": "America/New_York",
+          "clock_registry_version": "CLOCK_REGISTRY_V1",
+          "definition_id": "TIER_CLASSIFICATION",
+          "definition_version": "V1",
+          "evidence_refs": [
+            "BTC.TRACKER.DWM.V1"
+          ],
+          "instrument_id": "BTCUSD",
+          "magnitude": {
+            "instrument_id": "BTCUSD",
+            "unit": "DOLLAR",
+            "value": "750.0"
+          },
+          "market_data_schema_version": "MARKET_DATA_SCHEMA_V1",
+          "measurement_engine_version": "MEASUREMENT_ENGINE_V1",
+          "native_unit": "DOLLAR",
+          "no_go": false,
+          "quality_state": "OK",
+          "session_id": "NONE",
+          "session_registry_version": "SESSION_REGISTRY_V1",
+          "source_ref": "corpus/canonical/models/BTC_DAILY_WEEKLY_MONTHLY_TRACKER_MODEL_CARD_V1.md",
+          "source_window": {
+            "bar_count": 6,
+            "input_digest": "1054064a96519accf13382224a78e0c423868cbfb1cbc4f317efecbaeceb72ae",
+            "window_close_utc": "2026-03-03T00:25:00Z",
+            "window_open_utc": "2026-03-02T23:55:00Z"
+          },
+          "tier_id": "T2"
+        }
+      },
+      "instrument_id": "BTCUSD",
+      "model_id": "BTC.TRACKER.DWM.V1",
+      "model_version": "V1",
+      "prior_case": null,
+      "session_id": null
+    },
+    {
+      "calculation_timestamp": "2026-03-03T09:00:00Z",
+      "calibration_key": {
+        "calibration_id": "BTC_TRACKER_DWM_TIERS",
+        "calibration_version": "V1",
+        "model_id": "BTC.TRACKER.DWM.V1",
+        "model_version": "V1"
+      },
+      "case_id": "BTC_SLOT_OUTSIDE",
+      "clock_id": "America/New_York",
+      "expected": {
+        "direction_bias": "NONE_DECLARED",
+        "evidence_refs": [
+          "BTC.TRACKER.DWM.V1"
+        ],
+        "fact_ids": [
+          "BTC.SEED",
+          "BTC.TIER",
+          "BTC.SLOT",
+          "BTC.PATH",
+          "BTC.WEEKLY_ANCHOR",
+          "BTC.MONTHLY_ANCHOR",
+          "BTC.DISTRIBUTION",
+          "PRIOR_STATE.ABSENT"
+        ],
+        "layer": "CROSS_LAYER",
+        "levels": [],
+        "model_state": "SEED_T2",
+        "no_go": [],
+        "production_authorization": "RESEARCH_ONLY",
+        "quality_state": "OK",
+        "range_left_state": "UNRESOLVED",
+        "range_left_value": null,
+        "sub_states": [
+          {
+            "label": "DAILY",
+            "layer": "CROSS_LAYER",
+            "state": "SEED_T2"
+          },
+          {
+            "label": "WEEKLY",
+            "layer": "CROSS_LAYER",
+            "state": "UNRESOLVED"
+          },
+          {
+            "label": "MONTHLY",
+            "layer": "CROSS_LAYER",
+            "state": "UNRESOLVED"
+          }
+        ],
+        "warnings": [
+          "GAP_UNRESOLVED"
+        ]
+      },
+      "expected_refusal": null,
+      "inputs": {
+        "path": {
+          "bar_count": 6,
+          "calculation_timestamp": "2026-03-03T09:00:00Z",
+          "clock_id": "America/New_York",
+          "clock_registry_version": "CLOCK_REGISTRY_V1",
+          "definition_id": "PATH_MEASUREMENT",
+          "definition_version": "V1",
+          "delivery_order": [],
+          "evidence_refs": [],
+          "first_delivery": null,
+          "instrument_id": "BTCUSD",
+          "levels": [],
+          "mae": {
+            "instrument_id": "BTCUSD",
+            "unit": "DOLLAR",
+            "value": "0"
+          },
+          "market_data_schema_version": "MARKET_DATA_SCHEMA_V1",
+          "measurement_engine_version": "MEASUREMENT_ENGINE_V1",
+          "mfe": {
+            "instrument_id": "BTCUSD",
+            "unit": "DOLLAR",
+            "value": "750.0"
+          },
+          "native_unit": "DOLLAR",
+          "quality_state": "OK",
+          "reference_price": {
+            "instrument_id": "BTCUSD",
+            "unit": "DOLLAR",
+            "value": "60000"
+          },
+          "remaining_distribution": {
+            "instrument_id": "BTCUSD",
+            "unit": "DOLLAR",
+            "value": "1.0"
+          },
+          "remaining_state": "MEASURED",
+          "session_id": "NONE",
+          "session_registry_version": "SESSION_REGISTRY_V1",
+          "source_window": {
+            "bar_count": 6,
+            "input_digest": "1054064a96519accf13382224a78e0c423868cbfb1cbc4f317efecbaeceb72ae",
+            "window_close_utc": "2026-03-03T00:25:00Z",
+            "window_open_utc": "2026-03-02T23:55:00Z"
+          }
+        },
+        "seed": {
+          "breakout_return_state": "INSIDE_RANGE",
+          "calculation_timestamp": "2026-03-03T09:00:00Z",
+          "clock_id": "America/New_York",
+          "clock_registry_version": "CLOCK_REGISTRY_V1",
+          "close_location": "0.9986666667",
+          "consumed_fraction": "0.9986666667",
+          "definition_id": "RANGE_MEASUREMENT",
+          "definition_version": "V1",
+          "direction": "UP",
+          "evidence_refs": [],
+          "high": {
+            "instrument_id": "BTCUSD",
+            "unit": "DOLLAR",
+            "value": "60750.0"
+          },
+          "instrument_id": "BTCUSD",
+          "low": {
+            "instrument_id": "BTCUSD",
+            "unit": "DOLLAR",
+            "value": "60000"
+          },
+          "market_data_schema_version": "MARKET_DATA_SCHEMA_V1",
+          "measurement_engine_version": "MEASUREMENT_ENGINE_V1",
+          "midpoint": {
+            "instrument_id": "BTCUSD",
+            "unit": "DOLLAR",
+            "value": "60375.0"
+          },
+          "native_unit": "DOLLAR",
+          "quality_state": "OK",
+          "range_left": {
+            "instrument_id": "BTCUSD",
+            "unit": "DOLLAR",
+            "value": "1.0"
+          },
+          "session_id": "NONE",
+          "session_registry_version": "SESSION_REGISTRY_V1",
+          "size": {
+            "instrument_id": "BTCUSD",
+            "unit": "DOLLAR",
+            "value": "750.0"
+          },
+          "source_window": {
+            "bar_count": 6,
+            "input_digest": "1054064a96519accf13382224a78e0c423868cbfb1cbc4f317efecbaeceb72ae",
+            "window_close_utc": "2026-03-03T00:25:00Z",
+            "window_open_utc": "2026-03-02T23:55:00Z"
+          }
+        },
+        "slot_phase": {
+          "calculation_timestamp": "2026-03-03T09:00:00Z",
+          "clock_id": "America/New_York",
+          "clock_registry_version": "CLOCK_REGISTRY_V1",
+          "definition_id": "SESSION_PHASE",
+          "definition_version": "V1",
+          "evidence_refs": [],
+          "instrument_id": "BTCUSD",
+          "market_data_schema_version": "MARKET_DATA_SCHEMA_V1",
+          "measurement_engine_version": "MEASUREMENT_ENGINE_V1",
+          "model_id": "BTC.TRACKER.DWM.V1",
+          "model_version": "V1",
+          "native_unit": null,
+          "observed_instant": "2026-03-03T20:00:00Z",
+          "quality_state": "OK",
+          "session_id": "BTC_TRACKER.ASIAN_WINDOW",
+          "session_registry_version": "SESSION_REGISTRY_V1",
+          "source_window": {
+            "bar_count": 0,
+            "input_digest": "1dee7d8fe679f5b7c1a74e92280eec761caaa76c610f443ef95fad0707fd8d25",
+            "window_close_utc": "2026-03-03T20:00:00Z",
+            "window_open_utc": "2026-03-03T20:00:00Z"
+          },
+          "state": "OUTSIDE_WINDOW"
+        },
+        "tier": {
+          "calculation_timestamp": "2026-03-03T09:00:00Z",
+          "calibration_key": {
+            "calibration_id": "BTC_TRACKER_DWM_TIERS",
+            "calibration_version": "V1",
+            "model_id": "BTC.TRACKER.DWM.V1",
+            "model_version": "V1"
+          },
+          "calibration_status": "FROZEN_LAUNCH",
+          "clock_id": "America/New_York",
+          "clock_registry_version": "CLOCK_REGISTRY_V1",
+          "definition_id": "TIER_CLASSIFICATION",
+          "definition_version": "V1",
+          "evidence_refs": [
+            "BTC.TRACKER.DWM.V1"
+          ],
+          "instrument_id": "BTCUSD",
+          "magnitude": {
+            "instrument_id": "BTCUSD",
+            "unit": "DOLLAR",
+            "value": "750.0"
+          },
+          "market_data_schema_version": "MARKET_DATA_SCHEMA_V1",
+          "measurement_engine_version": "MEASUREMENT_ENGINE_V1",
+          "native_unit": "DOLLAR",
+          "no_go": false,
+          "quality_state": "OK",
+          "session_id": "NONE",
+          "session_registry_version": "SESSION_REGISTRY_V1",
+          "source_ref": "corpus/canonical/models/BTC_DAILY_WEEKLY_MONTHLY_TRACKER_MODEL_CARD_V1.md",
+          "source_window": {
+            "bar_count": 6,
+            "input_digest": "1054064a96519accf13382224a78e0c423868cbfb1cbc4f317efecbaeceb72ae",
+            "window_close_utc": "2026-03-03T00:25:00Z",
+            "window_open_utc": "2026-03-02T23:55:00Z"
+          },
+          "tier_id": "T2"
+        }
+      },
+      "instrument_id": "BTCUSD",
+      "model_id": "BTC.TRACKER.DWM.V1",
+      "model_version": "V1",
+      "prior_case": null,
+      "session_id": null
+    },
+    {
+      "calculation_timestamp": "2026-03-03T09:00:00Z",
+      "calibration_key": {
+        "calibration_id": "BTC_TRACKER_DWM_TIERS",
+        "calibration_version": "V1",
+        "model_id": "BTC.TRACKER.DWM.V1",
+        "model_version": "V1"
+      },
+      "case_id": "BTC_HORIZON_UNRESOLVED",
+      "clock_id": "America/New_York",
+      "expected": {
+        "direction_bias": "NONE_DECLARED",
+        "evidence_refs": [
+          "BTC.TRACKER.DWM.V1"
+        ],
+        "fact_ids": [
+          "BTC.SEED",
+          "BTC.TIER",
+          "BTC.SLOT",
+          "BTC.WEEKLY_ANCHOR",
+          "BTC.MONTHLY_ANCHOR",
+          "BTC.DISTRIBUTION",
+          "PRIOR_STATE.ABSENT"
+        ],
+        "layer": "CROSS_LAYER",
+        "levels": [],
+        "model_state": "SEED_T2",
+        "no_go": [],
+        "production_authorization": "RESEARCH_ONLY",
+        "quality_state": "OK",
+        "range_left_state": "UNRESOLVED",
+        "range_left_value": null,
+        "sub_states": [
+          {
+            "label": "DAILY",
+            "layer": "CROSS_LAYER",
+            "state": "SEED_T2"
+          },
+          {
+            "label": "WEEKLY",
+            "layer": "CROSS_LAYER",
+            "state": "UNRESOLVED"
+          },
+          {
+            "label": "MONTHLY",
+            "layer": "CROSS_LAYER",
+            "state": "UNRESOLVED"
+          }
+        ],
+        "warnings": [
+          "GAP_UNRESOLVED"
+        ]
+      },
+      "expected_refusal": null,
+      "inputs": {
+        "seed": {
+          "breakout_return_state": "INSIDE_RANGE",
+          "calculation_timestamp": "2026-03-03T09:00:00Z",
+          "clock_id": "America/New_York",
+          "clock_registry_version": "CLOCK_REGISTRY_V1",
+          "close_location": "0.9986666667",
+          "consumed_fraction": "0.9986666667",
+          "definition_id": "RANGE_MEASUREMENT",
+          "definition_version": "V1",
+          "direction": "UP",
+          "evidence_refs": [],
+          "high": {
+            "instrument_id": "BTCUSD",
+            "unit": "DOLLAR",
+            "value": "60750.0"
+          },
+          "instrument_id": "BTCUSD",
+          "low": {
+            "instrument_id": "BTCUSD",
+            "unit": "DOLLAR",
+            "value": "60000"
+          },
+          "market_data_schema_version": "MARKET_DATA_SCHEMA_V1",
+          "measurement_engine_version": "MEASUREMENT_ENGINE_V1",
+          "midpoint": {
+            "instrument_id": "BTCUSD",
+            "unit": "DOLLAR",
+            "value": "60375.0"
+          },
+          "native_unit": "DOLLAR",
+          "quality_state": "OK",
+          "range_left": {
+            "instrument_id": "BTCUSD",
+            "unit": "DOLLAR",
+            "value": "1.0"
+          },
+          "session_id": "NONE",
+          "session_registry_version": "SESSION_REGISTRY_V1",
+          "size": {
+            "instrument_id": "BTCUSD",
+            "unit": "DOLLAR",
+            "value": "750.0"
+          },
+          "source_window": {
+            "bar_count": 6,
+            "input_digest": "1054064a96519accf13382224a78e0c423868cbfb1cbc4f317efecbaeceb72ae",
+            "window_close_utc": "2026-03-03T00:25:00Z",
+            "window_open_utc": "2026-03-02T23:55:00Z"
+          }
+        },
+        "tier": {
+          "calculation_timestamp": "2026-03-03T09:00:00Z",
+          "calibration_key": {
+            "calibration_id": "BTC_TRACKER_DWM_TIERS",
+            "calibration_version": "V1",
+            "model_id": "BTC.TRACKER.DWM.V1",
+            "model_version": "V1"
+          },
+          "calibration_status": "FROZEN_LAUNCH",
+          "clock_id": "America/New_York",
+          "clock_registry_version": "CLOCK_REGISTRY_V1",
+          "definition_id": "TIER_CLASSIFICATION",
+          "definition_version": "V1",
+          "evidence_refs": [
+            "BTC.TRACKER.DWM.V1"
+          ],
+          "instrument_id": "BTCUSD",
+          "magnitude": {
+            "instrument_id": "BTCUSD",
+            "unit": "DOLLAR",
+            "value": "750.0"
+          },
+          "market_data_schema_version": "MARKET_DATA_SCHEMA_V1",
+          "measurement_engine_version": "MEASUREMENT_ENGINE_V1",
+          "native_unit": "DOLLAR",
+          "no_go": false,
+          "quality_state": "OK",
+          "session_id": "NONE",
+          "session_registry_version": "SESSION_REGISTRY_V1",
+          "source_ref": "corpus/canonical/models/BTC_DAILY_WEEKLY_MONTHLY_TRACKER_MODEL_CARD_V1.md",
+          "source_window": {
+            "bar_count": 6,
+            "input_digest": "1054064a96519accf13382224a78e0c423868cbfb1cbc4f317efecbaeceb72ae",
+            "window_close_utc": "2026-03-03T00:25:00Z",
+            "window_open_utc": "2026-03-02T23:55:00Z"
+          },
+          "tier_id": "T2"
+        },
+        "weekly_anchor": {
+          "anchor_id": "BTC.WEEKLY.ANCHOR.01",
+          "automation_ready": false,
+          "calculation_timestamp": "2026-03-03T09:00:00Z",
+          "clock_id": "America/New_York",
+          "clock_registry_version": "CLOCK_REGISTRY_V1",
+          "definition_id": "ANCHOR_ELIGIBILITY",
+          "definition_version": "V1",
+          "earned_range_reference": null,
+          "evidence_refs": [],
+          "instrument_id": "BTCUSD",
+          "market_data_schema_version": "MARKET_DATA_SCHEMA_V1",
+          "measurement_engine_version": "MEASUREMENT_ENGINE_V1",
+          "model_id": "BTC.TRACKER.DWM.V1",
+          "model_version": "V1",
+          "native_unit": null,
+          "quality_state": "OK",
+          "refusal_code": "ANCHOR_UNRESOLVED",
+          "rekey_source_anchor_id": null,
+          "rule_id": "BTC_WEEKLY_ANCHOR",
+          "rule_materialization": "NOT_MATERIALIZED",
+          "rule_version": "NOT_MATERIALIZED",
+          "session_id": "NONE",
+          "session_registry_version": "SESSION_REGISTRY_V1",
+          "source_window": {
+            "bar_count": 6,
+            "input_digest": "1054064a96519accf13382224a78e0c423868cbfb1cbc4f317efecbaeceb72ae",
+            "window_close_utc": "2026-03-03T00:25:00Z",
+            "window_open_utc": "2026-03-02T23:55:00Z"
+          },
+          "status": "UNRESOLVED"
+        }
+      },
+      "instrument_id": "BTCUSD",
+      "model_id": "BTC.TRACKER.DWM.V1",
+      "model_version": "V1",
+      "prior_case": null,
+      "session_id": null
+    },
+    {
+      "calculation_timestamp": "2026-03-03T09:00:00Z",
+      "calibration_key": {
+        "calibration_id": "BTC_TRACKER_DWM_TIERS",
+        "calibration_version": "V1",
+        "model_id": "BTC.TRACKER.DWM.V1",
+        "model_version": "V1"
+      },
+      "case_id": "BTC_AU_THRESHOLDS",
+      "clock_id": "America/New_York",
+      "expected": {
+        "direction_bias": "NONE_DECLARED",
+        "evidence_refs": [
+          "BTC.TRACKER.DWM.V1"
+        ],
+        "fact_ids": [
+          "BTC.SEED",
+          "BTC.TIER",
+          "BTC.AU_SCALE",
+          "BTC.DENSITY_ZONE",
+          "BTC.DENSITY_ZONE",
+          "BTC.DENSITY_ZONE",
+          "BTC.SLOT",
+          "BTC.WEEKLY_ANCHOR",
+          "BTC.MONTHLY_ANCHOR",
+          "BTC.DISTRIBUTION",
+          "PRIOR_STATE.ABSENT"
+        ],
+        "layer": "CROSS_LAYER",
+        "levels": [
+          {
+            "active": true,
+            "level_id": "BTC_THRESHOLD_1"
+          },
+          {
+            "active": true,
+            "level_id": "BTC_THRESHOLD_2"
+          },
+          {
+            "active": true,
+            "level_id": "BTC_THRESHOLD_3"
+          }
+        ],
+        "model_state": "SEED_T2",
+        "no_go": [],
+        "production_authorization": "RESEARCH_ONLY",
+        "quality_state": "OK",
+        "range_left_state": "UNRESOLVED",
+        "range_left_value": null,
+        "sub_states": [
+          {
+            "label": "DAILY",
+            "layer": "CROSS_LAYER",
+            "state": "SEED_T2"
+          },
+          {
+            "label": "WEEKLY",
+            "layer": "CROSS_LAYER",
+            "state": "UNRESOLVED"
+          },
+          {
+            "label": "MONTHLY",
+            "layer": "CROSS_LAYER",
+            "state": "UNRESOLVED"
+          }
+        ],
+        "warnings": [
+          "GAP_UNRESOLVED"
+        ]
+      },
+      "expected_refusal": null,
+      "inputs": {
+        "au": {
+          "au": {
+            "instrument_id": "BTCUSD",
+            "unit": "DOLLAR",
+            "value": "545"
+          },
+          "calculation_timestamp": "2026-03-03T09:00:00Z",
+          "calibration_key": {
+            "calibration_id": "BTC_TRACKER_DWM_TIERS",
+            "calibration_version": "V1",
+            "model_id": "BTC.TRACKER.DWM.V1",
+            "model_version": "V1"
+          },
+          "calibration_status": "FROZEN_LAUNCH",
+          "clock_id": "America/New_York",
+          "clock_registry_version": "CLOCK_REGISTRY_V1",
+          "definition_id": "AU_SCALE",
+          "definition_version": "V1",
+          "evidence_refs": [
+            "BTC.TRACKER.DWM.V1"
+          ],
+          "instrument_id": "BTCUSD",
+          "market_data_schema_version": "MARKET_DATA_SCHEMA_V1",
+          "measurement_engine_version": "MEASUREMENT_ENGINE_V1",
+          "native_unit": "DOLLAR",
+          "quality_state": "OK",
+          "session_id": "NONE",
+          "session_registry_version": "SESSION_REGISTRY_V1",
+          "source_ref": "corpus/canonical/models/BTC_DAILY_WEEKLY_MONTHLY_TRACKER_MODEL_CARD_V1.md",
+          "source_window": {
+            "bar_count": 6,
+            "input_digest": "1054064a96519accf13382224a78e0c423868cbfb1cbc4f317efecbaeceb72ae",
+            "window_close_utc": "2026-03-03T00:25:00Z",
+            "window_open_utc": "2026-03-02T23:55:00Z"
+          },
+          "tier_id": "T2"
+        },
+        "density": {
+          "calculation_timestamp": "2026-03-03T09:00:00Z",
+          "calibration_key": {
+            "calibration_id": "BTC_TRACKER_DWM_TIERS",
+            "calibration_version": "V1",
+            "model_id": "BTC.TRACKER.DWM.V1",
+            "model_version": "V1"
+          },
+          "calibration_status": "FROZEN_LAUNCH",
+          "clock_id": "America/New_York",
+          "clock_registry_version": "CLOCK_REGISTRY_V1",
+          "definition_id": "DENSITY_ZONES",
+          "definition_version": "V1",
+          "evidence_refs": [],
+          "instrument_id": "BTCUSD",
+          "market_data_schema_version": "MARKET_DATA_SCHEMA_V1",
+          "measurement_engine_version": "MEASUREMENT_ENGINE_V1",
+          "native_unit": "DOLLAR",
+          "quality_state": "OK",
+          "session_id": "NONE",
+          "session_registry_version": "SESSION_REGISTRY_V1",
+          "source_ref": "corpus/canonical/models/BTC_DAILY_WEEKLY_MONTHLY_TRACKER_MODEL_CARD_V1.md",
+          "source_window": {
+            "bar_count": 6,
+            "input_digest": "1054064a96519accf13382224a78e0c423868cbfb1cbc4f317efecbaeceb72ae",
+            "window_close_utc": "2026-03-03T00:25:00Z",
+            "window_open_utc": "2026-03-02T23:55:00Z"
+          },
+          "zones": [
+            {
+              "instrument_id": "BTCUSD",
+              "lower": "164",
+              "unit": "DOLLAR",
+              "upper": "246",
+              "zone_id": "T1"
+            },
+            {
+              "instrument_id": "BTCUSD",
+              "lower": "436",
+              "unit": "DOLLAR",
+              "upper": "654",
+              "zone_id": "T2"
+            },
+            {
+              "instrument_id": "BTCUSD",
+              "lower": "928",
+              "unit": "DOLLAR",
+              "upper": "1392",
+              "zone_id": "T3"
+            }
+          ]
+        },
+        "seed": {
+          "breakout_return_state": "INSIDE_RANGE",
+          "calculation_timestamp": "2026-03-03T09:00:00Z",
+          "clock_id": "America/New_York",
+          "clock_registry_version": "CLOCK_REGISTRY_V1",
+          "close_location": "0.9986666667",
+          "consumed_fraction": "0.9986666667",
+          "definition_id": "RANGE_MEASUREMENT",
+          "definition_version": "V1",
+          "direction": "UP",
+          "evidence_refs": [],
+          "high": {
+            "instrument_id": "BTCUSD",
+            "unit": "DOLLAR",
+            "value": "60750.0"
+          },
+          "instrument_id": "BTCUSD",
+          "low": {
+            "instrument_id": "BTCUSD",
+            "unit": "DOLLAR",
+            "value": "60000"
+          },
+          "market_data_schema_version": "MARKET_DATA_SCHEMA_V1",
+          "measurement_engine_version": "MEASUREMENT_ENGINE_V1",
+          "midpoint": {
+            "instrument_id": "BTCUSD",
+            "unit": "DOLLAR",
+            "value": "60375.0"
+          },
+          "native_unit": "DOLLAR",
+          "quality_state": "OK",
+          "range_left": {
+            "instrument_id": "BTCUSD",
+            "unit": "DOLLAR",
+            "value": "1.0"
+          },
+          "session_id": "NONE",
+          "session_registry_version": "SESSION_REGISTRY_V1",
+          "size": {
+            "instrument_id": "BTCUSD",
+            "unit": "DOLLAR",
+            "value": "750.0"
+          },
+          "source_window": {
+            "bar_count": 6,
+            "input_digest": "1054064a96519accf13382224a78e0c423868cbfb1cbc4f317efecbaeceb72ae",
+            "window_close_utc": "2026-03-03T00:25:00Z",
+            "window_open_utc": "2026-03-02T23:55:00Z"
+          }
+        },
+        "thresholds": {
+          "calculation_timestamp": "2026-03-03T09:00:00Z",
+          "calibration_key": {
+            "calibration_id": "BTC_TRACKER_DWM_TIERS",
+            "calibration_version": "V1",
+            "model_id": "BTC.TRACKER.DWM.V1",
+            "model_version": "V1"
+          },
+          "calibration_status": "FROZEN_LAUNCH",
+          "clock_id": "America/New_York",
+          "clock_registry_version": "CLOCK_REGISTRY_V1",
+          "definition_id": "THRESHOLD_LEVELS",
+          "definition_version": "V1",
+          "evidence_refs": [
+            "BTC.TRACKER.DWM.V1"
+          ],
+          "instrument_id": "BTCUSD",
+          "levels": [
+            {
+              "instrument_id": "BTCUSD",
+              "unit": "DOLLAR",
+              "value": "246"
+            },
+            {
+              "instrument_id": "BTCUSD",
+              "unit": "DOLLAR",
+              "value": "654"
+            },
+            {
+              "instrument_id": "BTCUSD",
+              "unit": "DOLLAR",
+              "value": "1392"
+            }
+          ],
+          "market_data_schema_version": "MARKET_DATA_SCHEMA_V1",
+          "measurement_engine_version": "MEASUREMENT_ENGINE_V1",
+          "native_unit": "DOLLAR",
+          "quality_state": "OK",
+          "session_id": "NONE",
+          "session_registry_version": "SESSION_REGISTRY_V1",
+          "source_ref": "corpus/canonical/models/BTC_DAILY_WEEKLY_MONTHLY_TRACKER_MODEL_CARD_V1.md",
+          "source_window": {
+            "bar_count": 6,
+            "input_digest": "1054064a96519accf13382224a78e0c423868cbfb1cbc4f317efecbaeceb72ae",
+            "window_close_utc": "2026-03-03T00:25:00Z",
+            "window_open_utc": "2026-03-02T23:55:00Z"
+          }
+        },
+        "tier": {
+          "calculation_timestamp": "2026-03-03T09:00:00Z",
+          "calibration_key": {
+            "calibration_id": "BTC_TRACKER_DWM_TIERS",
+            "calibration_version": "V1",
+            "model_id": "BTC.TRACKER.DWM.V1",
+            "model_version": "V1"
+          },
+          "calibration_status": "FROZEN_LAUNCH",
+          "clock_id": "America/New_York",
+          "clock_registry_version": "CLOCK_REGISTRY_V1",
+          "definition_id": "TIER_CLASSIFICATION",
+          "definition_version": "V1",
+          "evidence_refs": [
+            "BTC.TRACKER.DWM.V1"
+          ],
+          "instrument_id": "BTCUSD",
+          "magnitude": {
+            "instrument_id": "BTCUSD",
+            "unit": "DOLLAR",
+            "value": "750.0"
+          },
+          "market_data_schema_version": "MARKET_DATA_SCHEMA_V1",
+          "measurement_engine_version": "MEASUREMENT_ENGINE_V1",
+          "native_unit": "DOLLAR",
+          "no_go": false,
+          "quality_state": "OK",
+          "session_id": "NONE",
+          "session_registry_version": "SESSION_REGISTRY_V1",
+          "source_ref": "corpus/canonical/models/BTC_DAILY_WEEKLY_MONTHLY_TRACKER_MODEL_CARD_V1.md",
+          "source_window": {
+            "bar_count": 6,
+            "input_digest": "1054064a96519accf13382224a78e0c423868cbfb1cbc4f317efecbaeceb72ae",
+            "window_close_utc": "2026-03-03T00:25:00Z",
+            "window_open_utc": "2026-03-02T23:55:00Z"
+          },
+          "tier_id": "T2"
+        }
+      },
+      "instrument_id": "BTCUSD",
+      "model_id": "BTC.TRACKER.DWM.V1",
+      "model_version": "V1",
+      "prior_case": null,
+      "session_id": null
+    },
+    {
+      "calculation_timestamp": "2026-03-03T09:00:00Z",
+      "calibration_key": {
+        "calibration_id": "BTC_TRACKER_DWM_TIERS",
+        "calibration_version": "V1",
+        "model_id": "BTC.TRACKER.DWM.V1",
+        "model_version": "V1"
+      },
+      "case_id": "BTC_GAME_REQUEST",
+      "clock_id": "America/New_York",
+      "expected": null,
+      "expected_refusal": "MODEL_VERSION_UNAVAILABLE",
+      "inputs": {},
+      "instrument_id": "BTCUSD",
+      "model_id": "BTC.GAME.L1_V1",
+      "model_version": "V1",
+      "prior_case": null,
+      "session_id": null
+    },
+    {
+      "calculation_timestamp": "2026-03-03T09:00:00Z",
+      "calibration_key": {
+        "calibration_id": "BTC_TRACKER_DWM_TIERS",
+        "calibration_version": "V1",
+        "model_id": "BTC.TRACKER.DWM.V1",
+        "model_version": "V1"
+      },
+      "case_id": "BTC_FOREIGN_INSTRUMENT",
+      "clock_id": "America/New_York",
+      "expected": null,
+      "expected_refusal": "INSTRUMENT_SCOPE_MISMATCH",
+      "inputs": {
+        "seed": {
+          "breakout_return_state": "INSIDE_RANGE",
+          "calculation_timestamp": "2026-03-03T09:00:00Z",
+          "clock_id": "America/New_York",
+          "clock_registry_version": "CLOCK_REGISTRY_V1",
+          "close_location": "0.9986666667",
+          "consumed_fraction": "0.9986666667",
+          "definition_id": "RANGE_MEASUREMENT",
+          "definition_version": "V1",
+          "direction": "UP",
+          "evidence_refs": [],
+          "high": {
+            "instrument_id": "BTCUSD",
+            "unit": "DOLLAR",
+            "value": "60750.0"
+          },
+          "instrument_id": "BTCUSD",
+          "low": {
+            "instrument_id": "BTCUSD",
+            "unit": "DOLLAR",
+            "value": "60000"
+          },
+          "market_data_schema_version": "MARKET_DATA_SCHEMA_V1",
+          "measurement_engine_version": "MEASUREMENT_ENGINE_V1",
+          "midpoint": {
+            "instrument_id": "BTCUSD",
+            "unit": "DOLLAR",
+            "value": "60375.0"
+          },
+          "native_unit": "DOLLAR",
+          "quality_state": "OK",
+          "range_left": {
+            "instrument_id": "BTCUSD",
+            "unit": "DOLLAR",
+            "value": "1.0"
+          },
+          "session_id": "NONE",
+          "session_registry_version": "SESSION_REGISTRY_V1",
+          "size": {
+            "instrument_id": "BTCUSD",
+            "unit": "DOLLAR",
+            "value": "750.0"
+          },
+          "source_window": {
+            "bar_count": 6,
+            "input_digest": "1054064a96519accf13382224a78e0c423868cbfb1cbc4f317efecbaeceb72ae",
+            "window_close_utc": "2026-03-03T00:25:00Z",
+            "window_open_utc": "2026-03-02T23:55:00Z"
+          }
+        },
+        "tier": {
+          "calculation_timestamp": "2026-03-03T09:00:00Z",
+          "calibration_key": {
+            "calibration_id": "BTC_TRACKER_DWM_TIERS",
+            "calibration_version": "V1",
+            "model_id": "BTC.TRACKER.DWM.V1",
+            "model_version": "V1"
+          },
+          "calibration_status": "FROZEN_LAUNCH",
+          "clock_id": "America/New_York",
+          "clock_registry_version": "CLOCK_REGISTRY_V1",
+          "definition_id": "TIER_CLASSIFICATION",
+          "definition_version": "V1",
+          "evidence_refs": [
+            "BTC.TRACKER.DWM.V1"
+          ],
+          "instrument_id": "BTCUSD",
+          "magnitude": {
+            "instrument_id": "BTCUSD",
+            "unit": "DOLLAR",
+            "value": "750.0"
+          },
+          "market_data_schema_version": "MARKET_DATA_SCHEMA_V1",
+          "measurement_engine_version": "MEASUREMENT_ENGINE_V1",
+          "native_unit": "DOLLAR",
+          "no_go": false,
+          "quality_state": "OK",
+          "session_id": "NONE",
+          "session_registry_version": "SESSION_REGISTRY_V1",
+          "source_ref": "corpus/canonical/models/BTC_DAILY_WEEKLY_MONTHLY_TRACKER_MODEL_CARD_V1.md",
+          "source_window": {
+            "bar_count": 6,
+            "input_digest": "1054064a96519accf13382224a78e0c423868cbfb1cbc4f317efecbaeceb72ae",
+            "window_close_utc": "2026-03-03T00:25:00Z",
+            "window_open_utc": "2026-03-02T23:55:00Z"
+          },
+          "tier_id": "T2"
+        }
+      },
+      "instrument_id": "EURUSD",
+      "model_id": "BTC.TRACKER.DWM.V1",
+      "model_version": "V1",
+      "prior_case": null,
+      "session_id": null
+    },
+    {
+      "calculation_timestamp": "2026-03-03T09:00:00Z",
+      "calibration_key": {
+        "calibration_id": "EUR_DAILY_PHASE1_TIERS",
+        "calibration_version": "V1",
+        "model_id": "EUR.DAILY.NEWS_REKEY.V1",
+        "model_version": "PHASE1"
+      },
+      "case_id": "BTC_FOREIGN_CALIBRATION",
+      "clock_id": "America/New_York",
+      "expected": null,
+      "expected_refusal": "INSTRUMENT_SCOPE_MISMATCH",
+      "inputs": {
+        "seed": {
+          "breakout_return_state": "INSIDE_RANGE",
+          "calculation_timestamp": "2026-03-03T09:00:00Z",
+          "clock_id": "America/New_York",
+          "clock_registry_version": "CLOCK_REGISTRY_V1",
+          "close_location": "0.9986666667",
+          "consumed_fraction": "0.9986666667",
+          "definition_id": "RANGE_MEASUREMENT",
+          "definition_version": "V1",
+          "direction": "UP",
+          "evidence_refs": [],
+          "high": {
+            "instrument_id": "BTCUSD",
+            "unit": "DOLLAR",
+            "value": "60750.0"
+          },
+          "instrument_id": "BTCUSD",
+          "low": {
+            "instrument_id": "BTCUSD",
+            "unit": "DOLLAR",
+            "value": "60000"
+          },
+          "market_data_schema_version": "MARKET_DATA_SCHEMA_V1",
+          "measurement_engine_version": "MEASUREMENT_ENGINE_V1",
+          "midpoint": {
+            "instrument_id": "BTCUSD",
+            "unit": "DOLLAR",
+            "value": "60375.0"
+          },
+          "native_unit": "DOLLAR",
+          "quality_state": "OK",
+          "range_left": {
+            "instrument_id": "BTCUSD",
+            "unit": "DOLLAR",
+            "value": "1.0"
+          },
+          "session_id": "NONE",
+          "session_registry_version": "SESSION_REGISTRY_V1",
+          "size": {
+            "instrument_id": "BTCUSD",
+            "unit": "DOLLAR",
+            "value": "750.0"
+          },
+          "source_window": {
+            "bar_count": 6,
+            "input_digest": "1054064a96519accf13382224a78e0c423868cbfb1cbc4f317efecbaeceb72ae",
+            "window_close_utc": "2026-03-03T00:25:00Z",
+            "window_open_utc": "2026-03-02T23:55:00Z"
+          }
+        },
+        "tier": {
+          "calculation_timestamp": "2026-03-03T09:00:00Z",
+          "calibration_key": {
+            "calibration_id": "BTC_TRACKER_DWM_TIERS",
+            "calibration_version": "V1",
+            "model_id": "BTC.TRACKER.DWM.V1",
+            "model_version": "V1"
+          },
+          "calibration_status": "FROZEN_LAUNCH",
+          "clock_id": "America/New_York",
+          "clock_registry_version": "CLOCK_REGISTRY_V1",
+          "definition_id": "TIER_CLASSIFICATION",
+          "definition_version": "V1",
+          "evidence_refs": [
+            "BTC.TRACKER.DWM.V1"
+          ],
+          "instrument_id": "BTCUSD",
+          "magnitude": {
+            "instrument_id": "BTCUSD",
+            "unit": "DOLLAR",
+            "value": "750.0"
+          },
+          "market_data_schema_version": "MARKET_DATA_SCHEMA_V1",
+          "measurement_engine_version": "MEASUREMENT_ENGINE_V1",
+          "native_unit": "DOLLAR",
+          "no_go": false,
+          "quality_state": "OK",
+          "session_id": "NONE",
+          "session_registry_version": "SESSION_REGISTRY_V1",
+          "source_ref": "corpus/canonical/models/BTC_DAILY_WEEKLY_MONTHLY_TRACKER_MODEL_CARD_V1.md",
+          "source_window": {
+            "bar_count": 6,
+            "input_digest": "1054064a96519accf13382224a78e0c423868cbfb1cbc4f317efecbaeceb72ae",
+            "window_close_utc": "2026-03-03T00:25:00Z",
+            "window_open_utc": "2026-03-02T23:55:00Z"
+          },
+          "tier_id": "T2"
+        }
+      },
+      "instrument_id": "BTCUSD",
+      "model_id": "BTC.TRACKER.DWM.V1",
+      "model_version": "V1",
+      "prior_case": null,
+      "session_id": null
+    }
+  ],
+  "clock": "America/New_York",
+  "data_classification": "SYNTHETIC_FIXTURE - deterministic generated or reused committed slices; contract-test inputs only, never empirical market evidence and never citable for performance claims",
+  "description": "Synthetic golden states for the BTC Tracker: native tier boundary edges (749/750/3000/3001), the >$3,000 Asian-range no-go, slot-conditioned range-left, unresolved weekly/monthly horizons and cross-asset/cross-model refusals \u2014 BTC Tracker, never a BTC Game",
+  "fixture_id": "BLOC_III_3.BTC_TRACKER_STATES.V1",
+  "historical": true,
+  "model_id": "BTC.TRACKER.DWM.V1",
+  "observation_cutoff": "2026-03-03T00:30:00Z",
+  "provenance": "SYNTHETIC_FIXTURE",
+  "session_id": null
+}

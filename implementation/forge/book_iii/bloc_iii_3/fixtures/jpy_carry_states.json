@@ -1,0 +1,650 @@
+{
+  "calculation_timestamp": "2026-03-03T09:00:00Z",
+  "cases": [
+    {
+      "calculation_timestamp": "2026-03-03T09:00:00Z",
+      "calibration_key": null,
+      "case_id": "JPY_AGREE_CONFIRM",
+      "clock_id": null,
+      "expected": {
+        "direction_bias": "NONE_DECLARED",
+        "evidence_refs": [],
+        "fact_ids": [
+          "JPY.PAIR.USDJPY",
+          "JPY.PAIR.AUDJPY",
+          "JPY.PAIR.EURJPY",
+          "JPY.BASKET.AGREEMENT",
+          "JPY.BASKET.CONFIRMATION"
+        ],
+        "layer": "CROSS_LAYER",
+        "levels": [],
+        "model_state": "BASKET_AGREE_CONFIRM",
+        "no_go": [],
+        "production_authorization": "MANUAL_OPERATOR",
+        "quality_state": "OK",
+        "range_left_state": "UNRESOLVED",
+        "range_left_value": null,
+        "sub_states": [
+          {
+            "label": "USDJPY",
+            "layer": "L1",
+            "state": "DIRECTION_UP"
+          },
+          {
+            "label": "AUDJPY",
+            "layer": "L1",
+            "state": "DIRECTION_UP"
+          },
+          {
+            "label": "EURJPY",
+            "layer": "L1",
+            "state": "DIRECTION_UP"
+          },
+          {
+            "label": "CONFIRMATION",
+            "layer": "L2",
+            "state": "CONFIRMED"
+          }
+        ],
+        "warnings": []
+      },
+      "expected_refusal": null,
+      "inputs": {
+        "pairs": [
+          {
+            "instrument_id": "USDJPY",
+            "local_direction": "UP",
+            "native_no_go": false,
+            "path": null,
+            "role": "CARRY_MASTER",
+            "session_phase": null
+          },
+          {
+            "instrument_id": "AUDJPY",
+            "local_direction": "UP",
+            "native_no_go": false,
+            "path": null,
+            "role": "RISK_EXPRESSION",
+            "session_phase": null
+          },
+          {
+            "instrument_id": "EURJPY",
+            "local_direction": "UP",
+            "native_no_go": false,
+            "path": null,
+            "role": "CONFIRMATION_VETO",
+            "session_phase": null
+          }
+        ]
+      },
+      "instrument_id": "USDJPY",
+      "model_id": "JPY.CARRY_GAME.L1_L3.V1",
+      "model_version": "V1",
+      "prior_case": null,
+      "session_id": null
+    },
+    {
+      "calculation_timestamp": "2026-03-03T09:00:00Z",
+      "calibration_key": null,
+      "case_id": "JPY_CONFIRM_ABSENT",
+      "clock_id": null,
+      "expected": {
+        "direction_bias": "NONE_DECLARED",
+        "evidence_refs": [],
+        "fact_ids": [
+          "JPY.PAIR.USDJPY",
+          "JPY.PAIR.AUDJPY",
+          "JPY.BASKET.AGREEMENT",
+          "JPY.BASKET.CONFIRMATION"
+        ],
+        "layer": "CROSS_LAYER",
+        "levels": [],
+        "model_state": "BASKET_CONFIRM_ABSENT",
+        "no_go": [],
+        "production_authorization": "MANUAL_OPERATOR",
+        "quality_state": "OK",
+        "range_left_state": "UNRESOLVED",
+        "range_left_value": null,
+        "sub_states": [
+          {
+            "label": "USDJPY",
+            "layer": "L1",
+            "state": "DIRECTION_UP"
+          },
+          {
+            "label": "AUDJPY",
+            "layer": "L1",
+            "state": "DIRECTION_UP"
+          },
+          {
+            "label": "CONFIRMATION",
+            "layer": "L2",
+            "state": "ABSENT"
+          }
+        ],
+        "warnings": []
+      },
+      "expected_refusal": null,
+      "inputs": {
+        "pairs": [
+          {
+            "instrument_id": "USDJPY",
+            "local_direction": "UP",
+            "native_no_go": false,
+            "path": null,
+            "role": "CARRY_MASTER",
+            "session_phase": null
+          },
+          {
+            "instrument_id": "AUDJPY",
+            "local_direction": "UP",
+            "native_no_go": false,
+            "path": null,
+            "role": "RISK_EXPRESSION",
+            "session_phase": null
+          }
+        ]
+      },
+      "instrument_id": "USDJPY",
+      "model_id": "JPY.CARRY_GAME.L1_L3.V1",
+      "model_version": "V1",
+      "prior_case": null,
+      "session_id": null
+    },
+    {
+      "calculation_timestamp": "2026-03-03T09:00:00Z",
+      "calibration_key": null,
+      "case_id": "JPY_CONFIRM_VETO",
+      "clock_id": null,
+      "expected": {
+        "direction_bias": "NONE_DECLARED",
+        "evidence_refs": [],
+        "fact_ids": [
+          "JPY.PAIR.USDJPY",
+          "JPY.PAIR.AUDJPY",
+          "JPY.PAIR.EURJPY",
+          "JPY.BASKET.AGREEMENT",
+          "JPY.BASKET.CONFIRMATION"
+        ],
+        "layer": "CROSS_LAYER",
+        "levels": [],
+        "model_state": "BASKET_VETO",
+        "no_go": [],
+        "production_authorization": "MANUAL_OPERATOR",
+        "quality_state": "OK",
+        "range_left_state": "UNRESOLVED",
+        "range_left_value": null,
+        "sub_states": [
+          {
+            "label": "USDJPY",
+            "layer": "L1",
+            "state": "DIRECTION_UP"
+          },
+          {
+            "label": "AUDJPY",
+            "layer": "L1",
+            "state": "DIRECTION_UP"
+          },
+          {
+            "label": "EURJPY",
+            "layer": "L1",
+            "state": "DIRECTION_DOWN"
+          },
+          {
+            "label": "CONFIRMATION",
+            "layer": "L2",
+            "state": "VETO"
+          }
+        ],
+        "warnings": []
+      },
+      "expected_refusal": null,
+      "inputs": {
+        "pairs": [
+          {
+            "instrument_id": "USDJPY",
+            "local_direction": "UP",
+            "native_no_go": false,
+            "path": null,
+            "role": "CARRY_MASTER",
+            "session_phase": null
+          },
+          {
+            "instrument_id": "AUDJPY",
+            "local_direction": "UP",
+            "native_no_go": false,
+            "path": null,
+            "role": "RISK_EXPRESSION",
+            "session_phase": null
+          },
+          {
+            "instrument_id": "EURJPY",
+            "local_direction": "DOWN",
+            "native_no_go": false,
+            "path": null,
+            "role": "CONFIRMATION_VETO",
+            "session_phase": null
+          }
+        ]
+      },
+      "instrument_id": "USDJPY",
+      "model_id": "JPY.CARRY_GAME.L1_L3.V1",
+      "model_version": "V1",
+      "prior_case": null,
+      "session_id": null
+    },
+    {
+      "calculation_timestamp": "2026-03-03T09:00:00Z",
+      "calibration_key": null,
+      "case_id": "JPY_MASTER_EXPRESSION_CONFLICT",
+      "clock_id": null,
+      "expected": {
+        "direction_bias": "NONE_DECLARED",
+        "evidence_refs": [],
+        "fact_ids": [
+          "JPY.PAIR.USDJPY",
+          "JPY.PAIR.AUDJPY",
+          "JPY.PAIR.EURJPY",
+          "JPY.BASKET.AGREEMENT",
+          "JPY.BASKET.CONFIRMATION"
+        ],
+        "layer": "CROSS_LAYER",
+        "levels": [],
+        "model_state": "BASKET_CONFLICT",
+        "no_go": [],
+        "production_authorization": "MANUAL_OPERATOR",
+        "quality_state": "OK",
+        "range_left_state": "UNRESOLVED",
+        "range_left_value": null,
+        "sub_states": [
+          {
+            "label": "USDJPY",
+            "layer": "L1",
+            "state": "DIRECTION_UP"
+          },
+          {
+            "label": "AUDJPY",
+            "layer": "L1",
+            "state": "DIRECTION_DOWN"
+          },
+          {
+            "label": "EURJPY",
+            "layer": "L1",
+            "state": "DIRECTION_UP"
+          },
+          {
+            "label": "CONFIRMATION",
+            "layer": "L2",
+            "state": "VETO"
+          }
+        ],
+        "warnings": []
+      },
+      "expected_refusal": null,
+      "inputs": {
+        "pairs": [
+          {
+            "instrument_id": "USDJPY",
+            "local_direction": "UP",
+            "native_no_go": false,
+            "path": null,
+            "role": "CARRY_MASTER",
+            "session_phase": null
+          },
+          {
+            "instrument_id": "AUDJPY",
+            "local_direction": "DOWN",
+            "native_no_go": false,
+            "path": null,
+            "role": "RISK_EXPRESSION",
+            "session_phase": null
+          },
+          {
+            "instrument_id": "EURJPY",
+            "local_direction": "UP",
+            "native_no_go": false,
+            "path": null,
+            "role": "CONFIRMATION_VETO",
+            "session_phase": null
+          }
+        ]
+      },
+      "instrument_id": "USDJPY",
+      "model_id": "JPY.CARRY_GAME.L1_L3.V1",
+      "model_version": "V1",
+      "prior_case": null,
+      "session_id": null
+    },
+    {
+      "calculation_timestamp": "2026-03-03T09:00:00Z",
+      "calibration_key": null,
+      "case_id": "JPY_NO_GO_MASTER",
+      "clock_id": null,
+      "expected": {
+        "direction_bias": "NONE_DECLARED",
+        "evidence_refs": [],
+        "fact_ids": [
+          "JPY.PAIR.USDJPY",
+          "JPY.PAIR.AUDJPY",
+          "JPY.PAIR.EURJPY",
+          "JPY.BASKET.AGREEMENT",
+          "JPY.BASKET.CONFIRMATION"
+        ],
+        "layer": "CROSS_LAYER",
+        "levels": [],
+        "model_state": "BASKET_UNRESOLVED",
+        "no_go": [
+          "NATIVE_TIER_NO_GO"
+        ],
+        "production_authorization": "MANUAL_OPERATOR",
+        "quality_state": "OK",
+        "range_left_state": "UNRESOLVED",
+        "range_left_value": null,
+        "sub_states": [
+          {
+            "label": "USDJPY",
+            "layer": "L1",
+            "state": "NO_GO"
+          },
+          {
+            "label": "AUDJPY",
+            "layer": "L1",
+            "state": "DIRECTION_UP"
+          },
+          {
+            "label": "EURJPY",
+            "layer": "L1",
+            "state": "DIRECTION_UP"
+          },
+          {
+            "label": "CONFIRMATION",
+            "layer": "L2",
+            "state": "UNRESOLVED"
+          }
+        ],
+        "warnings": []
+      },
+      "expected_refusal": null,
+      "inputs": {
+        "pairs": [
+          {
+            "instrument_id": "USDJPY",
+            "local_direction": "UP",
+            "native_no_go": true,
+            "path": null,
+            "role": "CARRY_MASTER",
+            "session_phase": null
+          },
+          {
+            "instrument_id": "AUDJPY",
+            "local_direction": "UP",
+            "native_no_go": false,
+            "path": null,
+            "role": "RISK_EXPRESSION",
+            "session_phase": null
+          },
+          {
+            "instrument_id": "EURJPY",
+            "local_direction": "UP",
+            "native_no_go": false,
+            "path": null,
+            "role": "CONFIRMATION_VETO",
+            "session_phase": null
+          }
+        ]
+      },
+      "instrument_id": "USDJPY",
+      "model_id": "JPY.CARRY_GAME.L1_L3.V1",
+      "model_version": "V1",
+      "prior_case": null,
+      "session_id": null
+    },
+    {
+      "calculation_timestamp": "2026-03-03T09:00:00Z",
+      "calibration_key": null,
+      "case_id": "JPY_DT_REFERENCED",
+      "clock_id": null,
+      "expected": {
+        "direction_bias": "NONE_DECLARED",
+        "evidence_refs": [],
+        "fact_ids": [
+          "JPY.PAIR.USDJPY",
+          "JPY.PAIR.AUDJPY",
+          "JPY.PAIR.EURJPY",
+          "JPY.BASKET.AGREEMENT",
+          "JPY.BASKET.CONFIRMATION",
+          "JPY.DT.REFERENCED"
+        ],
+        "layer": "CROSS_LAYER",
+        "levels": [
+          {
+            "active": false,
+            "level_id": "JPY_132"
+          },
+          {
+            "active": false,
+            "level_id": "JPY_168"
+          },
+          {
+            "active": false,
+            "level_id": "JPY_187_5"
+          }
+        ],
+        "model_state": "BASKET_AGREE_CONFIRM",
+        "no_go": [],
+        "production_authorization": "MANUAL_OPERATOR",
+        "quality_state": "OK",
+        "range_left_state": "UNRESOLVED",
+        "range_left_value": null,
+        "sub_states": [
+          {
+            "label": "USDJPY",
+            "layer": "L1",
+            "state": "DIRECTION_UP"
+          },
+          {
+            "label": "AUDJPY",
+            "layer": "L1",
+            "state": "DIRECTION_UP"
+          },
+          {
+            "label": "EURJPY",
+            "layer": "L1",
+            "state": "DIRECTION_UP"
+          },
+          {
+            "label": "CONFIRMATION",
+            "layer": "L2",
+            "state": "CONFIRMED"
+          }
+        ],
+        "warnings": []
+      },
+      "expected_refusal": null,
+      "inputs": {
+        "dt_referenced": true,
+        "pairs": [
+          {
+            "instrument_id": "USDJPY",
+            "local_direction": "UP",
+            "native_no_go": false,
+            "path": null,
+            "role": "CARRY_MASTER",
+            "session_phase": null
+          },
+          {
+            "instrument_id": "AUDJPY",
+            "local_direction": "UP",
+            "native_no_go": false,
+            "path": null,
+            "role": "RISK_EXPRESSION",
+            "session_phase": null
+          },
+          {
+            "instrument_id": "EURJPY",
+            "local_direction": "UP",
+            "native_no_go": false,
+            "path": null,
+            "role": "CONFIRMATION_VETO",
+            "session_phase": null
+          }
+        ]
+      },
+      "instrument_id": "USDJPY",
+      "model_id": "JPY.CARRY_GAME.L1_L3.V1",
+      "model_version": "V1",
+      "prior_case": null,
+      "session_id": null
+    },
+    {
+      "calculation_timestamp": "2026-03-03T09:00:00Z",
+      "calibration_key": null,
+      "case_id": "JPY_EQUAL_VOTE_REFUSED",
+      "clock_id": null,
+      "expected": null,
+      "expected_refusal": "MODEL_CONTRACT",
+      "inputs": {
+        "aggregation_request": "EQUAL_VOTE",
+        "pairs": [
+          {
+            "instrument_id": "USDJPY",
+            "local_direction": "UP",
+            "native_no_go": false,
+            "path": null,
+            "role": "CARRY_MASTER",
+            "session_phase": null
+          },
+          {
+            "instrument_id": "AUDJPY",
+            "local_direction": "UP",
+            "native_no_go": false,
+            "path": null,
+            "role": "RISK_EXPRESSION",
+            "session_phase": null
+          },
+          {
+            "instrument_id": "EURJPY",
+            "local_direction": "UP",
+            "native_no_go": false,
+            "path": null,
+            "role": "CONFIRMATION_VETO",
+            "session_phase": null
+          }
+        ]
+      },
+      "instrument_id": "USDJPY",
+      "model_id": "JPY.CARRY_GAME.L1_L3.V1",
+      "model_version": "V1",
+      "prior_case": null,
+      "session_id": null
+    },
+    {
+      "calculation_timestamp": "2026-03-03T09:00:00Z",
+      "calibration_key": null,
+      "case_id": "JPY_CROSS_PAIR_PATH",
+      "clock_id": null,
+      "expected": null,
+      "expected_refusal": "INSTRUMENT_SCOPE_MISMATCH",
+      "inputs": {
+        "pairs": [
+          {
+            "instrument_id": "USDJPY",
+            "local_direction": "UP",
+            "native_no_go": false,
+            "path": {
+              "bar_count": 6,
+              "calculation_timestamp": "2026-03-03T09:00:00Z",
+              "clock_id": "America/New_York",
+              "clock_registry_version": "CLOCK_REGISTRY_V1",
+              "definition_id": "PATH_MEASUREMENT",
+              "definition_version": "V1",
+              "delivery_order": [],
+              "evidence_refs": [],
+              "first_delivery": null,
+              "instrument_id": "AUDJPY",
+              "levels": [],
+              "mae": {
+                "instrument_id": "AUDJPY",
+                "unit": "PIP",
+                "value": "12"
+              },
+              "market_data_schema_version": "MARKET_DATA_SCHEMA_V1",
+              "measurement_engine_version": "MEASUREMENT_ENGINE_V1",
+              "mfe": {
+                "instrument_id": "AUDJPY",
+                "unit": "PIP",
+                "value": "24"
+              },
+              "native_unit": null,
+              "quality_state": "OK",
+              "reference_price": {
+                "instrument_id": "AUDJPY",
+                "unit": "PIP",
+                "value": "150.100"
+              },
+              "remaining_distribution": null,
+              "remaining_state": "UNRESOLVED",
+              "session_id": "NONE",
+              "session_registry_version": "SESSION_REGISTRY_V1",
+              "source_window": {
+                "bar_count": 6,
+                "input_digest": "74bea81c8d5407d06ace92a71ff69f1c9fa1d73f190bbbc176d6343675be49ff",
+                "window_close_utc": "2026-03-03T00:30:00Z",
+                "window_open_utc": "2026-03-03T00:00:00Z"
+              }
+            },
+            "role": "CARRY_MASTER",
+            "session_phase": null
+          },
+          {
+            "instrument_id": "AUDJPY",
+            "local_direction": "UP",
+            "native_no_go": false,
+            "path": null,
+            "role": "RISK_EXPRESSION",
+            "session_phase": null
+          }
+        ]
+      },
+      "instrument_id": "USDJPY",
+      "model_id": "JPY.CARRY_GAME.L1_L3.V1",
+      "model_version": "V1",
+      "prior_case": null,
+      "session_id": null
+    },
+    {
+      "calculation_timestamp": "2026-03-03T09:00:00Z",
+      "calibration_key": null,
+      "case_id": "JPY_ROLE_MAP_REASSIGNED",
+      "clock_id": null,
+      "expected": null,
+      "expected_refusal": "MODEL_CONTRACT",
+      "inputs": {
+        "pairs": [
+          {
+            "instrument_id": "USDJPY",
+            "local_direction": null,
+            "native_no_go": false,
+            "path": null,
+            "role": "CONFIRMATION_VETO",
+            "session_phase": null
+          }
+        ]
+      },
+      "instrument_id": "USDJPY",
+      "model_id": "JPY.CARRY_GAME.L1_L3.V1",
+      "model_version": "V1",
+      "prior_case": null,
+      "session_id": null
+    }
+  ],
+  "clock": null,
+  "data_classification": "SYNTHETIC_FIXTURE - deterministic generated or reused committed slices; contract-test inputs only, never empirical market evidence and never citable for performance claims",
+  "description": "Synthetic golden states for the JPY basket roles: agree+confirm, confirm-absent, veto/conflict, per-pair no-go, explicit DT reference only, equal-vote refusal and cross-pair contamination refusal",
+  "fixture_id": "BLOC_III_3.JPY_CARRY_STATES.V1",
+  "historical": true,
+  "model_id": "JPY.CARRY_GAME.L1_L3.V1",
+  "observation_cutoff": "2026-03-03T00:30:00Z",
+  "provenance": "SYNTHETIC_FIXTURE",
+  "session_id": null
+}

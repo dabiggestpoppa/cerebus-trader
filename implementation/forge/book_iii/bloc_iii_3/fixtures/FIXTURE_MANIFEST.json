@@ -1,0 +1,22 @@
+{
+  "algorithm": "sha256",
+  "description": "Deterministic committed golden fixtures for Bloc III.3. Hashes cover every JSON fixture in this directory except this manifest. Hashes are recorded over the LF-normalized content, so the manifest verifies identically on Windows (CRLF worktrees) and Linux CI (LF checkouts).",
+  "files": {
+    "btc_tracker_states.json": "5fb54a6020f875dc9d52ab3fa976c6a3c2b9b9efefa9eb7d19f07796d1210964",
+    "eur_daily_states.json": "dcd03c2285b1947b890e74f01287301987d14ba66fd9563ff589d6e4fc28e04f",
+    "eur_higher_order_states.json": "ecf9d30023419930ff8cdb639d9405263323b5c40d57276dac0fde3e80747dc7",
+    "eur_weekly_states.json": "7db4cae99a8c3b9abedf4fd391f1fc700358bd7ebde4354eeb074dafc20e3fa4",
+    "fib_range_birth_states.json": "1af071e3e509a8d0260064665c3c02c168168974974594fcea9d714ed1f951f9",
+    "jpy_carry_states.json": "ee65912c933c79c07dfad0c78882d819d4258b927658d682763dbabe80b9c8d6",
+    "registry_dispatch_cases.json": "5962991ea980a502535733b5b2ffc2baa3f5f5f19519104a9a789880bc2c82a8",
+    "replay_hashes.json": "fca2c37dc6554eaeb2ee246cf4d9e6b7c2960b3330179b0dbea3bc4f918b674d",
+    "xau_promotion_states.json": "59ef2cb6693e1366e2204f0cda3023e0ddfe1ffd89f67e5473678f8db056f2e1"
+  },
+  "generator": "generate_fixtures.py",
+  "provenance": {
+    "bar_slices": "SYNTHETIC_FIXTURE",
+    "canonical_constants": "CANONICAL_SOURCE_SLICE",
+    "measurement_inputs": "SYNTHETIC_FIXTURE",
+    "replay_hashes": "SYNTHETIC_FIXTURE"
+  }
+}

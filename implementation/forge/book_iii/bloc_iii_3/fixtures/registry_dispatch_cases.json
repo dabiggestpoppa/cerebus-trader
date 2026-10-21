@@ -1,0 +1,192 @@
+{
+  "calculation_timestamp": "2026-03-03T09:00:00Z",
+  "data_classification": "CANONICAL_SOURCE_SLICE for the registered model keys and calibration/coordinate bindings quoted from the frozen PLAN.md \u00a75.2 matrix; resolution behavior is contract-test material",
+  "entries": [
+    {
+      "calibration_bindings": [
+        [
+          "EUR.DAILY.NEWS_REKEY.V1",
+          "PHASE1",
+          "EUR_DAILY_PHASE1_TIERS",
+          "V1"
+        ]
+      ],
+      "clock_bound": true,
+      "coordinate_set_keys": [
+        [
+          "EUR.DAILY.NEWS_REKEY.V1",
+          "PHASE1"
+        ]
+      ],
+      "family": "EUR_DAILY",
+      "layer": "L1",
+      "market_scope": [
+        "EURUSD"
+      ],
+      "model_id": "EUR.DAILY.NEWS_REKEY.V1",
+      "model_version": "PHASE1",
+      "stateful": true
+    },
+    {
+      "calibration_bindings": [
+        [
+          "EUR.WEEKLY.V1_1",
+          "V1_1",
+          "EUR_WEEKLY_TIER_RANGE",
+          "V1"
+        ]
+      ],
+      "clock_bound": false,
+      "coordinate_set_keys": [],
+      "family": "EUR_WEEKLY",
+      "layer": "L2",
+      "market_scope": [
+        "EURUSD"
+      ],
+      "model_id": "EUR.WEEKLY.V1_1",
+      "model_version": "V1_1",
+      "stateful": true
+    },
+    {
+      "calibration_bindings": [],
+      "clock_bound": false,
+      "coordinate_set_keys": [],
+      "family": "EUR_HIGHER_ORDER",
+      "layer": "L3",
+      "market_scope": [
+        "EURUSD"
+      ],
+      "model_id": "EUR.HIGHER_ORDER.V1",
+      "model_version": "V1",
+      "stateful": true
+    },
+    {
+      "calibration_bindings": [
+        [
+          "XAU.GAME.L1_L2_L3.V1",
+          "V1",
+          "XAU_SPATIAL_BANDS",
+          "V1"
+        ]
+      ],
+      "clock_bound": false,
+      "coordinate_set_keys": [
+        [
+          "XAU.GAME.L1_L2_L3.V1",
+          "V1"
+        ]
+      ],
+      "family": "XAU",
+      "layer": "CROSS_LAYER",
+      "market_scope": [
+        "XAUUSD"
+      ],
+      "model_id": "XAU.GAME.L1_L2_L3.V1",
+      "model_version": "V1",
+      "stateful": true
+    },
+    {
+      "calibration_bindings": [
+        [
+          "BTC.TRACKER.DWM.V1",
+          "V1",
+          "BTC_TRACKER_DWM_TIERS",
+          "V1"
+        ]
+      ],
+      "clock_bound": false,
+      "coordinate_set_keys": [],
+      "family": "BTC_TRACKER",
+      "layer": "CROSS_LAYER",
+      "market_scope": [
+        "BTCUSD"
+      ],
+      "model_id": "BTC.TRACKER.DWM.V1",
+      "model_version": "V1",
+      "stateful": true
+    },
+    {
+      "calibration_bindings": [],
+      "clock_bound": false,
+      "coordinate_set_keys": [
+        [
+          "CROSSASSET.FIB.RANGE_BIRTH.V1",
+          "R15"
+        ]
+      ],
+      "family": "FIB_RANGE_BIRTH",
+      "layer": "CROSS_LAYER",
+      "market_scope": [],
+      "model_id": "CROSSASSET.FIB.RANGE_BIRTH.V1",
+      "model_version": "R15",
+      "stateful": true
+    },
+    {
+      "calibration_bindings": [],
+      "clock_bound": false,
+      "coordinate_set_keys": [
+        [
+          "JPY.CARRY_GAME.L1_L3.V1",
+          "DT_12_4PM"
+        ]
+      ],
+      "family": "JPY_CARRY",
+      "layer": "CROSS_LAYER",
+      "market_scope": [
+        "AUDJPY",
+        "EURJPY",
+        "USDJPY"
+      ],
+      "model_id": "JPY.CARRY_GAME.L1_L3.V1",
+      "model_version": "V1",
+      "stateful": false
+    },
+    {
+      "calibration_bindings": [],
+      "clock_bound": false,
+      "coordinate_set_keys": [
+        [
+          "JPY.CARRY_GAME.L1_L3.V1",
+          "DT_12_4PM"
+        ]
+      ],
+      "dispatch": "REFUSED_NO_AUTHORIZED_RUNTIME",
+      "family": "JPY_DT_HISTORICAL",
+      "layer": "CROSS_LAYER",
+      "market_scope": [
+        "AUDJPY",
+        "EURJPY",
+        "USDJPY"
+      ],
+      "model_id": "JPY.CARRY_GAME.L1_L3.V1",
+      "model_version": "DT_12_4PM",
+      "stateful": false
+    }
+  ],
+  "fixture_id": "BLOC_III_3.REGISTRY_DISPATCH_CASES.V1",
+  "historical": true,
+  "observation_cutoff": "2026-03-03T00:30:00Z",
+  "provenance": "SYNTHETIC_FIXTURE",
+  "refusals": [
+    {
+      "expected_refusal": "MODEL_VERSION_UNAVAILABLE",
+      "model_id": "EUR.DAILY.NEWS_REKEY.V1",
+      "model_version": "V2"
+    },
+    {
+      "expected_refusal": "MODEL_VERSION_UNAVAILABLE",
+      "model_id": "BTC.GAME.L1_V1",
+      "model_version": "V1"
+    },
+    {
+      "expected_refusal": "MODEL_VERSION_UNAVAILABLE",
+      "model_id": "",
+      "model_version": "V1"
+    },
+    {
+      "expected_refusal": "MODEL_VERSION_UNAVAILABLE",
+      "model_id": "XAU.GAME.L1_L2_L3.V1",
+      "model_version": "V2"
+    }
+  ]
+}
