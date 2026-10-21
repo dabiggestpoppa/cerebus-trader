@@ -180,8 +180,12 @@ fail-closed refusal cases (`V2` versions, unknown model id, empty id).
   manifest vs HEAD, corpus clean, Book II 50 hashes + 23 planning pins,
   III.1 11-module and III.2 12-module hash baselines — all unchanged
   after the suite runs.
-- Final-head CI: recorded in the rung-6 CI-record commit after the
-  fast-forward push (this document precedes it per the commit ladder).
+- Final-head CI (post-push, head `4285812fa22ff813c4d103baf078eb5f34510cdb`):
+  FORGE Tests run [`39523352791`](https://github.com/dabiggestpoppa/cerebus-trader/actions/runs/39523352791)
+  **completed — success**; both workflow jobs green: `test` (Linux,
+  LF checkout — fixture manifest + replay hashes verify identically)
+  and `postgres` (live pgvector). No new skip; the Linux run re-checks
+  the EOL-normalized manifest mechanism cross-platform.
 
 ## 9. Defect and repair history (root cause, no test weakened)
 

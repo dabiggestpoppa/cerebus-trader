@@ -26,6 +26,10 @@ III.5 and III.6 are **not** authorized by this record.
   byte-identically; committed replay hashes all re-verify.
 - Full repository regression: **1291 passed, 29 pre-existing
   Postgres-gated skips** — no regressions.
+- Final-head CI after the fast-forward push: FORGE Tests run
+  [`39523352791`](https://github.com/dabiggestpoppa/cerebus-trader/actions/runs/39523352791)
+  on `4285812` — **success** (`test` + `postgres` jobs green; the Linux
+  LF checkout re-verifies the fixture manifest and replay hashes).
 - Adversarial validation covered all twelve required classes (wrong
   model/version/calibration, cross-asset contamination, nonfinal and
   low-quality data, missing evidence, R15 unresolved, XAU
