@@ -4,7 +4,9 @@
 
 **Bloc:** III.4 (State, Path & Transition Engine) · **Book:** III
 **Authority:** BA-20 Rung 2 (operator-directed implementation)
-**Ratifying head:** recorded by the closing CI-record commit on `forge`
+**Ratifying head:** `cff2a59a84fd670f25db0fa2b2a2559dbf4d2fa6` — FORGE Tests
+run `41711429451`, success (`test` + `postgres`). This record is the
+documentation-only closing commit after that head.
 **Predecessors:** Book I `RATIFIED (CLOSED)`; Book II `RATIFIED —
 CONTRACTS FROZEN`; III.1 `PASS (CLOSED)`; III.2 `PASS (CLOSED)`;
 III.3 `RATIFIED — PASS (CLOSED)` at `4285812`

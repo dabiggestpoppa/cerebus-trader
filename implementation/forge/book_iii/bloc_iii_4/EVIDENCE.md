@@ -255,8 +255,12 @@ that made the engine *stricter* and more faithful to the frozen chapters.
 - Full repository: `pytest -q` → **1447 passed, 29 skipped** (29
   pre-existing Postgres-gated skips; baseline before this Bloc was 1291
   passed + 29 skipped, i.e. exactly +156 new tests, no regressions).
-- Final-head CI: recorded by the closing CI-record commit on `forge`
-  (FORGE Tests: `test` + `postgres` jobs).
+- Final-head CI on the implementation head `cff2a59`: FORGE Tests run
+  [`41711429451`](https://github.com/dabiggestpoppa/cerebus-trader/actions/runs/41711429451)
+  — **success** (`test` + `postgres` jobs green; the Linux LF checkout
+  re-verifies the fixture manifest and the replay/history hashes).
+- This closing record is the documentation-only commit after that head;
+  no frozen surface changed after `cff2a59`.
 
 ---
 
