@@ -1,0 +1,324 @@
+{
+  "data_classification": "CANONICAL_SOURCE_SLICE \u2014 canonical constants quoted from frozen cards/registries",
+  "engine_codes": [
+    "STATE_ENGINE_ERROR",
+    "STATE_CONTRACT",
+    "SOURCE_LINEAGE_MISSING",
+    "TRANSITION_NOT_IN_FAMILY_VOCABULARY",
+    "TRANSITION_NOT_EARNED",
+    "TRANSITION_AUTHORITY_MISMATCH",
+    "TRANSITION_NO_OP",
+    "TRANSITION_ORDER_AMBIGUOUS",
+    "TRANSITION_PAIR_FORBIDDEN",
+    "ACCEPT_WITHOUT_TOUCH",
+    "FAILURE_WITHOUT_ACCEPTANCE",
+    "REPAIR_WITHOUT_FAILURE",
+    "COMPRESSION_WITHOUT_FAILURE",
+    "RELEASE_WITHOUT_COMPRESSION",
+    "FAILURE_GRAMMAR_NOT_DECLARED",
+    "REKEY_NOT_STRUCTURAL",
+    "REKEY_FROM_UNRESOLVED_ANCHOR",
+    "LAYER_HANDOFF_DIRECTION",
+    "LAYER_OWNERSHIP_VIOLATION",
+    "AMBIGUOUS_PATH",
+    "TARGET_NOT_DECLARED",
+    "UNCONDITIONAL_FREQUENCY_REFUSED",
+    "CONSUMED_TARGET_REQUOTED",
+    "CONSUMED_STATE_REOPENED",
+    "ELIGIBILITY_WITHOUT_AUTHORITY",
+    "EVIDENCE_REQUIRED",
+    "PROMOTION_WITHOUT_AUTHORITY",
+    "HISTORY_SEQUENCE_GAP",
+    "HISTORY_CHAIN_MISMATCH",
+    "REPLAY_RECONSTRUCTION_MISMATCH"
+  ],
+  "entries": [
+    {
+      "allowed": [
+        "ACCEPT",
+        "COMPRESS",
+        "DELIVER",
+        "ENTER_STATE",
+        "FAIL",
+        "INVALIDATE",
+        "REJECT",
+        "REKEY",
+        "RELEASE",
+        "REPAIR",
+        "STAND_DOWN"
+      ],
+      "canonical_only_targets": [],
+      "canonical_sources": [
+        "EUR_DAILY_NEWS_REKEY_MODEL_CARD_V1.md"
+      ],
+      "family": "EUR_DAILY",
+      "forbidden_pairs": [],
+      "layer": "L1",
+      "model_id": "EUR.DAILY.NEWS_REKEY.V1",
+      "model_version": "PHASE1",
+      "never": [
+        "PROMOTE"
+      ],
+      "restricted": [
+        "COMPRESS",
+        "FAIL",
+        "REKEY",
+        "RELEASE",
+        "REPAIR"
+      ],
+      "states": [
+        "REKEYED",
+        "REKEY_100",
+        "REKEY_125",
+        "REKEY_132",
+        "REKEY_168",
+        "REKEY_185",
+        "SEED_T1",
+        "SEED_T2",
+        "SEED_T3",
+        "SOURCE_NO_GO"
+      ],
+      "unresolved": []
+    },
+    {
+      "allowed": [
+        "ACCEPT",
+        "COMPRESS",
+        "DELIVER",
+        "ENTER_STATE",
+        "INVALIDATE",
+        "PROMOTE",
+        "REJECT",
+        "REKEY",
+        "RELEASE",
+        "STAND_DOWN"
+      ],
+      "canonical_only_targets": [],
+      "canonical_sources": [
+        "EUR_WEEKLY_ENGINE_MODEL_CARD_V1.md"
+      ],
+      "family": "EUR_WEEKLY",
+      "forbidden_pairs": [],
+      "layer": "L2",
+      "model_id": "EUR.WEEKLY.V1_1",
+      "model_version": "V1_1",
+      "never": [
+        "FAIL",
+        "REPAIR"
+      ],
+      "restricted": [
+        "PROMOTE"
+      ],
+      "states": [
+        "FROZEN",
+        "NODE_PROMOTED",
+        "ROUTE_OPEN"
+      ],
+      "unresolved": [
+        "COMPRESS",
+        "REKEY",
+        "RELEASE"
+      ]
+    },
+    {
+      "allowed": [
+        "COMPRESS",
+        "DELIVER",
+        "ENTER_STATE",
+        "INVALIDATE",
+        "REKEY",
+        "RELEASE",
+        "STAND_DOWN"
+      ],
+      "canonical_only_targets": [],
+      "canonical_sources": [
+        "EUR_HIGHER_ORDER_MODEL_CARD_V1.md"
+      ],
+      "family": "EUR_HIGHER_ORDER",
+      "forbidden_pairs": [],
+      "layer": "L3",
+      "model_id": "EUR.HIGHER_ORDER.V1",
+      "model_version": "V1",
+      "never": [
+        "ACCEPT",
+        "FAIL",
+        "PROMOTE",
+        "REJECT",
+        "REPAIR"
+      ],
+      "restricted": [],
+      "states": [
+        "COMPLETION_CONDITIONAL",
+        "M3_RESOLVED",
+        "PRIOR_DECLARED",
+        "UNRESOLVED"
+      ],
+      "unresolved": [
+        "COMPRESS",
+        "REKEY",
+        "RELEASE"
+      ]
+    },
+    {
+      "allowed": [
+        "ACCEPT",
+        "ENTER_STATE",
+        "FAIL",
+        "INVALIDATE",
+        "PROMOTE",
+        "REJECT",
+        "REKEY",
+        "REPAIR",
+        "STAND_DOWN"
+      ],
+      "canonical_only_targets": [],
+      "canonical_sources": [
+        "XAU_GAME_L1_L2_L3_MODEL_CARD_V1.md"
+      ],
+      "family": "XAU",
+      "forbidden_pairs": [
+        [
+          "REKEY_132",
+          "REKEY_168"
+        ]
+      ],
+      "layer": "CROSS_LAYER",
+      "model_id": "XAU.GAME.L1_L2_L3.V1",
+      "model_version": "V1",
+      "never": [
+        "COMPRESS",
+        "DELIVER",
+        "RELEASE"
+      ],
+      "restricted": [
+        "FAIL",
+        "PROMOTE",
+        "REKEY",
+        "REPAIR"
+      ],
+      "states": [
+        "NODE_DECLARED",
+        "PARKED",
+        "PROMOTION_ELIGIBLE",
+        "PROMOTION_PENDING",
+        "PROMOTION_RESEARCH",
+        "REKEY_132",
+        "REKEY_168",
+        "ROUTE_OPEN",
+        "UNRESOLVED"
+      ],
+      "unresolved": []
+    },
+    {
+      "allowed": [
+        "ACCEPT",
+        "DELIVER",
+        "ENTER_STATE",
+        "INVALIDATE",
+        "REJECT",
+        "REKEY",
+        "STAND_DOWN"
+      ],
+      "canonical_only_targets": [],
+      "canonical_sources": [
+        "BTC_DAILY_WEEKLY_MONTHLY_TRACKER_MODEL_CARD_V1.md"
+      ],
+      "family": "BTC_TRACKER",
+      "forbidden_pairs": [],
+      "layer": "CROSS_LAYER",
+      "model_id": "BTC.TRACKER.DWM.V1",
+      "model_version": "V1",
+      "never": [
+        "COMPRESS",
+        "FAIL",
+        "PROMOTE",
+        "RELEASE",
+        "REPAIR"
+      ],
+      "restricted": [],
+      "states": [
+        "ASIAN_RANGE_NO_GO",
+        "SEED_T1",
+        "SEED_T2",
+        "SEED_T3"
+      ],
+      "unresolved": [
+        "REKEY"
+      ]
+    },
+    {
+      "allowed": [
+        "DELIVER",
+        "ENTER_STATE",
+        "INVALIDATE",
+        "REKEY",
+        "STAND_DOWN"
+      ],
+      "canonical_only_targets": [
+        "RANGE_ACTIVE"
+      ],
+      "canonical_sources": [
+        "FIB_RANGE_BIRTH_MODEL_CARD_V1.md"
+      ],
+      "family": "FIB_RANGE_BIRTH",
+      "forbidden_pairs": [],
+      "layer": "CROSS_LAYER",
+      "model_id": "CROSSASSET.FIB.RANGE_BIRTH.V1",
+      "model_version": "R15",
+      "never": [
+        "ACCEPT",
+        "COMPRESS",
+        "FAIL",
+        "PROMOTE",
+        "REJECT",
+        "RELEASE",
+        "REPAIR"
+      ],
+      "restricted": [],
+      "states": [
+        "ANCHOR_INVALIDATED",
+        "RANGE_ACTIVE",
+        "RANGE_BIRTH_UNRESOLVED",
+        "REKEY_REMAPPED"
+      ],
+      "unresolved": []
+    },
+    {
+      "allowed": [
+        "DELIVER",
+        "ENTER_STATE",
+        "INVALIDATE",
+        "STAND_DOWN"
+      ],
+      "canonical_only_targets": [],
+      "canonical_sources": [
+        "JPY_CARRY_GAME_MODEL_CARD_V1.md"
+      ],
+      "family": "JPY_CARRY",
+      "forbidden_pairs": [],
+      "layer": "CROSS_LAYER",
+      "model_id": "JPY.CARRY_GAME.L1_L3.V1",
+      "model_version": "V1",
+      "never": [
+        "ACCEPT",
+        "COMPRESS",
+        "FAIL",
+        "PROMOTE",
+        "REJECT",
+        "REKEY",
+        "RELEASE",
+        "REPAIR"
+      ],
+      "restricted": [],
+      "states": [
+        "BASKET_AGREE_CONFIRM",
+        "BASKET_CONFIRM_ABSENT",
+        "BASKET_CONFLICT",
+        "BASKET_UNRESOLVED",
+        "BASKET_VETO"
+      ],
+      "unresolved": []
+    }
+  ],
+  "fixture_id": "BLOC_III_4.FAMILY_AUTHORITY.V1"
+}

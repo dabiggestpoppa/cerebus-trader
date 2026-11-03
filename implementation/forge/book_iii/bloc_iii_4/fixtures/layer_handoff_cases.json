@@ -1,0 +1,30 @@
+{
+  "cases": [
+    {
+      "case_id": "L3_TO_L2",
+      "destination": "EUR_WEEKLY",
+      "expected_ownership": "PATH",
+      "source": "EUR_HIGHER_ORDER"
+    },
+    {
+      "case_id": "L2_TO_L1",
+      "destination": "EUR_DAILY",
+      "expected_ownership": "EXECUTION",
+      "source": "EUR_WEEKLY"
+    },
+    {
+      "case_id": "L1_TO_L3",
+      "destination": "EUR_HIGHER_ORDER",
+      "expected_error": "LAYER_OWNERSHIP_VIOLATION",
+      "source": "EUR_DAILY"
+    },
+    {
+      "case_id": "L3_TO_L1",
+      "destination": "EUR_DAILY",
+      "expected_error": "LAYER_HANDOFF_DIRECTION",
+      "source": "EUR_HIGHER_ORDER"
+    }
+  ],
+  "data_classification": "SYNTHETIC_FIXTURE \u2014 structural validation material only; not empirical evidence",
+  "fixture_id": "BLOC_III_4.LAYER_HANDOFF.V1"
+}

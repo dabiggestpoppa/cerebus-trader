@@ -1,0 +1,62 @@
+{
+  "cases": [
+    {
+      "case_id": "DECLARED_CHAIN",
+      "expected_states": [
+        "ACCEPTED",
+        "FAILED",
+        "REPAIR_ATTEMPTED",
+        "COMPRESSED",
+        "OPPOSITE_ACCEPTED"
+      ],
+      "steps": [
+        "ACCEPT",
+        "FAIL",
+        "REPAIR",
+        "COMPRESS",
+        "RELEASE"
+      ]
+    },
+    {
+      "case_id": "REPAIR_WITHOUT_FAILURE",
+      "expected_error": "REPAIR_WITHOUT_FAILURE",
+      "steps": [
+        "ACCEPT",
+        "REPAIR"
+      ]
+    },
+    {
+      "case_id": "FAILURE_WITHOUT_ACCEPTANCE",
+      "expected_error": "FAILURE_WITHOUT_ACCEPTANCE",
+      "steps": [
+        "FAIL"
+      ]
+    }
+  ],
+  "data_classification": "CANONICAL_SOURCE_SLICE \u2014 canonical constants quoted from frozen cards/registries",
+  "fixture_id": "BLOC_III_4.FAILURE_REPAIR.V1",
+  "golden_chain": {
+    "acceptance_ref": "ACCEPTANCE.1",
+    "rule_id": "EUR_DAILY_P90_FAILURE_REPAIR",
+    "state": "REPAIR_ATTEMPTED",
+    "steps": [
+      "ACCEPT",
+      "FAIL",
+      "REPAIR"
+    ]
+  },
+  "grammars": [
+    "EUR.DAILY.NEWS_REKEY.V1@PHASE1",
+    "XAU.GAME.L1_L2_L3.V1@V1"
+  ],
+  "states": [
+    "NONE",
+    "ACCEPTED",
+    "FAILED",
+    "REPAIR_ATTEMPTED",
+    "REPAIR_CONFIRMED",
+    "COMPRESSED",
+    "REACCEPTED",
+    "OPPOSITE_ACCEPTED"
+  ]
+}

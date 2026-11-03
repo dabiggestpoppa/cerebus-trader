@@ -1,0 +1,49 @@
+{
+  "current_state": "INVALID_RANGE",
+  "data_classification": "SYNTHETIC_FIXTURE \u2014 structural validation material only; not empirical evidence",
+  "events": [
+    {
+      "event_hash": "ed42e0327f170694545d247969234f51bb396c3c9fa948e2747598194aecae05",
+      "event_id": "EV.EUR_DAILY.1",
+      "kind": "DELIVER",
+      "prev_event_hash": "784db4a4a3adc1236f144c1c5c95c37f9e3d2b26414a13894bb457cd6567320c",
+      "prior_state": "SEED_T1",
+      "resulting_state": "REKEY_100",
+      "resulting_state_id": "SNAP.EUR_DAILY.REKEY_100",
+      "rule_id": "EUR_DAILY_DELIVERY",
+      "sequence": 0,
+      "source_snapshot_ref": "SNAP.EUR_DAILY.SEED_T1"
+    },
+    {
+      "event_hash": "e4e60786d1e35b096a3425035e0c295178a23850b86a98c739027e263159c0fc",
+      "event_id": "EV.EUR_DAILY.2",
+      "kind": "REKEY",
+      "prev_event_hash": "ed42e0327f170694545d247969234f51bb396c3c9fa948e2747598194aecae05",
+      "prior_state": "REKEY_100",
+      "resulting_state": "REKEY_125",
+      "resulting_state_id": "SNAP.EUR_DAILY.REKEY_125",
+      "rule_id": "EUR_DAILY_REKEY",
+      "sequence": 1,
+      "source_snapshot_ref": "SNAP.EUR_DAILY.REKEY_100"
+    },
+    {
+      "event_hash": "fc4895a5290f3d131ff335e495d52b56e2a65cd349a1a567811fcce9ea1bfb4d",
+      "event_id": "EV.EUR_DAILY.3",
+      "kind": "STAND_DOWN",
+      "prev_event_hash": "e4e60786d1e35b096a3425035e0c295178a23850b86a98c739027e263159c0fc",
+      "prior_state": "REKEY_125",
+      "resulting_state": "INVALID_RANGE",
+      "resulting_state_id": "SNAP.EUR_DAILY.INVALID_RANGE",
+      "rule_id": "EUR_DAILY_STAND_DOWN",
+      "sequence": 2,
+      "source_snapshot_ref": "SNAP.EUR_DAILY.REKEY_125"
+    }
+  ],
+  "fixture_id": "BLOC_III_4.TRANSITION_HISTORY.V1",
+  "genesis_snapshot_hash": "784db4a4a3adc1236f144c1c5c95c37f9e3d2b26414a13894bb457cd6567320c",
+  "genesis_snapshot_id": "SNAP.EUR_DAILY.SEED_T1",
+  "history_hash": "badffdff13ba4878f9cbe2fbe7bb5f1bf08b41b4c1b7a3bfb5a115c22c1c90e2",
+  "negative_events": [
+    "EV.EUR_DAILY.3"
+  ]
+}

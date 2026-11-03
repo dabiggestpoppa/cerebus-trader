@@ -1,0 +1,20 @@
+{
+  "data_classification": "SYNTHETIC_FIXTURE \u2014 structural validation material only; not empirical evidence",
+  "engine_version": "STATE_ENGINE_V1",
+  "event_hashes": [
+    "ed42e0327f170694545d247969234f51bb396c3c9fa948e2747598194aecae05",
+    "e4e60786d1e35b096a3425035e0c295178a23850b86a98c739027e263159c0fc",
+    "fc4895a5290f3d131ff335e495d52b56e2a65cd349a1a567811fcce9ea1bfb4d"
+  ],
+  "fixture_id": "BLOC_III_4.REPLAY_HASHES.V1",
+  "history_hash": "badffdff13ba4878f9cbe2fbe7bb5f1bf08b41b4c1b7a3bfb5a115c22c1c90e2",
+  "snapshot_hashes": {
+    "BTC_TRACKER": "8ac32eeb855375b7ea2f6bfe1b8433c1cbd51c41b95fe2c9cb343a9c7ae293a5",
+    "EUR_DAILY": "45b0133ca5ba4c4b42c5d70feda949d300e553c08833cb43e93be85deae6dbbe",
+    "EUR_HIGHER_ORDER": "a24a89fba7afc8acfebbb0da0d5420b67fc39f9bf57155ae0f3fb949fb593271",
+    "EUR_WEEKLY": "2447f6b28e4e25457c0b882283767a6054a8024ebdc39c3c160723a3eb697c5d",
+    "FIB_RANGE_BIRTH": "6e6610c97858920b58fee2d93d315618e20f97f61fc531399e9efeb8fad09732",
+    "JPY_CARRY": "f9b0f6c8fd7b651a98633c8e454824fe00fa0fb294ed1155c428d582a59fa725",
+    "XAU": "fa5f7f8abdec8fc15d49be1fa7667c331e013b37d8606c5bef007d70100e5e30"
+  }
+}

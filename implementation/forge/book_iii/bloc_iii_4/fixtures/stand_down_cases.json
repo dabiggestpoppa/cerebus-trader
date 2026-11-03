@@ -1,0 +1,36 @@
+{
+  "data_classification": "CANONICAL_SOURCE_SLICE \u2014 canonical constants quoted from frozen cards/registries",
+  "fixture_id": "BLOC_III_4.STAND_DOWN.V1",
+  "mapping": [
+    {
+      "eligibility_lock": true,
+      "no_go": "AR_SOURCE_NO_GO",
+      "reason": "RANGE_TOO_LARGE",
+      "state": "INVALID_RANGE"
+    },
+    {
+      "eligibility_lock": true,
+      "no_go": "ASIAN_RANGE_NO_GO",
+      "reason": "RANGE_TOO_LARGE",
+      "state": "INVALID_RANGE"
+    },
+    {
+      "eligibility_lock": true,
+      "no_go": "NATIVE_TIER_NO_GO",
+      "reason": "RANGE_TOO_LARGE",
+      "state": "INVALID_RANGE"
+    },
+    {
+      "eligibility_lock": true,
+      "no_go": "RULE_NOT_MATERIALIZED",
+      "reason": "ANCHOR_UNRESOLVED",
+      "state": "UNRESOLVED_ANCHOR"
+    },
+    {
+      "eligibility_lock": true,
+      "no_go": "PROMOTION_PARKED",
+      "reason": "EXHAUSTED_OR_PARKED",
+      "state": "PARKED_OR_EXHAUSTED"
+    }
+  ]
+}

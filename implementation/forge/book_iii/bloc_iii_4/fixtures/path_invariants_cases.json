@@ -1,0 +1,8 @@
+{
+  "data_classification": "SYNTHETIC_FIXTURE \u2014 structural validation material only; not empirical evidence",
+  "fixture_id": "BLOC_III_4.PATH_INVARIANTS.V1",
+  "hashes_differ": true,
+  "order_ab_hash": "b14f3d67fe6244417344c1a288bd788205cd4fe8c904e7c2bbc5805dbed897ae",
+  "order_ba_hash": "c74bf7a5022b9c577ce8742a653a1e5669a36e8d4cfc5e215b34048128b0ec11",
+  "same_terminal_result": "BOTH_SIDES_REACHED"
+}

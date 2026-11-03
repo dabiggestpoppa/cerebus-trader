@@ -1,0 +1,102 @@
+{
+  "cases": [
+    {
+      "case_id": "ORDER_AB",
+      "expected_order": [
+        "TARGET_A",
+        "TARGET_B"
+      ],
+      "first_delivery": "TARGET_A",
+      "hits": [
+        [
+          "TARGET_A",
+          "2026-03-03T09:00:00+00:00",
+          "BAR.1"
+        ],
+        [
+          "TARGET_B",
+          "2026-03-03T09:05:00+00:00",
+          "BAR.2"
+        ]
+      ],
+      "path_hash": "b14f3d67fe6244417344c1a288bd788205cd4fe8c904e7c2bbc5805dbed897ae",
+      "targets": [
+        [
+          "TARGET_A",
+          "ABOVE",
+          0
+        ],
+        [
+          "TARGET_B",
+          "BELOW",
+          1
+        ]
+      ],
+      "terminal": "BOTH_SIDES_REACHED"
+    },
+    {
+      "case_id": "ORDER_BA",
+      "expected_order": [
+        "TARGET_B",
+        "TARGET_A"
+      ],
+      "first_delivery": "TARGET_B",
+      "hits": [
+        [
+          "TARGET_B",
+          "2026-03-03T09:00:00+00:00",
+          "BAR.1"
+        ],
+        [
+          "TARGET_A",
+          "2026-03-03T09:05:00+00:00",
+          "BAR.2"
+        ]
+      ],
+      "path_hash": "c74bf7a5022b9c577ce8742a653a1e5669a36e8d4cfc5e215b34048128b0ec11",
+      "targets": [
+        [
+          "TARGET_A",
+          "ABOVE",
+          0
+        ],
+        [
+          "TARGET_B",
+          "BELOW",
+          1
+        ]
+      ],
+      "terminal": "BOTH_SIDES_REACHED"
+    },
+    {
+      "case_id": "AMBIGUOUS_SAME_BAR",
+      "expected_error": "AMBIGUOUS_PATH",
+      "hits": [
+        [
+          "TARGET_A",
+          "2026-03-03T09:00:00+00:00",
+          "BAR.1"
+        ],
+        [
+          "TARGET_B",
+          "2026-03-03T09:00:00+00:00",
+          "BAR.1"
+        ]
+      ],
+      "targets": [
+        [
+          "TARGET_A",
+          "ABOVE",
+          0
+        ],
+        [
+          "TARGET_B",
+          "BELOW",
+          1
+        ]
+      ]
+    }
+  ],
+  "data_classification": "SYNTHETIC_FIXTURE \u2014 structural validation material only; not empirical evidence",
+  "fixture_id": "BLOC_III_4.FIRST_DELIVERY.V1"
+}

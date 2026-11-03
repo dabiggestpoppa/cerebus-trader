@@ -1,0 +1,26 @@
+{
+  "algorithm": "sha256",
+  "description": "Deterministic committed golden fixtures for Bloc III.4. Hashes cover every JSON fixture in this directory except this manifest. Hashes are recorded over LF-normalized content, so the manifest verifies identically on Windows (CRLF worktrees) and Linux CI (LF checkouts).",
+  "engine_version": "STATE_ENGINE_V1",
+  "files": {
+    "failure_repair_cases.json": "891d464bd734b8d5fd295fd45587d9012d79d919140b97f12be38e8cd14cce7a",
+    "first_delivery_cases.json": "c85b9c1948cbedd1510c36aa40a3c57e328e18d6406b9a7534df5e0ec5666831",
+    "layer_handoff_cases.json": "2de17766882096969e344604bb8a961c5c58191d2f92c22bd15bf4f3aab869c5",
+    "model_family_transition_authority.json": "0e3362be57d0563fc628b5cafa1a677b08ac2d54ad90980e3d483ec83f38aff5",
+    "path_invariants_cases.json": "1d149253429643e178b54e5977f536af19896325bb919acd1f02ba1d9f5a992d",
+    "range_left_cases.json": "52fec0359e78a3d3263a559c29d32920f6e05d616773b369ff05038471c9b2f4",
+    "rekey_cases.json": "e7cd7bb53306b84c673a5f8ea3d231c6f25e9268bdb4757ee614f6a1236df9e7",
+    "replay_hashes.json": "4a8889dae719b28e5d0a60166ce586e5f2243ccc0dcd94b9930e97eb87b40faf",
+    "stand_down_cases.json": "ae632c6f0b5cbfd6b2bc247ec1ecdf2f5d9ab9802695ae472ded89c12428e3c6",
+    "state_snapshots.json": "3536fe81547fb3f3a9d9f536f5db9a6fe10bd71dfc498fa293643202ab6ff366",
+    "transition_history_cases.json": "02deaf218b6d6007896a6bdfe881cb4cb5eebb7e5f6b6ac71e4e2d7023edab0c",
+    "transition_vocabulary_cases.json": "7389376c810274f297085e42498cb6ce6e6528fa4562d4ac4a97970477550247"
+  },
+  "generator": "generate_fixtures.py",
+  "provenance": {
+    "canonical_constants": "CANONICAL_SOURCE_SLICE \u2014 canonical constants quoted from frozen cards/registries",
+    "contract_cases": "SYNTHETIC_FIXTURE \u2014 structural validation material only; not empirical evidence",
+    "history_hashes": "SYNTHETIC_FIXTURE \u2014 structural validation material only; not empirical evidence",
+    "snapshot_hashes": "SYNTHETIC_FIXTURE \u2014 structural validation material only; not empirical evidence"
+  }
+}

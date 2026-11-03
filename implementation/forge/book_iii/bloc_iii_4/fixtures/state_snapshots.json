@@ -1,0 +1,119 @@
+{
+  "data_classification": "SYNTHETIC_FIXTURE \u2014 structural validation material only; not empirical evidence",
+  "engine_version": "STATE_ENGINE_V1",
+  "fixture_id": "BLOC_III_4.STATE_SNAPSHOTS.V1",
+  "snapshots": [
+    {
+      "active_state": "SEED_T1",
+      "claim_refs": [],
+      "evidence_refs": [
+        "EV.SYNTHETIC.III4.V1"
+      ],
+      "family": "EUR_DAILY",
+      "layer": "L1",
+      "model_id": "EUR.DAILY.NEWS_REKEY.V1",
+      "model_version": "PHASE1",
+      "production_authorization": "NOT_AUTHORIZED",
+      "quality_state": "OK",
+      "snapshot_hash": "45b0133ca5ba4c4b42c5d70feda949d300e553c08833cb43e93be85deae6dbbe",
+      "snapshot_id": "SNAP.EUR_DAILY.SEED_T1",
+      "source_output_hash": "82628eedf4b14cbfe0bb854b0f66d7959f0517d676851dd5808746edcd92a464"
+    },
+    {
+      "active_state": "ROUTE_OPEN",
+      "claim_refs": [],
+      "evidence_refs": [
+        "EV.SYNTHETIC.III4.V1"
+      ],
+      "family": "EUR_WEEKLY",
+      "layer": "L2",
+      "model_id": "EUR.WEEKLY.V1_1",
+      "model_version": "V1_1",
+      "production_authorization": "NOT_AUTHORIZED",
+      "quality_state": "OK",
+      "snapshot_hash": "2447f6b28e4e25457c0b882283767a6054a8024ebdc39c3c160723a3eb697c5d",
+      "snapshot_id": "SNAP.EUR_WEEKLY.ROUTE_OPEN",
+      "source_output_hash": "c3049a1979296a0c12d4d720a02283bccb64d01e0bbb2a4386e066fb6e6fa3b4"
+    },
+    {
+      "active_state": "PRIOR_DECLARED",
+      "claim_refs": [],
+      "evidence_refs": [
+        "EV.SYNTHETIC.III4.V1"
+      ],
+      "family": "EUR_HIGHER_ORDER",
+      "layer": "L3",
+      "model_id": "EUR.HIGHER_ORDER.V1",
+      "model_version": "V1",
+      "production_authorization": "NOT_AUTHORIZED",
+      "quality_state": "OK",
+      "snapshot_hash": "a24a89fba7afc8acfebbb0da0d5420b67fc39f9bf57155ae0f3fb949fb593271",
+      "snapshot_id": "SNAP.EUR_HIGHER_ORDER.PRIOR_DECLARED",
+      "source_output_hash": "e951e6724fe7be5bd26022405944350909d9e6a94a667d748c661413cf3a8fc2"
+    },
+    {
+      "active_state": "PROMOTION_PENDING",
+      "claim_refs": [],
+      "evidence_refs": [
+        "EV.SYNTHETIC.III4.V1"
+      ],
+      "family": "XAU",
+      "layer": "CROSS_LAYER",
+      "model_id": "XAU.GAME.L1_L2_L3.V1",
+      "model_version": "V1",
+      "production_authorization": "NOT_AUTHORIZED",
+      "quality_state": "OK",
+      "snapshot_hash": "fa5f7f8abdec8fc15d49be1fa7667c331e013b37d8606c5bef007d70100e5e30",
+      "snapshot_id": "SNAP.XAU.PROMOTION_PENDING",
+      "source_output_hash": "12880f71e2bb307ba4654c782934d733dc3b84865034e59cd416c21ec4a2b3b2"
+    },
+    {
+      "active_state": "SEED_T1",
+      "claim_refs": [],
+      "evidence_refs": [
+        "EV.SYNTHETIC.III4.V1"
+      ],
+      "family": "BTC_TRACKER",
+      "layer": "CROSS_LAYER",
+      "model_id": "BTC.TRACKER.DWM.V1",
+      "model_version": "V1",
+      "production_authorization": "NOT_AUTHORIZED",
+      "quality_state": "OK",
+      "snapshot_hash": "8ac32eeb855375b7ea2f6bfe1b8433c1cbd51c41b95fe2c9cb343a9c7ae293a5",
+      "snapshot_id": "SNAP.BTC_TRACKER.SEED_T1",
+      "source_output_hash": "f05c991300217e3599751b44d1dada82b8b8f3b7608a8318ae26c2f7e4d0efec"
+    },
+    {
+      "active_state": "RANGE_BIRTH_UNRESOLVED",
+      "claim_refs": [],
+      "evidence_refs": [
+        "EV.SYNTHETIC.III4.V1"
+      ],
+      "family": "FIB_RANGE_BIRTH",
+      "layer": "CROSS_LAYER",
+      "model_id": "CROSSASSET.FIB.RANGE_BIRTH.V1",
+      "model_version": "R15",
+      "production_authorization": "NOT_AUTHORIZED",
+      "quality_state": "OK",
+      "snapshot_hash": "6e6610c97858920b58fee2d93d315618e20f97f61fc531399e9efeb8fad09732",
+      "snapshot_id": "SNAP.FIB_RANGE_BIRTH.RANGE_BIRTH_UNRESOLVED",
+      "source_output_hash": "0632473c22377c0059b79f487e0df9fc244d30862098d9f99da16aaf1a1d4610"
+    },
+    {
+      "active_state": "BASKET_UNRESOLVED",
+      "claim_refs": [],
+      "evidence_refs": [
+        "EV.SYNTHETIC.III4.V1"
+      ],
+      "family": "JPY_CARRY",
+      "layer": "CROSS_LAYER",
+      "model_id": "JPY.CARRY_GAME.L1_L3.V1",
+      "model_version": "V1",
+      "production_authorization": "NOT_AUTHORIZED",
+      "quality_state": "OK",
+      "snapshot_hash": "f9b0f6c8fd7b651a98633c8e454824fe00fa0fb294ed1155c428d582a59fa725",
+      "snapshot_id": "SNAP.JPY_CARRY.BASKET_UNRESOLVED",
+      "source_output_hash": "4bea3b5ecc35a3dac6182134b26da3f60cc4e2487d6525aa8fb6894527cf0b21"
+    }
+  ]
+}

@@ -1,0 +1,152 @@
+{
+  "data_classification": "CANONICAL_SOURCE_SLICE \u2014 canonical constants quoted from frozen cards/registries",
+  "families": {
+    "BTC_TRACKER": {
+      "allowed": [
+        "ACCEPT",
+        "DELIVER",
+        "ENTER_STATE",
+        "INVALIDATE",
+        "REJECT",
+        "REKEY",
+        "STAND_DOWN"
+      ],
+      "model_id": "BTC.TRACKER.DWM.V1",
+      "model_version": "V1",
+      "restricted": [],
+      "unresolved": [
+        "REKEY"
+      ]
+    },
+    "EUR_DAILY": {
+      "allowed": [
+        "ACCEPT",
+        "COMPRESS",
+        "DELIVER",
+        "ENTER_STATE",
+        "FAIL",
+        "INVALIDATE",
+        "REJECT",
+        "REKEY",
+        "RELEASE",
+        "REPAIR",
+        "STAND_DOWN"
+      ],
+      "model_id": "EUR.DAILY.NEWS_REKEY.V1",
+      "model_version": "PHASE1",
+      "restricted": [
+        "COMPRESS",
+        "FAIL",
+        "REKEY",
+        "RELEASE",
+        "REPAIR"
+      ],
+      "unresolved": []
+    },
+    "EUR_HIGHER_ORDER": {
+      "allowed": [
+        "COMPRESS",
+        "DELIVER",
+        "ENTER_STATE",
+        "INVALIDATE",
+        "REKEY",
+        "RELEASE",
+        "STAND_DOWN"
+      ],
+      "model_id": "EUR.HIGHER_ORDER.V1",
+      "model_version": "V1",
+      "restricted": [],
+      "unresolved": [
+        "COMPRESS",
+        "REKEY",
+        "RELEASE"
+      ]
+    },
+    "EUR_WEEKLY": {
+      "allowed": [
+        "ACCEPT",
+        "COMPRESS",
+        "DELIVER",
+        "ENTER_STATE",
+        "INVALIDATE",
+        "PROMOTE",
+        "REJECT",
+        "REKEY",
+        "RELEASE",
+        "STAND_DOWN"
+      ],
+      "model_id": "EUR.WEEKLY.V1_1",
+      "model_version": "V1_1",
+      "restricted": [
+        "PROMOTE"
+      ],
+      "unresolved": [
+        "COMPRESS",
+        "REKEY",
+        "RELEASE"
+      ]
+    },
+    "FIB_RANGE_BIRTH": {
+      "allowed": [
+        "DELIVER",
+        "ENTER_STATE",
+        "INVALIDATE",
+        "REKEY",
+        "STAND_DOWN"
+      ],
+      "model_id": "CROSSASSET.FIB.RANGE_BIRTH.V1",
+      "model_version": "R15",
+      "restricted": [],
+      "unresolved": []
+    },
+    "JPY_CARRY": {
+      "allowed": [
+        "DELIVER",
+        "ENTER_STATE",
+        "INVALIDATE",
+        "STAND_DOWN"
+      ],
+      "model_id": "JPY.CARRY_GAME.L1_L3.V1",
+      "model_version": "V1",
+      "restricted": [],
+      "unresolved": []
+    },
+    "XAU": {
+      "allowed": [
+        "ACCEPT",
+        "ENTER_STATE",
+        "FAIL",
+        "INVALIDATE",
+        "PROMOTE",
+        "REJECT",
+        "REKEY",
+        "REPAIR",
+        "STAND_DOWN"
+      ],
+      "model_id": "XAU.GAME.L1_L2_L3.V1",
+      "model_version": "V1",
+      "restricted": [
+        "FAIL",
+        "PROMOTE",
+        "REKEY",
+        "REPAIR"
+      ],
+      "unresolved": []
+    }
+  },
+  "fixture_id": "BLOC_III_4.TRANSITION_VOCABULARY.V1",
+  "kinds": [
+    "ENTER_STATE",
+    "ACCEPT",
+    "REJECT",
+    "FAIL",
+    "REPAIR",
+    "PROMOTE",
+    "DELIVER",
+    "REKEY",
+    "INVALIDATE",
+    "COMPRESS",
+    "RELEASE",
+    "STAND_DOWN"
+  ]
+}

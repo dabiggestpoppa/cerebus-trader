@@ -1,0 +1,35 @@
+{
+  "cases": [
+    {
+      "case_id": "LADDER",
+      "states": [
+        "REKEY_100",
+        "REKEY_125",
+        "REKEY_132",
+        "REKEY_168",
+        "REKEY_185"
+      ]
+    },
+    {
+      "case_id": "TOUCH_ONLY",
+      "expected_error": "REKEY_NOT_STRUCTURAL",
+      "structural": false
+    },
+    {
+      "case_id": "XAU_132_TO_168",
+      "expected_error": "TRANSITION_PAIR_FORBIDDEN",
+      "family": "XAU",
+      "new_state": "REKEY_168",
+      "prior_state": "REKEY_132"
+    }
+  ],
+  "data_classification": "CANONICAL_SOURCE_SLICE \u2014 canonical constants quoted from frozen cards/registries",
+  "eur_daily_ladder": [
+    "REKEY_100",
+    "REKEY_125",
+    "REKEY_132",
+    "REKEY_168",
+    "REKEY_185"
+  ],
+  "fixture_id": "BLOC_III_4.REKEY.V1"
+}

@@ -1,0 +1,25 @@
+{
+  "cases": [
+    {
+      "case_id": "CONDITIONED",
+      "events": [
+        "DELIVERY"
+      ],
+      "expected_state": "MEASURED"
+    },
+    {
+      "case_id": "UNRESOLVED",
+      "events": [],
+      "expected_state": "UNRESOLVED",
+      "measurement": null
+    },
+    {
+      "case_id": "UNCONDITIONAL",
+      "events": [],
+      "expected_error": "UNCONDITIONAL_FREQUENCY_REFUSED",
+      "measurement": "150"
+    }
+  ],
+  "data_classification": "SYNTHETIC_FIXTURE \u2014 structural validation material only; not empirical evidence",
+  "fixture_id": "BLOC_III_4.RANGE_LEFT.V1"
+}
