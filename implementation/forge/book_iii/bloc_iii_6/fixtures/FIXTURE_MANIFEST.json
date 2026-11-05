@@ -1,0 +1,17 @@
+{
+  "fixtures": {
+    "card_schema_incompatibility.json": "306a0ec854e283bae974a8e3e493dc217a930369e0e5963cf715ba5123d35603",
+    "consistent_eur_snapshot.json": "746d2d888e9ce19ce97a13ec76a874b91352e73b91eba0d1d218c7f323a93be1",
+    "data_quality_failure.json": "67b0aeacee1fad942164671565b060218cc1495b24b8d6104d6d1b7d7ee16b74",
+    "deterministic_reconstruction.json": "8b7f2e665b16a0f39889d76021a1e61c0661d2efa6afdf051de1687878a86dce",
+    "historical_version_mismatch.json": "2c267cd048e6b0b62da80f3189392eb28a34114e7d20e8e665eba5dd3b660017",
+    "manual_jpy.json": "7f547cf09d38c0de897b63471a161efce907efcb3fda35455dbe7df2831b9593",
+    "missing_provider.json": "bc425561d41efa2d03aae96f8a94f4b01805a3107b993cf4a46c96949dcb9c93",
+    "model_only_no_setup.json": "c549aa300dd4aed0f7f1c734e6a36f398b043b6542f14333270ea62d813d30d6",
+    "research_only_fib.json": "23f5eb3d27646e761daffd1e00f594ed81fef99acf4eb051cffe071928f1909e",
+    "restricted_exposure.json": "5c92f009c818671bf627ad6589756e0e5b8c77b4fa30b2df247d7b4f029cbd62",
+    "stand_down_lock.json": "eb0d8ab5b4b456faf6408a54826b931a5060a6689591623c5db03ab1be13b987",
+    "xau_watch_ceiling.json": "8a905d041d67dd6f90c400ee9701eb6023ede58c5ed1d6f4bb50d55501548b1f"
+  },
+  "schema_version": "III6_FIXTURE_MANIFEST.V1"
+}
