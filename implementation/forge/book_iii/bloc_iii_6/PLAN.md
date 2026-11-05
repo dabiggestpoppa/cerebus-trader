@@ -408,3 +408,18 @@ No API implementation, router registration, fixtures, tests, migrations,
 provider adapters, cache storage, network calls, Book IV/V work,
 UI/dashboard, Ask CEREBUS prose, Whop logic, brokerage/order/sizing, or
 Book I schema repair is authorized by this rung.
+
+## 19. CI record
+
+| Head | Workflow run | Result |
+|---|---|---|
+| `d74f10a` — starting head (III.5 ratified) | `42029671655` | success |
+| `6d76ea7` — III.6 PLAN + ACCEPTANCE | `42043276253` | success |
+| final head — this CI-record commit | recorded by the run following this commit | — |
+
+Local verification at the planning head: 300 clauses, 258 unique test
+names, zero clauses without a driver, 50/50 Book II hashes, 23/23
+planning pins, III.1–III.5 baselines 11/12/13/13/16, migrations
+`001`–`004`, and the three-card schema failure reproduced (3 errors
+each). A CI receipt is not a substitute for those checks and does not
+authorize implementation.
