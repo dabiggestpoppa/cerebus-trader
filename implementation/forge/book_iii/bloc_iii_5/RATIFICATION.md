@@ -127,3 +127,18 @@ This record ratifies III.5 only. It does not authorize:
 * `generate.py --check` → 12 files byte-identical.
 * `EVIDENCE.md` §9 module-hash baseline; §10 frozen upstream integrity.
 * CI run `42029134502` (test + postgres) at `fec9ba8`.
+
+---
+
+## CI record
+
+| Head | Workflow run | Result |
+|---|---|---|
+| `fec9ba8` — implementation (fixtures + engine + suite) | `42029134502` | success |
+| `db747f7` — EVIDENCE + RATIFICATION | `42029455159` | success |
+| final head — CI record commit | recorded by the run following this commit | — |
+
+A run receipt is a deployment fact, not a substitute for the local
+verification recorded above: the 162 focused tests, the 1609-test
+regression and the byte-identical fixture check were all executed
+locally at every head in this ladder.
