@@ -1,0 +1,158 @@
+{
+  "canonical_source_slice": "CANONICAL_SOURCE_SLICE",
+  "cases": [
+    {
+      "case_id": "eligibility_clean",
+      "expected_eligibility": "ELIGIBLE",
+      "expected_reasons": [],
+      "setup_id": "SETUP.XAU.QUARTER_ZONE.V1",
+      "surface": "OPERATOR"
+    },
+    {
+      "case_id": "eligibility_missing_parent",
+      "expected_eligibility": "UNRESOLVED",
+      "expected_reasons": [
+        "PARENT_STATE_MISSING"
+      ],
+      "setup_id": "SETUP.XAU.QUARTER_ZONE.V1",
+      "surface": "OPERATOR"
+    },
+    {
+      "case_id": "eligibility_model_drift",
+      "expected_eligibility": "UNRESOLVED",
+      "expected_reasons": [
+        "MODEL_VERSION_UNAVAILABLE"
+      ],
+      "setup_id": "SETUP.XAU.QUARTER_ZONE.V1",
+      "surface": "OPERATOR"
+    },
+    {
+      "case_id": "eligibility_wrong_layer",
+      "expected_eligibility": "BLOCKED",
+      "expected_reasons": [
+        "WRONG_LAYER_PARENT"
+      ],
+      "setup_id": "SETUP.XAU.QUARTER_ZONE.V1",
+      "surface": "OPERATOR"
+    },
+    {
+      "case_id": "eligibility_state_not_declared",
+      "expected_eligibility": "BLOCKED",
+      "expected_reasons": [
+        "STATE_NOT_DECLARED"
+      ],
+      "setup_id": "SETUP.XAU.QUARTER_ZONE.V1",
+      "surface": "OPERATOR"
+    },
+    {
+      "case_id": "eligibility_anchor_unresolved",
+      "expected_eligibility": "UNRESOLVED",
+      "expected_reasons": [
+        "ANCHOR_UNRESOLVED"
+      ],
+      "setup_id": "SETUP.FIB.REKEY.V1",
+      "surface": "RESEARCH"
+    },
+    {
+      "case_id": "eligibility_tier_foreign",
+      "expected_eligibility": "BLOCKED",
+      "expected_reasons": [
+        "TIER_NOT_NATIVE"
+      ],
+      "setup_id": "SETUP.XAU.QUARTER_ZONE.V1",
+      "surface": "OPERATOR"
+    },
+    {
+      "case_id": "eligibility_tier_no_go",
+      "expected_eligibility": "BLOCKED",
+      "expected_reasons": [
+        "NATIVE_TIER_NO_GO"
+      ],
+      "setup_id": "SETUP.XAU.QUARTER_ZONE.V1",
+      "surface": "OPERATOR"
+    },
+    {
+      "case_id": "eligibility_clock_unresolved",
+      "expected_eligibility": "UNRESOLVED",
+      "expected_reasons": [
+        "CLOCK_UNRESOLVED"
+      ],
+      "setup_id": "SETUP.XAU.QUARTER_ZONE.V1",
+      "surface": "OPERATOR"
+    },
+    {
+      "case_id": "eligibility_checkpoint_unreached",
+      "expected_eligibility": "WATCH",
+      "expected_reasons": [
+        "CHECKPOINT_NOT_REACHED"
+      ],
+      "setup_id": "SETUP.XAU.QUARTER_ZONE.V1",
+      "surface": "OPERATOR"
+    },
+    {
+      "case_id": "eligibility_higher_layer_no_go",
+      "expected_eligibility": "BLOCKED",
+      "expected_reasons": [
+        "HIGHER_LAYER_NO_GO"
+      ],
+      "setup_id": "SETUP.XAU.QUARTER_ZONE.V1",
+      "surface": "OPERATOR"
+    },
+    {
+      "case_id": "eligibility_layer_conflict",
+      "expected_eligibility": "BLOCKED",
+      "expected_reasons": [
+        "LAYER_CONFLICT"
+      ],
+      "setup_id": "SETUP.XAU.QUARTER_ZONE.V1",
+      "surface": "OPERATOR"
+    },
+    {
+      "case_id": "eligibility_nonfinal_bar",
+      "expected_eligibility": "BLOCKED",
+      "expected_reasons": [
+        "DATA_QUALITY_BLOCKED"
+      ],
+      "setup_id": "SETUP.XAU.QUARTER_ZONE.V1",
+      "surface": "OPERATOR"
+    },
+    {
+      "case_id": "eligibility_stale_data",
+      "expected_eligibility": "BLOCKED",
+      "expected_reasons": [
+        "DATA_QUALITY_BLOCKED"
+      ],
+      "setup_id": "SETUP.XAU.QUARTER_ZONE.V1",
+      "surface": "OPERATOR"
+    },
+    {
+      "case_id": "eligibility_declared_parameter",
+      "expected_eligibility": "WATCH",
+      "expected_reasons": [
+        "PARAMETER_DECLARED_ONLY"
+      ],
+      "setup_id": "SETUP.XAU.QUARTER_ZONE.V1",
+      "surface": "OPERATOR"
+    },
+    {
+      "case_id": "eligibility_missing_parameter",
+      "expected_eligibility": "UNRESOLVED",
+      "expected_reasons": [
+        "PARAMETER_UNRESOLVED"
+      ],
+      "setup_id": "SETUP.XAU.QUARTER_ZONE.V1",
+      "surface": "OPERATOR"
+    },
+    {
+      "case_id": "eligibility_lock_binding",
+      "expected_eligibility": "BLOCKED",
+      "expected_reasons": [
+        "STAND_DOWN_LOCKED"
+      ],
+      "setup_id": "SETUP.XAU.QUARTER_ZONE.V1",
+      "surface": "OPERATOR"
+    }
+  ],
+  "fixture_id": "BLOC_III_5.ELIGIBILITY.V1",
+  "provenance": "SYNTHETIC_FIXTURE"
+}

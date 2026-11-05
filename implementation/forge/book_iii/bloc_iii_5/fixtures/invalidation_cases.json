@@ -1,0 +1,40 @@
+{
+  "canonical_source_slice": "CANONICAL_SOURCE_SLICE",
+  "cases": [
+    {
+      "case_id": "invalidation_none_fired",
+      "expected_eligibility": "ELIGIBLE",
+      "expected_reasons": [],
+      "setup_id": "SETUP.XAU.QUARTER_ZONE.V1",
+      "surface": "OPERATOR"
+    },
+    {
+      "case_id": "invalidation_price_fired",
+      "expected_eligibility": "BLOCKED",
+      "expected_reasons": [
+        "SETUP_INVALIDATED"
+      ],
+      "setup_id": "SETUP.XAU.QUARTER_ZONE.V1",
+      "surface": "OPERATOR"
+    },
+    {
+      "case_id": "invalidation_structural_fired",
+      "expected_eligibility": "BLOCKED",
+      "expected_reasons": [
+        "SETUP_INVALIDATED"
+      ],
+      "setup_id": "SETUP.XAU.QUARTER_ZONE.V1",
+      "surface": "OPERATOR"
+    },
+    {
+      "case_id": "invalidation_temporal_fired",
+      "expected": {
+        "active": [
+          "TEMPORAL"
+        ]
+      }
+    }
+  ],
+  "fixture_id": "BLOC_III_5.INVALIDATION.V1",
+  "provenance": "SYNTHETIC_FIXTURE"
+}

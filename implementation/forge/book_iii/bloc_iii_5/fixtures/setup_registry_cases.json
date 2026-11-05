@@ -1,0 +1,80 @@
+{
+  "canonical_source_slice": "CANONICAL_SOURCE_SLICE",
+  "cases": [
+    {
+      "case_id": "registry_canonical_ids",
+      "expected": {
+        "ids": [
+          "SETUP.FIB.REKEY.V1",
+          "SETUP.JPY.CARRY_ROLE_GATE.V1",
+          "SETUP.XAU.QUARTER_ZONE.V1"
+        ]
+      }
+    },
+    {
+      "case_id": "registry_unknown_id",
+      "expected_eligibility": "UNRESOLVED",
+      "expected_reasons": [
+        "SETUP_CARD_UNRESOLVED"
+      ],
+      "setup_id": "SETUP.XAU.QUARTER_ZONE.V9",
+      "surface": "OPERATOR"
+    },
+    {
+      "case_id": "registry_no_version",
+      "expected_eligibility": "UNRESOLVED",
+      "expected_reasons": [
+        "SETUP_VERSION_UNRESOLVED"
+      ],
+      "setup_id": "SETUP.XAU.QUARTER_ZONE.V1",
+      "surface": "OPERATOR"
+    },
+    {
+      "case_id": "registry_version_drift",
+      "expected_eligibility": "BLOCKED",
+      "expected_reasons": [
+        "SETUP_VERSION_DRIFT"
+      ],
+      "setup_id": "SETUP.XAU.QUARTER_ZONE.V1",
+      "surface": "OPERATOR"
+    },
+    {
+      "case_id": "registry_parked",
+      "expected_eligibility": "BLOCKED",
+      "expected_reasons": [
+        "SETUP_NOT_CANONICAL_FOR_SURFACE"
+      ],
+      "setup_id": "SETUP.XAU.QUARTER_ZONE.V1",
+      "surface": "OPERATOR"
+    },
+    {
+      "case_id": "registry_parity_unsafe",
+      "expected_eligibility": "BLOCKED",
+      "expected_reasons": [
+        "SETUP_NOT_CANONICAL_FOR_SURFACE"
+      ],
+      "setup_id": "SETUP.XAU.QUARTER_ZONE.V1",
+      "surface": "OPERATOR"
+    },
+    {
+      "case_id": "registry_quarantined",
+      "expected_eligibility": "BLOCKED",
+      "expected_reasons": [
+        "SETUP_NOT_CANONICAL_FOR_SURFACE"
+      ],
+      "setup_id": "SETUP.XAU.QUARTER_ZONE.V1",
+      "surface": "OPERATOR"
+    },
+    {
+      "case_id": "registry_research_as_production",
+      "expected_eligibility": "BLOCKED",
+      "expected_reasons": [
+        "RESEARCH_ONLY_NOT_PRODUCTION"
+      ],
+      "setup_id": "SETUP.FIB.REKEY.V1",
+      "surface": "PRODUCTION"
+    }
+  ],
+  "fixture_id": "BLOC_III_5.SETUP_REGISTRY.V1",
+  "provenance": "SYNTHETIC_FIXTURE"
+}

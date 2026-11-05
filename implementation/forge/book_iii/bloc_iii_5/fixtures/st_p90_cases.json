@@ -1,0 +1,39 @@
+{
+  "canonical_source_slice": "CANONICAL_SOURCE_SLICE",
+  "cases": [
+    {
+      "case_id": "st_manual_framework",
+      "expected": {
+        "automation_permitted": false,
+        "chain": [
+          "TIER",
+          "AU",
+          "TIER"
+        ],
+        "code": "AUTOMATION_NOT_APPROVED",
+        "framework_id": "ST.TIER_TO_AU_TO_TIER",
+        "perception_gap": "UNRESOLVED",
+        "setup_identity": null,
+        "verdict": "BLOCKED"
+      }
+    },
+    {
+      "case_id": "p90_unverified_lineage",
+      "expected": {
+        "automation_permitted": false,
+        "evidence": [
+          {
+            "ref": "corpus/canonical/evidence/EUR_DAILY_PHASE1_CALIBRATION_EVIDENCE_V1.md",
+            "status": "HISTORICAL"
+          }
+        ],
+        "lineage_id": "P90.EUR.DAILY.NEWS_REKEY",
+        "parity_status": "UNVERIFIED",
+        "status": "UNVERIFIED",
+        "version": "EUR.DAILY.NEWS_REKEY.V1@PHASE1"
+      }
+    }
+  ],
+  "fixture_id": "BLOC_III_5.ST_P90.V1",
+  "provenance": "SYNTHETIC_FIXTURE"
+}

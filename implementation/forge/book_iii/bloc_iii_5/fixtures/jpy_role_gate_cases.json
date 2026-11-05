@@ -1,0 +1,50 @@
+{
+  "canonical_source_slice": "CANONICAL_SOURCE_SLICE",
+  "cases": [
+    {
+      "case_id": "jpy_clean",
+      "expected_eligibility": "ELIGIBLE",
+      "expected_reasons": [],
+      "setup_id": "SETUP.JPY.CARRY_ROLE_GATE.V1",
+      "surface": "OPERATOR"
+    },
+    {
+      "case_id": "jpy_no_go_tier",
+      "expected_eligibility": "BLOCKED",
+      "expected_reasons": [
+        "NATIVE_TIER_NO_GO"
+      ],
+      "setup_id": "SETUP.JPY.CARRY_ROLE_GATE.V1",
+      "surface": "OPERATOR"
+    },
+    {
+      "case_id": "jpy_foreign_tier",
+      "expected_eligibility": "BLOCKED",
+      "expected_reasons": [
+        "TIER_NOT_NATIVE"
+      ],
+      "setup_id": "SETUP.JPY.CARRY_ROLE_GATE.V1",
+      "surface": "OPERATOR"
+    },
+    {
+      "case_id": "jpy_automation_surface",
+      "expected_eligibility": "BLOCKED",
+      "expected_reasons": [
+        "AUTOMATION_NOT_APPROVED"
+      ],
+      "setup_id": "SETUP.JPY.CARRY_ROLE_GATE.V1",
+      "surface": "AUTOMATION"
+    },
+    {
+      "case_id": "jpy_under_lock",
+      "expected_eligibility": "BLOCKED",
+      "expected_reasons": [
+        "STAND_DOWN_LOCKED"
+      ],
+      "setup_id": "SETUP.JPY.CARRY_ROLE_GATE.V1",
+      "surface": "OPERATOR"
+    }
+  ],
+  "fixture_id": "BLOC_III_5.JPY_ROLE_GATE.V1",
+  "provenance": "SYNTHETIC_FIXTURE"
+}

@@ -1,0 +1,41 @@
+{
+  "canonical_source_slice": "CANONICAL_SOURCE_SLICE",
+  "cases": [
+    {
+      "case_id": "trigger_excursion_and_close",
+      "expected_eligibility": "ELIGIBLE",
+      "expected_reasons": [],
+      "setup_id": "SETUP.XAU.QUARTER_ZONE.V1",
+      "surface": "OPERATOR"
+    },
+    {
+      "case_id": "trigger_touch_only",
+      "expected_eligibility": "BLOCKED",
+      "expected_reasons": [
+        "BLIND_TOUCH_REFUSED"
+      ],
+      "setup_id": "SETUP.XAU.QUARTER_ZONE.V1",
+      "surface": "OPERATOR"
+    },
+    {
+      "case_id": "trigger_nonfinal_close",
+      "expected_eligibility": "WATCH",
+      "expected_reasons": [
+        "TRIGGER_NOT_SATISFIED"
+      ],
+      "setup_id": "SETUP.XAU.QUARTER_ZONE.V1",
+      "surface": "OPERATOR"
+    },
+    {
+      "case_id": "trigger_no_observation",
+      "expected_eligibility": "WATCH",
+      "expected_reasons": [
+        "TRIGGER_NOT_SATISFIED"
+      ],
+      "setup_id": "SETUP.XAU.QUARTER_ZONE.V1",
+      "surface": "OPERATOR"
+    }
+  ],
+  "fixture_id": "BLOC_III_5.TRIGGER.V1",
+  "provenance": "SYNTHETIC_FIXTURE"
+}

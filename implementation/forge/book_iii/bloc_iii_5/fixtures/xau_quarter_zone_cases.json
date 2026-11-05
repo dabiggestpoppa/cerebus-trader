@@ -1,0 +1,86 @@
+{
+  "canonical_source_slice": "CANONICAL_SOURCE_SLICE",
+  "cases": [
+    {
+      "case_id": "xau_clean_canonical",
+      "expected_eligibility": "ELIGIBLE",
+      "expected_reasons": [],
+      "setup_id": "SETUP.XAU.QUARTER_ZONE.V1",
+      "surface": "OPERATOR"
+    },
+    {
+      "case_id": "xau_declared_mapping",
+      "expected_eligibility": "WATCH",
+      "expected_reasons": [
+        "PARAMETER_DECLARED_ONLY"
+      ],
+      "setup_id": "SETUP.XAU.QUARTER_ZONE.V1",
+      "surface": "OPERATOR"
+    },
+    {
+      "case_id": "xau_blind_touch",
+      "expected_eligibility": "BLOCKED",
+      "expected_reasons": [
+        "BLIND_TOUCH_REFUSED"
+      ],
+      "setup_id": "SETUP.XAU.QUARTER_ZONE.V1",
+      "surface": "OPERATOR"
+    },
+    {
+      "case_id": "xau_parked",
+      "expected_eligibility": "BLOCKED",
+      "expected_reasons": [
+        "PARKED_STATE"
+      ],
+      "setup_id": "SETUP.XAU.QUARTER_ZONE.V1",
+      "surface": "OPERATOR"
+    },
+    {
+      "case_id": "xau_l3_destination_only",
+      "expected_eligibility": "BLOCKED",
+      "expected_reasons": [
+        "LAYER_CONFLICT"
+      ],
+      "setup_id": "SETUP.XAU.QUARTER_ZONE.V1",
+      "surface": "OPERATOR"
+    },
+    {
+      "case_id": "xau_under_lock",
+      "expected_eligibility": "BLOCKED",
+      "expected_reasons": [
+        "STAND_DOWN_LOCKED"
+      ],
+      "setup_id": "SETUP.XAU.QUARTER_ZONE.V1",
+      "surface": "OPERATOR"
+    },
+    {
+      "case_id": "xau_invalidation_fired",
+      "expected_eligibility": "BLOCKED",
+      "expected_reasons": [
+        "SETUP_INVALIDATED"
+      ],
+      "setup_id": "SETUP.XAU.QUARTER_ZONE.V1",
+      "surface": "OPERATOR"
+    },
+    {
+      "case_id": "xau_automation_surface",
+      "expected_eligibility": "BLOCKED",
+      "expected_reasons": [
+        "AUTOMATION_NOT_APPROVED"
+      ],
+      "setup_id": "SETUP.XAU.QUARTER_ZONE.V1",
+      "surface": "AUTOMATION"
+    },
+    {
+      "case_id": "xau_version_drift",
+      "expected_eligibility": "BLOCKED",
+      "expected_reasons": [
+        "SETUP_VERSION_DRIFT"
+      ],
+      "setup_id": "SETUP.XAU.QUARTER_ZONE.V1",
+      "surface": "OPERATOR"
+    }
+  ],
+  "fixture_id": "BLOC_III_5.XAU_QUARTER_ZONE.V1",
+  "provenance": "SYNTHETIC_FIXTURE"
+}

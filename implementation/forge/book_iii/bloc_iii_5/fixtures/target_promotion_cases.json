@@ -1,0 +1,40 @@
+{
+  "canonical_source_slice": "CANONICAL_SOURCE_SLICE",
+  "cases": [
+    {
+      "case_id": "targets_canonical_order",
+      "expected": {
+        "confirmation": [
+          "SETUP.XAU.TARGET.CONFIRM_5",
+          "SETUP.XAU.TARGET.CONFIRM_10"
+        ],
+        "order": [
+          "SETUP.XAU.TARGET.NEXT_QUARTER",
+          "SETUP.XAU.TARGET.NEXT_QUARTER_DISCOUNT_PREMIUM",
+          "SETUP.XAU.TARGET.CONFIRM_5",
+          "SETUP.XAU.TARGET.CONFIRM_10"
+        ],
+        "primary": "SETUP.XAU.TARGET.NEXT_QUARTER"
+      }
+    },
+    {
+      "case_id": "targets_first_delivery",
+      "expected": {
+        "order": [
+          "TARGET.CONFIRM_5",
+          "TARGET.NEXT_QUARTER"
+        ]
+      }
+    },
+    {
+      "case_id": "targets_promotion",
+      "expected": {
+        "active": true,
+        "order_index": 0,
+        "transition_ref": "TRANSITION.L1.CONFIRMED"
+      }
+    }
+  ],
+  "fixture_id": "BLOC_III_5.TARGET_PROMOTION.V1",
+  "provenance": "SYNTHETIC_FIXTURE"
+}

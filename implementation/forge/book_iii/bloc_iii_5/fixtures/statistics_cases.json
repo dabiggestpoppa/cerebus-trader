@@ -1,0 +1,27 @@
+{
+  "canonical_source_slice": "CANONICAL_SOURCE_SLICE",
+  "cases": [
+    {
+      "case_id": "statistics_claim_reference",
+      "expected": {
+        "claim_id": "CL.XAU.PROMOTION.68_80",
+        "relationship": false
+      }
+    },
+    {
+      "case_id": "statistics_relationship",
+      "expected": {
+        "claim_id": "CL.JPY.CARRY.ROLE_RELATION",
+        "relationship": true
+      }
+    },
+    {
+      "case_id": "statistics_unclaimed",
+      "expected": {
+        "refused": "UnsupportedStatisticError"
+      }
+    }
+  ],
+  "fixture_id": "BLOC_III_5.STATISTICS.V1",
+  "provenance": "SYNTHETIC_FIXTURE"
+}

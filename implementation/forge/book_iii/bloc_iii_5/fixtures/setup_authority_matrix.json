@@ -1,0 +1,98 @@
+{
+  "canonical_source_slice": "CANONICAL_SOURCE_SLICE",
+  "cases": [
+    {
+      "case_id": "authority_registry_matrix",
+      "expected": {
+        "rows": [
+          {
+            "code": "RESEARCH_ONLY_NOT_PRODUCTION",
+            "execution_class": "RESEARCH_ONLY",
+            "setup_id": "SETUP.FIB.REKEY.V1",
+            "surface": "PRODUCTION",
+            "verdict": "BLOCKED"
+          },
+          {
+            "code": "RESEARCH_ONLY_NOT_PRODUCTION",
+            "execution_class": "RESEARCH_ONLY",
+            "setup_id": "SETUP.FIB.REKEY.V1",
+            "surface": "OPERATOR",
+            "verdict": "BLOCKED"
+          },
+          {
+            "code": null,
+            "execution_class": "RESEARCH_ONLY",
+            "setup_id": "SETUP.FIB.REKEY.V1",
+            "surface": "RESEARCH",
+            "verdict": "ELIGIBLE"
+          },
+          {
+            "code": "RESEARCH_ONLY_NOT_PRODUCTION",
+            "execution_class": "RESEARCH_ONLY",
+            "setup_id": "SETUP.FIB.REKEY.V1",
+            "surface": "AUTOMATION",
+            "verdict": "BLOCKED"
+          },
+          {
+            "code": null,
+            "execution_class": "MANUAL_OPERATOR",
+            "setup_id": "SETUP.JPY.CARRY_ROLE_GATE.V1",
+            "surface": "PRODUCTION",
+            "verdict": "ELIGIBLE"
+          },
+          {
+            "code": null,
+            "execution_class": "MANUAL_OPERATOR",
+            "setup_id": "SETUP.JPY.CARRY_ROLE_GATE.V1",
+            "surface": "OPERATOR",
+            "verdict": "ELIGIBLE"
+          },
+          {
+            "code": null,
+            "execution_class": "MANUAL_OPERATOR",
+            "setup_id": "SETUP.JPY.CARRY_ROLE_GATE.V1",
+            "surface": "RESEARCH",
+            "verdict": "ELIGIBLE"
+          },
+          {
+            "code": "AUTOMATION_NOT_APPROVED",
+            "execution_class": "MANUAL_OPERATOR",
+            "setup_id": "SETUP.JPY.CARRY_ROLE_GATE.V1",
+            "surface": "AUTOMATION",
+            "verdict": "BLOCKED"
+          },
+          {
+            "code": null,
+            "execution_class": "MANUAL_OPERATOR",
+            "setup_id": "SETUP.XAU.QUARTER_ZONE.V1",
+            "surface": "PRODUCTION",
+            "verdict": "ELIGIBLE"
+          },
+          {
+            "code": null,
+            "execution_class": "MANUAL_OPERATOR",
+            "setup_id": "SETUP.XAU.QUARTER_ZONE.V1",
+            "surface": "OPERATOR",
+            "verdict": "ELIGIBLE"
+          },
+          {
+            "code": null,
+            "execution_class": "MANUAL_OPERATOR",
+            "setup_id": "SETUP.XAU.QUARTER_ZONE.V1",
+            "surface": "RESEARCH",
+            "verdict": "ELIGIBLE"
+          },
+          {
+            "code": "AUTOMATION_NOT_APPROVED",
+            "execution_class": "MANUAL_OPERATOR",
+            "setup_id": "SETUP.XAU.QUARTER_ZONE.V1",
+            "surface": "AUTOMATION",
+            "verdict": "BLOCKED"
+          }
+        ]
+      }
+    }
+  ],
+  "fixture_id": "BLOC_III_5.AUTHORITY_MATRIX.V1",
+  "provenance": "SYNTHETIC_FIXTURE"
+}

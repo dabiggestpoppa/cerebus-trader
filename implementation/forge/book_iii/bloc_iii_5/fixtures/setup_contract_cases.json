@@ -1,0 +1,254 @@
+{
+  "canonical_source_slice": "CANONICAL_SOURCE_SLICE",
+  "cases": [
+    {
+      "case_id": "contract_record_payload",
+      "expected": {
+        "payload": {
+          "automation_permitted": false,
+          "eligibility": "ELIGIBLE",
+          "eligibility_reasons": [],
+          "engine_version": "SETUP_ENGINE.V1",
+          "evaluation_hash": "32fbbe5e6d6dc8113bad3c8b922f60bef33fe0c099842d98cdd6bc3dbe2f5422",
+          "evaluation_time": "1970-01-01T00:00:00Z",
+          "evidence_refs": [
+            {
+              "claim_id": "CL.XAU.PROMOTION.68_80",
+              "evidence_id": "EV.XAU.PROMOTION.68_80.V1",
+              "population_key": "XAU.PROMOTION",
+              "relationship": false,
+              "status": "VALIDATED"
+            },
+            {
+              "claim_id": "CL.XAU.PROMOTION.120_132",
+              "evidence_id": "EV.XAU.PROMOTION.120_132.V1",
+              "population_key": "XAU.PROMOTION",
+              "relationship": false,
+              "status": "RESEARCH_FLAG"
+            }
+          ],
+          "execution_class": "MANUAL_OPERATOR",
+          "explanation_facts": [
+            {
+              "fact_id": "SETUP.ELIGIBILITY",
+              "payload": [
+                [
+                  "verdict",
+                  "ELIGIBLE"
+                ],
+                [
+                  "reasons",
+                  "NONE"
+                ]
+              ],
+              "rule_id": "SETUP.ELIGIBILITY.GATES",
+              "rule_version": "V1",
+              "source_ref": "SETUP.XAU.QUARTER_ZONE.V1"
+            },
+            {
+              "fact_id": "SETUP.TRIGGER",
+              "payload": [
+                [
+                  "satisfied",
+                  "YES"
+                ],
+                [
+                  "observed",
+                  "EXCURSION,CLOSE"
+                ]
+              ],
+              "rule_id": "SETUP.TRIGGER.DECLARED",
+              "rule_version": "V1",
+              "source_ref": "SETUP.XAU.QUARTER_ZONE.V1"
+            },
+            {
+              "fact_id": "SETUP.INVALIDATION",
+              "payload": [
+                [
+                  "active",
+                  "NO"
+                ],
+                [
+                  "declared",
+                  "PRICE,STRUCTURAL"
+                ]
+              ],
+              "rule_id": "SETUP.INVALIDATION.TRICHOTOMY",
+              "rule_version": "V1",
+              "source_ref": "SETUP.XAU.QUARTER_ZONE.V1"
+            },
+            {
+              "fact_id": "SETUP.AUTHORITY",
+              "payload": [
+                [
+                  "execution_class",
+                  "MANUAL_OPERATOR"
+                ],
+                [
+                  "automation_permitted",
+                  "NO"
+                ]
+              ],
+              "rule_id": "SETUP.AUTHORITY.SEPARATION",
+              "rule_version": "V1",
+              "source_ref": "SETUP.XAU.QUARTER_ZONE.V1"
+            }
+          ],
+          "invalidation_price": {
+            "active": false,
+            "magnitude_unit": "XAU_POINTS",
+            "materialization": "DECLARED",
+            "source_ref": "corpus/canonical/setups/XAU_QUARTER_ZONE_OPERATOR_CARD_V1.md#Invalidation",
+            "value": "5"
+          },
+          "invalidation_structural": {
+            "active": false,
+            "condition_id": "XAU.LADDER.80_FAMILY",
+            "source_ref": "corpus/canonical/setups/XAU_QUARTER_ZONE_OPERATOR_CARD_V1.md#Invalidation",
+            "state_ref": "XAU.STRUCTURAL.80"
+          },
+          "invalidation_temporal": null,
+          "location": {
+            "active": true,
+            "family": "XAU.QUARTER.ZONE",
+            "level": "0.25",
+            "level_id": "XAU.QUARTER.ZONE",
+            "level_kind": "COORDINATE",
+            "price": null,
+            "source_ref": "XAU_QUARTER_ZONE_OPERATOR_CARD_V1.md"
+          },
+          "manual_status": "MANUAL_OPERATOR",
+          "no_go_refs": [],
+          "parent_states": [
+            {
+              "layer": "L1",
+              "model_id": "XAU.GAME.L1_L2_L3.V1",
+              "model_state": "NODE_DECLARED",
+              "model_version": "1.0",
+              "output_hash": "",
+              "snapshot_ref": "SNAPSHOT.0001"
+            }
+          ],
+          "product_exposure": "OPERATOR_ONLY",
+          "promotion_conditions": [
+            {
+              "authority_ref": "SETUP.XAU.QUARTER_ZONE.V1",
+              "condition_id": "SETUP.XAU.PROMOTE.NEXT_QUARTER",
+              "required_transition": "L1_CONFIRMED",
+              "source_ref": "corpus/canonical/setups/XAU_QUARTER_ZONE_OPERATOR_CARD_V1.md"
+            },
+            {
+              "authority_ref": "SETUP.XAU.QUARTER_ZONE.V1",
+              "condition_id": "SETUP.XAU.PROMOTE.NEXT_QUARTER_DZ",
+              "required_transition": "L1_CONFIRMED",
+              "source_ref": "corpus/canonical/setups/XAU_QUARTER_ZONE_OPERATOR_CARD_V1.md"
+            }
+          ],
+          "setup_contract_version": "SETUP_CONTRACT.V1",
+          "setup_id": "SETUP.XAU.QUARTER_ZONE.V1",
+          "setup_version": "1.0",
+          "side": {
+            "basis_fact_id": "SETUP.FACT.BIAS",
+            "evidence_refs": [],
+            "side": "UP"
+          },
+          "source_card_ref": "corpus/canonical/setups/XAU_QUARTER_ZONE_OPERATOR_CARD_V1.md",
+          "targets": [
+            {
+              "active": false,
+              "confirmation_only": false,
+              "coordinate": null,
+              "declared_order_index": 0,
+              "promotion": {
+                "authority_ref": "SETUP.XAU.QUARTER_ZONE.V1",
+                "condition_id": "SETUP.XAU.PROMOTE.NEXT_QUARTER",
+                "required_transition": "L1_CONFIRMED",
+                "source_ref": "corpus/canonical/setups/XAU_QUARTER_ZONE_OPERATOR_CARD_V1.md"
+              },
+              "range_left_conditioned_on": [],
+              "source_ref": "corpus/canonical/setups/XAU_QUARTER_ZONE_OPERATOR_CARD_V1.md#Targets",
+              "target_id": "SETUP.XAU.TARGET.NEXT_QUARTER",
+              "transition_ref": null
+            },
+            {
+              "active": false,
+              "confirmation_only": false,
+              "coordinate": null,
+              "declared_order_index": 1,
+              "promotion": {
+                "authority_ref": "SETUP.XAU.QUARTER_ZONE.V1",
+                "condition_id": "SETUP.XAU.PROMOTE.NEXT_QUARTER_DZ",
+                "required_transition": "L1_CONFIRMED",
+                "source_ref": "corpus/canonical/setups/XAU_QUARTER_ZONE_OPERATOR_CARD_V1.md"
+              },
+              "range_left_conditioned_on": [],
+              "source_ref": "corpus/canonical/setups/XAU_QUARTER_ZONE_OPERATOR_CARD_V1.md#Targets",
+              "target_id": "SETUP.XAU.TARGET.NEXT_QUARTER_DISCOUNT_PREMIUM",
+              "transition_ref": null
+            },
+            {
+              "active": false,
+              "confirmation_only": true,
+              "coordinate": null,
+              "declared_order_index": 2,
+              "promotion": null,
+              "range_left_conditioned_on": [],
+              "source_ref": "corpus/canonical/setups/XAU_QUARTER_ZONE_OPERATOR_CARD_V1.md#Targets",
+              "target_id": "SETUP.XAU.TARGET.CONFIRM_5",
+              "transition_ref": null
+            },
+            {
+              "active": false,
+              "confirmation_only": true,
+              "coordinate": null,
+              "declared_order_index": 3,
+              "promotion": null,
+              "range_left_conditioned_on": [],
+              "source_ref": "corpus/canonical/setups/XAU_QUARTER_ZONE_OPERATOR_CARD_V1.md#Targets",
+              "target_id": "SETUP.XAU.TARGET.CONFIRM_10",
+              "transition_ref": null
+            }
+          ],
+          "transition_refs": [],
+          "trigger_requirement": {
+            "any_of": [
+              {
+                "bar_ref": null,
+                "tolerance": null,
+                "trigger_type": "REJECTION"
+              },
+              {
+                "bar_ref": null,
+                "tolerance": null,
+                "trigger_type": "CLOSE"
+              },
+              {
+                "bar_ref": null,
+                "tolerance": null,
+                "trigger_type": "SR_FLIP"
+              }
+            ],
+            "combination": "ALL",
+            "literals": [
+              {
+                "bar_ref": null,
+                "tolerance": null,
+                "trigger_type": "EXCURSION"
+              }
+            ],
+            "source_ref": "corpus/canonical/setups/XAU_QUARTER_ZONE_OPERATOR_CARD_V1.md#Entry"
+          }
+        }
+      }
+    },
+    {
+      "case_id": "contract_record_roundtrip",
+      "expected": {
+        "equal": true,
+        "hash": "32fbbe5e6d6dc8113bad3c8b922f60bef33fe0c099842d98cdd6bc3dbe2f5422"
+      }
+    }
+  ],
+  "fixture_id": "BLOC_III_5.SETUP_CONTRACT.V1",
+  "provenance": "SYNTHETIC_FIXTURE"
+}

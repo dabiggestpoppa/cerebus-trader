@@ -1,0 +1,52 @@
+{
+  "canonical_source_slice": "CANONICAL_SOURCE_SLICE",
+  "cases": [
+    {
+      "case_id": "fib_unresolved_anchor",
+      "expected_eligibility": "UNRESOLVED",
+      "expected_reasons": [
+        "ANCHOR_UNRESOLVED"
+      ],
+      "setup_id": "SETUP.FIB.REKEY.V1",
+      "surface": "RESEARCH"
+    },
+    {
+      "case_id": "fib_invalidated_anchor",
+      "expected_eligibility": "BLOCKED",
+      "expected_reasons": [
+        "ANCHOR_INVALIDATED"
+      ],
+      "setup_id": "SETUP.FIB.REKEY.V1",
+      "surface": "RESEARCH"
+    },
+    {
+      "case_id": "fib_declared_anchor_rule",
+      "expected_eligibility": "UNRESOLVED",
+      "expected_reasons": [
+        "ANCHOR_UNRESOLVED"
+      ],
+      "setup_id": "SETUP.FIB.REKEY.V1",
+      "surface": "RESEARCH"
+    },
+    {
+      "case_id": "fib_production_request",
+      "expected_eligibility": "BLOCKED",
+      "expected_reasons": [
+        "RESEARCH_ONLY_NOT_PRODUCTION"
+      ],
+      "setup_id": "SETUP.FIB.REKEY.V1",
+      "surface": "PRODUCTION"
+    },
+    {
+      "case_id": "fib_operator_request",
+      "expected_eligibility": "BLOCKED",
+      "expected_reasons": [
+        "RESEARCH_ONLY_NOT_PRODUCTION"
+      ],
+      "setup_id": "SETUP.FIB.REKEY.V1",
+      "surface": "OPERATOR"
+    }
+  ],
+  "fixture_id": "BLOC_III_5.FIB_REKEY.V1",
+  "provenance": "SYNTHETIC_FIXTURE"
+}

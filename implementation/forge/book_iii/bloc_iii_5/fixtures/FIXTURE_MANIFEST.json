@@ -1,0 +1,18 @@
+{
+  "files": {
+    "eligibility_cases.json": "b1051be6d0089b73cba24455af70cb84bfa7964d9f432ed3bc66de1ad52083f5",
+    "fib_rekey_cases.json": "89929aa61b742bae5be5846e257678fadcaeabc57d3d08f96b297deef0804bcb",
+    "invalidation_cases.json": "2153e0f21538fcb0f094ea77320d734b0008354062e6f41350776dfe78c1fa5b",
+    "jpy_role_gate_cases.json": "c81fb3c621d253a88e0d4beadeadf19d61f27ab74dc2801278d4f7982c5458aa",
+    "setup_authority_matrix.json": "4398584c40438cdef2edc5aee0b17a12450528d0c5e44baf7c8a2f00cce32520",
+    "setup_contract_cases.json": "6adadafa64807c54faf7671d869a83fdacc4a4126cc15f2157999284dd6d05ca",
+    "setup_registry_cases.json": "409048c0524797bc64c75f1b06105f5e67d1d9554c2038fc7924e07221511399",
+    "st_p90_cases.json": "1e1c27c6d0e7eeb22563c5af7fafc299742cf51162c930427865d70f36a8e651",
+    "statistics_cases.json": "6dd1dc6ef4b8f9f272f5958b95bb974ff94037a81c4fced87c648d42392bd66f",
+    "target_promotion_cases.json": "1b56b5bbe6eb0add17ea83723f7e2adbfd811118cb01fdb65f269d02a7dcf031",
+    "trigger_cases.json": "2f4862038d975e553772737842edddf01a9ca01a4e7f00cdc94ebc0d72652496",
+    "xau_quarter_zone_cases.json": "fb1ad8193e73b025908b818ef859dfa9b9863830ae6d862dff1eec3b08324ecb"
+  },
+  "fixture_manifest_version": "BLOC_III_5.FIXTURE_MANIFEST.V1",
+  "normalization": "LF"
+}
