@@ -92,6 +92,11 @@ No fixture was regenerated or edited.
 3. **Harness correction.** An initial adapter-parity check compared
    `PipelineResult.digest()` across paths; the amendment code was correct and
    the check was replaced with `compare_parity`.
+4. **Shallow-checkout integrity checks.** Two frozen-integrity tests used
+   `git diff <base-commit>`, which exits 128 on CI's shallow checkout. They now
+   require a clean worktree against `HEAD` and pin all 11 `market_data` files:
+   the two authorized files to their new hashes, the other nine to the recorded
+   III.1 baseline. Coverage is unchanged; portability is fixed.
 
 No prior acceptance test was weakened, skipped or deleted.
 

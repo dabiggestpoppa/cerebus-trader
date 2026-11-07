@@ -69,7 +69,12 @@ DEFAULT = build_default_registry()
 UTC = timezone.utc
 OPEN = datetime(2026, 3, 3, 0, 0, tzinfo=UTC)
 CUTOFF = datetime(2026, 3, 3, 8, 3, tzinfo=UTC)
-BASE_HEAD = "f47741fc76c232f0f28487f6ffe9f6c95e411f8e"
+NEW_NORMALIZE = (
+    "9b7ea855a3a90994ae325c44af40898e842a6fbef838a6dc5490b5a505919c24"
+)
+NEW_EXPORTS = (
+    "94c88cd73abd03053ac2ba0b90ee95f7d204929e4206ffce04606fb111015f0f"
+)
 
 OLD_NORMALIZE = (
     "04c4ecfc97e111e281d90158df5ee7b6cff1aeb25e4df6eaf81f93a66e9d026b"
@@ -858,9 +863,10 @@ def test_absent_source_field_refused():
 # ---------------------------------------------------------------------------
 
 
-def _git_diff(*paths: str) -> str:
+def _git_diff_head(*paths: str) -> str:
+    """Worktree-vs-HEAD diff; valid in shallow CI checkouts too."""
     result = subprocess.run(
-        ["git", "diff", "--name-only", BASE_HEAD, "--", *paths],
+        ["git", "diff", "--name-only", "HEAD", "--", *paths],
         cwd=REPO,
         capture_output=True,
         text=True,
@@ -870,7 +876,7 @@ def _git_diff(*paths: str) -> str:
 
 
 def test_book_i_and_ii_untouched():
-    assert _git_diff(
+    assert _git_diff_head(
         "implementation/forge/book_i",
         "implementation/forge/book_ii",
         "app/forge/service/routes.py",
@@ -883,11 +889,29 @@ def test_book_i_and_ii_untouched():
 
 
 def test_only_authorized_frozen_files_changed():
-    changed = sorted(_git_diff("app/forge").splitlines())
-    assert changed == [
-        "app/forge/market_data/__init__.py",
-        "app/forge/market_data/normalize.py",
-    ]
+    # A shallow checkout cannot diff the pre-amendment commit; integrity is
+    # proven instead by pinning all 11 market_data files and requiring a clean
+    # worktree. The two authorized files carry the new hashes, the other nine
+    # still match the recorded III.1 baseline.
+    assert _git_diff_head("app/forge") == ""
+    baseline = json.loads(
+        (
+            REPO
+            / "implementation/forge/book_iii/bloc_iii_5/fixtures/FROZEN_BASELINE.json"
+        ).read_text(encoding="utf-8")
+    )
+    pinned = {
+        path: digest
+        for path, digest in baseline["files"].items()
+        if path.startswith("app/forge/market_data/")
+    }
+    assert len(pinned) == 11
+    assert pinned["app/forge/market_data/normalize.py"] == NEW_NORMALIZE
+    assert pinned["app/forge/market_data/__init__.py"] == NEW_EXPORTS
+    for relative, expected in pinned.items():
+        assert _sha(REPO / relative) == expected, relative
+    assert _sha(REPO / "app/forge/market_data/normalize.py") == NEW_NORMALIZE
+    assert _sha(REPO / "app/forge/market_data/__init__.py") == NEW_EXPORTS
     assert _sha(REPO / "app/forge/market_data/instruments.py") == FROZEN_INSTRUMENTS
     assert _sha(REPO / "app/forge/market_data/bars.py") == FROZEN_BARS
     assert _sha(REPO / "app/forge/market_data/quality.py") == FROZEN_QUALITY
