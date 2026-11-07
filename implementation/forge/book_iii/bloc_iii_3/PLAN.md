@@ -263,9 +263,9 @@ dispatch never re-derives a version and never falls back.
   `core.autocrlf=true` checkout; EOL-normalized comparison for
   cross-platform verification):
 
-  `__init__.py 7d57349b…11fd0` · `bars.py 97fc99e4…66366` ·
+  `__init__.py 94c88cd7…15f0f` · `bars.py 97fc99e4…66366` ·
   `clocks.py 2698d527…ef172` · `errors.py 52f10816…6c88c` ·
-  `instruments.py 8c6d6ad0…ed94d` · `normalize.py 04c4ecfc…d026b` ·
+  `instruments.py 8c6d6ad0…ed94d` · `normalize.py 9b7ea855…19c24` ·
   `parity.py 0bb765af…8ce8c` · `quality.py 6b77c6df…58687` ·
   `research_day.py b5c82e40…d5307` · `sessions.py 037dbaaa…b77e5` ·
   `versions.py 9e502d7f…7842e` (verified 11/11 at this head; full

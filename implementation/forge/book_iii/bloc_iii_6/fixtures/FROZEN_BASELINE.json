@@ -1,25 +1,25 @@
 {
-  "packages": {
-    "market_data": {
-      "aggregate_sha256": "c78084bf8d60fb536d8cccda806568f03ba1e625e769b50526ddf3c000901c03",
-      "modules": 11
-    },
-    "measurements": {
-      "aggregate_sha256": "1912207e39bd94cee25aae65d108d4f783cc458c81dfb15513f7424cfd631d44",
-      "modules": 12
-    },
-    "model_runtime": {
-      "aggregate_sha256": "27ac88c4df446a589b3785a591128b712bb12091bdda8f58c2cf39bfa96c5644",
-      "modules": 13
-    },
-    "setup_engine": {
-      "aggregate_sha256": "0fc19919b5ef74548506a6ea7ebb0c7a475f8af0eae473f73813f7a3e1912a33",
-      "modules": 16
-    },
-    "state_engine": {
-      "aggregate_sha256": "9b89454b6521f6320997ccd4218a934f8fc4f7a4f308684fd652ead3159bb0f5",
-      "modules": 13
-    }
+ "packages": {
+  "market_data": {
+   "aggregate_sha256": "6c8d903ff80887f9169824cc52613fc02a5790e5216e001db6d49be1230f2e80",
+   "modules": 11
   },
-  "schema_version": "III6_FROZEN_BASELINE.V1"
+  "measurements": {
+   "aggregate_sha256": "1912207e39bd94cee25aae65d108d4f783cc458c81dfb15513f7424cfd631d44",
+   "modules": 12
+  },
+  "model_runtime": {
+   "aggregate_sha256": "27ac88c4df446a589b3785a591128b712bb12091bdda8f58c2cf39bfa96c5644",
+   "modules": 13
+  },
+  "setup_engine": {
+   "aggregate_sha256": "0fc19919b5ef74548506a6ea7ebb0c7a475f8af0eae473f73813f7a3e1912a33",
+   "modules": 16
+  },
+  "state_engine": {
+   "aggregate_sha256": "9b89454b6521f6320997ccd4218a934f8fc4f7a4f308684fd652ead3159bb0f5",
+   "modules": 13
+  }
+ },
+ "schema_version": "III6_FROZEN_BASELINE.V1"
 }
