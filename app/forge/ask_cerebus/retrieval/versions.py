@@ -1,0 +1,16 @@
+"""Version constants for the IV.2 retrieval contract."""
+
+from __future__ import annotations
+
+RETRIEVAL_CONTRACT_V1 = "RETRIEVAL_CONTRACT_V1"
+SUPPORTED_RETRIEVAL_CONTRACT_VERSIONS = frozenset({RETRIEVAL_CONTRACT_V1})
+
+BUNDLE_ID_PREFIX = "BUNDLE."
+BUNDLE_ID_LENGTH = 32
+
+__all__ = [
+    "RETRIEVAL_CONTRACT_V1",
+    "SUPPORTED_RETRIEVAL_CONTRACT_VERSIONS",
+    "BUNDLE_ID_PREFIX",
+    "BUNDLE_ID_LENGTH",
+]
