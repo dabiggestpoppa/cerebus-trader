@@ -70,9 +70,11 @@ from .instruments import (
     validate_quote_base,
 )
 from .normalize import (
+    CloseTimeRule,
     FeedResult,
     NormalizedRecord,
     NormalizeStatus,
+    PROVIDER_SCHEMA_REGISTRY_VERSION,
     PROVIDER_SCHEMAS,
     ProviderFieldMap,
     RefusalReason,
@@ -191,9 +193,11 @@ __all__ = [
     "parse_quality_flag",
     "with_flag",
     # normalize
+    "CloseTimeRule",
     "FeedResult",
     "NormalizedRecord",
     "NormalizeStatus",
+    "PROVIDER_SCHEMA_REGISTRY_VERSION",
     "PROVIDER_SCHEMAS",
     "ProviderFieldMap",
     "RefusalReason",

@@ -17,9 +17,10 @@ OHLC, J-e) and precision violations.
 from __future__ import annotations
 
 from dataclasses import dataclass
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from decimal import Decimal, InvalidOperation
 from enum import Enum
+from types import MappingProxyType
 from typing import Any, Mapping, Sequence
 
 from .bars import (
@@ -59,48 +60,76 @@ class RefusalReason(str, Enum):
 
 class TimestampStyle(str, Enum):
     EPOCH_SECONDS = "EPOCH_SECONDS"
+    EPOCH_MILLISECONDS = "EPOCH_MILLISECONDS"
     ISO_OFFSET = "ISO_OFFSET"
+
+
+class CloseTimeRule(str, Enum):
+    """How a provider's bar close time is obtained.
+
+    ``SOURCE`` requires a provider-supplied close field.  ``OPEN_PLUS_TIMEFRAME``
+    derives the close from the bar's open time and declared timeframe with UTC
+    arithmetic — deterministic, DST-independent, and never written back into
+    the source timestamp.
+    """
+
+    SOURCE = "SOURCE"
+    OPEN_PLUS_TIMEFRAME = "OPEN_PLUS_TIMEFRAME"
 
 
 @dataclass(frozen=True)
 class ProviderFieldMap:
-    """Provider-specific raw field conventions (quarantined here)."""
+    """Provider-specific raw field conventions (quarantined here).
+
+    ``close_time`` and ``clock`` are optional: some vendors publish neither.
+    A missing close time is only ever *derived* when ``close_time_rule``
+    explicitly says so; a missing clock means the provider made no clock
+    claim, never that a clock may be assumed.
+    """
 
     provider: str
     symbol: str
     timeframe: str
     open_time: str
-    close_time: str
+    close_time: str | None
     open_price: str
     high: str
     low: str
     close_price: str
     volume: str
     source_timestamp: str
-    clock: str
     timestamp_style: TimestampStyle
+    clock: str | None = None
+    close_time_rule: CloseTimeRule = CloseTimeRule.SOURCE
 
     @property
     def required_keys(self) -> tuple[str, ...]:
-        return (
-            self.symbol,
-            self.timeframe,
-            self.open_time,
-            self.close_time,
-            self.open_price,
-            self.high,
-            self.low,
-            self.close_price,
-            self.source_timestamp,
-            self.clock,
+        keys = [self.symbol, self.timeframe, self.open_time]
+        if self.close_time is not None:
+            keys.append(self.close_time)
+        keys.extend(
+            (
+                self.open_price,
+                self.high,
+                self.low,
+                self.close_price,
+                self.source_timestamp,
+            )
         )
+        if self.clock is not None:
+            keys.append(self.clock)
+        return tuple(keys)
 
     @property
     def raw_keys(self) -> tuple[str, ...]:
         return self.required_keys + (self.volume,)
 
 
-PROVIDER_SCHEMAS: Mapping[str, ProviderFieldMap] = {
+PROVIDER_SCHEMA_REGISTRY_VERSION = "PROVIDER_SCHEMAS_V2"
+
+# Epoch milliseconds before 2001-09-09 are indistinguishable from a seconds
+# value passed in the wrong unit; such input is refused, never rescaled.
+PROVIDER_SCHEMAS: Mapping[str, ProviderFieldMap] = MappingProxyType({
     "fake_alpha": ProviderFieldMap(
         provider="fake_alpha",
         symbol="pair",
@@ -131,7 +160,58 @@ PROVIDER_SCHEMAS: Mapping[str, ProviderFieldMap] = {
         clock="tz",
         timestamp_style=TimestampStyle.ISO_OFFSET,
     ),
-}
+    # Vendors below publish no close-time field and no clock column: the
+    # adapter supplies request context (symbol/timeframe) and the kernel
+    # derives the interval boundary from the canonical open time.
+    "twelvedata": ProviderFieldMap(
+        provider="twelvedata",
+        symbol="symbol",
+        timeframe="interval",
+        open_time="datetime",
+        close_time=None,
+        open_price="open",
+        high="high",
+        low="low",
+        close_price="close",
+        volume="volume",
+        source_timestamp="datetime",
+        timestamp_style=TimestampStyle.ISO_OFFSET,
+        clock=None,
+        close_time_rule=CloseTimeRule.OPEN_PLUS_TIMEFRAME,
+    ),
+    "polygon": ProviderFieldMap(
+        provider="polygon",
+        symbol="symbol",
+        timeframe="timeframe",
+        open_time="t",
+        close_time=None,
+        open_price="o",
+        high="h",
+        low="l",
+        close_price="c",
+        volume="v",
+        source_timestamp="t",
+        timestamp_style=TimestampStyle.EPOCH_MILLISECONDS,
+        clock=None,
+        close_time_rule=CloseTimeRule.OPEN_PLUS_TIMEFRAME,
+    ),
+    "kraken": ProviderFieldMap(
+        provider="kraken",
+        symbol="symbol",
+        timeframe="timeframe",
+        open_time="t",
+        close_time=None,
+        open_price="o",
+        high="h",
+        low="l",
+        close_price="c",
+        volume="v",
+        source_timestamp="t",
+        timestamp_style=TimestampStyle.EPOCH_SECONDS,
+        clock=None,
+        close_time_rule=CloseTimeRule.OPEN_PLUS_TIMEFRAME,
+    ),
+})
 
 
 def provider_schema(provider: str) -> ProviderFieldMap:
@@ -143,10 +223,36 @@ def provider_schema(provider: str) -> ProviderFieldMap:
     return schema
 
 
+def _integer_timestamp(value: Any) -> int | None:
+    """Integer epoch value as int or digit string; floats are refused."""
+    if isinstance(value, bool):
+        return None
+    if isinstance(value, int):
+        return value
+    if isinstance(value, str):
+        text = value.strip()
+        if text.lstrip("-").isdigit():
+            return int(text)
+    return None
+
+
 def _parse_timestamp(value: Any, style: TimestampStyle) -> datetime | None:
     try:
         if style is TimestampStyle.EPOCH_SECONDS:
-            return datetime.fromtimestamp(int(value), tz=timezone.utc)
+            seconds = _integer_timestamp(value)
+            if seconds is None:
+                return None
+            return datetime.fromtimestamp(seconds, tz=timezone.utc)
+        if style is TimestampStyle.EPOCH_MILLISECONDS:
+            milliseconds = _integer_timestamp(value)
+            if milliseconds is None or milliseconds < 10**12:
+                return None  # seconds value under a ms style is refused
+            seconds, remainder = divmod(milliseconds, 1000)
+            return datetime.fromtimestamp(seconds, tz=timezone.utc) + timedelta(
+                milliseconds=remainder
+            )
+        if style is not TimestampStyle.ISO_OFFSET:
+            return None  # unknown unit is never guessed
         parsed = datetime.fromisoformat(str(value))
     except (ValueError, TypeError, OverflowError, OSError):
         return None
@@ -219,17 +325,29 @@ def normalize_record(
     except UnsupportedTimeframeError:
         return _refused(RefusalReason.UNSUPPORTED_TIMEFRAME)
 
-    clock_id = str(payload[schema.clock])
-    if not instrument.supports_clock(clock_id):
-        # G4: fail closed with the flag — never silently remapped.
-        return _refused(RefusalReason.UNSUPPORTED_CLOCK, [QualityFlag.UNSUPPORTED_CLOCK])
+    if schema.clock is not None:
+        clock_id = str(payload[schema.clock])
+        if not instrument.supports_clock(clock_id):
+            # G4: fail closed with the flag — never silently remapped.
+            return _refused(
+                RefusalReason.UNSUPPORTED_CLOCK, [QualityFlag.UNSUPPORTED_CLOCK]
+            )
 
     open_time = _parse_timestamp(payload[schema.open_time], schema.timestamp_style)
-    close_time = _parse_timestamp(payload[schema.close_time], schema.timestamp_style)
+    if open_time is None:
+        return _refused(RefusalReason.INCOMPLETE_RECORD, [QualityFlag.GAP])
+    if schema.close_time is not None:
+        close_time = _parse_timestamp(
+            payload[schema.close_time], schema.timestamp_style
+        )
+    elif schema.close_time_rule is CloseTimeRule.OPEN_PLUS_TIMEFRAME:
+        close_time = open_time + timedelta(minutes=TIMEFRAME_MINUTES[timeframe])
+    else:  # SOURCE rule without a source close field: nothing is invented
+        close_time = None
     source_timestamp = _parse_timestamp(
         payload[schema.source_timestamp], schema.timestamp_style
     )
-    if open_time is None or close_time is None or source_timestamp is None:
+    if close_time is None or source_timestamp is None:
         return _refused(RefusalReason.INCOMPLETE_RECORD, [QualityFlag.GAP])
     if close_time <= open_time:
         return _refused(RefusalReason.INCOMPLETE_RECORD, [QualityFlag.GAP])
