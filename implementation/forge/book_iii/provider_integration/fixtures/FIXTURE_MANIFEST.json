@@ -1,0 +1,56 @@
+{
+  "adapter_version": "MARKET_DATA_INGEST_V1",
+  "files": {
+    "fix_01.json": {
+      "case_id": "FIX-01",
+      "sha256": "e0daeb738b413e88c2444b10056a0fdf12fc23d3dd7c2fa9e4a4f0a2f4f40e83"
+    },
+    "fix_02.json": {
+      "case_id": "FIX-02",
+      "sha256": "a76f344b129130abe5873d5fec94b6a22df802a572c961e7e4ffeca26ea65934"
+    },
+    "fix_03.json": {
+      "case_id": "FIX-03",
+      "sha256": "36d4bfc65cba1dcf1da3546e9dc025c25ad62a59a32f12405f719141c036c60b"
+    },
+    "fix_04.json": {
+      "case_id": "FIX-04",
+      "sha256": "d7995e94e93df4c4f2c52842d729d310c9dd973a8a16eddfe203d61ed3e9d16a"
+    },
+    "fix_05.json": {
+      "case_id": "FIX-05",
+      "sha256": "83b9dba88c44275655f598a1a5c20897f45ad7ff5739d7601e076c40ad9cb088"
+    },
+    "fix_06.json": {
+      "case_id": "FIX-06",
+      "sha256": "a10231cce565d74b432aa9d28f966f1330f9dbf5c3b32d0234790d36ff8be01b"
+    },
+    "fix_07.json": {
+      "case_id": "FIX-07",
+      "sha256": "bd90c00b09f82641e48600e38dcd1785de2eb7c371479b8dc6bedf02b7a9d767"
+    },
+    "fix_08.json": {
+      "case_id": "FIX-08",
+      "sha256": "a6d43e2c32f7807a72c09f346f25aaa0f050a5c2020403b62b21363271a73a72"
+    },
+    "fix_09.json": {
+      "case_id": "FIX-09",
+      "sha256": "9b9ff9342fec300ab21fc7f5495ea669fc47e200124c2f971bb1016c12b57465"
+    },
+    "fix_10.json": {
+      "case_id": "FIX-10",
+      "sha256": "5ceab17d8f332a54789a8453e0de79e3897ed7c6f7c9f55b4871a80a6f514981"
+    },
+    "fix_11.json": {
+      "case_id": "FIX-11",
+      "sha256": "28df08ae996499910319497e1a125db12d5755c267a87f256f893885067c117d"
+    },
+    "fix_12.json": {
+      "case_id": "FIX-12",
+      "sha256": "3ce6e2a8dc24dc849be054f1901659810fbba7a58a3cfafe34e1ad7353fe9b22"
+    }
+  },
+  "fixture_set": "WP3B_MARKET_DATA_INGEST",
+  "hash_normalization": "LF",
+  "synthetic": true
+}

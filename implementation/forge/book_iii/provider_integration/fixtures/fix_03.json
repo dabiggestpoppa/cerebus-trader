@@ -1,0 +1,91 @@
+{
+  "adapter_version": "MARKET_DATA_INGEST_V1",
+  "case_id": "FIX-03",
+  "description": "BTCUSD Saturday sequence (24/7, no weekend gap)",
+  "expected": {
+    "bar_count": 6,
+    "missing_count": 0,
+    "quality_flags": [
+      "COMPLETE"
+    ]
+  },
+  "instrument_id": "BTCUSD",
+  "observation_cutoff": "2026-03-07T01:00:00Z",
+  "pages": [
+    {
+      "next": false,
+      "status": "ok",
+      "values": [
+        {
+          "close": "68406.00",
+          "datetime": "2026-03-07T00:00:00Z",
+          "high": "68418.00",
+          "interval": "5min",
+          "low": "68388.00",
+          "open": "68400.00",
+          "source_timestamp": "2026-03-07T00:00:03Z",
+          "symbol": "BTC/USD",
+          "volume": "3.2"
+        },
+        {
+          "close": "68418.00",
+          "datetime": "2026-03-07T00:05:00Z",
+          "high": "68430.00",
+          "interval": "5min",
+          "low": "68400.00",
+          "open": "68412.00",
+          "source_timestamp": "2026-03-07T00:05:03Z",
+          "symbol": "BTC/USD",
+          "volume": "3.2"
+        },
+        {
+          "close": "68430.00",
+          "datetime": "2026-03-07T00:10:00Z",
+          "high": "68442.00",
+          "interval": "5min",
+          "low": "68412.00",
+          "open": "68424.00",
+          "source_timestamp": "2026-03-07T00:10:03Z",
+          "symbol": "BTC/USD",
+          "volume": "3.2"
+        },
+        {
+          "close": "68442.00",
+          "datetime": "2026-03-07T00:15:00Z",
+          "high": "68454.00",
+          "interval": "5min",
+          "low": "68424.00",
+          "open": "68436.00",
+          "source_timestamp": "2026-03-07T00:15:03Z",
+          "symbol": "BTC/USD",
+          "volume": "3.2"
+        },
+        {
+          "close": "68454.00",
+          "datetime": "2026-03-07T00:20:00Z",
+          "high": "68466.00",
+          "interval": "5min",
+          "low": "68436.00",
+          "open": "68448.00",
+          "source_timestamp": "2026-03-07T00:20:03Z",
+          "symbol": "BTC/USD",
+          "volume": "3.2"
+        },
+        {
+          "close": "68466.00",
+          "datetime": "2026-03-07T00:25:00Z",
+          "high": "68478.00",
+          "interval": "5min",
+          "low": "68448.00",
+          "open": "68460.00",
+          "source_timestamp": "2026-03-07T00:25:03Z",
+          "symbol": "BTC/USD",
+          "volume": "3.2"
+        }
+      ]
+    }
+  ],
+  "provenance": "SYNTHETIC_FIXTURE",
+  "provider": "twelvedata",
+  "timeframe": "M5"
+}

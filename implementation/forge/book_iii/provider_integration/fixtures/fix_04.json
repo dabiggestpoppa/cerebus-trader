@@ -1,0 +1,66 @@
+{
+  "adapter_version": "MARKET_DATA_INGEST_V1",
+  "case_id": "FIX-04",
+  "description": "EURUSD spring-forward final-bar instant",
+  "expected": {
+    "bar_count": 4,
+    "final_close": "2026-03-08T07:00:00Z"
+  },
+  "instrument_id": "EURUSD",
+  "observation_cutoff": "2026-03-08T08:03:00Z",
+  "pages": [
+    {
+      "next": false,
+      "status": "ok",
+      "values": [
+        {
+          "close": "1.08425",
+          "datetime": "2026-03-08T06:40:00Z",
+          "high": "1.08435",
+          "interval": "5min",
+          "low": "1.08410",
+          "open": "1.08420",
+          "source_timestamp": "2026-03-08T06:40:03Z",
+          "symbol": "EUR/USD",
+          "volume": "100"
+        },
+        {
+          "close": "1.08435",
+          "datetime": "2026-03-08T06:45:00Z",
+          "high": "1.08445",
+          "interval": "5min",
+          "low": "1.08420",
+          "open": "1.08430",
+          "source_timestamp": "2026-03-08T06:45:03Z",
+          "symbol": "EUR/USD",
+          "volume": "100"
+        },
+        {
+          "close": "1.08445",
+          "datetime": "2026-03-08T06:50:00Z",
+          "high": "1.08455",
+          "interval": "5min",
+          "low": "1.08430",
+          "open": "1.08440",
+          "source_timestamp": "2026-03-08T06:50:03Z",
+          "symbol": "EUR/USD",
+          "volume": "100"
+        },
+        {
+          "close": "1.08455",
+          "datetime": "2026-03-08T06:55:00Z",
+          "high": "1.08465",
+          "interval": "5min",
+          "low": "1.08440",
+          "open": "1.08450",
+          "source_timestamp": "2026-03-08T06:55:03Z",
+          "symbol": "EUR/USD",
+          "volume": "100"
+        }
+      ]
+    }
+  ],
+  "provenance": "SYNTHETIC_FIXTURE",
+  "provider": "twelvedata",
+  "timeframe": "M5"
+}

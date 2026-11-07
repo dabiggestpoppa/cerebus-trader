@@ -1,0 +1,67 @@
+{
+  "adapter_version": "MARKET_DATA_INGEST_V1",
+  "case_id": "FIX-02",
+  "description": "XAUUSD bars across the 19:00 NY transition without a canonical session",
+  "expected": {
+    "bar_count": 4,
+    "outcome": "OK",
+    "ownership": "NO_SESSION"
+  },
+  "instrument_id": "XAUUSD",
+  "observation_cutoff": "2026-03-03T08:03:00Z",
+  "pages": [
+    {
+      "next": false,
+      "status": "ok",
+      "values": [
+        {
+          "close": "2385.18",
+          "datetime": "2026-03-03T00:00:00Z",
+          "high": "2385.53",
+          "interval": "5min",
+          "low": "2384.65",
+          "open": "2385.00",
+          "source_timestamp": "2026-03-03T00:00:03Z",
+          "symbol": "XAU/USD",
+          "volume": "12.5"
+        },
+        {
+          "close": "2385.52",
+          "datetime": "2026-03-03T00:05:00Z",
+          "high": "2385.87",
+          "interval": "5min",
+          "low": "2385.00",
+          "open": "2385.35",
+          "source_timestamp": "2026-03-03T00:05:03Z",
+          "symbol": "XAU/USD",
+          "volume": "12.5"
+        },
+        {
+          "close": "2385.88",
+          "datetime": "2026-03-03T00:10:00Z",
+          "high": "2386.23",
+          "interval": "5min",
+          "low": "2385.35",
+          "open": "2385.70",
+          "source_timestamp": "2026-03-03T00:10:03Z",
+          "symbol": "XAU/USD",
+          "volume": "12.5"
+        },
+        {
+          "close": "2386.22",
+          "datetime": "2026-03-03T00:15:00Z",
+          "high": "2386.57",
+          "interval": "5min",
+          "low": "2385.70",
+          "open": "2386.05",
+          "source_timestamp": "2026-03-03T00:15:03Z",
+          "symbol": "XAU/USD",
+          "volume": "12.5"
+        }
+      ]
+    }
+  ],
+  "provenance": "SYNTHETIC_FIXTURE",
+  "provider": "twelvedata",
+  "timeframe": "M5"
+}

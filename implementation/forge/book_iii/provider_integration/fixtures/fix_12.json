@@ -1,0 +1,53 @@
+{
+  "adapter_version": "MARKET_DATA_INGEST_V1",
+  "case_id": "FIX-12",
+  "description": "Cross-provider discrepancy beyond one tick",
+  "expected": {
+    "disagreement": true,
+    "flag": "OUTLIER_SOURCE"
+  },
+  "instrument_id": "EURUSD",
+  "observation_cutoff": "2026-03-03T08:03:00Z",
+  "pages": [
+    {
+      "results": [
+        {
+          "c": "1.08455",
+          "h": "1.08440",
+          "l": "1.08400",
+          "o": "1.08420",
+          "sym": "C:EURUSD",
+          "t": 1772496000000
+        },
+        {
+          "c": "1.08465",
+          "h": "1.08450",
+          "l": "1.08410",
+          "o": "1.08430",
+          "sym": "C:EURUSD",
+          "t": 1772496300000
+        },
+        {
+          "c": "1.08475",
+          "h": "1.08460",
+          "l": "1.08420",
+          "o": "1.08440",
+          "sym": "C:EURUSD",
+          "t": 1772496600000
+        },
+        {
+          "c": "1.08485",
+          "h": "1.08470",
+          "l": "1.08430",
+          "o": "1.08450",
+          "sym": "C:EURUSD",
+          "t": 1772496900000
+        }
+      ],
+      "status": "OK"
+    }
+  ],
+  "provenance": "SYNTHETIC_FIXTURE",
+  "provider": "polygon",
+  "timeframe": "M5"
+}

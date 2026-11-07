@@ -1,0 +1,48 @@
+{
+  "adapter_version": "MARKET_DATA_INGEST_V1",
+  "case_id": "FIX-09",
+  "description": "Corrected source candle (later source timestamp)",
+  "expected": {
+    "bar_count": 1,
+    "quality_flags": [
+      "REVISED"
+    ],
+    "revisions": 1
+  },
+  "instrument_id": "EURUSD",
+  "observation_cutoff": "2026-03-03T08:03:00Z",
+  "pages": [
+    {
+      "next": false,
+      "status": "ok",
+      "values": [
+        {
+          "close": "1.08425",
+          "datetime": "2026-03-03T00:00:00Z",
+          "high": "1.08435",
+          "interval": "5min",
+          "low": "1.08410",
+          "open": "1.08420",
+          "source_timestamp": "2026-03-03T00:00:03Z",
+          "symbol": "EUR/USD",
+          "volume": "100"
+        },
+        {
+          "close": "1.08445",
+          "datetime": "2026-03-03T00:00:00Z",
+          "high": "1.08455",
+          "interval": "5min",
+          "low": "1.08410",
+          "open": "1.08420",
+          "revision": "2",
+          "source_timestamp": "2026-03-03T00:01:03Z",
+          "symbol": "EUR/USD",
+          "volume": "100"
+        }
+      ]
+    }
+  ],
+  "provenance": "SYNTHETIC_FIXTURE",
+  "provider": "twelvedata",
+  "timeframe": "M5"
+}
