@@ -1,0 +1,79 @@
+{
+  "base_head": "38b322b562317fdd42ad8ea61a9866b2931966a7",
+  "contract": "RETRIEVAL_CONTRACT_V1",
+  "fixture_count": 18,
+  "fixtures": {
+    "Q2-01.json": {
+      "bytes": 1649,
+      "sha256": "e4e39d4a585b4c5c7a22cc48d36ce0a06a42e0872b81a1fa0085f0424e7fa9bf"
+    },
+    "Q2-02.json": {
+      "bytes": 1649,
+      "sha256": "932d6131cfa7cb91d2835e582f3fe674dcbfb65eb9330989bc26e20605757c90"
+    },
+    "Q2-03.json": {
+      "bytes": 1649,
+      "sha256": "4283fdbcf02ab0acc91c9f268ca1988fe9666022054cd175824f933f00d5abfb"
+    },
+    "Q2-04.json": {
+      "bytes": 1406,
+      "sha256": "4785d3fbc46d67060dd448085fd0a3102c583d1e9193c4a7adfd03cde7e1cfc1"
+    },
+    "Q2-05.json": {
+      "bytes": 2116,
+      "sha256": "9f0c15e86a9e9bb5f04aca909278314d891d26dc5884872db8b6b645802b3fa3"
+    },
+    "Q2-06.json": {
+      "bytes": 1538,
+      "sha256": "0203da202e9347bacbb8535792baa87c900ed7323d30981dc2ee091e4e25d024"
+    },
+    "Q2-07.json": {
+      "bytes": 2018,
+      "sha256": "597ea57ade3e7b28119d82ef768063e6e5b827fb7b11e1f11ed9517f18364859"
+    },
+    "Q2-08.json": {
+      "bytes": 1325,
+      "sha256": "906b83be81d67091911b4e97ac015a9f171487d65fbe3c991a1f8af1e42770c8"
+    },
+    "Q2-09.json": {
+      "bytes": 1021,
+      "sha256": "877442448c2739004dc6b0459929ad4f957ed59799fd14025acc32af78265669"
+    },
+    "Q2-10.json": {
+      "bytes": 1012,
+      "sha256": "227238b0082945b1b1769d9607913e373bf2f455d1f8f43902a957528a3108f6"
+    },
+    "Q2-11.json": {
+      "bytes": 1047,
+      "sha256": "4b8334f5a8317386ea56c9f58b8048eb9a1cb76d3dcc29030d660a72216ae3a6"
+    },
+    "Q2-12.json": {
+      "bytes": 2369,
+      "sha256": "a82e2752ccc777a41dd78f5e2d051e3b1f38d8a63d62ca4894d6483646358a99"
+    },
+    "Q2-13.json": {
+      "bytes": 2195,
+      "sha256": "6593b93b696ddc23f8c5ad703e2053fedfb8662a00442865bea1a37c05e2197d"
+    },
+    "Q2-14.json": {
+      "bytes": 2167,
+      "sha256": "67e9e267cfb2d5fcd0f8e5a7c5bdb550ee22767dc3b8abe235d1cdebfdac5cbd"
+    },
+    "Q2-15.json": {
+      "bytes": 942,
+      "sha256": "21a2fe65c79e30116cefbc6c3c6e547141ccc4ac746ae5e6c6ec089ebdfb8c37"
+    },
+    "Q2-16.json": {
+      "bytes": 1732,
+      "sha256": "83bad28fa734ccdda1afb1bb4c02fef5e6779aca5b81e4f30880d8f68fdc9524"
+    },
+    "Q2-17.json": {
+      "bytes": 2024,
+      "sha256": "43bd37df2f132936c6fe21c74954114b324e9b11538fb98de9c702fd019d22e0"
+    },
+    "Q2-18.json": {
+      "bytes": 1888,
+      "sha256": "e5be6bd4ea3f0490302009edc83dbe0feef14043ef4b046d60ced76fa39cb2c8"
+    }
+  }
+}
