@@ -1,0 +1,87 @@
+{
+  "base_head": "0d64fa8cf6d1c568dae6d7110281d38b5587705a",
+  "contract": "CONTEXT_CONTRACT_V1",
+  "fixture_count": 20,
+  "fixtures": {
+    "Q3-01.json": {
+      "bytes": 5863,
+      "sha256": "d883f8281fe987a833f5e51ef0e75f2323f59d7d2aba36684ea387ed375fc031"
+    },
+    "Q3-02.json": {
+      "bytes": 5556,
+      "sha256": "ded1447d9af34fe9550cf25a086548ccac13c6954364eb885c0110c13da8b34b"
+    },
+    "Q3-03.json": {
+      "bytes": 4786,
+      "sha256": "3a4ee828677d9efa62ed6e0e4baeb21dcdc9282bbcc5bb200fae104629ff09e6"
+    },
+    "Q3-04.json": {
+      "bytes": 3572,
+      "sha256": "9b1560eb8892d097c2fd372950cf7ce1b07a96affe8e9bc06f518b3dba552a1d"
+    },
+    "Q3-05.json": {
+      "bytes": 4379,
+      "sha256": "429b848fb7000afafffae46ebb5111c965e157b0ff5e1ad8377e6ab3f8b75e4b"
+    },
+    "Q3-06.json": {
+      "bytes": 5881,
+      "sha256": "3494834ddd6520787d790f9de957b5b404fa991bf5c7568c421338b3de0708a1"
+    },
+    "Q3-07.json": {
+      "bytes": 5247,
+      "sha256": "4912c16a067a4cf0f6d4ccb2d5132bd6303d8cf2c887128f9969e2b56bf7cd35"
+    },
+    "Q3-08.json": {
+      "bytes": 5880,
+      "sha256": "a851371518e0dd850656cd90406c290af4dcd34215ecb821c46accc779bf715a"
+    },
+    "Q3-09.json": {
+      "bytes": 6069,
+      "sha256": "4477a92af3b4e7a4a8b1a1e6fae02964166677287770306c49c9a7bf545f2af2"
+    },
+    "Q3-10.json": {
+      "bytes": 5442,
+      "sha256": "0a45ed94cab67ad2c6030d4283234d53b3b32ce349115f85a276374d60e1a5e4"
+    },
+    "Q3-11.json": {
+      "bytes": 4909,
+      "sha256": "1a5fc8fd88d2a696b648234a82863b7320a2988d239b5bb50c1d4ff16009ab0b"
+    },
+    "Q3-12.json": {
+      "bytes": 4423,
+      "sha256": "d50c862733ac279dd9d034785882ff97cff5baa186c08101e6052bf90bc68e15"
+    },
+    "Q3-13.json": {
+      "bytes": 4444,
+      "sha256": "3559a6df926fe3a9fba132f9a7b48904b5f47d520448ef0e6aff6b7d27777d4c"
+    },
+    "Q3-14.json": {
+      "bytes": 7944,
+      "sha256": "d90e23c7a2ec4b0d74646b612ae3e737e72301f61dbf01e7fbe127db91b5fed7"
+    },
+    "Q3-15.json": {
+      "bytes": 6775,
+      "sha256": "c89204e8c37d06e8322374549607ae52283a665077e7c70d1a95d883d9a9228e"
+    },
+    "Q3-16.json": {
+      "bytes": 6834,
+      "sha256": "da536466068ccac6f2634a02d9fe4e13884a8ec4782117f044bf7cfe684f404b"
+    },
+    "Q3-17.json": {
+      "bytes": 5812,
+      "sha256": "9a8240123e1ebb5a5e0cb8165b025a51c375ad58109b048b69e412008612465e"
+    },
+    "Q3-18.json": {
+      "bytes": 4490,
+      "sha256": "a36b601835cb7fe0a1833fcd845b0f8ef9c07a4fdf5f27657872a819d209fab1"
+    },
+    "Q3-19.json": {
+      "bytes": 1270,
+      "sha256": "222570851e64e207af9f194f10c05962751688237684b6a3500de2c60616b7bd"
+    },
+    "Q3-20.json": {
+      "bytes": 1269,
+      "sha256": "fc6863d1979d3af765646adf6798138bb78e650006e54098e2e3601eb93fedbc"
+    }
+  }
+}
