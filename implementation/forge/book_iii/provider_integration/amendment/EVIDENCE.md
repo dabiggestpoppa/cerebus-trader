@@ -114,7 +114,15 @@ Package aggregate: recorded WP-3A `28d14ae61de9d189`; amended
 
 ---
 
-## 8. Limitations
+## 8. CI receipt
+
+Run `42383847897` at head `ea5bf0aa`: `test` success, `postgres` success. The
+final ladder commit records this receipt and is documentation-only; its own run
+was checked green before the final report.
+
+---
+
+## 9. Limitations
 
 - No live provider was contacted; no latency, depth, cost or licensing claim is
   made.

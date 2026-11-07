@@ -34,7 +34,7 @@ does not grant WP-3C.
 - [x] Twelve WP-3B fixtures reproduce byte-identically.
 - [x] Seam remains `market_data: NOT_CONFIGURED`.
 - [x] No credential, network or vendor account used.
-- [ ] Final-head CI `test` and `postgres` — recorded in the CI receipt commit.
+- [x] CI `test` and `postgres` green — run `42383847897` at head `ea5bf0a`.
 
 ---
 
@@ -86,6 +86,7 @@ evidence may stand in for them, and the readiness seam must not be switched.
 
 ## 7. CI
 
-The amendment was pushed append-only. Both jobs (`test`, `postgres`) are
-verified green at the final head; the run id is recorded in the CI receipt
-commit and in the final report.
+Run `42383847897` at head `ea5bf0aa` completed with both jobs green: `test`
+success, `postgres` success. The subsequent CI-receipt commit is documentation
+only and was re-verified by its own run; no source or test changed after
+`ea5bf0a`.
