@@ -1,0 +1,7 @@
+{
+  "case": "historical_pinned_replay",
+  "kind": "RECONSTRUCTION",
+  "match": true,
+  "snapshot_id": "SNAP.dd17fa7e6eb35315c4554e3a53f463d2b5d20992",
+  "view": "HISTORICAL"
+}

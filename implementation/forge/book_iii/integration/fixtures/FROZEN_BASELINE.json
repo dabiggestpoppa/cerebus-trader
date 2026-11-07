@@ -1,0 +1,13 @@
+{
+  "fixture_count": 10,
+  "modules": {
+    "intelligence_api": 14,
+    "market_data": 11,
+    "measurements": 12,
+    "model_runtime": 13,
+    "setup_engine": 16,
+    "state_engine": 13
+  },
+  "schema": "BOOK_III_INTEGRATION_FROZEN_BASELINE_V1",
+  "starting_head": "9f423a490d6b1d74be4f2bd03827593152103e4c"
+}

@@ -1,0 +1,9 @@
+{
+  "case": "full_eur_lineage",
+  "kind": "LINEAGE",
+  "measurement_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "output_hash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "snapshot_hash": "47bb7532930774af8c36549d6ec9d652aaaa1cc8cdf8f70147b8c80c15eb6323",
+  "snapshot_id": "SNAP.dd17fa7e6eb35315c4554e3a53f463d2b5d20992",
+  "state_hash": "26e706e25dbb74863ff80a57de8daacdd1342aabd1687279403da7a8e55f0a22"
+}

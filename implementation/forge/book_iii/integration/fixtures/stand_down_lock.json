@@ -1,0 +1,7 @@
+{
+  "automation_permitted": false,
+  "case": "stand_down_lock",
+  "kind": "SNAPSHOT",
+  "manual_only": false,
+  "no_go": true
+}

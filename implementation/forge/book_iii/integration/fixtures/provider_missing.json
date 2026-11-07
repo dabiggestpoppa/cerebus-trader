@@ -1,0 +1,5 @@
+{
+  "case": "provider_missing",
+  "code": "PROVIDER_NOT_CONFIGURED",
+  "kind": "REFUSAL"
+}

@@ -1,0 +1,21 @@
+{
+  "case": "card_schema_incompatible",
+  "errors": [
+    [
+      "setup_id",
+      "status",
+      "parent_model_ids"
+    ],
+    [
+      "setup_id",
+      "status",
+      "parent_model_ids"
+    ],
+    [
+      "setup_id",
+      "status",
+      "parent_model_ids"
+    ]
+  ],
+  "kind": "CARD"
+}

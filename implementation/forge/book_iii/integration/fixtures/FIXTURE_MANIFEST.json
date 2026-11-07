@@ -1,0 +1,16 @@
+{
+  "fixtures": {
+    "btc_tracker_no_game.json": "c329398768710dd3f4baffb9dcd6794ba62eaced01854656a48a2bdf369599ce",
+    "card_schema_incompatible.json": "306b29bf233614549da4668b528174ad79a5936c7fdad07fd8566cfc387158b8",
+    "fib_unresolved_anchor.json": "4cc9479d4b55c72557f282827efa02e28d43fddf777c87355967c08f9dbeac32",
+    "full_eur_lineage.json": "4a6f1398b03a8cf0cc3186f69fea30380fbe4e797bc35c2b60896faad956c5d4",
+    "historical_pinned_replay.json": "2ad83d4a702fa4c4d6a74a520ddc0dd5c4a4194f0b0ca087e051f304f222f6a3",
+    "jpy_basket_roles.json": "eb98a8aacee6bb623cf159a40879956a42aa6fc3108babd8ec542cf76c47a1e5",
+    "provider_missing.json": "4373714a361ade4b0ea8dad2eea94e576cd7e1973054635b4f9a29f14e8d88b7",
+    "restricted_exposure.json": "bec0b96af9aac2f0cbc6e2800f169d9c026bf1be78df5575b49846ce59678a72",
+    "stand_down_lock.json": "96fdf61829ac427d55e06bd53042bbb72fe54cf03182bd570c60fcd9a08e26d7",
+    "xau_promotion_chain.json": "f2452e9273194a2d6f4e1fe5d83a7695130d89744352c8a197270f16b8aa90f1"
+  },
+  "note": "synthetic structural proof only; never empirical market evidence",
+  "schema": "BOOK_III_INTEGRATION_FIXTURE_MANIFEST_V1"
+}
