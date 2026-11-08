@@ -7,7 +7,8 @@
 **Verdict:** **PASS — deterministic fake-provider contract satisfied**
 **Scope:** Book IV / Bloc IV.4 only
 
-Final documentation and CI heads are recorded in `CI_RECEIPT.md`.
+Code-head CI: run `42530782457`, `test` and `postgres` both SUCCESS.
+Final documentation-head CI is recorded in the BA-29 final report.
 
 ---
 
@@ -138,7 +139,7 @@ Planning head: `5ace8dfcd57f12996d168120ca74ee20e20e3f52`
 | 24 fixtures and generator | `f03788e` |
 | Gateway implementation | `7b7c837` |
 | 72 acceptance drivers | `b75dc7e` |
-| Evidence and ratification | recorded in `CI_RECEIPT.md` |
-| CI receipt | recorded in `CI_RECEIPT.md` |
+| Evidence and ratification | `413b9f3` |
+| CI receipt | `CI_RECEIPT.md` — run `42530782457` |
 
 No amend, squash, rebase, reset or force-push is used. `.bu_tmp/` is preserved.

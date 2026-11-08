@@ -432,5 +432,20 @@ A passing IV.4 contract does **not** establish:
 - entitlement or execution authority;
 - Book IV completion.
 
+## 23. CI EVIDENCE
+
+| Job | Result | Duration | pytest summary |
+|---|---|---|---|
+| `test` | **SUCCESS** | 30s | **2,374 passed, 30 skipped** |
+| `postgres` | **SUCCESS** | 1m9s | **2,403 passed, 1 skipped** |
+
+Run: `42530782457` — https://github.com/dabiggestpoppa/cerebus-trader/actions/runs/42530782457
+Head: `413b9f34716793844edf709b9571ba46b5e87560`
+
+CI `test` has one additional skip versus local because its checkout is shallow:
+`test_planning_pins_unchanged` cannot see the pinned planning commits. This is
+the same single classification difference identified in section 20. The
+PostgreSQL job executes the live database gates skipped locally.
+
 **Evidence verdict:** deterministic `ASK_GATEWAY_CONTRACT_V1` satisfied for the
 fake-provider boundary. F3/F4 remain open. IV.5 is the sole validation authority.
