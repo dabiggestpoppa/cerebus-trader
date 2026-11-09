@@ -1,0 +1,20 @@
+{
+  "answer_id": "ANS.0703c1d8b39da54c2ee7157dd2b60fbe",
+  "depth": "RESEARCHER",
+  "expected_code": "MODEL_VERSION_UNAVAILABLE",
+  "findings": [
+    "MODEL_VERSION_UNAVAILABLE"
+  ],
+  "id": "Q5-42",
+  "kind": "REFUSAL",
+  "limitations": [
+    "MODEL_VERSION_UNAVAILABLE"
+  ],
+  "manifest_id": "MFD.a59554547ce9cd42a7d026fc1081abe8571aa8a7a8d588ddb62d915fca24c23b",
+  "outcome": "GOVERNED_REFUSAL",
+  "package_id": "PKG.5a59cafa3bc7fc87641e4d47d38baac2",
+  "payload_sha256": "2a5790aaf582d09436c7aa210c9dc24fdda4a5c5ae6ecb7a559c819a81c305d9",
+  "query_plan_id": "QP.Q5-42",
+  "required_findings": [],
+  "sections": []
+}

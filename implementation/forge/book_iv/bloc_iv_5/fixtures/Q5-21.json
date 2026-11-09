@@ -1,0 +1,21 @@
+{
+  "answer_id": "ANS.62cf464f12fa373ea38e04ecef71ee1c",
+  "depth": "OPERATOR",
+  "expected_code": "INSUFFICIENT_EVIDENCE",
+  "findings": [
+    "METRIC_SUBSTITUTION",
+    "LAYER_LAUNDERING"
+  ],
+  "id": "Q5-21",
+  "kind": "REFUSAL",
+  "limitations": [],
+  "manifest_id": "MFD.2d2f2ed52cce27b317cd74f6be81b63e652320662b5b15321ade171711bbbd16",
+  "outcome": "GOVERNED_REFUSAL",
+  "package_id": "PKG.343efe98bd50b0946a35f8bc26096435",
+  "payload_sha256": "e97274edb3e40b77a14dbeeab80aaedf7ea04c04bffe412d3c67745a4d2cc8f8",
+  "query_plan_id": "QP.Q5-21",
+  "required_findings": [
+    "LAYER_LAUNDERING"
+  ],
+  "sections": []
+}

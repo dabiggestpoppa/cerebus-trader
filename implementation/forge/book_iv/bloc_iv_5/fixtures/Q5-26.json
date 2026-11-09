@@ -1,0 +1,30 @@
+{
+  "answer_id": "ANS.b8b6848eb68651e762aec46c5266c6e5",
+  "depth": "OPERATOR",
+  "expected_code": "",
+  "findings": [],
+  "id": "Q5-26",
+  "kind": "ANSWER",
+  "limitations": [
+    "NO_GO_ACTIVE"
+  ],
+  "manifest_id": "MFD.f4581fb816030ec4b75541fe83fe6b2426e311efe47a0274f14fb484aadbefc2",
+  "outcome": "VALIDATED_ANSWER",
+  "package_id": "PKG.f5ee9eb60e99b1c464ef1acede57453d",
+  "payload_sha256": "e7311a41f8e82f2a1e8364e4ac53869630d3b589290f14954c1feac4cad0c2b8",
+  "query_plan_id": "QP.Q5-26",
+  "required_findings": [],
+  "sections": [
+    "MODEL_LAYER",
+    "CURRENT_STATE",
+    "ELIGIBILITY",
+    "ACTIVE_RANGE_ANCHOR",
+    "CLOCK",
+    "PATH_RANGE_LEFT",
+    "LEVELS",
+    "TRIGGER",
+    "INVALIDATION",
+    "TARGETS",
+    "EVIDENCE_STATUS"
+  ]
+}

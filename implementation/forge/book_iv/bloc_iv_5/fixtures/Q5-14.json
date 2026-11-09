@@ -1,0 +1,20 @@
+{
+  "answer_id": "ANS.6dc482d197f2bbb2bbf2ab8064add773",
+  "depth": "RESEARCHER",
+  "expected_code": "INSUFFICIENT_EVIDENCE",
+  "findings": [
+    "STATISTIC_INCOMPLETE"
+  ],
+  "id": "Q5-14",
+  "kind": "REFUSAL",
+  "limitations": [],
+  "manifest_id": "MFD.ef59d2d9c54f9749721dbbda34e0b27298452420e6afa3757d8dd9c2e6489281",
+  "outcome": "GOVERNED_REFUSAL",
+  "package_id": "PKG.af97a5299d5e19d29a1438001988d80c",
+  "payload_sha256": "e47bb1a046f574b766ab9e3ae9c877cbe6fb9fed2f84a2b62a42660039573a43",
+  "query_plan_id": "QP.Q5-14",
+  "required_findings": [
+    "STATISTIC_INCOMPLETE"
+  ],
+  "sections": []
+}

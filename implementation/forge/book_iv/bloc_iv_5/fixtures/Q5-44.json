@@ -1,0 +1,21 @@
+{
+  "answer_id": "ANS.b3e6c9c1c17359a156b72d51a7758f2f",
+  "depth": "BEGINNER",
+  "expected_code": "AMBIGUOUS_SCOPE",
+  "findings": [
+    "AMBIGUOUS_SCOPE"
+  ],
+  "id": "Q5-44",
+  "kind": "REFUSAL",
+  "limitations": [
+    "AMBIGUOUS_SCOPE",
+    "INSUFFICIENT_EVIDENCE"
+  ],
+  "manifest_id": "MFD.37092ec20ca91dc92d80c7b9be2c1e79084e84066bc2e89bf99fc96f367631bb",
+  "outcome": "GOVERNED_REFUSAL",
+  "package_id": "PKG.a06d904b6eb4f22de02edcf43cbae2d2",
+  "payload_sha256": "a229096976ecb3c2a37739cb25d6ebf6890cc70f4e71f17e8e3186af5c21f385",
+  "query_plan_id": "QP.Q5-44",
+  "required_findings": [],
+  "sections": []
+}

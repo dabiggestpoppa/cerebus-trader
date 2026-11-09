@@ -1,0 +1,20 @@
+{
+  "answer_id": "ANS.a89a019cd683872c7d176c4b6b9ea2a1",
+  "depth": "RESEARCHER",
+  "expected_code": "INSUFFICIENT_EVIDENCE",
+  "findings": [
+    "STATUS_LAUNDERING"
+  ],
+  "id": "Q5-30",
+  "kind": "REFUSAL",
+  "limitations": [],
+  "manifest_id": "MFD.6cbf84bd5c30d82d7992351c1b72e8f901c95522fba55de6d94d586e7f0093f8",
+  "outcome": "GOVERNED_REFUSAL",
+  "package_id": "PKG.9d7a2cb1e8393756c0c1df3319d523b0",
+  "payload_sha256": "14ff39c69d0f3f985046c757c8e9f0e705cef3fdc94722a343ec4ffc06b407bb",
+  "query_plan_id": "QP.Q5-30",
+  "required_findings": [
+    "STATUS_LAUNDERING"
+  ],
+  "sections": []
+}

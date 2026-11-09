@@ -1,0 +1,20 @@
+{
+  "answer_id": "ANS.446dbcdb06c161a1adca6a6b20ee588c",
+  "depth": "RESEARCHER",
+  "expected_code": "INSUFFICIENT_EVIDENCE",
+  "findings": [
+    "METRIC_SUBSTITUTION"
+  ],
+  "id": "Q5-12",
+  "kind": "REFUSAL",
+  "limitations": [],
+  "manifest_id": "MFD.8cf4eaa58149b4dd875022d2eb3dcb55be270736b7d87ca89c47a15f56defa7c",
+  "outcome": "GOVERNED_REFUSAL",
+  "package_id": "PKG.42febcd8e9d59a0e618549f0c4497104",
+  "payload_sha256": "c1e0a4f82515d0eaa2cd1e9f62b070129f67701697787abd9d0a9a44dfee17ea",
+  "query_plan_id": "QP.Q5-12",
+  "required_findings": [
+    "METRIC_SUBSTITUTION"
+  ],
+  "sections": []
+}

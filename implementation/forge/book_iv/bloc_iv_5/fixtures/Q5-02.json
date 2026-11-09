@@ -1,0 +1,21 @@
+{
+  "answer_id": "ANS.6e5308b2c67ba53930b408ffaaff5966",
+  "depth": "BEGINNER",
+  "expected_code": "",
+  "findings": [],
+  "id": "Q5-02",
+  "kind": "ANSWER",
+  "limitations": [],
+  "manifest_id": "MFD.361133df1079072ca95c8c414fae21207f4b6d6f891efd02abdcea25a3817d96",
+  "outcome": "VALIDATED_ANSWER",
+  "package_id": "PKG.e32a0b7f508f63dc52b5a63ce8647305",
+  "payload_sha256": "71705e9408422a4a4778020512b3c0fdd2f7669e67b86b9c9fefe2ca3360bb17",
+  "query_plan_id": "QP.Q5-02",
+  "required_findings": [],
+  "sections": [
+    "WHAT_IT_MEANS",
+    "WHAT_CEREBUS_SEES",
+    "WHAT_IT_DOES_NOT_MEAN",
+    "NEXT_RELEVANT_STATE"
+  ]
+}

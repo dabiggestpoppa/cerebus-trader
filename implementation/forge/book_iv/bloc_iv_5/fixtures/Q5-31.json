@@ -1,0 +1,21 @@
+{
+  "answer_id": "ANS.cd4da8f89a6c6578571c5f0b309b2e5a",
+  "depth": "BEGINNER",
+  "expected_code": "CURRENT_DATA_UNAVAILABLE",
+  "findings": [
+    "STATUS_LAUNDERING",
+    "MISSING_FRESHNESS"
+  ],
+  "id": "Q5-31",
+  "kind": "REFUSAL",
+  "limitations": [],
+  "manifest_id": "MFD.d2aed1cc67984f2cdb218c646723ae8e29dfb63ca36ab8ce6d63ff5fa790f23a",
+  "outcome": "GOVERNED_REFUSAL",
+  "package_id": "PKG.8676b658db7caf79c0db5e6f429b519c",
+  "payload_sha256": "2eb730f9ec3e6096215aef885727d65d1c7f435d07d9849fe34ddda36bc54f39",
+  "query_plan_id": "QP.Q5-31",
+  "required_findings": [
+    "STATUS_LAUNDERING"
+  ],
+  "sections": []
+}

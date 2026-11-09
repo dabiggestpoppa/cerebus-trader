@@ -1,0 +1,22 @@
+{
+  "answer_id": "ANS.dcca8988844ac03de0cd30d51ecf08f7",
+  "depth": "OPERATOR",
+  "expected_code": "SETUP_NOT_ENCODED",
+  "findings": [
+    "SETUP_NOT_ENCODED"
+  ],
+  "id": "Q5-25",
+  "kind": "REFUSAL",
+  "limitations": [
+    "NO_GO_ACTIVE"
+  ],
+  "manifest_id": "MFD.1fe24c67dc41e6133965fe6f19d9735a8121309eceb37489312d25f6b7f7054e",
+  "outcome": "GOVERNED_REFUSAL",
+  "package_id": "PKG.28b6d16b1b7deac3f6dfcea64b174b8e",
+  "payload_sha256": "f9d4ca9907d1948a890f1a88040168a05e8ec163c428e5856843c96fa02a9495",
+  "query_plan_id": "QP.Q5-25",
+  "required_findings": [
+    "SETUP_NOT_ENCODED"
+  ],
+  "sections": []
+}

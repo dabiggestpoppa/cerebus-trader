@@ -1,0 +1,22 @@
+{
+  "answer_id": "ANS.170863031a8e29748ba496e32d7cafb4",
+  "depth": "OPERATOR",
+  "expected_code": "CURRENT_DATA_UNAVAILABLE",
+  "findings": [
+    "STALE_PRESENTED_AS_LIVE"
+  ],
+  "id": "Q5-34",
+  "kind": "REFUSAL",
+  "limitations": [
+    "NO_GO_ACTIVE"
+  ],
+  "manifest_id": "MFD.8919719c5857d0cd748da2f97825eacc730cb97f0b54bbdbcaa50e8196ce102a",
+  "outcome": "GOVERNED_REFUSAL",
+  "package_id": "PKG.2e3e45663b6a8adb848eb9b336f3198a",
+  "payload_sha256": "834c387305ad2c38a5b8a529a67bd757995d9b22373cc6273c63d5e4d955b969",
+  "query_plan_id": "QP.Q5-34",
+  "required_findings": [
+    "STALE_PRESENTED_AS_LIVE"
+  ],
+  "sections": []
+}

@@ -1,0 +1,24 @@
+{
+  "answer_id": "ANS.19c314f6bf306ebf3ef0343aa4a8eea3",
+  "depth": "RESEARCHER",
+  "expected_code": "",
+  "findings": [],
+  "id": "Q5-05",
+  "kind": "ANSWER",
+  "limitations": [],
+  "manifest_id": "MFD.555b931b25a0994824aa06c85f6dbfdcd09e526384d48fb4b4f33ccc586d4053",
+  "outcome": "VALIDATED_ANSWER",
+  "package_id": "PKG.ff906a3734b7b8ddd7a8cacac73bc822",
+  "payload_sha256": "731b1a2d26473b91bf6700afc47329a75ee9af34a45a2d260ea945905b578143",
+  "query_plan_id": "QP.Q5-05",
+  "required_findings": [],
+  "sections": [
+    "MODEL_VERSION",
+    "CLAIM_EVENT",
+    "POPULATION_N",
+    "PERIOD_GENERATION",
+    "METRIC_RESULT",
+    "OOS_REPRODUCTION",
+    "CONTRADICTIONS_NEGATIVE"
+  ]
+}

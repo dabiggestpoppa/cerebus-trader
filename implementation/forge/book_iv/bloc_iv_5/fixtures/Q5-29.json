@@ -1,0 +1,23 @@
+{
+  "answer_id": "ANS.e1674a17fb51cf403b5a0a161e7b1f5a",
+  "depth": "OPERATOR",
+  "expected_code": "SETUP_NOT_ENCODED",
+  "findings": [
+    "NUMERIC_EVIDENCE_MISSING",
+    "SETUP_FIELD_MISMATCH"
+  ],
+  "id": "Q5-29",
+  "kind": "REFUSAL",
+  "limitations": [
+    "NO_GO_ACTIVE"
+  ],
+  "manifest_id": "MFD.7122f04ecdfd2b188e0fde43060bca2e89283500a8783b449b3da3f1b7226f7a",
+  "outcome": "GOVERNED_REFUSAL",
+  "package_id": "PKG.707ed63e767f52121aa5c53200114bc3",
+  "payload_sha256": "0af6c1aac5715ca0e7db0690bc8d2ba18c4e66c7336147c42c204971ebd78aad",
+  "query_plan_id": "QP.Q5-29",
+  "required_findings": [
+    "SETUP_FIELD_MISMATCH"
+  ],
+  "sections": []
+}

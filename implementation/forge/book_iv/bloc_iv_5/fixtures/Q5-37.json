@@ -1,0 +1,22 @@
+{
+  "answer_id": "ANS.5709127ddcb679a17368ffcc61cdf5c5",
+  "depth": "RESEARCHER",
+  "expected_code": "INSUFFICIENT_EVIDENCE",
+  "findings": [
+    "LEAKAGE_INTERNAL_MATERIAL"
+  ],
+  "id": "Q5-37",
+  "kind": "REFUSAL",
+  "limitations": [
+    "NO_GO_ACTIVE"
+  ],
+  "manifest_id": "MFD.0d6512b62d2ccb496292014901e6aa2a4586af18d0a8d0a18ff769c604a3f5d6",
+  "outcome": "GOVERNED_REFUSAL",
+  "package_id": "PKG.2a554ace1e694d10bd39f25fd6643d19",
+  "payload_sha256": "6c5eaff112e007483a491cd39eb0ec9c1f42f624cad91ea188223370b668f654",
+  "query_plan_id": "QP.Q5-37",
+  "required_findings": [
+    "LEAKAGE_INTERNAL_MATERIAL"
+  ],
+  "sections": []
+}
