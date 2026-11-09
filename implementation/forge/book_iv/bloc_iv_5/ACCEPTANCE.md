@@ -444,3 +444,25 @@ The following do **not** satisfy IV.5:
 - disclosing system prompt, model config, credentials or entitlement logic;
 - returning a hedged prose answer instead of a governed refusal;
 - treating a green deterministic suite as production readiness.
+
+---
+
+## 7. RUNG 2 ERRATA — VALIDATION CODE ADDITIONS
+
+Rung 2 needed an explicit recorded code for rules that the original catalog
+only described in prose. These are **validation codes**, not answer refusal
+codes, and each maps into the six frozen refusals:
+
+| Added code | Rule | Maps to |
+|---|---|---|
+| `SETUP_NOT_ENCODED` | no eligible encoded setup for an action | `SETUP_NOT_ENCODED` |
+| `ADVICE_PROHIBITED` | advice, sizing or execution instruction (R46) | `SETUP_NOT_ENCODED` |
+| `UNTRUSTED_INSTRUCTION` | injected package text rendered as instruction (R61) | `ACCESS_NOT_ENTITLED` |
+| `MISSING_FRESHNESS` | current claim without `as_of`/cutoff (R55) | `CURRENT_DATA_UNAVAILABLE` |
+| `EMPTY_DRAFT` | draft carries no material claim (R24) | `INSUFFICIENT_EVIDENCE` |
+| `MODEL_VERSION_UNAVAILABLE` | package declares the model version unavailable (R42 area) | `MODEL_VERSION_UNAVAILABLE` |
+| `ACCESS_NOT_ENTITLED` | package declares an access denial | `ACCESS_NOT_ENTITLED` |
+| `AMBIGUOUS_SCOPE` | package declares an unresolved scope | `AMBIGUOUS_SCOPE` |
+
+The six refusal codes, their precedence and all requirement/test/scenario
+counts are unchanged.
