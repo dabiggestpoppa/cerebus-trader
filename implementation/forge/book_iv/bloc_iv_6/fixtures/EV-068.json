@@ -1,0 +1,55 @@
+{
+  "authority": "FIXTURE_FACT",
+  "case_id": "EV-068",
+  "depth": "RESEARCHER",
+  "draft_variant": "generation_swap",
+  "entities_expected": [],
+  "evidence_path": {
+    "builder": "p90_phi",
+    "fixture_path": "implementation/forge/book_iv/bloc_iv_6/fixtures/_builders.py",
+    "record": "EV-068",
+    "values": [
+      [
+        "case",
+        "EV-068"
+      ],
+      [
+        "query",
+        "Present the PHI result as the original P90."
+      ]
+    ]
+  },
+  "execution_mode": "SEALED",
+  "expected_citations": [],
+  "expected_eligibility": null,
+  "expected_finding_class": "GENERATION_LAUNDERED",
+  "expected_freshness": "NOT_REQUIRED",
+  "expected_outcome": "REFUSAL",
+  "expected_refusal_code": "INSUFFICIENT_EVIDENCE",
+  "expected_validation_codes": [],
+  "family": "GENERATION_CONFLICT",
+  "fixture_source": "p90_phi",
+  "forbidden_claims": [],
+  "forbidden_numbers": [
+    "61%"
+  ],
+  "intent_expected": "RESEARCH",
+  "kind": "NEGATIVE_TRAP",
+  "market": "",
+  "model_ids": [
+    "P90",
+    "PHI"
+  ],
+  "notes": "Generations are not interchangeable.",
+  "payload_marker": "",
+  "query_text": "Present the PHI result as the original P90.",
+  "required_claims": [],
+  "required_fields": [],
+  "required_limitations": [],
+  "score_population": [
+    "correct_refusal_rate",
+    "historical_generation_correctness"
+  ],
+  "time_scope": "ANY",
+  "unresolved_owner": null
+}

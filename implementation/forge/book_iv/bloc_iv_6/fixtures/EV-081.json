@@ -1,0 +1,52 @@
+{
+  "authority": "FROZEN_RULE",
+  "case_id": "EV-081",
+  "depth": "OPERATOR",
+  "draft_variant": "stale",
+  "entities_expected": [],
+  "evidence_path": {
+    "builder": "operator?quality=STALE",
+    "fixture_path": "implementation/forge/book_iv/bloc_iv_6/fixtures/_builders.py",
+    "record": "EV-081",
+    "values": [
+      [
+        "case",
+        "EV-081"
+      ],
+      [
+        "query",
+        "Stale snapshot presented as live."
+      ]
+    ]
+  },
+  "execution_mode": "SEALED",
+  "expected_citations": [],
+  "expected_eligibility": null,
+  "expected_finding_class": "STALE_AS_LIVE",
+  "expected_freshness": "REFUSAL",
+  "expected_outcome": "REFUSAL",
+  "expected_refusal_code": "CURRENT_DATA_UNAVAILABLE",
+  "expected_validation_codes": [],
+  "family": "FRESHNESS",
+  "fixture_source": "operator?quality=STALE",
+  "forbidden_claims": [],
+  "forbidden_numbers": [],
+  "intent_expected": "CURRENT_STATE",
+  "kind": "NEGATIVE_TRAP",
+  "market": "XAUUSD",
+  "model_ids": [
+    "XAU.GAME"
+  ],
+  "notes": "Stale quality is never rendered as live.",
+  "payload_marker": "",
+  "query_text": "Stale snapshot presented as live.",
+  "required_claims": [],
+  "required_fields": [],
+  "required_limitations": [],
+  "score_population": [
+    "correct_refusal_rate",
+    "freshness_correctness"
+  ],
+  "time_scope": "CURRENT",
+  "unresolved_owner": null
+}

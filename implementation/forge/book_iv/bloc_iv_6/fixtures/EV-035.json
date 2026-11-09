@@ -1,0 +1,59 @@
+{
+  "authority": "FIXTURE_FACT",
+  "case_id": "EV-035",
+  "depth": "BEGINNER",
+  "draft_variant": "status_upgrade",
+  "entities_expected": [],
+  "evidence_path": {
+    "builder": "historical",
+    "fixture_path": "implementation/forge/book_iv/bloc_iv_6/fixtures/_builders.py",
+    "record": "EV-035",
+    "values": [
+      [
+        "case",
+        "EV-035"
+      ],
+      [
+        "query",
+        "Historical P90 state as current performance."
+      ]
+    ]
+  },
+  "execution_mode": "SEALED",
+  "expected_citations": [],
+  "expected_eligibility": null,
+  "expected_finding_class": "STATUS_LAUNDERED",
+  "expected_freshness": "NOT_REQUIRED",
+  "expected_outcome": "REFUSAL",
+  "expected_refusal_code": "INSUFFICIENT_EVIDENCE",
+  "expected_validation_codes": [],
+  "family": "OPERATOR",
+  "fixture_source": "historical",
+  "forbidden_claims": [
+    {
+      "source_ref": "",
+      "token": "current performance"
+    }
+  ],
+  "forbidden_numbers": [
+    "current performance"
+  ],
+  "intent_expected": "HISTORICAL",
+  "kind": "NEGATIVE_TRAP",
+  "market": "",
+  "model_ids": [
+    "P90"
+  ],
+  "notes": "Generation preserved; a current claim is refused.",
+  "payload_marker": "",
+  "query_text": "Historical P90 state as current performance.",
+  "required_claims": [],
+  "required_fields": [],
+  "required_limitations": [],
+  "score_population": [
+    "correct_refusal_rate",
+    "historical_generation_correctness"
+  ],
+  "time_scope": "HISTORICAL",
+  "unresolved_owner": null
+}

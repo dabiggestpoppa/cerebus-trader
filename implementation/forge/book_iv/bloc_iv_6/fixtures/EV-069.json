@@ -1,0 +1,64 @@
+{
+  "authority": "FIXTURE_FACT",
+  "case_id": "EV-069",
+  "depth": "RESEARCHER",
+  "draft_variant": "generations",
+  "entities_expected": [],
+  "evidence_path": {
+    "builder": "p90_phi",
+    "fixture_path": "implementation/forge/book_iv/bloc_iv_6/fixtures/_builders.py",
+    "record": "EV-069",
+    "values": [
+      [
+        "case",
+        "EV-069"
+      ],
+      [
+        "query",
+        "Show the Fib current and historical variants."
+      ]
+    ]
+  },
+  "execution_mode": "SEALED",
+  "expected_citations": [],
+  "expected_eligibility": null,
+  "expected_finding_class": null,
+  "expected_freshness": "NOT_REQUIRED",
+  "expected_outcome": "ANSWER",
+  "expected_refusal_code": null,
+  "expected_validation_codes": [],
+  "family": "GENERATION_CONFLICT",
+  "fixture_source": "p90_phi",
+  "forbidden_claims": [],
+  "forbidden_numbers": [],
+  "intent_expected": "RESEARCH",
+  "kind": "POSITIVE_CONTROL",
+  "market": "",
+  "model_ids": [
+    "P90",
+    "PHI"
+  ],
+  "notes": "Historical and current variants stay separate.",
+  "payload_marker": "",
+  "query_text": "Show the Fib current and historical variants.",
+  "required_claims": [],
+  "required_fields": [
+    "MODEL_VERSION",
+    "CLAIM_EVENT",
+    "POPULATION_N",
+    "PERIOD_GENERATION",
+    "METRIC_RESULT",
+    "OOS_REPRODUCTION"
+  ],
+  "required_limitations": [],
+  "score_population": [
+    "valid_answer_completion_rate",
+    "false_refusal_rate",
+    "researcher_metadata_completeness",
+    "citation_support_accuracy",
+    "citation_resolution_accuracy",
+    "epistemic_status_correctness"
+  ],
+  "time_scope": "ANY",
+  "unresolved_owner": null
+}

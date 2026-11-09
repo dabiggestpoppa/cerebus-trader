@@ -1,0 +1,52 @@
+{
+  "authority": "FIXTURE_FACT",
+  "case_id": "EV-066",
+  "depth": "OPERATOR",
+  "draft_variant": "layer_target",
+  "entities_expected": [],
+  "evidence_path": {
+    "builder": "layer_mix",
+    "fixture_path": "implementation/forge/book_iv/bloc_iv_6/fixtures/_builders.py",
+    "record": "EV-066",
+    "values": [
+      [
+        "case",
+        "EV-066"
+      ],
+      [
+        "query",
+        "Report the L3 completion as an L1 entry rate."
+      ]
+    ]
+  },
+  "execution_mode": "SEALED",
+  "expected_citations": [],
+  "expected_eligibility": null,
+  "expected_finding_class": "LAYER_LAUNDERED",
+  "expected_freshness": "NOT_REQUIRED",
+  "expected_outcome": "REFUSAL",
+  "expected_refusal_code": "INSUFFICIENT_EVIDENCE",
+  "expected_validation_codes": [],
+  "family": "LAYER_LAUNDERING",
+  "fixture_source": "layer_mix",
+  "forbidden_claims": [],
+  "forbidden_numbers": [],
+  "intent_expected": "STATISTIC_EVIDENCE",
+  "kind": "NEGATIVE_TRAP",
+  "market": "XAUUSD",
+  "model_ids": [
+    "XAU.GAME"
+  ],
+  "notes": "Same statistic, different layer claim.",
+  "payload_marker": "",
+  "query_text": "Report the L3 completion as an L1 entry rate.",
+  "required_claims": [],
+  "required_fields": [],
+  "required_limitations": [],
+  "score_population": [
+    "correct_refusal_rate",
+    "layer_correctness"
+  ],
+  "time_scope": "ANY",
+  "unresolved_owner": null
+}

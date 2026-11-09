@@ -1,0 +1,51 @@
+{
+  "authority": "FIXTURE_FACT",
+  "case_id": "EV-040",
+  "depth": "RESEARCHER",
+  "draft_variant": "stat",
+  "entities_expected": [],
+  "evidence_path": {
+    "builder": "stat?n=",
+    "fixture_path": "implementation/forge/book_iv/bloc_iv_6/fixtures/_builders.py",
+    "record": "EV-040",
+    "values": [
+      [
+        "case",
+        "EV-040"
+      ],
+      [
+        "query",
+        "What is the N and the small-N flag?"
+      ]
+    ]
+  },
+  "execution_mode": "SEALED",
+  "expected_citations": [],
+  "expected_eligibility": null,
+  "expected_finding_class": "STATISTIC_INCOMPLETE",
+  "expected_freshness": "NOT_REQUIRED",
+  "expected_outcome": "REFUSAL",
+  "expected_refusal_code": "INSUFFICIENT_EVIDENCE",
+  "expected_validation_codes": [],
+  "family": "RESEARCHER",
+  "fixture_source": "stat?n=",
+  "forbidden_claims": [],
+  "forbidden_numbers": [],
+  "intent_expected": "STATISTIC_EVIDENCE",
+  "kind": "NEGATIVE_TRAP",
+  "market": "XAUUSD",
+  "model_ids": [
+    "XAU.GAME"
+  ],
+  "notes": "An absent N is reported absent, never filled.",
+  "payload_marker": "",
+  "query_text": "What is the N and the small-N flag?",
+  "required_claims": [],
+  "required_fields": [],
+  "required_limitations": [],
+  "score_population": [
+    "correct_refusal_rate"
+  ],
+  "time_scope": "ANY",
+  "unresolved_owner": null
+}

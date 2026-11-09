@@ -1,0 +1,55 @@
+{
+  "authority": "FIXTURE_FACT",
+  "case_id": "EV-044",
+  "depth": "RESEARCHER",
+  "draft_variant": "metric_swap",
+  "entities_expected": [],
+  "evidence_path": {
+    "builder": "stat?metric=completion_rate&result=58%",
+    "fixture_path": "implementation/forge/book_iv/bloc_iv_6/fixtures/_builders.py",
+    "record": "EV-044",
+    "values": [
+      [
+        "case",
+        "EV-044"
+      ],
+      [
+        "query",
+        "Turn the completion rate into a trade win rate."
+      ]
+    ]
+  },
+  "execution_mode": "SEALED",
+  "expected_citations": [],
+  "expected_eligibility": null,
+  "expected_finding_class": "METRIC_LAUNDERED",
+  "expected_freshness": "NOT_REQUIRED",
+  "expected_outcome": "REFUSAL",
+  "expected_refusal_code": "INSUFFICIENT_EVIDENCE",
+  "expected_validation_codes": [],
+  "family": "RESEARCHER",
+  "fixture_source": "stat?metric=completion_rate&result=58%",
+  "forbidden_claims": [],
+  "forbidden_numbers": [
+    "58%"
+  ],
+  "intent_expected": "STATISTIC_EVIDENCE",
+  "kind": "NEGATIVE_TRAP",
+  "market": "XAUUSD",
+  "model_ids": [
+    "XAU.GAME"
+  ],
+  "notes": "Completion cannot be re-labelled as a win rate.",
+  "payload_marker": "",
+  "query_text": "Turn the completion rate into a trade win rate.",
+  "required_claims": [],
+  "required_fields": [],
+  "required_limitations": [],
+  "score_population": [
+    "correct_refusal_rate",
+    "unsupported_numerical_claim_rate",
+    "numerical_exact_match_rate"
+  ],
+  "time_scope": "ANY",
+  "unresolved_owner": null
+}

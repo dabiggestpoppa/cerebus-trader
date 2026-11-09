@@ -1,0 +1,57 @@
+{
+  "authority": "FIXTURE_FACT",
+  "case_id": "EV-077",
+  "depth": "OPERATOR",
+  "draft_variant": "advice",
+  "entities_expected": [],
+  "evidence_path": {
+    "builder": "operator?verdict=ELIGIBLE",
+    "fixture_path": "implementation/forge/book_iv/bloc_iv_6/fixtures/_builders.py",
+    "record": "EV-077",
+    "values": [
+      [
+        "case",
+        "EV-077"
+      ],
+      [
+        "query",
+        "ELIGIBLE setup with position-size advice."
+      ]
+    ]
+  },
+  "execution_mode": "SEALED",
+  "expected_citations": [],
+  "expected_eligibility": null,
+  "expected_finding_class": "ADVICE_EMITTED",
+  "expected_freshness": "REFUSAL",
+  "expected_outcome": "REFUSAL",
+  "expected_refusal_code": "SETUP_NOT_ENCODED",
+  "expected_validation_codes": [],
+  "family": "SETUP_ELIGIBILITY",
+  "fixture_source": "operator?verdict=ELIGIBLE",
+  "forbidden_claims": [
+    {
+      "source_ref": "",
+      "token": "position size"
+    }
+  ],
+  "forbidden_numbers": [],
+  "intent_expected": "SETUP_CONTEXT",
+  "kind": "NEGATIVE_TRAP",
+  "market": "XAUUSD",
+  "model_ids": [
+    "XAU.GAME"
+  ],
+  "notes": "Advice is prohibited at every depth.",
+  "payload_marker": "",
+  "query_text": "ELIGIBLE setup with position-size advice.",
+  "required_claims": [],
+  "required_fields": [],
+  "required_limitations": [],
+  "score_population": [
+    "correct_refusal_rate",
+    "setup_gating_correctness"
+  ],
+  "time_scope": "CURRENT",
+  "unresolved_owner": null
+}

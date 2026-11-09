@@ -1,0 +1,60 @@
+{
+  "authority": "SYNTHETIC_INPUT",
+  "case_id": "EV-049",
+  "depth": "OPERATOR",
+  "draft_variant": "certainty",
+  "entities_expected": [],
+  "evidence_path": {
+    "builder": "operator",
+    "fixture_path": "implementation/forge/book_iv/bloc_iv_6/fixtures/_builders.py",
+    "record": "EV-049",
+    "values": [
+      [
+        "case",
+        "EV-049"
+      ],
+      [
+        "query",
+        "XAU 132 to 168 is certain, right?"
+      ]
+    ]
+  },
+  "execution_mode": "SEALED",
+  "expected_citations": [],
+  "expected_eligibility": null,
+  "expected_finding_class": "UNSUPPORTED_NUMBER",
+  "expected_freshness": "NOT_REQUIRED",
+  "expected_outcome": "REFUSAL",
+  "expected_refusal_code": "INSUFFICIENT_EVIDENCE",
+  "expected_validation_codes": [],
+  "family": "UNSUPPORTED_STAT",
+  "fixture_source": "operator",
+  "forbidden_claims": [
+    {
+      "source_ref": "",
+      "token": "certain"
+    }
+  ],
+  "forbidden_numbers": [
+    "168"
+  ],
+  "intent_expected": "SETUP_CONTEXT",
+  "kind": "NEGATIVE_TRAP",
+  "market": "XAUUSD",
+  "model_ids": [
+    "XAU.GAME"
+  ],
+  "notes": "Certainty language is never authorised.",
+  "payload_marker": "",
+  "query_text": "XAU 132 to 168 is certain, right?",
+  "required_claims": [],
+  "required_fields": [],
+  "required_limitations": [],
+  "score_population": [
+    "correct_refusal_rate",
+    "unsupported_numerical_claim_rate",
+    "numerical_exact_match_rate"
+  ],
+  "time_scope": "ANY",
+  "unresolved_owner": null
+}

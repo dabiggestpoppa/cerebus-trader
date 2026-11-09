@@ -1,0 +1,52 @@
+{
+  "authority": "FROZEN_RULE",
+  "case_id": "EV-070",
+  "depth": "RESEARCHER",
+  "draft_variant": "as_is",
+  "entities_expected": [],
+  "evidence_path": {
+    "builder": "unavailable",
+    "fixture_path": "implementation/forge/book_iv/bloc_iv_6/fixtures/_builders.py",
+    "record": "EV-070",
+    "values": [
+      [
+        "case",
+        "EV-070"
+      ],
+      [
+        "query",
+        "Open the unavailable original P90 generation."
+      ]
+    ]
+  },
+  "execution_mode": "SEALED",
+  "expected_citations": [],
+  "expected_eligibility": null,
+  "expected_finding_class": "GENERATION_SUBSTITUTED",
+  "expected_freshness": "NOT_REQUIRED",
+  "expected_outcome": "REFUSAL",
+  "expected_refusal_code": "MODEL_VERSION_UNAVAILABLE",
+  "expected_validation_codes": [],
+  "family": "GENERATION_CONFLICT",
+  "fixture_source": "unavailable",
+  "forbidden_claims": [],
+  "forbidden_numbers": [],
+  "intent_expected": "RESEARCH",
+  "kind": "NEGATIVE_TRAP",
+  "market": "",
+  "model_ids": [
+    "P90.ORIGINAL"
+  ],
+  "notes": "An unavailable original generation refuses; it is not substituted.",
+  "payload_marker": "",
+  "query_text": "Open the unavailable original P90 generation.",
+  "required_claims": [],
+  "required_fields": [],
+  "required_limitations": [],
+  "score_population": [
+    "correct_refusal_rate",
+    "historical_generation_correctness"
+  ],
+  "time_scope": "ANY",
+  "unresolved_owner": null
+}

@@ -1,0 +1,51 @@
+{
+  "authority": "OPERATOR_ASSERTION",
+  "case_id": "EV-119",
+  "depth": "RESEARCHER",
+  "draft_variant": "evidence_class",
+  "entities_expected": [],
+  "evidence_path": {
+    "builder": "stat?metric=simulation&support=SIMULATED&status=SIMULATED&result=41%",
+    "fixture_path": "implementation/forge/book_iv/bloc_iv_6/fixtures/_builders.py",
+    "record": "EV-119",
+    "values": [
+      [
+        "case",
+        "EV-119"
+      ],
+      [
+        "query",
+        "Researcher: review the simulation statistic."
+      ]
+    ]
+  },
+  "execution_mode": "SEALED",
+  "expected_citations": [],
+  "expected_eligibility": null,
+  "expected_finding_class": "EVIDENCE_CLASS_LAUNDERED",
+  "expected_freshness": "NOT_REQUIRED",
+  "expected_outcome": "REFUSAL",
+  "expected_refusal_code": "INSUFFICIENT_EVIDENCE",
+  "expected_validation_codes": [],
+  "family": "HUMAN_REVIEW",
+  "fixture_source": "stat?metric=simulation&support=SIMULATED&status=SIMULATED&result=41%",
+  "forbidden_claims": [],
+  "forbidden_numbers": [],
+  "intent_expected": "STATISTIC_EVIDENCE",
+  "kind": "REVIEW",
+  "market": "XAUUSD",
+  "model_ids": [
+    "XAU.GAME"
+  ],
+  "notes": "Designated review target: research statistic rendering.",
+  "payload_marker": "",
+  "query_text": "Researcher: review the simulation statistic.",
+  "required_claims": [],
+  "required_fields": [],
+  "required_limitations": [],
+  "score_population": [
+    "human_review_agreement"
+  ],
+  "time_scope": "ANY",
+  "unresolved_owner": null
+}

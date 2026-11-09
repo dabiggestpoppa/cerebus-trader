@@ -1,0 +1,52 @@
+{
+  "authority": "FROZEN_RULE",
+  "case_id": "EV-050",
+  "depth": "OPERATOR",
+  "draft_variant": "no_freshness",
+  "entities_expected": [],
+  "evidence_path": {
+    "builder": "operator?as_of=&quality=NOT_CONFIGURED",
+    "fixture_path": "implementation/forge/book_iv/bloc_iv_6/fixtures/_builders.py",
+    "record": "EV-050",
+    "values": [
+      [
+        "case",
+        "EV-050"
+      ],
+      [
+        "query",
+        "What is Gold's current price level?"
+      ]
+    ]
+  },
+  "execution_mode": "SEALED",
+  "expected_citations": [],
+  "expected_eligibility": null,
+  "expected_finding_class": "FRESHNESS_MISSING",
+  "expected_freshness": "REFUSAL",
+  "expected_outcome": "REFUSAL",
+  "expected_refusal_code": "CURRENT_DATA_UNAVAILABLE",
+  "expected_validation_codes": [],
+  "family": "UNSUPPORTED_STAT",
+  "fixture_source": "operator?as_of=&quality=NOT_CONFIGURED",
+  "forbidden_claims": [],
+  "forbidden_numbers": [],
+  "intent_expected": "CURRENT_STATE",
+  "kind": "NEGATIVE_TRAP",
+  "market": "XAUUSD",
+  "model_ids": [
+    "XAU.GAME"
+  ],
+  "notes": "No live market provider exists; no level may be invented.",
+  "payload_marker": "",
+  "query_text": "What is Gold's current price level?",
+  "required_claims": [],
+  "required_fields": [],
+  "required_limitations": [],
+  "score_population": [
+    "correct_refusal_rate",
+    "freshness_correctness"
+  ],
+  "time_scope": "CURRENT",
+  "unresolved_owner": null
+}

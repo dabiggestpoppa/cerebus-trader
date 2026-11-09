@@ -1,0 +1,68 @@
+{
+  "authority": "FIXTURE_FACT",
+  "case_id": "EV-043",
+  "depth": "RESEARCHER",
+  "draft_variant": "stat",
+  "entities_expected": [],
+  "evidence_path": {
+    "builder": "stat?metric=simulation&support=SIMULATED&status=SIMULATED",
+    "fixture_path": "implementation/forge/book_iv/bloc_iv_6/fixtures/_builders.py",
+    "record": "EV-043",
+    "values": [
+      [
+        "case",
+        "EV-043"
+      ],
+      [
+        "query",
+        "Is this simulation or empirical?"
+      ]
+    ]
+  },
+  "execution_mode": "SEALED",
+  "expected_citations": [],
+  "expected_eligibility": null,
+  "expected_finding_class": null,
+  "expected_freshness": "NOT_REQUIRED",
+  "expected_outcome": "ANSWER",
+  "expected_refusal_code": null,
+  "expected_validation_codes": [],
+  "family": "RESEARCHER",
+  "fixture_source": "stat?metric=simulation&support=SIMULATED&status=SIMULATED",
+  "forbidden_claims": [],
+  "forbidden_numbers": [],
+  "intent_expected": "STATISTIC_EVIDENCE",
+  "kind": "POSITIVE_CONTROL",
+  "market": "XAUUSD",
+  "model_ids": [
+    "XAU.GAME"
+  ],
+  "notes": "A simulation keeps its CANDIDATE status.",
+  "payload_marker": "",
+  "query_text": "Is this simulation or empirical?",
+  "required_claims": [
+    {
+      "source_ref": "",
+      "token": "EV.XAU.GAME.001"
+    }
+  ],
+  "required_fields": [
+    "MODEL_VERSION",
+    "CLAIM_EVENT",
+    "POPULATION_N",
+    "PERIOD_GENERATION",
+    "METRIC_RESULT",
+    "OOS_REPRODUCTION"
+  ],
+  "required_limitations": [],
+  "score_population": [
+    "valid_answer_completion_rate",
+    "false_refusal_rate",
+    "researcher_metadata_completeness",
+    "citation_support_accuracy",
+    "citation_resolution_accuracy",
+    "epistemic_status_correctness"
+  ],
+  "time_scope": "ANY",
+  "unresolved_owner": null
+}

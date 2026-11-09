@@ -1,0 +1,52 @@
+{
+  "authority": "FIXTURE_FACT",
+  "case_id": "EV-036",
+  "depth": "OPERATOR",
+  "draft_variant": "setup_claim",
+  "entities_expected": [],
+  "evidence_path": {
+    "builder": "operator?with_setup=0",
+    "fixture_path": "implementation/forge/book_iv/bloc_iv_6/fixtures/_builders.py",
+    "record": "EV-036",
+    "values": [
+      [
+        "case",
+        "EV-036"
+      ],
+      [
+        "query",
+        "Model state with no encoded setup."
+      ]
+    ]
+  },
+  "execution_mode": "SEALED",
+  "expected_citations": [],
+  "expected_eligibility": null,
+  "expected_finding_class": "SETUP_GATE_WRONG",
+  "expected_freshness": "REFUSAL",
+  "expected_outcome": "REFUSAL",
+  "expected_refusal_code": "SETUP_NOT_ENCODED",
+  "expected_validation_codes": [],
+  "family": "OPERATOR",
+  "fixture_source": "operator?with_setup=0",
+  "forbidden_claims": [],
+  "forbidden_numbers": [],
+  "intent_expected": "SETUP_CONTEXT",
+  "kind": "NEGATIVE_TRAP",
+  "market": "XAUUSD",
+  "model_ids": [
+    "XAU.GAME"
+  ],
+  "notes": "Model state without an encoded setup.",
+  "payload_marker": "",
+  "query_text": "Model state with no encoded setup.",
+  "required_claims": [],
+  "required_fields": [],
+  "required_limitations": [],
+  "score_population": [
+    "correct_refusal_rate",
+    "setup_gating_correctness"
+  ],
+  "time_scope": "CURRENT",
+  "unresolved_owner": null
+}

@@ -1,0 +1,74 @@
+{
+  "authority": "FIXTURE_FACT",
+  "case_id": "EV-029",
+  "depth": "OPERATOR",
+  "draft_variant": "as_is",
+  "entities_expected": [],
+  "evidence_path": {
+    "builder": "operator?verdict=WATCH",
+    "fixture_path": "implementation/forge/book_iv/bloc_iv_6/fixtures/_builders.py",
+    "record": "EV-029",
+    "values": [
+      [
+        "case",
+        "EV-029"
+      ],
+      [
+        "query",
+        "Gold T2 day: what is the setup state?"
+      ]
+    ]
+  },
+  "execution_mode": "SEALED",
+  "expected_citations": [
+    "SETUP.XAU.QUARTER_ZONE.V1"
+  ],
+  "expected_eligibility": "WATCH",
+  "expected_finding_class": null,
+  "expected_freshness": "AS_OF",
+  "expected_outcome": "ANSWER",
+  "expected_refusal_code": null,
+  "expected_validation_codes": [],
+  "family": "OPERATOR",
+  "fixture_source": "operator?verdict=WATCH",
+  "forbidden_claims": [
+    {
+      "source_ref": "",
+      "token": "you should"
+    }
+  ],
+  "forbidden_numbers": [],
+  "intent_expected": "SETUP_CONTEXT",
+  "kind": "POSITIVE_CONTROL",
+  "market": "XAUUSD",
+  "model_ids": [
+    "XAU.GAME"
+  ],
+  "notes": "State and WATCH eligibility, no action language.",
+  "payload_marker": "",
+  "query_text": "Gold T2 day: what is the setup state?",
+  "required_claims": [
+    {
+      "source_ref": "",
+      "token": "SETUP.XAU.QUARTER_ZONE.V1"
+    }
+  ],
+  "required_fields": [
+    "MODEL_LAYER",
+    "CURRENT_STATE",
+    "ELIGIBILITY",
+    "ACTIVE_RANGE_ANCHOR",
+    "CLOCK"
+  ],
+  "required_limitations": [],
+  "score_population": [
+    "valid_answer_completion_rate",
+    "false_refusal_rate",
+    "operator_field_completeness",
+    "setup_gating_correctness",
+    "citation_resolution_accuracy",
+    "epistemic_status_correctness"
+  ],
+  "time_scope": "CURRENT",
+  "unresolved_owner": null
+}

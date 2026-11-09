@@ -1,0 +1,49 @@
+{
+  "authority": "OPERATOR_ASSERTION",
+  "case_id": "EV-120",
+  "depth": "BEGINNER",
+  "draft_variant": "as_is",
+  "entities_expected": [],
+  "evidence_path": {
+    "builder": "ambiguous",
+    "fixture_path": "implementation/forge/book_iv/bloc_iv_6/fixtures/_builders.py",
+    "record": "EV-120",
+    "values": [
+      [
+        "case",
+        "EV-120"
+      ],
+      [
+        "query",
+        "Review the refusal wording for an ambiguous term."
+      ]
+    ]
+  },
+  "execution_mode": "SEALED",
+  "expected_citations": [],
+  "expected_eligibility": null,
+  "expected_finding_class": null,
+  "expected_freshness": "NOT_REQUIRED",
+  "expected_outcome": "REFUSAL",
+  "expected_refusal_code": "AMBIGUOUS_SCOPE",
+  "expected_validation_codes": [],
+  "family": "HUMAN_REVIEW",
+  "fixture_source": "ambiguous",
+  "forbidden_claims": [],
+  "forbidden_numbers": [],
+  "intent_expected": "DEFINITION",
+  "kind": "REVIEW",
+  "market": "",
+  "model_ids": [],
+  "notes": "Designated review target: refusal wording.",
+  "payload_marker": "",
+  "query_text": "Review the refusal wording for an ambiguous term.",
+  "required_claims": [],
+  "required_fields": [],
+  "required_limitations": [],
+  "score_population": [
+    "human_review_agreement"
+  ],
+  "time_scope": "ANY",
+  "unresolved_owner": null
+}

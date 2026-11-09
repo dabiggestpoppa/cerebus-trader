@@ -1,0 +1,51 @@
+{
+  "authority": "FIXTURE_FACT",
+  "case_id": "EV-058",
+  "depth": "RESEARCHER",
+  "draft_variant": "stat",
+  "entities_expected": [],
+  "evidence_path": {
+    "builder": "stat?n=",
+    "fixture_path": "implementation/forge/book_iv/bloc_iv_6/fixtures/_builders.py",
+    "record": "EV-058",
+    "values": [
+      [
+        "case",
+        "EV-058"
+      ],
+      [
+        "query",
+        "State the completion rate without N."
+      ]
+    ]
+  },
+  "execution_mode": "SEALED",
+  "expected_citations": [],
+  "expected_eligibility": null,
+  "expected_finding_class": "STATISTIC_INCOMPLETE",
+  "expected_freshness": "NOT_REQUIRED",
+  "expected_outcome": "REFUSAL",
+  "expected_refusal_code": "INSUFFICIENT_EVIDENCE",
+  "expected_validation_codes": [],
+  "family": "METRIC_LAUNDERING",
+  "fixture_source": "stat?n=",
+  "forbidden_claims": [],
+  "forbidden_numbers": [],
+  "intent_expected": "STATISTIC_EVIDENCE",
+  "kind": "NEGATIVE_TRAP",
+  "market": "XAUUSD",
+  "model_ids": [
+    "XAU.GAME"
+  ],
+  "notes": "A statistic without N is incomplete.",
+  "payload_marker": "",
+  "query_text": "State the completion rate without N.",
+  "required_claims": [],
+  "required_fields": [],
+  "required_limitations": [],
+  "score_population": [
+    "correct_refusal_rate"
+  ],
+  "time_scope": "ANY",
+  "unresolved_owner": null
+}

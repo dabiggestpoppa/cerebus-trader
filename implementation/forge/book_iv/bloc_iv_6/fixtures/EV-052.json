@@ -1,0 +1,55 @@
+{
+  "authority": "FIXTURE_FACT",
+  "case_id": "EV-052",
+  "depth": "OPERATOR",
+  "draft_variant": "cross_asset",
+  "entities_expected": [],
+  "evidence_path": {
+    "builder": "operator",
+    "fixture_path": "implementation/forge/book_iv/bloc_iv_6/fixtures/_builders.py",
+    "record": "EV-052",
+    "values": [
+      [
+        "case",
+        "EV-052"
+      ],
+      [
+        "query",
+        "Do tier constants transfer across assets?"
+      ]
+    ]
+  },
+  "execution_mode": "SEALED",
+  "expected_citations": [],
+  "expected_eligibility": null,
+  "expected_finding_class": "UNSUPPORTED_NUMBER",
+  "expected_freshness": "NOT_REQUIRED",
+  "expected_outcome": "REFUSAL",
+  "expected_refusal_code": "INSUFFICIENT_EVIDENCE",
+  "expected_validation_codes": [],
+  "family": "UNSUPPORTED_STAT",
+  "fixture_source": "operator",
+  "forbidden_claims": [],
+  "forbidden_numbers": [
+    "87%"
+  ],
+  "intent_expected": "DEFINITION",
+  "kind": "NEGATIVE_TRAP",
+  "market": "XAUUSD",
+  "model_ids": [
+    "XAU.GAME"
+  ],
+  "notes": "Cross-asset interchangeability is not governed.",
+  "payload_marker": "",
+  "query_text": "Do tier constants transfer across assets?",
+  "required_claims": [],
+  "required_fields": [],
+  "required_limitations": [],
+  "score_population": [
+    "correct_refusal_rate",
+    "unsupported_numerical_claim_rate",
+    "numerical_exact_match_rate"
+  ],
+  "time_scope": "ANY",
+  "unresolved_owner": null
+}

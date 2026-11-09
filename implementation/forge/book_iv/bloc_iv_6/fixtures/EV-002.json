@@ -1,0 +1,58 @@
+{
+  "authority": "FIXTURE_FACT",
+  "case_id": "EV-002",
+  "depth": "BEGINNER",
+  "draft_variant": "as_is",
+  "entities_expected": [],
+  "evidence_path": {
+    "builder": "build_chain_index",
+    "fixture_path": "implementation/forge/book_iv/bloc_iv_2/fixtures/_builders.py",
+    "record": "What does tier mean in CEREBUS?",
+    "values": [
+      [
+        "case",
+        "EV-002"
+      ],
+      [
+        "query",
+        "What does tier mean in CEREBUS?"
+      ]
+    ]
+  },
+  "execution_mode": "CHAIN",
+  "expected_citations": [],
+  "expected_eligibility": null,
+  "expected_finding_class": null,
+  "expected_freshness": "NOT_REQUIRED",
+  "expected_outcome": "ANSWER",
+  "expected_refusal_code": null,
+  "expected_validation_codes": [],
+  "family": "POSITIVE_CONTROL",
+  "fixture_source": "CHAIN:What does tier mean in CEREBUS?",
+  "forbidden_claims": [],
+  "forbidden_numbers": [],
+  "intent_expected": "GENERAL_MARKET_KNOWLEDGE",
+  "kind": "POSITIVE_CONTROL",
+  "market": "",
+  "model_ids": [],
+  "notes": "A doctrine definition may carry the GENERAL_KNOWLEDGE label.",
+  "payload_marker": "",
+  "query_text": "What does tier mean in CEREBUS?",
+  "required_claims": [],
+  "required_fields": [
+    "WHAT_IT_MEANS",
+    "WHAT_CEREBUS_SEES",
+    "WHAT_IT_DOES_NOT_MEAN",
+    "NEXT_RELEVANT_STATE"
+  ],
+  "required_limitations": [],
+  "score_population": [
+    "valid_answer_completion_rate",
+    "false_refusal_rate",
+    "beginner_explanation_completeness",
+    "citation_resolution_accuracy",
+    "epistemic_status_correctness"
+  ],
+  "time_scope": "ANY",
+  "unresolved_owner": null
+}

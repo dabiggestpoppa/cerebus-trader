@@ -1,0 +1,69 @@
+{
+  "authority": "FIXTURE_FACT",
+  "case_id": "EV-005",
+  "depth": "OPERATOR",
+  "draft_variant": "as_is",
+  "entities_expected": [],
+  "evidence_path": {
+    "builder": "operator",
+    "fixture_path": "implementation/forge/book_iv/bloc_iv_6/fixtures/_builders.py",
+    "record": "EV-005",
+    "values": [
+      [
+        "case",
+        "EV-005"
+      ],
+      [
+        "query",
+        "What state is Gold in right now?"
+      ]
+    ]
+  },
+  "execution_mode": "SEALED",
+  "expected_citations": [
+    "SNAP.XAU.SYNTH.001"
+  ],
+  "expected_eligibility": "ELIGIBLE",
+  "expected_finding_class": null,
+  "expected_freshness": "AS_OF",
+  "expected_outcome": "ANSWER",
+  "expected_refusal_code": null,
+  "expected_validation_codes": [],
+  "family": "POSITIVE_CONTROL",
+  "fixture_source": "operator",
+  "forbidden_claims": [],
+  "forbidden_numbers": [],
+  "intent_expected": "CURRENT_STATE",
+  "kind": "POSITIVE_CONTROL",
+  "market": "XAUUSD",
+  "model_ids": [
+    "XAU.GAME"
+  ],
+  "notes": "The fixture carries as_of, so a current-state answer is permitted.",
+  "payload_marker": "",
+  "query_text": "What state is Gold in right now?",
+  "required_claims": [
+    {
+      "source_ref": "",
+      "token": "SNAP.XAU.SYNTH.001"
+    }
+  ],
+  "required_fields": [
+    "MODEL_LAYER",
+    "CURRENT_STATE",
+    "ELIGIBILITY",
+    "ACTIVE_RANGE_ANCHOR",
+    "CLOCK"
+  ],
+  "required_limitations": [],
+  "score_population": [
+    "valid_answer_completion_rate",
+    "false_refusal_rate",
+    "operator_field_completeness",
+    "setup_gating_correctness",
+    "citation_resolution_accuracy",
+    "epistemic_status_correctness"
+  ],
+  "time_scope": "CURRENT",
+  "unresolved_owner": null
+}

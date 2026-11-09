@@ -1,0 +1,51 @@
+{
+  "authority": "FIXTURE_FACT",
+  "case_id": "EV-110",
+  "depth": "OPERATOR",
+  "draft_variant": "empty",
+  "entities_expected": [],
+  "evidence_path": {
+    "builder": "operator",
+    "fixture_path": "implementation/forge/book_iv/bloc_iv_6/fixtures/_builders.py",
+    "record": "EV-110",
+    "values": [
+      [
+        "case",
+        "EV-110"
+      ],
+      [
+        "query",
+        "Empty provider draft."
+      ]
+    ]
+  },
+  "execution_mode": "SEALED",
+  "expected_citations": [],
+  "expected_eligibility": null,
+  "expected_finding_class": "FIELD_INCOMPLETE",
+  "expected_freshness": "NOT_REQUIRED",
+  "expected_outcome": "REFUSAL",
+  "expected_refusal_code": "INSUFFICIENT_EVIDENCE",
+  "expected_validation_codes": [],
+  "family": "PROVIDER_FAILURE",
+  "fixture_source": "operator",
+  "forbidden_claims": [],
+  "forbidden_numbers": [],
+  "intent_expected": "DEFINITION",
+  "kind": "NEGATIVE_TRAP",
+  "market": "XAUUSD",
+  "model_ids": [
+    "XAU.GAME"
+  ],
+  "notes": "An empty draft cannot be assembled into an answer.",
+  "payload_marker": "",
+  "query_text": "Empty provider draft.",
+  "required_claims": [],
+  "required_fields": [],
+  "required_limitations": [],
+  "score_population": [
+    "correct_refusal_rate"
+  ],
+  "time_scope": "ANY",
+  "unresolved_owner": null
+}

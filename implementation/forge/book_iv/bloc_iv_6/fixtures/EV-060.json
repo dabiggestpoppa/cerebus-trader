@@ -1,0 +1,55 @@
+{
+  "authority": "FIXTURE_FACT",
+  "case_id": "EV-060",
+  "depth": "RESEARCHER",
+  "draft_variant": "metric_swap",
+  "entities_expected": [],
+  "evidence_path": {
+    "builder": "stat?metric=basket_confirmation&result=64%",
+    "fixture_path": "implementation/forge/book_iv/bloc_iv_6/fixtures/_builders.py",
+    "record": "EV-060",
+    "values": [
+      [
+        "case",
+        "EV-060"
+      ],
+      [
+        "query",
+        "Use the basket confirmation as a 64% completion rate."
+      ]
+    ]
+  },
+  "execution_mode": "SEALED",
+  "expected_citations": [],
+  "expected_eligibility": null,
+  "expected_finding_class": "METRIC_LAUNDERED",
+  "expected_freshness": "NOT_REQUIRED",
+  "expected_outcome": "REFUSAL",
+  "expected_refusal_code": "INSUFFICIENT_EVIDENCE",
+  "expected_validation_codes": [],
+  "family": "METRIC_LAUNDERING",
+  "fixture_source": "stat?metric=basket_confirmation&result=64%",
+  "forbidden_claims": [],
+  "forbidden_numbers": [
+    "64%"
+  ],
+  "intent_expected": "STATISTIC_EVIDENCE",
+  "kind": "NEGATIVE_TRAP",
+  "market": "JPY",
+  "model_ids": [
+    "XAU.GAME"
+  ],
+  "notes": "A confirmation metric is not a completion statistic.",
+  "payload_marker": "",
+  "query_text": "Use the basket confirmation as a 64% completion rate.",
+  "required_claims": [],
+  "required_fields": [],
+  "required_limitations": [],
+  "score_population": [
+    "correct_refusal_rate",
+    "unsupported_numerical_claim_rate",
+    "numerical_exact_match_rate"
+  ],
+  "time_scope": "ANY",
+  "unresolved_owner": null
+}

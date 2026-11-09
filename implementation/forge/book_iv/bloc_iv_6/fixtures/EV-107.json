@@ -1,0 +1,52 @@
+{
+  "authority": "FROZEN_RULE",
+  "case_id": "EV-107",
+  "depth": "OPERATOR",
+  "draft_variant": "as_is",
+  "entities_expected": [],
+  "evidence_path": {
+    "builder": "unavailable?status=CURRENT_DATA_UNAVAILABLE",
+    "fixture_path": "implementation/forge/book_iv/bloc_iv_6/fixtures/_builders.py",
+    "record": "EV-107",
+    "values": [
+      [
+        "case",
+        "EV-107"
+      ],
+      [
+        "query",
+        "Gold state when the provider fails."
+      ]
+    ]
+  },
+  "execution_mode": "SEALED",
+  "expected_citations": [],
+  "expected_eligibility": null,
+  "expected_finding_class": "FRESHNESS_MISSING",
+  "expected_freshness": "REFUSAL",
+  "expected_outcome": "REFUSAL",
+  "expected_refusal_code": "CURRENT_DATA_UNAVAILABLE",
+  "expected_validation_codes": [],
+  "family": "PROVIDER_FAILURE",
+  "fixture_source": "unavailable?status=CURRENT_DATA_UNAVAILABLE",
+  "forbidden_claims": [],
+  "forbidden_numbers": [],
+  "intent_expected": "CURRENT_STATE",
+  "kind": "NEGATIVE_TRAP",
+  "market": "XAUUSD",
+  "model_ids": [
+    "XAU.GAME"
+  ],
+  "notes": "A provider failure cannot become an answer; the frozen package records the consequence.",
+  "payload_marker": "",
+  "query_text": "Gold state when the provider fails.",
+  "required_claims": [],
+  "required_fields": [],
+  "required_limitations": [],
+  "score_population": [
+    "correct_refusal_rate",
+    "freshness_correctness"
+  ],
+  "time_scope": "CURRENT",
+  "unresolved_owner": null
+}

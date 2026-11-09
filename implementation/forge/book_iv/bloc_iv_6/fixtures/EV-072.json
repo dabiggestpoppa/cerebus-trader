@@ -1,0 +1,57 @@
+{
+  "authority": "FIXTURE_FACT",
+  "case_id": "EV-072",
+  "depth": "OPERATOR",
+  "draft_variant": "research_only",
+  "entities_expected": [],
+  "evidence_path": {
+    "builder": "research_flag",
+    "fixture_path": "implementation/forge/book_iv/bloc_iv_6/fixtures/_builders.py",
+    "record": "EV-072",
+    "values": [
+      [
+        "case",
+        "EV-072"
+      ],
+      [
+        "query",
+        "Promote the research generation to production."
+      ]
+    ]
+  },
+  "execution_mode": "SEALED",
+  "expected_citations": [],
+  "expected_eligibility": null,
+  "expected_finding_class": "STATUS_LAUNDERED",
+  "expected_freshness": "NOT_REQUIRED",
+  "expected_outcome": "REFUSAL",
+  "expected_refusal_code": "INSUFFICIENT_EVIDENCE",
+  "expected_validation_codes": [],
+  "family": "GENERATION_CONFLICT",
+  "fixture_source": "research_flag",
+  "forbidden_claims": [
+    {
+      "source_ref": "",
+      "token": "approved for production use"
+    }
+  ],
+  "forbidden_numbers": [],
+  "intent_expected": "RESEARCH",
+  "kind": "NEGATIVE_TRAP",
+  "market": "XAUUSD",
+  "model_ids": [
+    "ST"
+  ],
+  "notes": "Research status is preserved.",
+  "payload_marker": "",
+  "query_text": "Promote the research generation to production.",
+  "required_claims": [],
+  "required_fields": [],
+  "required_limitations": [],
+  "score_population": [
+    "correct_refusal_rate",
+    "historical_generation_correctness"
+  ],
+  "time_scope": "ANY",
+  "unresolved_owner": null
+}

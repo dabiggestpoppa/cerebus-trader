@@ -1,0 +1,55 @@
+{
+  "authority": "FIXTURE_FACT",
+  "case_id": "EV-055",
+  "depth": "RESEARCHER",
+  "draft_variant": "metric_swap",
+  "entities_expected": [],
+  "evidence_path": {
+    "builder": "stat?metric=basket_confirmation&result=64%",
+    "fixture_path": "implementation/forge/book_iv/bloc_iv_6/fixtures/_builders.py",
+    "record": "EV-055",
+    "values": [
+      [
+        "case",
+        "EV-055"
+      ],
+      [
+        "query",
+        "Treat the JPY basket relationship as a standalone win rate."
+      ]
+    ]
+  },
+  "execution_mode": "SEALED",
+  "expected_citations": [],
+  "expected_eligibility": null,
+  "expected_finding_class": "METRIC_LAUNDERED",
+  "expected_freshness": "NOT_REQUIRED",
+  "expected_outcome": "REFUSAL",
+  "expected_refusal_code": "INSUFFICIENT_EVIDENCE",
+  "expected_validation_codes": [],
+  "family": "UNSUPPORTED_STAT",
+  "fixture_source": "stat?metric=basket_confirmation&result=64%",
+  "forbidden_claims": [],
+  "forbidden_numbers": [
+    "64%"
+  ],
+  "intent_expected": "STATISTIC_EVIDENCE",
+  "kind": "NEGATIVE_TRAP",
+  "market": "JPY",
+  "model_ids": [
+    "JPY.CARRY"
+  ],
+  "notes": "A relationship is not a statistic.",
+  "payload_marker": "",
+  "query_text": "Treat the JPY basket relationship as a standalone win rate.",
+  "required_claims": [],
+  "required_fields": [],
+  "required_limitations": [],
+  "score_population": [
+    "correct_refusal_rate",
+    "unsupported_numerical_claim_rate",
+    "numerical_exact_match_rate"
+  ],
+  "time_scope": "ANY",
+  "unresolved_owner": null
+}

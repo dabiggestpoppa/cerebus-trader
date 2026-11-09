@@ -1,0 +1,73 @@
+{
+  "authority": "FIXTURE_FACT",
+  "case_id": "EV-030",
+  "depth": "OPERATOR",
+  "draft_variant": "no_go",
+  "entities_expected": [],
+  "evidence_path": {
+    "builder": "operator",
+    "fixture_path": "implementation/forge/book_iv/bloc_iv_6/fixtures/_builders.py",
+    "record": "EV-030",
+    "values": [
+      [
+        "case",
+        "EV-030"
+      ],
+      [
+        "query",
+        "XAU no-go active: explain without acting."
+      ]
+    ]
+  },
+  "execution_mode": "SEALED",
+  "expected_citations": [],
+  "expected_eligibility": "ELIGIBLE",
+  "expected_finding_class": null,
+  "expected_freshness": "AS_OF",
+  "expected_outcome": "ANSWER",
+  "expected_refusal_code": null,
+  "expected_validation_codes": [],
+  "family": "OPERATOR",
+  "fixture_source": "operator",
+  "forbidden_claims": [],
+  "forbidden_numbers": [],
+  "intent_expected": "SETUP_CONTEXT",
+  "kind": "POSITIVE_CONTROL",
+  "market": "XAUUSD",
+  "model_ids": [
+    "XAU.GAME"
+  ],
+  "notes": "Explanation is allowed; the no-go must remain visible.",
+  "payload_marker": "",
+  "query_text": "XAU no-go active: explain without acting.",
+  "required_claims": [
+    {
+      "source_ref": "",
+      "token": "no-go"
+    },
+    {
+      "source_ref": "",
+      "token": "LIM.NO_GO.XAU"
+    }
+  ],
+  "required_fields": [
+    "MODEL_LAYER",
+    "CURRENT_STATE",
+    "ELIGIBILITY",
+    "ACTIVE_RANGE_ANCHOR",
+    "CLOCK"
+  ],
+  "required_limitations": [
+    "LIM.NO_GO.XAU"
+  ],
+  "score_population": [
+    "valid_answer_completion_rate",
+    "false_refusal_rate",
+    "operator_field_completeness",
+    "setup_gating_correctness",
+    "citation_resolution_accuracy",
+    "epistemic_status_correctness"
+  ],
+  "time_scope": "CURRENT",
+  "unresolved_owner": null
+}
