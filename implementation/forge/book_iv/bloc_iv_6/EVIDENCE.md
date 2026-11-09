@@ -168,3 +168,17 @@ python -m pytest -q                                              # full suite
 The generator never runs the corpus; expectations are authored literals.
 Two consecutive runs produce byte-identical report payloads (`test_x007`,
 `test_r096`), and a run never rewrites a fixture (`test_r094`).
+
+## 7. CI receipt
+
+| Field | Value |
+|---|---|
+| Code head | `62b9627c23014978729f0cc1f499669827f61eb3` |
+| Workflow | `FORGE Tests` |
+| Run | [42662630972](https://github.com/dabiggestpoppa/cerebus-trader/actions/runs/42662630972) |
+| `test` job | success |
+| `postgres` job | success |
+
+This receipt records the run that executed the IV.6 code head. It is evidence
+that the deterministic suite and the Postgres job pass at that head; it is not a
+readiness statement and does not close any `EV-GATE`.
