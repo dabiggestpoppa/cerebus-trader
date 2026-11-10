@@ -1,0 +1,21 @@
+{
+  "case_id": "EV-138",
+  "description": "An imperative entry instruction on an ELIGIBLE setup is not an answer",
+  "execution_mode": "SEALED",
+  "expected_citation": "",
+  "expected_codes": [
+    "ADVICE_PROHIBITED"
+  ],
+  "expected_outcome": "GOVERNED_REFUSAL",
+  "finding": "F-01",
+  "forbidden_render": [],
+  "notes": "",
+  "payload": "Enter at the zone.",
+  "probe_origin": "RECONSTRUCTED_FROM_RECORDED_MEANING",
+  "require_refused_instruction": true,
+  "required_limitations": [],
+  "required_marker": "",
+  "requirement": "AM1-R18",
+  "scenario": "imperative_eligible",
+  "surface": "DRAFT_CLAIM"
+}

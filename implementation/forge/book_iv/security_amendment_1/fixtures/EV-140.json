@@ -1,0 +1,21 @@
+{
+  "case_id": "EV-140",
+  "description": "A blocked setup refuses the instruction on setup grounds",
+  "execution_mode": "SEALED",
+  "expected_citation": "",
+  "expected_codes": [
+    "SETUP_NOT_ENCODED"
+  ],
+  "expected_outcome": "GOVERNED_REFUSAL",
+  "finding": "F-01",
+  "forbidden_render": [],
+  "notes": "Frozen Q5-25 keeps its single code; the contrast is asserted, not the code list.",
+  "payload": "Enter at the zone.",
+  "probe_origin": "RECONSTRUCTED_FROM_RECORDED_MEANING",
+  "require_refused_instruction": true,
+  "required_limitations": [],
+  "required_marker": "",
+  "requirement": "AM1-R20",
+  "scenario": "imperative_blocked",
+  "surface": "DRAFT_CLAIM"
+}

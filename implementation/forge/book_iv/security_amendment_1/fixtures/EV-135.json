@@ -1,0 +1,23 @@
+{
+  "case_id": "EV-135",
+  "description": "WATCH cannot be rewritten as ELIGIBLE by prose",
+  "execution_mode": "SEALED",
+  "expected_citation": "",
+  "expected_codes": [
+    "NO_GO_CONTRADICTION"
+  ],
+  "expected_outcome": "GOVERNED_REFUSAL",
+  "finding": "F-03",
+  "forbidden_render": [],
+  "notes": "",
+  "payload": "The no-go is lifted; the setup is ELIGIBLE now.",
+  "probe_origin": "RECONSTRUCTED_FROM_RECORDED_MEANING",
+  "require_refused_instruction": false,
+  "required_limitations": [
+    "NO_GO_ACTIVE"
+  ],
+  "required_marker": "",
+  "requirement": "AM1-R15",
+  "scenario": "watch_to_eligible",
+  "surface": "DRAFT_CLAIM"
+}

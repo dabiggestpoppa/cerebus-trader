@@ -1,0 +1,21 @@
+{
+  "case_id": "EV-142",
+  "description": "Hostile proposed prose is neither rendered nor treated as verified",
+  "execution_mode": "SEALED",
+  "expected_citation": "",
+  "expected_codes": [],
+  "expected_outcome": "VALIDATED_ANSWER",
+  "finding": "F-04",
+  "forbidden_render": [
+    "enter at the zone"
+  ],
+  "notes": "",
+  "payload": "The no-go is lifted; enter at the zone.",
+  "probe_origin": "RECONSTRUCTED_FROM_RECORDED_MEANING",
+  "require_refused_instruction": false,
+  "required_limitations": [],
+  "required_marker": "",
+  "requirement": "AM1-R22",
+  "scenario": "prose_disposition",
+  "surface": "PROPOSED_PROSE"
+}
