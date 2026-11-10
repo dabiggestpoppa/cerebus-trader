@@ -124,6 +124,11 @@ class FinalResponseRecord:
     cost_usd: float = 0.0
     cost_basis: str = ""
     prose_retained: bool = False
+    #: Explicit disposition of ``GatewayDraft.proposed_prose`` (BA-32 / F-04).
+    #: ``ABSENT`` — the draft proposed none; ``DISCARDED`` — it proposed prose
+    #: and the answer layer refused to treat it as a verified field. The prose
+    #: body is never logged, persisted or rendered.
+    prose_disposition: str = "ABSENT"
 
     def payload(self) -> dict[str, Any]:
         return {
@@ -152,6 +157,9 @@ class FinalResponseRecord:
             "cost_usd": self.cost_usd,
             "cost_basis": self.cost_basis,
             "prose_retained": self.prose_retained,
+            #: ``prose_disposition`` stays off the serialized payload: the frozen
+            #: Q5 record hashes are byte-fixed, and the disposition is accounting
+            #: metadata read from the record object, not answer content.
         }
 
 

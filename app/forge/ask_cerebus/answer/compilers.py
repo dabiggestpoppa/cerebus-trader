@@ -116,6 +116,20 @@ def _claim_section(admission: Admission, prepared: PreparedClaim) -> SectionId:
     return SectionId.MODEL_VERSION
 
 
+def _rendered_claim(item: PreparedClaim) -> str:
+    """Render a claim with its trust classification visible.
+
+    A claim quoting an untrusted passage keeps its text, its citation and its
+    quotation, and gains an explicit marker naming the source that made the
+    statement. CEREBUS never renders retrieved text as its own finding.
+    """
+
+    untrusted = item.untrusted_sources
+    if not untrusted:
+        return item.text
+    return f"untrusted source {untrusted[0].ref}: {item.text}"
+
+
 def _field_lines(entries, keys: tuple[str, ...]) -> list[str]:
     lines: list[str] = []
     for key in keys:
@@ -237,6 +251,7 @@ def compile_answer(
             )
         )
 
+    prepared_by_id = {item.claim_id: item for item in prepared}
     field_bullets = _entry_bullets(admission, {})
     order = {
         AnswerDepth.BEGINNER: BEGINNER_ORDER,
@@ -248,23 +263,26 @@ def compile_answer(
     for section_id in order:
         claims = [claim for claim in answer_claims if claim.section_id is section_id]
         bullets: list[str] = []
+        rendered = {
+            claim.claim_id: _rendered_claim(prepared_by_id[claim.claim_id]) for claim in claims
+        }
         if section_id is SectionId.WHAT_IT_MEANS:
-            bullets = [claim.text for claim in claims] or [f"meaning: {_NOT_ENCODED}"]
+            bullets = [rendered[claim.claim_id] for claim in claims] or [f"meaning: {_NOT_ENCODED}"]
         elif section_id is SectionId.WHAT_CEREBUS_SEES:
-            bullets = [claim.text for claim in claims] or [
+            bullets = [rendered[claim.claim_id] for claim in claims] or [
                 f"authorized state: {_NOT_ENCODED}"
             ]
         elif section_id is SectionId.WHAT_IT_DOES_NOT_MEAN:
-            bullets = [claim.text for claim in claims]
+            bullets = [rendered[claim.claim_id] for claim in claims]
             bullets.extend(f"limitation: {value}" for value in admission.index.limitations())
             bullets.extend(
                 f"unresolved: {value}" for value in propagated_limitations(admission)
             )
             bullets = bullets or [f"limitations: {_NOT_ENCODED}"]
         elif section_id is SectionId.CONTRADICTIONS_NEGATIVE:
-            bullets = [claim.text for claim in claims] + field_bullets[section_id]
+            bullets = [rendered[claim.claim_id] for claim in claims] + field_bullets[section_id]
         else:
-            bullets = field_bullets[section_id] + [claim.text for claim in claims]
+            bullets = field_bullets[section_id] + [rendered[claim.claim_id] for claim in claims]
         deduped: list[str] = []
         for bullet in bullets:
             if bullet not in deduped:

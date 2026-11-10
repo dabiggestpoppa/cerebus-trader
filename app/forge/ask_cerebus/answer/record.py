@@ -114,6 +114,7 @@ def build_record(
         cost_usd=round(float(getattr(draft.usage, "cost_usd", 0.0)), 12),
         cost_basis=getattr(getattr(draft.usage, "cost_basis", ""), "value", ""),
         prose_retained=False,
+        prose_disposition="DISCARDED" if (draft.proposed_prose or "").strip() else "ABSENT",
     )
 
 

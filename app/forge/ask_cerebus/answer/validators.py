@@ -13,8 +13,11 @@ from dataclasses import dataclass
 from app.forge.ask_cerebus.answer.admission import Admission
 from app.forge.ask_cerebus.answer.citations import is_internal_ref
 from app.forge.ask_cerebus.answer.enums import (
+    CURRENT_EPISTEMIC_LABELS,
+    FINDING_REFUSAL,
     LAYER_VOCABULARY,
     NON_CURRENT_EPISTEMIC_LABELS,
+    REFUSAL_RANK,
     SETUP_RANK,
     ValidationCode,
 )
@@ -53,6 +56,16 @@ class PreparedClaim:
     @property
     def normalized(self) -> str:
         return normalize(self.text)
+
+    @property
+    def untrusted_sources(self) -> tuple[ResolvedItem, ...]:
+        """Package items that carry no authority to make the claim themselves."""
+
+        return tuple(
+            source
+            for source in self.sources
+            if source.item.trust_class is TrustClass.UNTRUSTED_DATA
+        )
 
 
 # ---------------------------------------------------------------------------
@@ -184,6 +197,92 @@ _UNTRUSTED_INSTRUCTION_TOKENS = (
     "system:",
     "new instructions",
 )
+
+#: Quotation is the only shape in which untrusted material may appear. Everything
+#: outside the quotes is the answer's own frame; everything inside is the
+#: source's assertion, not CEREBUS's.
+_QUOTED_SPAN = re.compile(r'"[^"\n]*"|\u201c[^\u201d\n]*\u201d')
+
+#: A claim that asserts its own authority. Matched on unquoted text only: a
+#: quoted phrase may describe such a claim without making it.
+_AUTHORITY_PATTERNS = (
+    re.compile(
+        r"\b(?:admin|administrator|root|superuser|god)\s+(?:mode|access|privilege|privileges)\b"
+    ),
+    re.compile(
+        r"\bbypass(?:es|ed|ing)?\b[^.;]{0,60}"
+        r"\b(?:exposure|restriction|restrictions|authori[sz]ation|entitlement|gate)\b"
+    ),
+    re.compile(
+        r"\b(?:exposure|restriction|restrictions|authori[sz]ation|entitlement|gate)\b"
+        r"[^.;]{0,60}\bbypass(?:es|ed|ing)?\b"
+    ),
+)
+
+#: Sentence- or clause-initial imperative verbs. An instruction is addressed to
+#: the operator; an explanation is not, however many action nouns it names.
+_IMPERATIVE_VERB = re.compile(
+    r"(?:^|[.;:!?]\s*)\s*"
+    r"(enter|buy|sell|add|exit|close|open|take|place|go|hold|scale|reduce|move|wait|act|trade)"
+    r"\b(?![\w-])",
+    re.IGNORECASE,
+)
+
+#: Explicit removal of an active restriction. `remains in force` must not match.
+_NO_GO_REMOVAL_TOKENS = (
+    "no-go is lifted",
+    "no go is lifted",
+    "no-go has been lifted",
+    "no-go was lifted",
+    "no-go lifted",
+    "no go lifted",
+    "lift the no-go",
+    "lifted the no-go",
+    "remove the no-go",
+    "no-go is removed",
+    "no-go removed",
+    "no-go is cancelled",
+    "no-go is canceled",
+    "no-go is cleared",
+    "no-go is over",
+    "no-go no longer applies",
+    "no-go is not active",
+    "no go is not active",
+)
+
+#: An evidence-status assertion. A source that genuinely carries the status may
+#: still say it; a passage with no evidence source may not.
+_VALIDATED_ASSERTION = re.compile(
+    r"\b(?:is|are|was|were)\s+validated\b|\bvalidated\s+evidence\b"
+)
+
+
+def quoted_spans(text: str) -> tuple[str, ...]:
+    return tuple(match.group(0) for match in _QUOTED_SPAN.finditer(text or ""))
+
+
+def unquoted_text(text: str) -> str:
+    """The answer's own frame, with every quoted passage removed."""
+
+    return _QUOTED_SPAN.sub(" ", text or "")
+
+
+def asserts_authority(text: str) -> bool:
+    lowered = normalize(text)
+    return any(pattern.search(lowered) for pattern in _AUTHORITY_PATTERNS)
+
+
+def asserts_imperative_entry(text: str) -> bool:
+    return _IMPERATIVE_VERB.search(text or "") is not None
+
+
+def asserts_no_go_removal(text: str) -> bool:
+    lowered = normalize(text)
+    return any(token in lowered for token in _NO_GO_REMOVAL_TOKENS)
+
+
+def asserts_validated_status(text: str) -> bool:
+    return _VALIDATED_ASSERTION.search(normalize(text)) is not None
 
 
 def number_tokens(text: str) -> tuple[str, ...]:
@@ -497,38 +596,49 @@ def validate_setup(admission: Admission, claims: tuple[PreparedClaim, ...]) -> l
     worst = worst_setup_verdict(verdicts)
     setup_facts = [entry.fact_map for entry in admission.index.setup_items()]
 
+    #: An imperative instruction is only *admitted* when the encoded setup
+    #: authorises it and no setup defect already refuses the claim. A blocked or
+    #: unencoded setup is refused on its own grounds, so the frozen refusal
+    #: contract keeps its single code; the contrast is asserted by AM1-R20.
+    gate_authorizes = bool(verdicts) and worst == "ELIGIBLE"
+
     for prepared in claims:
-        if asserts_advice(prepared.text):
-            findings.append(
+        spoken = unquoted_text(prepared.text)
+        local: list[Finding] = []
+        if asserts_advice(spoken):
+            local.append(
                 Finding(
                     ValidationCode.ADVICE_PROHIBITED,
                     "personalized advice, sizing or execution instruction is not an answer",
                     claim_id=prepared.claim_id,
                 )
             )
-        if not asserts_action(prepared.text):
+        if not asserts_action(spoken):
+            findings.extend(local)
             continue
         if not verdicts:
-            findings.append(
+            local.append(
                 Finding(
                     ValidationCode.SETUP_NOT_ENCODED,
                     "no validated setup is encoded for the requested action",
                     claim_id=prepared.claim_id,
                 )
             )
+            findings.extend(local)
             continue
         if worst != "ELIGIBLE":
-            findings.append(
+            local.append(
                 Finding(
                     ValidationCode.SETUP_NOT_ENCODED,
                     f"the encoded setup is {worst or 'UNRESOLVED'}; no action is authorized",
                     claim_id=prepared.claim_id,
                 )
             )
+            findings.extend(local)
             continue
         lowered = prepared.normalized
         if "watch" in lowered:
-            findings.append(
+            local.append(
                 Finding(
                     ValidationCode.SETUP_FIELD_MISMATCH,
                     "claim states a milder eligibility than the encoded verdict",
@@ -542,7 +652,7 @@ def validate_setup(admission: Admission, claims: tuple[PreparedClaim, ...]) -> l
                     encoded_values.update(number_tokens(facts[key]))
         for token in number_tokens(prepared.text):
             if encoded_values and token not in encoded_values:
-                findings.append(
+                local.append(
                     Finding(
                         ValidationCode.SETUP_FIELD_MISMATCH,
                         "claim states a setup level the package does not encode",
@@ -550,6 +660,20 @@ def validate_setup(admission: Admission, claims: tuple[PreparedClaim, ...]) -> l
                     )
                 )
                 break
+        if (
+            gate_authorizes
+            and asserts_imperative_entry(spoken)
+            and not any(finding.code is ValidationCode.SETUP_FIELD_MISMATCH for finding in local)
+        ):
+            local.append(
+                Finding(
+                    ValidationCode.ADVICE_PROHIBITED,
+                    "personalized advice, sizing or execution instruction is not an answer",
+                    claim_id=prepared.claim_id,
+                )
+            )
+        findings.extend(local)
+    findings.extend(validate_no_go(admission, claims))
     return findings
 
 
@@ -573,6 +697,21 @@ def validate_status(admission: Admission, claims: tuple[PreparedClaim, ...]) -> 
                     claim_id=prepared.claim_id,
                 )
             )
+        spoken = unquoted_text(prepared.text)
+        if asserts_validated_status(spoken):
+            carries_status = any(
+                source.ref_type == "EVIDENCE"
+                and source.label.value in CURRENT_EPISTEMIC_LABELS
+                for source in sources
+            )
+            if not carries_status:
+                findings.append(
+                    Finding(
+                        ValidationCode.STATUS_LAUNDERING,
+                        "claim asserts validated evidence status that no cited source carries",
+                        claim_id=prepared.claim_id,
+                    )
+                )
         non_current = labels & NON_CURRENT_EPISTEMIC_LABELS
         lowered = prepared.normalized
         if non_current and (
@@ -600,6 +739,94 @@ def validate_status(admission: Admission, claims: tuple[PreparedClaim, ...]) -> 
                         )
                     )
                     break
+    return findings
+
+
+# ---------------------------------------------------------------------------
+# authority, trust boundary and no-go consistency (BA-32 / amendment 1)
+# ---------------------------------------------------------------------------
+
+
+def validate_trust_boundary(admission: Admission, claims: tuple[PreparedClaim, ...]) -> list[Finding]:
+    """Untrusted material may be quoted; it may not be asserted.
+
+    The check is structural, not lexical: the claim must put the untrusted text
+    inside quotation marks, and its own frame must not carry authority, action
+    or no-go language. A paraphrase with no quotation is refused rather than
+    silently discarded, so provenance is never dropped quietly.
+    """
+
+    del admission
+    findings: list[Finding] = []
+    for prepared in claims:
+        untrusted = prepared.untrusted_sources
+        if not untrusted:
+            continue
+        ref = untrusted[0].ref
+        if not quoted_spans(prepared.text):
+            findings.append(
+                Finding(
+                    ValidationCode.UNTRUSTED_CONTENT_RENDERED,
+                    "untrusted package text is asserted as the answer's own claim",
+                    claim_id=prepared.claim_id,
+                    ref=ref,
+                )
+            )
+            continue
+        spoken = unquoted_text(prepared.text)
+        if (
+            asserts_authority(spoken)
+            or asserts_no_go_removal(spoken)
+            or asserts_validated_status(spoken)
+            or asserts_action(spoken)
+            or asserts_imperative_entry(spoken)
+        ):
+            findings.append(
+                Finding(
+                    ValidationCode.UNTRUSTED_CONTENT_RENDERED,
+                    "untrusted text is carried by a frame that asserts its authority",
+                    claim_id=prepared.claim_id,
+                    ref=ref,
+                )
+            )
+    return findings
+
+
+def validate_authority(admission: Admission, claims: tuple[PreparedClaim, ...]) -> list[Finding]:
+    """No package grants admin mode, exposure bypass or an elevated privilege."""
+
+    del admission
+    findings: list[Finding] = []
+    for prepared in claims:
+        if asserts_authority(unquoted_text(prepared.text)):
+            findings.append(
+                Finding(
+                    ValidationCode.AUTHORITY_ESCALATION,
+                    "claim asserts an authority the authorized package does not encode",
+                    claim_id=prepared.claim_id,
+                )
+            )
+    return findings
+
+
+def validate_no_go(admission: Admission, claims: tuple[PreparedClaim, ...]) -> list[Finding]:
+    """An active restriction stays in force in the body, not only in the metadata."""
+
+    active = tuple(
+        limitation for limitation in admission.index.limitations() if "NO_GO" in limitation.upper()
+    )
+    if not active:
+        return []
+    findings: list[Finding] = []
+    for prepared in claims:
+        if asserts_no_go_removal(unquoted_text(prepared.text)):
+            findings.append(
+                Finding(
+                    ValidationCode.NO_GO_CONTRADICTION,
+                    f"claim asserts removal of the active {active[0]}",
+                    claim_id=prepared.claim_id,
+                )
+            )
     return findings
 
 
@@ -699,6 +926,8 @@ def reproduces_beyond(source: str, target: str, limit: int) -> bool:
 
 def validate_leakage(admission: Admission, claims: tuple[PreparedClaim, ...]) -> list[Finding]:
     findings: list[Finding] = []
+    findings.extend(validate_authority(admission, claims))
+    findings.extend(validate_trust_boundary(admission, claims))
     limit = max(1, admission.policy.quote_char_limit)
     bulk = admission.policy.corpus_bulk_limit
     quoted: dict[str, int] = {}
@@ -853,13 +1082,44 @@ VALIDATORS = (
 )
 
 
+#: Codes introduced by security amendment 1. They are admission-blocking: when
+#: the same claim is already vetoed by a finding whose refusal is at least as
+#: privileged, the amendment code changes no outcome and is suppressed, so a
+#: frozen refusal record keeps its historical code set.
+_AMENDMENT_CODES = frozenset(
+    {
+        ValidationCode.UNTRUSTED_CONTENT_RENDERED,
+        ValidationCode.AUTHORITY_ESCALATION,
+        ValidationCode.NO_GO_CONTRADICTION,
+    }
+)
+
+
+def _suppress_secondary_security(findings: list[Finding]) -> list[Finding]:
+    primary = [finding for finding in findings if finding.code not in _AMENDMENT_CODES]
+    kept: list[Finding] = []
+    for finding in findings:
+        if finding.code in _AMENDMENT_CODES and finding.claim_id:
+            own_rank = REFUSAL_RANK[FINDING_REFUSAL[finding.code]]
+            rivals = [
+                other
+                for other in primary
+                if other.claim_id == finding.claim_id
+                and REFUSAL_RANK[FINDING_REFUSAL[other.code]] <= own_rank
+            ]
+            if rivals:
+                continue
+        kept.append(finding)
+    return kept
+
+
 def run_validators(
     admission: Admission, claims: tuple[PreparedClaim, ...]
 ) -> tuple[Finding, ...]:
     findings: list[Finding] = []
     for _name, validator in VALIDATORS:
         findings.extend(validator(admission, claims))
-    return tuple(findings)
+    return tuple(_suppress_secondary_security(findings))
 
 
 __all__ = [
@@ -871,6 +1131,9 @@ __all__ = [
     "validate_layer",
     "validate_setup",
     "validate_status",
+    "validate_authority",
+    "validate_trust_boundary",
+    "validate_no_go",
     "validate_freshness",
     "validate_leakage",
     "validate_citations",
@@ -880,6 +1143,13 @@ __all__ = [
     "number_tokens",
     "asserts_current",
     "asserts_action",
+    "asserts_advice",
+    "asserts_authority",
+    "asserts_imperative_entry",
+    "asserts_no_go_removal",
+    "asserts_validated_status",
+    "quoted_spans",
+    "unquoted_text",
     "worst_setup_verdict",
     "setup_verdicts",
     "propagated_limitations",
