@@ -1,0 +1,33 @@
+{
+  "case_count": 10,
+  "case_ids": [
+    "EV-145",
+    "EV-146",
+    "EV-147",
+    "EV-148",
+    "EV-149",
+    "EV-150",
+    "EV-151",
+    "EV-152",
+    "EV-153",
+    "EV-154"
+  ],
+  "dataset_version": "ASK_EVALUATION_DATASET_V2",
+  "declared_canonical_models": {
+    "EV-145": "MOD.BTC.GAME.V1",
+    "EV-146": "MOD.XAU.GAME.V1",
+    "EV-147": "MOD.BTC.GAME.V1",
+    "EV-148": "MOD.ST.MANUAL.V1",
+    "EV-149": "MOD.ST.MANUAL.V1",
+    "EV-150": "MOD.BTC.TRACKER.V1",
+    "EV-151": "MOD.FIB.RANGE_BIRTH.V1",
+    "EV-152": "MOD.BTC.TRACKER.V1",
+    "EV-153": "MOD.XAU.GAME.V1",
+    "EV-154": ""
+  },
+  "digest": "aa7caee0a798deb4775192fe64026a1736341763a74947d8fa85d52df0d3eed2",
+  "execution_modes": [
+    "CHAIN"
+  ],
+  "schema_version": "ASK_EVALUATION_CASE_SCHEMA_V1"
+}
