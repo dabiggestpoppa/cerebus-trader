@@ -8,6 +8,8 @@ from __future__ import annotations
 
 import subprocess
 import sys
+
+from tests._support.canonical_bytes import canonical_bytes, canonical_sha256
 from dataclasses import fields
 
 import pytest
@@ -678,9 +680,9 @@ class TestScopeGuards:
         import hashlib
         import pathlib
 
-        raw001 = pathlib.Path(
-            "app/forge/persistence/sql/001_initial_schema.sql"
-        ).read_bytes()
+        raw001 = canonical_bytes(
+            pathlib.Path("app/forge/persistence/sql/001_initial_schema.sql")
+        )
         assert hashlib.sha256(raw001).hexdigest() == (
             "d91c2ea2ec45de5f89f64b56acab80316339f68a53fd28a88c3c7ea0b7662f14"
         )

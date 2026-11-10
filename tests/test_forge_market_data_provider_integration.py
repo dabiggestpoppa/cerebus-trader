@@ -16,6 +16,8 @@ import json
 import re
 import subprocess
 import sys
+
+from tests._support.canonical_bytes import canonical_bytes, canonical_sha256
 from dataclasses import replace
 from datetime import date, datetime, time, timedelta, timezone
 from decimal import Decimal, ROUND_HALF_UP
@@ -1364,9 +1366,7 @@ def test_migration_set_unchanged():
 
 
 def test_routes_hash_unchanged():
-    digest = hashlib.sha256(
-        (REPO / "app/forge/service/routes.py").read_bytes()
-    ).hexdigest()
+    digest = canonical_sha256(REPO / "app/forge/service/routes.py")
     assert digest == (
         "145757e0f2b19e76e2274018075c4b0fa7f0642498d4580e7e5fa8ec33d190af"
     )

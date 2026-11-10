@@ -6,6 +6,8 @@ Authoritative contract: implementation/forge/book_iii/bloc_iii_6/ACCEPTANCE.md.
 from __future__ import annotations
 
 import hashlib
+
+from tests._support.canonical_bytes import canonical_bytes, canonical_sha256
 import importlib.util
 import json
 from dataclasses import FrozenInstanceError, fields, replace
@@ -2397,7 +2399,7 @@ def test_boundary_frozen_upstream_hashes_unchanged():
         for path in files:
             digest.update(path.name.encode("utf-8"))
             digest.update(b"\n")
-            digest.update(path.read_bytes())
+            digest.update(canonical_bytes(path))
         assert len(files) == entry["modules"]
         assert digest.hexdigest() == entry["aggregate_sha256"]
 

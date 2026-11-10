@@ -19,6 +19,8 @@ import inspect
 import json
 import re
 import sys
+
+from tests._support.canonical_bytes import canonical_bytes, canonical_sha256
 from dataclasses import replace
 from decimal import Decimal
 from pathlib import Path
@@ -1415,8 +1417,7 @@ class TestT12Boundaries:
         )
         assert manifest["normalization"] == "LF"
         for name, digest in manifest["files"].items():
-            data = (_FIXTURES / name).read_bytes()
-            assert hashlib.sha256(data).hexdigest() == digest
+            assert canonical_sha256(_FIXTURES / name) == digest
 
     def test_engine_version_stamped(self):
         assert _record().engine_version == SETUP_ENGINE_VERSION
@@ -1441,8 +1442,7 @@ class TestT12Boundaries:
             "app/forge/state_engine": 13,
         }
         for relative, expected in baseline["files"].items():
-            digest = hashlib.sha256((_ROOT / relative).read_bytes()).hexdigest()
-            assert digest == expected, relative
+            assert canonical_sha256(_ROOT / relative) == expected, relative
 
     def test_import_direction_is_one_way(self):
         for package in (

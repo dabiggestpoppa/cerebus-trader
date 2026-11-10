@@ -17,6 +17,8 @@ import json
 import re
 import subprocess
 import sys
+
+from tests._support.canonical_bytes import canonical_bytes, canonical_sha256
 from dataclasses import FrozenInstanceError, fields, replace
 from datetime import datetime, timedelta, timezone
 from decimal import Decimal
@@ -102,7 +104,8 @@ POLICY = QualityPolicy.from_strings(
 
 
 def _sha(path: Path) -> str:
-    return hashlib.sha256(path.read_bytes()).hexdigest()
+    """Canonical content identity; see tests/_support/canonical_bytes.py."""
+    return canonical_sha256(path)
 
 
 def _record(payload, provider, registry=INGEST, cutoff=CUTOFF):

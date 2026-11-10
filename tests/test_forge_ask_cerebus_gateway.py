@@ -12,6 +12,8 @@ import importlib.util
 import json
 import socket
 import sys
+
+from tests._support.canonical_bytes import canonical_bytes, canonical_sha256
 from dataclasses import replace
 from pathlib import Path
 
@@ -720,7 +722,7 @@ def test_a55_same_golden_suite_runs_against_candidate_provider():
     assert set(manifest["fixtures"]) == set(files)
     for name, text in files.items():
         normalized = text.replace("\r\n", "\n").encode("utf-8")
-        assert normalized == (Q4_DIR / name).read_bytes()
+        assert normalized == canonical_bytes(Q4_DIR / name)
         assert hashlib.sha256(normalized).hexdigest() == manifest["fixtures"][name]["sha256"]
     for scenario in _SCENARIOS.values():
         out, _, _ = _run(scenario)
@@ -861,7 +863,7 @@ def test_a69_fake_provider_replacement_changes_no_gateway_contract():
 
 def test_a70_frozen_iv3_context_contract_unchanged():
     assert CONTEXT_CONTRACT_V1 == "CONTEXT_CONTRACT_V1"
-    assert hashlib.sha256((ROOT / "app/forge/ask_cerebus/context/schema.py").read_bytes()).hexdigest() == (
+    assert canonical_sha256(ROOT / "app/forge/ask_cerebus/context/schema.py") == (
         "499dbdfb0054d6b1c7c41f61d6f91a2fdd15cad36346eb4297790e13b7cfc2c0"
     )
     case = _case("Q4-01")
@@ -884,7 +886,7 @@ def test_a70_frozen_iv3_context_contract_unchanged():
 
 
 def test_a71_routes_migrations_and_provider_seams_unchanged():
-    assert hashlib.sha256((ROOT / "app/forge/service/routes.py").read_bytes()).hexdigest() == (
+    assert canonical_sha256(ROOT / "app/forge/service/routes.py") == (
         "145757e0f2b19e76e2274018075c4b0fa7f0642498d4580e7e5fa8ec33d190af"
     )
     assert [migration.version for migration in discover_migrations()] == [1, 2, 3, 4]

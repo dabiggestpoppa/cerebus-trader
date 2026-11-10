@@ -12,6 +12,8 @@ integrity, reproducibility and security.
 from __future__ import annotations
 
 import hashlib
+
+from tests._support.canonical_bytes import canonical_bytes, canonical_sha256
 import json
 import re
 from dataclasses import replace
@@ -1579,9 +1581,7 @@ class TestInternalMaterial:
             assert record.leakage.contains_internal_method is False
 
     def test_policy_module_is_untouched(self) -> None:
-        digest = hashlib.sha256(
-            (REPO_ROOT / "app" / "forge" / "policy.py").read_bytes()
-        ).hexdigest()
+        digest = canonical_sha256(REPO_ROOT / "app" / "forge" / "policy.py")
         assert digest == POLICY_MODULE_SHA256
 
     def test_retrieval_never_assigns_public_exposure_itself(self) -> None:

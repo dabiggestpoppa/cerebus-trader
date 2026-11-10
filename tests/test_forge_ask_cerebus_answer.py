@@ -12,6 +12,8 @@ import importlib.util
 import json
 import socket
 import sys
+
+from tests._support.canonical_bytes import canonical_bytes, canonical_sha256
 from dataclasses import replace
 from pathlib import Path
 
@@ -805,7 +807,7 @@ def test_a73_answer_layer_is_byte_deterministic():
 
 def test_a74_frozen_upstream_hashes_routes_and_migrations_unchanged():
     for relative, expected in FROZEN.items():
-        actual = hashlib.sha256((ROOT / relative).read_bytes()).hexdigest()
+        actual = canonical_sha256(ROOT / relative)
         assert actual == expected, relative
     assert [migration.version for migration in discover_migrations()] == [1, 2, 3, 4]
 
