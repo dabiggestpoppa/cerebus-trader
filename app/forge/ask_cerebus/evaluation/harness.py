@@ -119,13 +119,17 @@ def _run_sealed(case: EvaluationCase) -> StageArtifacts:
 def _chain_gateway(package: Any, draft: Any, *, fail: bool):
     from app.forge.ask_cerebus.llm_gateway.fake import FakeScript, GatewayFakeLLM
     from app.forge.ask_cerebus.llm_gateway.policy import ModelCandidate, ModelRoute, RoutingPolicy
-    from app.forge.ask_cerebus.llm_gateway.request import admit
+    from app.forge.ask_cerebus.llm_gateway.request import AdmissionFailure, admit
     from app.forge.ask_cerebus.llm_gateway.service import GatewayService
     from app.forge.providers.fakes import SimulatedClock
 
     admitted = admit(package)
     if not hasattr(admitted, "task"):
-        return None
+        # Carry the governed admission refusal through instead of dropping it.
+        # The product composition converts this to a GatewayRefusal; the harness
+        # must not turn it into None (which validate_answer would reject with
+        # TypeError) nor fabricate a GatewayDraft.
+        return admitted
     policy = RoutingPolicy(
         routes=(
             ModelRoute(
@@ -149,6 +153,7 @@ def _run_chain(case: EvaluationCase) -> StageArtifacts:
     from app.forge.ask_cerebus.answer.service import validate_answer
     from app.forge.ask_cerebus.context.service import ContextPackager
     from app.forge.ask_cerebus.interpreter.interpret import interpret
+    from app.forge.ask_cerebus.llm_gateway.request import AdmissionFailure
 
     query = case.query_text
     principal, context = F.chain_credentials()
@@ -158,6 +163,19 @@ def _run_chain(case: EvaluationCase) -> StageArtifacts:
     package = ContextPackager().pack(plan, bundle)
     draft = F.chain_draft(package, case.depth)
     gateway = _chain_gateway(package, draft, fail=case.draft_variant == "gateway_fail")
+    if isinstance(gateway, AdmissionFailure):
+        # Preserve the governed refusal from product composition. Route it
+        # through IV.5 (which holds the real draft) so a GovernedAnswerRefusal
+        # is produced instead of dropping the refusal or passing None into
+        # validate_answer.
+        answer = validate_answer(draft, package)
+        return StageArtifacts(
+            plan=plan,
+            bundle=bundle,
+            package=package,
+            gateway=gateway,
+            answer=answer,
+        )
     if gateway is not None and not hasattr(gateway, "claims"):
         return StageArtifacts(plan=plan, bundle=bundle, package=package, gateway=gateway)
     answer = validate_answer(gateway, package)
