@@ -188,11 +188,18 @@ class AskCerebusRetrievalService:
         limitations = limitations + negative_limitations(negative_refs)
 
         intelligence_refs: tuple[IntelligenceRef, ...] = ()
-        if plan.requires_live_intelligence or plan.time_scope.value in (
-            "CURRENT",
-            "AS_OF",
-            "HISTORICAL_RESEARCH",
-        ):
+        # Book III market/snapshot routing is requested only when the question
+        # actually needs live or point-in-time market data. A historical
+        # research question (definition, identity, lineage or statistic) is
+        # answerable from canonical model identity, status, lineage and
+        # Claim/Evidence records; it does not need a market snapshot.
+        # ``requires_evidence`` signals canonical Claim/Evidence retrieval, not
+        # Book III intelligence, so it never opens this branch for history.
+        needs_intelligence = bool(
+            plan.requires_live_intelligence
+            or plan.time_scope.value in ("CURRENT", "AS_OF")
+        )
+        if needs_intelligence:
             intelligence = route_intelligence(
                 plan,
                 snapshot_context,
