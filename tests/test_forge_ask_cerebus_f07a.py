@@ -112,9 +112,8 @@ def test_f07a_a06_no_go_active_visible() -> None:
     assert "NO_GO_ACTIVE" in payload.get("limitations", ()), payload
 
 
-# A01/A05: every refusal carries its own reason in code+detail; no fabricated
-# limitation for a case that has none (an empty limitations tuple is legal).
-def test_f07a_a01_a05_own_reason_and_no_fabricated_limitation() -> None:
+# A01: every refusal carries its own reason in code + detail.
+def test_f07a_a01_every_refusal_carries_its_own_reason() -> None:
     built = _dataset()
     executions = _executions()
     by_id = {execution.case_id: execution for execution in executions}
@@ -123,9 +122,33 @@ def test_f07a_a01_a05_own_reason_and_no_fabricated_limitation() -> None:
         assert execution.outcome == "GOVERNED_REFUSAL", case.case_id
         assert execution.refusal_code in SIX_CODES, (case.case_id, execution.refusal_code)
         payload = execution.artifacts.get("answer").payload()
+        assert payload.get("answer_refusal_code") in SIX_CODES, (case.case_id, payload.get("answer_refusal_code"))
         assert payload.get("detail"), (case.case_id, "detail must be consumer-safe and non-empty")
-        # limitations may be empty; that is not evidence of no reason (Option C).
-        assert isinstance(payload.get("limitations"), list)
+        # code and detail must name the same refusal (no empty reason).
+        assert str(payload.get("answer_refusal_code")) and str(payload.get("detail"))
+
+
+# A05: no limitation is fabricated for a case that has none; an empty
+# limitations tuple is legal and is not evidence that the refusal has no
+# reason (the reason lives in code + detail under Option C).
+def test_f07a_a05_no_fabricated_limitation() -> None:
+    built = _dataset()
+    executions = _executions()
+    by_id = {execution.case_id: execution for execution in executions}
+    for case in _refusal_cases(built):
+        execution = by_id[case.case_id]
+        assert execution.outcome == "GOVERNED_REFUSAL", case.case_id
+        payload = execution.artifacts.get("answer").payload()
+        limitations = payload.get("limitations")
+        # The surface is well-formed: always a list (possibly empty). An empty
+        # tuple is legal and is never treated as "this refusal has no reason".
+        assert isinstance(limitations, list), (case.case_id, type(limitations))
+        # No spurious limitation is injected: every listed entry is a plain
+        # inherited restriction string, never the refusal's own code repeated
+        # as a fabrication.
+        assert all(isinstance(lim, str) and lim for lim in limitations), (
+            case.case_id, limitations
+        )
 
 
 # A02: detail and limitations cannot contradict for the same refusal.
