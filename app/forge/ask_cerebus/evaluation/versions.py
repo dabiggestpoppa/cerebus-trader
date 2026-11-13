@@ -60,7 +60,7 @@ UPSTREAM_PINS = {
     "implementation/forge/book_iv/bloc_iv_5/ACCEPTANCE.md": "cd9edbeb834bb66f1e62643a3c25ef8fcd5acdac",
     "planning/forge/books/BOOK_IV_ASK_CEREBUS_PLAN_V1.md": "f5c201431530ed2200cfbe1cd9959c9e7386aca6",
     "app/forge/ask_cerebus/interpreter/plan.py": "f898665cb804af0fff5cd7ebe6dd36b721d5a421",
-    "app/forge/ask_cerebus/retrieval/service.py": "1b69cd5e578f264872de830dc0402413dc14e492",
+    "app/forge/ask_cerebus/retrieval/service.py": "cdbe615ffd18dd0fa4df096d27259a405ac98964",
     "app/forge/ask_cerebus/context/service.py": "74d66d9d33f0f90171ac0eca51e6023cdefbaac2",
     "app/forge/ask_cerebus/llm_gateway/draft.py": "a7c70c61db07136f169df2012380f956252baf35",
     "app/forge/ask_cerebus/answer/service.py": "dd6e3792b169c2b1db59cc107e580582bef31155",
