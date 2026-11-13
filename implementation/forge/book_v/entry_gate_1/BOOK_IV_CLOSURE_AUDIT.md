@@ -31,11 +31,11 @@ ancestry confirmed via `git merge-base`).
 | 10 | BA-36 updated hash identities | PASS | `retrieval/service.py` committed blob `cdbe615f…`, canonical SHA-256 `2d73737e…b3535` |
 | 11 | IV.5 refusal vocabulary | PASS | 6 codes: ACCESS_NOT_ENTITLED, AMBIGUOUS_SCOPE, MODEL_VERSION_UNAVAILABLE, CURRENT_DATA_UNAVAILABLE, SETUP_NOT_ENCODED, INSUFFICIENT_EVIDENCE; precedence highest-first |
 | 12 | IV.6 evaluation contracts | PASS | `ASK_EVALUATION_CONTRACT_V1`, dataset V1, schema V1, CASE_COUNT=120, DRIVER_COUNT=112 |
-| 13 | Dataset manifests and digests | PASS | EV-001–EV-120 digest `74bc217b…cbd31a8`; EV-145–EV-154 digest `aa7caee0…3eed2`; EV-155–EV-178 digest `ee9cbf30…b22657` |
+| 13 | Dataset manifests and digests | PASS | EV-001–EV-120 digest `74bc217b…cbd31a8`; EV-121–EV-144 digest `881e8403…f92339` (`ASK_EVALUATION_DATASET_AM1_V1`); EV-145–EV-154 digest `aa7caee0…3eed2`; EV-155–EV-178 digest `ee9cbf30…b22657` |
 | 14 | Prior ratification supplements | PASS | BA-34 `RATIFICATION_SUPPLEMENT_V2.md`; BA-35 `RATIFICATION_SUPPLEMENT_V1.md`; BA-36 `RATIFICATION_SUPPLEMENT_V2.md` all present |
 | 15 | GitHub Actions at starting SHA | PASS (user-reported) | Run `43423278131`: test SUCCESS, postgres SUCCESS |
 
-**Discrepancy recorded:** BA-35 PLAN.md §1 references "EV-121–EV-144: 24 amendment cases". No files `EV-121.json`…`EV-144.json` exist anywhere under `implementation/forge/book_iv/bloc_iv_6/` (only EV-145–EV-154 under `fixtures_v2/` and EV-155–EV-178 under `fixtures_v3/`). The ratified 120-case corpus (EV-001–EV-120) is complete, contiguous, and green. This is a pre-existing documentation/planning gap in BA-35, not a test failure, and is carried forward as an open observation (see §4). It does not block Book V because the EV-GATE gates that depend on live/external evidence are already OPEN independent of this corpus.
+**Resolved:** BA-35 PLAN.md §1 references "EV-121–EV-144: 24 amendment cases". All 24 files exist under `implementation/forge/book_iv/security_amendment_1/fixtures/` (EV-121.json…EV-144.json), contiguous EV-121–EV-144, with `DATASET_MANIFEST.json` recording digest `881e8403fdd9ec868530f4a0ab42f809ae458e3965233469d988784721492339`, dataset version `ASK_EVALUATION_DATASET_AM1_V1`, schema `ASK_EVALUATION_CASE_SCHEMA_AM1_V1`, baseline dataset digest `74bc217b…cbd31a8` (matching EV-001–EV-120), and requirements AM1-R01…AM1-R24. The ratified 120-case corpus (EV-001–EV-120) is complete, contiguous, and green. Full EV-001–EV-178 inventory reconciles: 120 + 24 + 10 + 24 = 178 cases. All 27 Security Amendment 1 drivers (AM1-R01…AM1-R27) pass.
 
 ## 2. Six-bloc contract inventory (Phase 1)
 
@@ -130,8 +130,8 @@ fixture inventory, open findings, and operational dependencies.
 - **Evidence/provenance:** Every case declares `ExpectedEvidencePath` (fixture_path, builder, record, values); dataset digest is SHA-256 over canonical case array; upstream pins (git blob IDs) for 10 frozen files; migrations pinned to (1,2,3,4)
 - **Frozen dependencies:** 18 `CaseFamily` bands, 6 `CaseKind`, 4 `Authority` (MODEL_OUTPUT/SYSTEM_UNDER_TEST forbidden), 20 `MetricId`, 6 refusal codes, 3 depths, `TimeScope`, `ExpectedFreshness`
 - **Test inventory:** `tests/test_forge_ask_cerebus_evaluation.py` (R001–R102 + X001–X010 = 112 drivers); amendment `tests/test_forge_ask_cerebus_evaluation_amendment1.py`; coverage `tests/test_forge_ask_cerebus_evaluation_coverage.py`
-- **Fixture inventory:** `implementation/forge/book_iv/bloc_iv_6/fixtures/` (EV-001…EV-120, DATASET_MANIFEST.json, PROVENANCE.md); `fixtures_v2/` (EV-145…EV-154); `fixtures_v3/` (EV-155…EV-178, BA-35 Rung 2)
-- **Open findings:** EV-GATE-02/03/09/11/12/13 OPEN (external governance/evidence dependencies); EV-121–EV-144 referenced by BA-35 plan but not present as files (documentation gap)
+- **Fixture inventory:** `implementation/forge/book_iv/bloc_iv_6/fixtures/` (EV-001…EV-120, DATASET_MANIFEST.json, PROVENANCE.md); `implementation/forge/book_iv/security_amendment_1/fixtures/` (EV-121…EV-144, DATASET_MANIFEST.json, AM1-R01…AM1-R24); `bloc_iv_6/fixtures_v2/` (EV-145…EV-154); `bloc_iv_6/fixtures_v3/` (EV-155…EV-178, BA-35 Rung 2)
+- **Open findings:** EV-GATE-02/03/09/11/12/13 OPEN (external governance/evidence dependencies)
 - **Operational dependencies:** None external (deterministic fakes only; no network/provider/market/clock)
 
 ## 3. End-to-end contract audit (Phase 2)
@@ -177,7 +177,7 @@ Findings reconciled against actual source and executable tests. Each finding rep
 | F-10 | `INDICATOR_NAVIGATION` → ERROR | IV.6 harness | BA-35 Rung 2 | R18 (negative control) | CLOSED | No IV.4 task implemented (not authorized) | ROUTE_UNSUPPORTED governed, never ERROR |
 | F-07a | `limitations` semantics ambiguous | IV.5 refusal surface | BA-35 Rung 2 Option C | A01–A15 (15 drivers) | CLOSED | None; `REFUSAL_CONSUMER_CONTRACT_V1.md` ratified | 15/15 F-07a drivers pass; zero payload change |
 
-**Observation (not a defect):** BA-35 PLAN.md references "EV-121–EV-144: 24 amendment cases". No `EV-121.json`…`EV-144.json` files exist under `implementation/forge/book_iv/bloc_iv_6/` (only EV-145–EV-154 under `fixtures_v2/`). The 120-case corpus is complete and green. This is a pre-existing documentation/planning gap, not a test failure, and does not block any gate (all EV-GATE gates dependent on it are independently OPEN).
+**Observation (resolved):** BA-35 PLAN.md §1 references "EV-121–EV-144: 24 amendment cases". All 24 files are present under `implementation/forge/book_iv/security_amendment_1/fixtures/` (EV-121.json…EV-144.json), with manifest digest `881e8403…f92339` and requirements AM1-R01…AM1-R24. The full EV-001–EV-178 inventory reconciles as 120 + 24 + 10 + 24 = 178 cases. This does not block any gate.
 
 **No closed defect is reopened.** All findings have executable contradictory evidence only in the sense that they are verified fixed; none contradicted.
 
@@ -186,7 +186,7 @@ Findings reconciled against actual source and executable tests. Each finding rep
 | Corpus | Cases | Version | Digest | Modes | Positive | Refusal | Authorities | Status |
 |---|---|---|---|---|---|---|---|---|
 | EV-001–EV-120 | 120 | `ASK_EVALUATION_DATASET_V1` | `74bc217b…cbd31a8` | CHAIN + SEALED | 48 | 72 | FIXTURE_FACT/FROZEN_RULE/OPERATOR_ASSERTION/SYNTHETIC_INPUT | Green |
-| EV-121–EV-144 | 0 present | — | — | — | — | — | — | Files absent (documentation gap; see §4) |
+| EV-121–EV-144 | 24 | `ASK_EVALUATION_DATASET_AM1_V1` | `881e8403…f92339` | CHAIN + SEALED | — | — | — | Green (security_amendment_1/fixtures; AM1-R01…R24, 27 drivers pass) |
 | EV-145–EV-154 | 10 | `ASK_EVALUATION_DATASET_V2` | `aa7caee0…3eed2` | CHAIN | 10 | 0 | — | Green (fixtures_v2) |
 | EV-155–EV-178 | 24 | `ASK_EVALUATION_DATASET_V3` | `ee9cbf30…b22657` | CHAIN | 12 | 12 | SYNTHETIC_INPUT | Green (BA-35 Rung 2) |
 
@@ -203,7 +203,7 @@ Findings reconciled against actual source and executable tests. Each finding rep
 
 **Classification distinction preserved:**
 - DETERMINISTIC PASS: all 120 EV-001–120 + EV-145–154 + EV-155–178 + all drivers
-- COVERAGE GAP: EV-121–EV-144 files absent (not treated as success)
+- EV-121–EV-144 present and green (security_amendment_1/fixtures; 24 cases, AM1-R01…R24, 27 drivers pass) — included in DETERMINISTIC PASS
 - EXTERNAL DEPENDENCY: EV-GATE-01/07/10 (provider, market data, semantic retrieval)
 - PRODUCTION BLOCKER: BG-C BLOCKED; no gate closed by fixture-only success
 
@@ -242,7 +242,6 @@ All 13 gates OPEN. No gate is closed by a fake provider, synthetic snapshot, or 
 ## 7. Evidence limitations
 
 - The hosted `postgres` CI job result was reported by the user (run `43423278131`, test+postgres SUCCESS) but could not be independently inspected from this environment (GitHub API/web return 404, private repo, no credentials). Local `test` suite is green (2,697/0/29).
-- EV-121–EV-144 files absent (documentation gap; does not affect green baseline).
 - Book V does not yet exist; no consumer contract beyond `REFUSAL_CONSUMER_CONTRACT_V1.md` (Option C, zero payload change).
 - No live market-data provider, no real semantic retrieval index, no durable snapshot store, no shared abuse store — all are EV-GATE OPEN / BG-C BLOCKED.
 
