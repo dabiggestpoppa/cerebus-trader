@@ -896,6 +896,8 @@ def test_only_authorized_frozen_files_changed():
     # proven instead by pinning all 11 market_data files and requiring a clean
     # worktree. The two authorized files carry the new hashes, the other nine
     # still match the recorded III.1 baseline.
+    # BA-35 Rung 2's retrieval/service.py routing repair and its versions.py
+    # pin update are committed together, so the worktree is clean under app/forge.
     assert _git_diff_head("app/forge") == ""
     baseline = json.loads(
         (

@@ -44,7 +44,7 @@ _INLINE_GUARDED = {
     "app/forge/ask_cerebus/retrieval/bundle.py": "b38b356e01b349fe0110ce7ebd518fd1b3e9d1c82a7f8b979ac088019acc3455",
     "app/forge/ask_cerebus/retrieval/refs.py": "bbe1b937d6aa0bd7d0c26c8e0f7f5ba7dfa2ecee7f816dc9461b620d0961daa2",
     "app/forge/ask_cerebus/retrieval/trace.py": "6f8f08009da67975017de9c86263a52d0a72753afacf58f74aff7a91ec92e44d",
-    "app/forge/ask_cerebus/retrieval/service.py": "d4ef64f9d3f994b08c331b48a2e720aa345f92af02d8b32a2d0feb9707d5fd83",
+    "app/forge/ask_cerebus/retrieval/service.py": "2d73737e1a20f61e3ff276f16dee31e8e880304a6473754224d8a5ceb67b3535",
     "app/forge/policy.py": "f10751e6ba6144d807abc151dbcbd7a06320a3d1ab82279fe1cac26b8a228fcc",
     "app/forge/service/policy_enforcement.py": "9ccc3b72f77fca0cb3fd0685128fd96a2f0ce8ca975b532d96646d285476e381",
     "app/forge/intelligence_api/contracts.py": "7d8f90adf8aeca993b94d473f61fe16ea13170a1cd977cb47fb186d64697d4f0",

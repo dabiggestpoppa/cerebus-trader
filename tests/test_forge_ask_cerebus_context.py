@@ -1050,7 +1050,7 @@ def test_c88_frozen_iv2_bundle_refs_trace_unchanged():
         "bundle.py": "b38b356e01b349fe0110ce7ebd518fd1b3e9d1c82a7f8b979ac088019acc3455",
         "refs.py": "bbe1b937d6aa0bd7d0c26c8e0f7f5ba7dfa2ecee7f816dc9461b620d0961daa2",
         "trace.py": "6f8f08009da67975017de9c86263a52d0a72753afacf58f74aff7a91ec92e44d",
-        "service.py": "d4ef64f9d3f994b08c331b48a2e720aa345f92af02d8b32a2d0feb9707d5fd83",
+        "service.py": "2d73737e1a20f61e3ff276f16dee31e8e880304a6473754224d8a5ceb67b3535",
     }
     for name, digest in expected.items():
         assert _sha(ROOT / "app/forge/ask_cerebus/retrieval" / name) == digest
