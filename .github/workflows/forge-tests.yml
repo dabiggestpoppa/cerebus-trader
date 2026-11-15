@@ -50,6 +50,25 @@ jobs:
           python-version: "3.11"
       - run: python -m pip install --upgrade pip
       - run: pip install -r requirements.txt
+      - name: Install PostgreSQL 16 client tools
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y --no-install-recommends postgresql-client-16
+          echo "/usr/lib/postgresql/16/bin" >> $GITHUB_PATH
+      - name: Assert PostgreSQL 16 client/server compatibility
+        run: |
+          echo "=== pg_dump ===" && pg_dump --version
+          echo "=== pg_restore ===" && pg_restore --version
+          echo "=== server version ==="
+          SERVER_VER=$(PGPASSWORD=forge_ci_password psql -h localhost -p 5432 -U forge -d forge_test -tAc "SHOW server_version")
+          echo "server: $SERVER_VER"
+          SERVER_MAJOR=$(echo "$SERVER_VER" | cut -d. -f1)
+          DUMP_MAJOR=$(pg_dump --version | awk '{print $3}' | cut -d. -f1)
+          RESTORE_MAJOR=$(pg_restore --version | awk '{print $3}' | cut -d. -f1)
+          echo "majors: server=$SERVER_MAJOR dump=$DUMP_MAJOR restore=$RESTORE_MAJOR"
+          [ "$SERVER_MAJOR" = "16" ] || { echo "ERROR: PostgreSQL server major version is $SERVER_MAJOR, expected 16" >&2; exit 1; }
+          [ "$DUMP_MAJOR" = "16" ] || { echo "ERROR: pg_dump major version is $DUMP_MAJOR, expected 16" >&2; exit 1; }
+          [ "$RESTORE_MAJOR" = "16" ] || { echo "ERROR: pg_restore major version is $RESTORE_MAJOR, expected 16" >&2; exit 1; }
       - name: Full suite against live PostgreSQL
         run: python -m pytest -q
       - name: PostgreSQL integration evidence
