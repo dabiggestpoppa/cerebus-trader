@@ -52,6 +52,12 @@ jobs:
       - run: pip install -r requirements.txt
       - name: Install PostgreSQL 16 client tools
         run: |
+          set -e
+          sudo apt-get update -y
+          sudo apt-get install -y --no-install-recommends wget ca-certificates gnupg
+          install -d -m 0755 /etc/apt/keyrings
+          wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo tee /etc/apt/keyrings/pgdg.asc > /dev/null
+          echo "deb https://apt.postgresql.org/pub/repos/apt $(. /etc/os-release && echo "$VERSION_CODENAME")-pgdg main" | sudo tee /etc/apt/sources.list.d/pgdg.list
           sudo apt-get update -y
           sudo apt-get install -y --no-install-recommends postgresql-client-16
           echo "/usr/lib/postgresql/16/bin" >> $GITHUB_PATH
