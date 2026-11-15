@@ -71,6 +71,7 @@ tracked; frozen Ch II.2.4 governs (GOVERNANCE §3).
 | 38187591174 | `6a426de` (rung 4) | ✅ 975/27 | ❌ 995 passed, 6 failed, 1 error | **FAIL(app)** — RowMapping access, txn-abort cascade, backup fixture field typo; repaired append-only (rung 5). Never claimed as a pass. |
 | 38187953980 | `9f44d81` (rung 5) | ✅ 975/27 | ❌ 1000 passed, 2 failed | **FAIL(app)** — tenant projection referenced an unseeded user (003 owner FK working as designed) + one swallowed `def`; repaired append-only (rung 6). |
 | 38188302328 | `914cc04` (rung 6) | ✅ **975 passed, 27 skipped** | ✅ **1002 passed** (full suite), integration evidence **19 passed**, identity evidence **7 passed** | **PASS** — both jobs green; every PG-dependent test executed (0 skipped in the postgres job), including the backup/restore smoke and all 7 pgvector acceptance tests. |
+| 43442454742 | `28bb1a6` (BA-40A start) | ✅ local 2,754/0/29 | ❌ `pg_restore` exit 1: `transaction_timeout` unrecognized | **FAIL(infra)** — runner `pg_dump`/`pg_restore` (PG 17+) vs PostgreSQL 16 server; jobs completed in ~3s with no steps executed; repaired in BA-40A by installing `postgresql-client-16` and adding a version-assertion step (see §11) |
 
 The 27 local/`test`-job skips are the declared environment split: 19
 integration + 7 pgvector + 1 backup/restore, all executed in the postgres
@@ -134,6 +135,61 @@ precedes Book III; frozen planning documents remain byte-identical
 5. **Synthetic embeddings only** — float32-exact deterministic components;
    no production embedding generation, reranking or external embedding APIs.
 6. **GAP-07/GAP-09/GAP-08-class items** — unchanged from the consolidated
-   register (dedicated alias-bypass adversarial test, true SQL writer-race
-   suite, registry-rate-limit exposure — now also pulling
-   `pgvector/pgvector:pg16`).
+register (dedicated alias-bypass adversarial test, true SQL writer-race
+suite, registry-rate-limit exposure — now also pulling
+`pgvector/pgvector:pg16`).
+
+## 11. BA-40A — PostgreSQL 16 client/server compatibility repair
+
+**Original failure.** GitHub Actions run `43442454742` at head SHA
+`28bb1a65678affe713cb1bb370ece5a8bbefc7b5` (branch `forge`). The
+`postgres` job ran the backup/restore smoke
+(`tests/test_forge_backup_restore.py::TestBackupRestoreSmoke::test_backup_restore_roundtrip_verified_independently`)
+and reported:
+
+```
+pg_restore failed (exit 1)
+ERROR: unrecognized configuration parameter "transaction_timeout"
+```
+
+Both jobs (`test`, `postgres`) completed in ~3 seconds with zero execution
+steps recorded — a GitHub Actions runner/startup failure, not an application
+test failure. The `test` job passes independently.
+
+**Root cause.** The GitHub-hosted runner's `pg_dump`/`pg_restore` client
+binaries are PostgreSQL 17+. `pg_dump` 17 emits `SET transaction_timeout = 0;`
+(`transaction_timeout` is a PostgreSQL 17+ configuration parameter) into its
+custom-format dump. `pg_restore` executing that dump against the PostgreSQL
+16 server (`pgvector/pgvector:pg16` service image, frozen per G-D1) rejects
+`transaction_timeout` as an unrecognized configuration parameter. No
+application schema, migration, or acceptance expectation was involved — the
+`test` job (same database, same migrations) passes.
+
+**Repair.** Minimal workflow change in `.github/workflows/forge-tests.yml`
+(postgres job, inserted after `pip install -r requirements.txt`):
+
+1. **Install PostgreSQL 16 client tools** — `postgresql-client-16` via apt;
+   append `/usr/lib/postgresql/16/bin` to `$GITHUB_PATH` so `pg_dump` and
+   `pg_restore` resolve to the PostgreSQL 16 binaries before any runner-default
+   (newer) client.
+2. **Assert PostgreSQL 16 client/server compatibility** — a deterministic step
+   that prints `pg_dump --version`, `pg_restore --version`, and the server's
+   `SHOW server_version`, parses each major version, and exits non-zero unless
+   all three equal 16. This fails explicitly if client/server version
+   compatibility drifts in the future.
+
+No application source, migration, route, schema, frozen fixture, or
+acceptance-expectation change. The backup/restore test is unweakened;
+`--exit-on-error` is retained; no SQL is filtered from backups; no
+pg_restore failures are suppressed.
+
+**Verification.** Local full regression: **2,754 passed / 0 failed / 29
+skipped** (unchanged from baseline). Targeted suites (Book V presentation,
+golden, adversarial, Book IV answer): **143 passed / 1 skipped** (the single
+skip is the backup/restore smoke, which correctly skips locally — it requires
+`FORGE_TEST_DATABASE_URL` and executes only on the CI Postgres+pgvector job,
+per its explicit skip reason and PLAN §4).
+
+The repair is validated by CI: the `postgres` job at the final HEAD must
+report both `test: SUCCESS` and `postgres: SUCCESS`, with the version-assertion
+step passing (server 16, pg_dump 16, pg_restore 16).
