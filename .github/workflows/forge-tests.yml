@@ -50,11 +50,24 @@ jobs:
           python-version: "3.11"
       - run: python -m pip install --upgrade pip
       - run: pip install -r requirements.txt
-      - name: Install PostgreSQL 16 client tools
+      - name: Install PostgreSQL 16 client tools from service container
         run: |
-          sudo apt-get update -y
-          sudo apt-get install -y postgresql-client-16
-          echo "/usr/lib/postgresql/16/bin" >> $GITHUB_PATH
+          CONTAINER_ID=$(docker ps --filter "ancestor=pgvector/pgvector:pg16" --format "{{.ID}}" | head -1)
+          if [ -z "$CONTAINER_ID" ]; then
+            echo "ERROR: could not find postgres service container (image pgvector/pgvector:pg16)" >&2
+            exit 1
+          fi
+          echo "Found postgres container: $CONTAINER_ID"
+          # Copy the full PostgreSQL 16 installation (binaries + shared libraries)
+          # from the running pgvector/pgvector:pg16 service container so the
+          # runner uses PG 16 pg_dump/pg_restore, matching the PG 16 server.
+          docker cp "$CONTAINER_ID:/usr/lib/postgresql/16" /tmp/pg16-install
+          # pg_dump links against libpq.so.5, which lives outside
+          # /usr/lib/postgresql/16 on Debian-based images.
+          docker cp "$CONTAINER_ID:/usr/lib/x86_64-linux-gnu/libpq.so.5" /tmp/pg16-install/lib/libpq.so.5 2>/dev/null || true
+          chmod +x /tmp/pg16-install/bin/*
+          echo "/tmp/pg16-install/bin" >> $GITHUB_PATH
+          echo "LD_LIBRARY_PATH=/tmp/pg16-install/lib:${LD_LIBRARY_PATH:-}" >> $GITHUB_ENV
       - name: Assert PostgreSQL 16 client/server compatibility
         run: |
           echo "=== pg_dump ===" && pg_dump --version
