@@ -71,7 +71,8 @@ tracked; frozen Ch II.2.4 governs (GOVERNANCE §3).
 | 38187591174 | `6a426de` (rung 4) | ✅ 975/27 | ❌ 995 passed, 6 failed, 1 error | **FAIL(app)** — RowMapping access, txn-abort cascade, backup fixture field typo; repaired append-only (rung 5). Never claimed as a pass. |
 | 38187953980 | `9f44d81` (rung 5) | ✅ 975/27 | ❌ 1000 passed, 2 failed | **FAIL(app)** — tenant projection referenced an unseeded user (003 owner FK working as designed) + one swallowed `def`; repaired append-only (rung 6). |
 | 38188302328 | `914cc04` (rung 6) | ✅ **975 passed, 27 skipped** | ✅ **1002 passed** (full suite), integration evidence **19 passed**, identity evidence **7 passed** | **PASS** — both jobs green; every PG-dependent test executed (0 skipped in the postgres job), including the backup/restore smoke and all 7 pgvector acceptance tests. |
-| 43442454742 | `28bb1a6` (BA-40A start) | ✅ local 2,754/0/29 | ❌ `pg_restore` exit 1: `transaction_timeout` unrecognized | **FAIL(infra)** — runner `pg_dump`/`pg_restore` (PG 17+) vs PostgreSQL 16 server; jobs completed in ~3s with no steps executed; repaired in BA-40A by installing `postgresql-client-16` and adding a version-assertion step (see §11) |
+| 43442454742 | `28bb1a6` (BA-40A start) | ✅ local 2,754/0/29 | ❌ `pg_restore` exit 1: `transaction_timeout` unrecognized | **FAIL(infra)** — runner `pg_dump`/`pg_restore` (PG 17+) vs PostgreSQL 16 server; jobs completed in ~3s with no steps executed; repaired in BA-40A (see §11) |
+| 43773218819 | `ad5ebbe` (BA-40A final) | ✅ local 2,754/0/29 | ✅ **test: success / postgres: success** | **PASS** — both jobs green; PG 16 client tools copied from pgvector/pgvector:pg16 service container; version assertion passes (server 16, pg_dump 16, pg_restore 16); backup/restore smoke executes and passes |
 
 The 27 local/`test`-job skips are the declared environment split: 19
 integration + 7 pgvector + 1 backup/restore, all executed in the postgres
